@@ -1,0 +1,12 @@
+# 忽略 node_modules 文件夹（如果将来使用 npm 或 yarn）
+node_modules/
+
+# 忽略 macOS 系统生成的 .DS_Store 文件
+.DS_Store
+
+# 忽略一些常见的编辑器生成的临时文件
+*.swp
+*.swo
+*.bak
+
+# 你还可以根据需要添加其他需要忽略的文件或文件夹

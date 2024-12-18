@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>TabBoost 设置</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        width: 400px;
+        padding: 20px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+      }
+      input {
+        width: 100%;
+        padding: 5px;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+      }
+      button {
+        padding: 8px 15px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>TabBoost 设置</h2>
+
+    <label for="duplicateTabShortcut">复制标签页快捷键:</label>
+    <input type="text" id="duplicateTabShortcut" placeholder="例如：Ctrl+M" />
+
+    <label for="copyUrlShortcut">复制网址快捷键:</label>
+    <input
+      type="text"
+      id="copyUrlShortcut"
+      placeholder="例如：Shift+Alt+C"
+    />
+
+    <button id="saveButton">保存</button>
+
+    <script src="options.js"></script>
+  </body>
+</html>
