@@ -12,7 +12,6 @@
     "scripting"
   ],
   "action": {
-    "default_popup": "popup/popup.html",
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",
@@ -32,16 +31,23 @@
     "duplicate-tab": {
       "suggested_key": {
         "default": "Ctrl+M",
-        "mac": "Command+M"
+        "mac": "Ctrl+M"
       },
       "description": "复制当前标签页"
     },
     "copy-url": {
       "suggested_key": {
         "default": "Alt+C",
-        "mac": "Shift+Ctrl+C"
+        "mac": "Shift+Command+C"
       },
       "description": "复制当前标签页网址"
+    },
+    "open-options": {
+      "suggested_key": {
+        "default": "",
+        "mac": ""
+      },
+      "description": "打开插件配置页"
     }
   }
 }
