@@ -43,10 +43,6 @@
       "description": "复制当前标签页网址"
     },
     "open-options": {
-      "suggested_key": {
-        "default": "",
-        "mac": ""
-      },
       "description": "打开插件配置页"
     }
   }
