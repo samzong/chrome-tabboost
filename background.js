@@ -1,3 +1,19 @@
+// 监听插件图标点击事件
+chrome.action.onClicked.addListener(async (tab) => {
+  // 获取默认操作
+  chrome.storage.sync.get(["defaultAction"], (result) => {
+    const defaultAction = result.defaultAction || "open-options"; // 设置默认操作为打开设置页面
+
+    if (defaultAction === "duplicate-tab") {
+      duplicateCurrentTab();
+    } else if (defaultAction === "copy-url") {
+      copyCurrentTabUrl();
+    } else if (defaultAction === "open-options") {
+      openOptionsPage();
+    }
+  });
+});
+
 // 监听快捷键命令
 chrome.commands.onCommand.addListener(async (command) => {
   console.log("Listener triggered"); // 确认监听器被触发
@@ -8,6 +24,11 @@ chrome.commands.onCommand.addListener(async (command) => {
     copyCurrentTabUrl();
   }
 });
+
+// 定义打开设置页面的函数
+async function openOptionsPage() {
+  chrome.runtime.openOptionsPage();
+}
 
 // 复制当前标签页网址
 async function copyCurrentTabUrl() {
@@ -47,6 +68,14 @@ async function getCurrentTab() {
   let [tab] = await chrome.tabs.query(queryOptions);
   console.log("Query result:", tab); // 打印查询结果
   return tab;
+}
+
+// 复制当前标签页
+async function duplicateCurrentTab() {
+  let currentTab = await getCurrentTab();
+  if (currentTab) {
+    chrome.tabs.duplicate(currentTab.id);
+  }
 }
 
 // 显示通知
