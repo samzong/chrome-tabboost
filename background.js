@@ -1,3 +1,5 @@
+import { getCurrentTab, showNotification } from "./utils.js";
+
 // 监听插件图标点击事件
 chrome.action.onClicked.addListener(async (tab) => {
   // 获取默认操作
@@ -45,29 +47,21 @@ async function copyCurrentTabUrl() {
               console.log("URL copied to clipboard:", url);
             })
             .catch((err) => {
-              console.error("复制失败: ", err);
+              console.error("复制失败：", err);
             });
         },
         args: [currentTab.url],
       });
       console.log("URL copied:", currentTab.url);
-      showNotification("网址复制成功!");
+      showNotification("网址复制成功！");
     } catch (err) {
-      console.error("执行脚本失败: ", err);
-      showNotification("网址复制失败!");
+      console.error("执行脚本失败：", err);
+      showNotification("网址复制失败！");
     }
   } else {
     console.error("未找到当前标签页");
     showNotification("未找到当前标签页");
   }
-}
-
-// 获取当前标签页
-async function getCurrentTab() {
-  let queryOptions = { active: true, currentWindow: true };
-  let [tab] = await chrome.tabs.query(queryOptions);
-  console.log("Query result:", tab); // 打印查询结果
-  return tab;
 }
 
 // 复制当前标签页
@@ -76,22 +70,4 @@ async function duplicateCurrentTab() {
   if (currentTab) {
     chrome.tabs.duplicate(currentTab.id);
   }
-}
-
-// 显示通知
-function showNotification(message) {
-  chrome.notifications.create(
-    {
-      type: "basic",
-      iconUrl: "icons/icon48.png",
-      title: "TabBoost",
-      message: message,
-    },
-    function (notificationId) {
-      // 0.5秒后清除通知
-      setTimeout(() => {
-        chrome.notifications.clear(notificationId);
-      }, 500);
-    }
-  );
 }
