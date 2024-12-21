@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "TabBoost",
-  "version": "1.0",
-  "description": "通过快捷键提升你的标签页浏览体验",
+  "version": "2.0",
+  "description": "TabBoost is a Chrome extension that helps you manage your tabs more efficiently.",
   "permissions": [
     "activeTab",
     "storage",
