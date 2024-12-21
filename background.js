@@ -71,3 +71,13 @@ async function duplicateCurrentTab() {
     chrome.tabs.duplicate(currentTab.id);
   }
 }
+
+// background.js
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  console.log("Message received in background:", request); // 日志 19
+  if (request.action === "openInPopup") {
+    // 目前直接回复，可以在此添加更多逻辑
+    sendResponse({ status: "Message received by background" });
+  }
+});
