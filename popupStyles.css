@@ -1,0 +1,190 @@
+/* popupStyles.css */
+
+/* 弹窗覆盖层 */
+#tabboost-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+#tabboost-popup-overlay.show {
+  opacity: 1;
+}
+
+/* 弹窗内容容器 */
+#tabboost-popup-content {
+  position: relative;
+  width: 80%;
+  height: 80%;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  transform: scale(0.8);
+  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  padding: 0; /* 移除内边距 */
+  box-sizing: border-box;
+}
+
+#tabboost-popup-overlay.show #tabboost-popup-content {
+  transform: scale(1);
+}
+
+/* 工具栏 */
+#tabboost-popup-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+  z-index: 5; /* 高于 iframe 和加载指示器 */
+}
+
+/* 标题 */
+#tabboost-popup-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  max-width: 60%; /* 限制最大宽度 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 按钮容器 */
+#tabboost-popup-buttons {
+  display: flex;
+  align-items: center;
+}
+
+/* 按钮样式 */
+.tabboost-button {
+  background: transparent;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: color 0.2s ease;
+  z-index: 6; /* 高于加载指示器 */
+}
+
+.tabboost-button:hover {
+  color: #007bff;
+}
+
+/* 关闭按钮 */
+.tabboost-close-button {
+  font-size: 20px;
+  font-weight: bold;
+  color: #ff0000; /* 红色 */
+}
+
+.tabboost-close-button:hover {
+  color: #cc0000; /* 深红色 */
+}
+
+/* 新标签页按钮 */
+.tabboost-newtab-button {
+  font-size: 14px;
+  color: #007bff;
+}
+
+.tabboost-newtab-button:hover {
+  text-decoration: underline;
+}
+
+/* iframe 样式 */
+#tabboost-popup-iframe {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  border: none;
+  box-sizing: border-box;
+}
+
+/* 加载指示器 */
+#tabboost-popup-loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+  color: #007bff;
+  z-index: 2; /* 低于工具栏和按钮 */
+}
+
+/* 错误消息样式 */
+#tabboost-popup-error {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+  color: #ff0000;
+  text-align: center;
+  z-index: 7; /* 高于所有元素 */
+  display: none; /* 默认隐藏 */
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+#tabboost-popup-error.show {
+  display: block;
+}
+
+#tabboost-popup-error button {
+  margin-top: 10px;
+  padding: 8px 16px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+#tabboost-popup-error button:hover {
+  background-color: #0056b3;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  #tabboost-popup-content {
+    width: 95%;
+    height: 90%;
+  }
+
+  #tabboost-popup-title {
+    font-size: 14px;
+    max-width: 50%; /* 进一步调整 */
+  }
+
+  .tabboost-button {
+    font-size: 14px;
+  }
+
+  #tabboost-popup-error {
+    width: 90%;
+  }
+}
+
+/* 按钮可聚焦样式 */
+.tabboost-button:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
