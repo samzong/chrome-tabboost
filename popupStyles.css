@@ -47,6 +47,7 @@
   padding: 10px;
   background-color: #f5f5f5;
   border-bottom: 1px solid #ddd;
+  z-index: 5; /* 高于加载指示器和错误消息 */
 }
 
 /* 标题 */
@@ -65,6 +66,7 @@
   cursor: pointer;
   margin-left: 10px;
   transition: color 0.2s ease;
+  z-index: 6; /* 高于加载指示器和错误消息 */
 }
 
 .tabboost-button:hover {
@@ -82,20 +84,11 @@
   color: #ff0000;
 }
 
-/* 新标签页按钮 */
-.tabboost-newtab-button {
-  font-size: 14px;
-  color: #007bff;
-}
-
-.tabboost-newtab-button:hover {
-  text-decoration: underline;
-}
-
 /* iframe 样式 */
 #tabboost-popup-iframe {
   flex: 1;
   border: none;
+  z-index: 1; /* 低于工具栏 */
 }
 
 /* 加载指示器 */
@@ -106,6 +99,44 @@
   transform: translate(-50%, -50%);
   font-size: 18px;
   color: #007bff;
+  z-index: 2; /* 低于工具栏 */
+}
+
+/* 错误消息样式 */
+#tabboost-popup-error {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+  color: #ff0000;
+  text-align: center;
+  z-index: 7; /* 高于所有元素 */
+  display: none; /* 默认隐藏 */
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+#tabboost-popup-error.show {
+  display: block;
+}
+
+#tabboost-popup-error button {
+  margin-top: 10px;
+  padding: 8px 16px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+#tabboost-popup-error button:hover {
+  background-color: #0056b3;
 }
 
 /* 响应式设计 */
@@ -114,4 +145,10 @@
     width: 95%;
     height: 90%;
   }
+}
+
+/* 按钮可聚焦样式 */
+.tabboost-button:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
 }

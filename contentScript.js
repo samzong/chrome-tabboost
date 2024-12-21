@@ -57,106 +57,104 @@ function createPopup(url) {
     // 创建弹窗覆盖层
     const popupOverlay = document.createElement("div");
     popupOverlay.id = "tabboost-popup-overlay";
-    Object.assign(popupOverlay.style, {
-      position: "fixed",
-      top: "0",
-      left: "0",
-      width: "100%",
-      height: "100%",
-      backgroundColor: "rgba(0, 0, 0, 0.5)",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      zIndex: "10000",
-      opacity: "0",
-      transition: "opacity 0.3s ease",
-    });
+    popupOverlay.setAttribute("role", "dialog");
+    popupOverlay.setAttribute("aria-modal", "true");
 
     // 创建弹窗内容容器
     const popupContent = document.createElement("div");
     popupContent.id = "tabboost-popup-content";
-    Object.assign(popupContent.style, {
-      position: "relative",
-      width: "80%",
-      height: "80%",
-      backgroundColor: "#fff",
-      borderRadius: "8px",
-      boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-      overflow: "hidden",
-      transform: "scale(0.8)",
-      transition: "transform 0.3s ease",
-    });
 
-    // 创建 iframe 以加载链接内容
-    const iframe = document.createElement("iframe");
-    iframe.src = url;
-    Object.assign(iframe.style, {
-      width: "100%",
-      height: "100%",
-      border: "none",
-    });
-    console.log("chrome-tabboost: Iframe created and URL set");
+    // 创建工具栏
+    const toolbar = document.createElement("div");
+    toolbar.id = "tabboost-popup-toolbar";
 
-    // 创建关闭按钮
-    const closeButton = document.createElement("button");
-    closeButton.innerText = "✖";
-    Object.assign(closeButton.style, {
-      position: "absolute",
-      top: "10px",
-      right: "10px",
-      background: "transparent",
-      border: "none",
-      fontSize: "16px",
-      cursor: "pointer",
-    });
-    closeButton.title = "关闭弹窗";
-    closeButton.addEventListener("click", closePopup);
-    console.log("chrome-tabboost: Close button event listener added");
-
-    // 创建右侧按钮容器
-    const buttonContainer = document.createElement("div");
-    Object.assign(buttonContainer.style, {
-      position: "absolute",
-      top: "10px",
-      right: "40px",
-      display: "flex",
-      gap: "10px",
-    });
+    // 创建标题
+    const title = document.createElement("span");
+    title.id = "tabboost-popup-title";
+    title.innerText = "加载中...";
 
     // 创建“在新标签页中打开”按钮
     const newTabButton = document.createElement("button");
+    newTabButton.className = "tabboost-button tabboost-newtab-button";
     newTabButton.innerText = "在新标签页中打开";
-    Object.assign(newTabButton.style, {
-      padding: "5px 10px",
-      cursor: "pointer",
-    });
     newTabButton.title = "在新标签页中打开链接";
+    newTabButton.setAttribute("aria-label", "在新标签页中打开链接");
     newTabButton.addEventListener("click", () => {
       console.log("chrome-tabboost: New Tab button clicked");
       window.open(url, "_blank");
       closePopup();
     });
 
-    // 创建“关闭”按钮
-    const closeButtonAlt = document.createElement("button");
-    closeButtonAlt.innerText = "关闭";
-    Object.assign(closeButtonAlt.style, {
-      padding: "5px 10px",
-      cursor: "pointer",
-    });
-    closeButtonAlt.title = "关闭弹窗";
-    closeButtonAlt.addEventListener("click", closePopup);
-    console.log(
-      "chrome-tabboost: Alternative close button event listener added"
-    );
+    // 创建关闭按钮
+    const closeButton = document.createElement("button");
+    closeButton.className = "tabboost-button tabboost-close-button";
+    closeButton.innerHTML = "&times;"; // Unicode × 符号
+    closeButton.title = "关闭弹窗";
+    closeButton.setAttribute("aria-label", "关闭弹窗");
+    closeButton.addEventListener("click", closePopup);
+    console.log("chrome-tabboost: Close button event listener added");
 
-    // 组装按钮
-    buttonContainer.appendChild(newTabButton);
-    buttonContainer.appendChild(closeButtonAlt);
+    // 组装工具栏
+    toolbar.appendChild(title);
+    toolbar.appendChild(newTabButton);
+    toolbar.appendChild(closeButton);
+
+    // 创建加载指示器
+    const loader = document.createElement("div");
+    loader.id = "tabboost-popup-loader";
+    loader.innerText = "加载中...";
+
+    // 创建错误消息
+    const errorMsg = document.createElement("div");
+    errorMsg.id = "tabboost-popup-error";
+    errorMsg.innerHTML = `
+      <p>无法在弹窗中加载此网站。</p>
+      <button id="tabboost-open-newtab">在新标签页中打开</button>
+    `;
+
+    // 创建 iframe 以加载链接内容
+    const iframe = document.createElement("iframe");
+    iframe.id = "tabboost-popup-iframe";
+    iframe.src = url;
+    console.log("chrome-tabboost: Iframe created and URL set");
+
+    // 设置超时（例如 5 秒）
+    const loadTimeout = setTimeout(() => {
+      console.log("chrome-tabboost: Iframe load timed out");
+      loader.style.display = "none";
+      errorMsg.classList.add("show");
+    }, 5000);
+
+    // 监听 iframe 加载完成
+    iframe.addEventListener("load", () => {
+      clearTimeout(loadTimeout);
+      console.log("chrome-tabboost: Iframe content loaded");
+      loader.style.display = "none";
+
+      // 更新标题为 iframe 中的页面标题
+      try {
+        const iframeTitle = iframe.contentDocument.title;
+        title.innerText = iframeTitle || "加载页面";
+      } catch (e) {
+        console.log(
+          "chrome-tabboost: Unable to access iframe content title due to CORS restrictions"
+        );
+        title.innerText = "加载页面";
+      }
+    });
+
+    // 监听 iframe 加载错误
+    iframe.addEventListener("error", () => {
+      clearTimeout(loadTimeout);
+      console.log("chrome-tabboost: Iframe failed to load content");
+      loader.innerText = "加载失败";
+      errorMsg.classList.add("show");
+    });
 
     // 组装弹窗内容
-    popupContent.appendChild(closeButton);
-    popupContent.appendChild(buttonContainer);
+    popupContent.appendChild(toolbar);
+    popupContent.appendChild(loader);
+    popupContent.appendChild(errorMsg); // 添加错误消息
     popupContent.appendChild(iframe);
 
     // 组装弹窗覆盖层
@@ -168,8 +166,7 @@ function createPopup(url) {
 
     // 触发显示动画
     requestAnimationFrame(() => {
-      popupOverlay.style.opacity = "1";
-      popupContent.style.transform = "scale(1)";
+      popupOverlay.classList.add("show");
       console.log("chrome-tabboost: Popup overlay show animation triggered");
     });
 
@@ -183,12 +180,19 @@ function createPopup(url) {
     document.addEventListener("keydown", escListener);
     console.log("chrome-tabboost: Esc key listener added");
 
+    // 监听错误消息中的按钮
+    const openNewTabButton = errorMsg.querySelector("#tabboost-open-newtab");
+    openNewTabButton.addEventListener("click", () => {
+      console.log("chrome-tabboost: Open in new tab button clicked");
+      window.open(url, "_blank");
+      closePopup();
+    });
+
     // 函数：关闭弹窗
     function closePopup() {
       try {
         console.log("chrome-tabboost: Closing popup");
-        popupOverlay.style.opacity = "0";
-        popupContent.style.transform = "scale(0.8)";
+        popupOverlay.classList.remove("show");
         setTimeout(() => {
           if (popupOverlay && popupOverlay.parentNode) {
             popupOverlay.parentNode.removeChild(popupOverlay);
