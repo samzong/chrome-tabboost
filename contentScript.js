@@ -73,6 +73,10 @@ function createPopup(url) {
     title.id = "tabboost-popup-title";
     title.innerText = "加载中...";
 
+    // 创建按钮容器
+    const buttonsContainer = document.createElement("div");
+    buttonsContainer.id = "tabboost-popup-buttons";
+
     // 创建“在新标签页中打开”按钮
     const newTabButton = document.createElement("button");
     newTabButton.className = "tabboost-button tabboost-newtab-button";
@@ -94,10 +98,13 @@ function createPopup(url) {
     closeButton.addEventListener("click", closePopup);
     console.log("chrome-tabboost: Close button event listener added");
 
+    // 组装按钮容器
+    buttonsContainer.appendChild(newTabButton);
+    buttonsContainer.appendChild(closeButton);
+
     // 组装工具栏
     toolbar.appendChild(title);
-    toolbar.appendChild(newTabButton);
-    toolbar.appendChild(closeButton);
+    toolbar.appendChild(buttonsContainer);
 
     // 创建加载指示器
     const loader = document.createElement("div");
