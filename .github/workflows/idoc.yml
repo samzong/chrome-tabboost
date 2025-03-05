@@ -19,10 +19,10 @@ jobs:
 
       - name: Create idoc config.
         run: |
-          DESCRIPTION=$(gh repo view ${{ github.repository }} --json description -q ".description // \"\"")
           cat > idoc.yml << EOF
-          site: ${{ github.repository_name }}
-          description: $DESCRIPTION
+          site: chrome-tabboost
+          description: TabBoost is a Chrome extension that replicates commonly used features from Arc browser to enhance the Chrome user experience.
+          keywords: Chrome,Extension,Arc,TabBoost,Chrome Extension,Arc Browser,Chrome TabBoost
           favicon: icon/icon16.png
           logo: icon/icon128.png
 
