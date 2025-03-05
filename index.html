@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TabBoost samzong/chrome-tabboost</title>
+    <meta name="description" content="TabBoost 是一款 Chrome 扩展，灵感来源于我对 Arc 浏览器的深度使用。作为一名长期使用 Chrome 的用户，我很喜欢其与 Google 帐号同步的便捷体验。尽管如此，我也欣赏 Arc 浏览器中的一些独特设计，尤其是针对用">
+    <link rel="stylesheet" type="text/css" href="css/main.css?v=1.34.1">
+    <link rel="stylesheet" type="text/css" href="css/tocbot.css?v=1.34.1">
+    <link rel="stylesheet" type="text/css" href="css/media.css?v=1.34.1">
+    <link rel="stylesheet" type="text/css" href="css/sidebar.css?v=1.34.1">
+    <link rel="stylesheet" type="text/css" href="css/copy.css?v=1.34.1">
+    <link rel="stylesheet" type="text/css" href="css/demo-preview.css?v=1.34.1">
+    <script src="js/copy.js?v=1.34.1"></script>
+    <script src="js/dark-mode.js?v=1.34.1"></script>
+    <script src="js/markdown-style.js?v=1.34.1"></script>
+  </head>
+  <body id="idoctotop"><a href="#idoctotop" class="gototop">top</a>
+    <header class="header">
+      <article class="inner warpper" style="max-width:720px;"><a class="logo" href="index.html"><span class="title">samzong/chrome-tabboost</span></a>
+        <div class="content">
+          <ul class="menu">
+            <li><a href="index.html" target="" class="active">Home</a></li>
+            <li><a href="https://github.com/samzong" target="__blank" class="">About</a></li>
+          </ul>
+          <dark-mode permanent=""></dark-mode>
+        </div>
+      </article>
+    </header>
+    <div style="max-width:720px;" class="warpper-content warpper notocs">
+      <markdown-style theme-auto-switch-disabled="">
+        <h1 id="tabboost"><a aria-hidden="true" tabindex="-1" href="#tabboost" class="anchor"><span class="icon icon-link"></span></a>TabBoost</h1>
+        <p><a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a></p>
+        <h2 id="简介"><a aria-hidden="true" tabindex="-1" href="#简介" class="anchor"><span class="icon icon-link"></span></a>简介</h2>
+        <p>TabBoost 是一款 Chrome 扩展，灵感来源于我对 Arc 浏览器的深度使用。作为一名长期使用 Chrome 的用户，我很喜欢其与 Google 帐号同步的便捷体验。尽管如此，我也欣赏 Arc 浏览器中的一些独特设计，尤其是针对用户体验的细节优化。经过近两年在 Arc 中的使用，且在此期间频繁切换回 Chrome，我决定将 Arc 中最常用的功能复刻到 Chrome 上。</p>
+        <p>目前，TabBoost 的最小可用版本（MVP）已经完成，并且已经能够满足我个人的需求。虽然我并不是一个经验丰富的 JavaScript 开发者，但得益于大语言模型的支持，我顺利完成了这一项目的开发。我用了一个工作日的晚上和周六的早晨完成了这段代码。</p>
+        <p>该插件尚未经过完整测试，目前仅在我的个人设备上运行，仍有不少优化空间。未来我将持续改进，如果你有兴趣，欢迎提出 Issue 或提交 Pull Request。</p>
+        <h2 id="功能"><a aria-hidden="true" tabindex="-1" href="#功能" class="anchor"><span class="icon icon-link"></span></a>功能</h2>
+        <ul class="contains-task-list">
+          <li class="task-list-item"><input type="checkbox" checked disabled> <strong>复制当前标签页：</strong> 使用快捷键 <code>Ctrl+M</code> 快速复制当前标签页，并自动切换到新标签页。</li>
+          <li class="task-list-item"><input type="checkbox" checked disabled> <strong>复制当前标签页网址：</strong> 使用快捷键 <code>Shift+Command+C</code> 快速复制当前标签页的网址到剪贴板，并在右上角显示提示信息。</li>
+          <li class="task-list-item"><input type="checkbox" checked disabled> <strong>自定义快捷键：</strong> 您也可以在 Chrome 插件的快捷键管理中的设置自定义快捷键。</li>
+          <li class="task-list-item"><input type="checkbox" checked disabled> 支持 <code>Arc Boost</code> 的方式弹窗打开，并在有需要时才在新 Tab 打开。
+            <ul class="contains-task-list">
+              <li class="task-list-item"><input type="checkbox" checked disabled> 按住 <code>Command</code> 键点击链接时，弹窗打开链接，Arc 使用的是 <code>Shift</code> 键，这里我选择了 <code>Command</code> 键，因为我更习惯这样的操作</li>
+              <li class="task-list-item"><input type="checkbox" checked disabled> 支持使用 <code>Esc</code> 快速关闭当前弹窗</li>
+            </ul>
+          </li>
+          <li class="task-list-item"><input type="checkbox" disabled> 支持 <code>Split View Mode</code>，：支持在当前标签页中并排显示两个网页，左右分屏浏览。</li>
+        </ul>
+        <p>
+          <img src="key-shortcuts.png" alt="key-shortcuts">
+        </p>
+        <p>
+          <img src="arc-boost.png" alt="arc-boost">
+        </p>
+        <h2 id="安装"><a aria-hidden="true" tabindex="-1" href="#安装" class="anchor"><span class="icon icon-link"></span></a>安装</h2>
+        <ol>
+          <li>打开 Chrome 浏览器，访问 <code>chrome://extensions/</code>。</li>
+          <li>打开右上角的“开发者模式”开关。</li>
+          <li>点击“加载已解压的扩展程序”按钮。</li>
+          <li>选择 <code>TabBoost</code> 文件夹。</li>
+        </ol>
+        <h2 id="使用"><a aria-hidden="true" tabindex="-1" href="#使用" class="anchor"><span class="icon icon-link"></span></a>使用</h2>
+        <p>安装完成后，您可以使用以下快捷键：</p>
+        <ul>
+          <li><code>Ctrl+M</code>：复制当前标签页</li>
+          <li><code>Shift+Command+C</code>：复制当前标签页网址</li>
+          <li><code>Command</code> + 点击链接：弹窗打开链接</li>
+        </ul>
+        <p>您也可以在 Chrome 插件的快捷键管理中的设置自定义快捷键。</p>
+        <h2 id="快捷键设置"><a aria-hidden="true" tabindex="-1" href="#快捷键设置" class="anchor"><span class="icon icon-link"></span></a>快捷键设置</h2>
+        <ol>
+          <li>在 Chrome 浏览器的工具栏中找到 TabBoost 图标，右键单击并选择“选项”。</li>
+          <li>在设置页面中，您可以自定义每个功能的快捷键。</li>
+        </ol>
+        <h2 id="贡献"><a aria-hidden="true" tabindex="-1" href="#贡献" class="anchor"><span class="icon icon-link"></span></a>贡献</h2>
+        <p>欢迎贡献代码！如果您有任何建议或发现任何问题，请提交 Issue 或 Pull Request。</p>
+        <h2 id="许可证"><a aria-hidden="true" tabindex="-1" href="#许可证" class="anchor"><span class="icon icon-link"></span></a>许可证</h2>
+        <p>本项目采用 <a href="LICENSE" src="LICENSE">MIT 许可证</a>。</p>
+      </markdown-style>
+    </div>
+    <script src="js/demo-preview.js?v=1.34.1"></script>
+    <div class="footer warpper" style="max-width:720px;">Copyright © 2025 <a href="https://github.com/samzong" target="_blank">samzong</a><br></div>
+    <script src="js/tocbot.js?v=1.34.1"></script>
+  </body>
+</html>
