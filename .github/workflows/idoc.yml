@@ -19,13 +19,14 @@ jobs:
 
       - name: Create idoc config.
         run: |
+          DESCRIPTION=$(gh repo view ${{ github.repository }} --json description -q ".description // \"\"")
           cat > idoc.yml << EOF
-          site: ${{ github.repository }}
-          description: ${{ github.repository_description }}
+          site: ${{ github.repository_name }}
+          description: $DESCRIPTION
           favicon: icon/icon16.png
           logo: icon/icon128.png
 
-          openSource: ${{ github.repository_url }}
+          openSource: ${{ github.server_url }}/${{ github.repository }}
 
           tocs: false
 
