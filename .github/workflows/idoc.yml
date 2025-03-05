@@ -1,0 +1,55 @@
+# 📖 Simple document generation tool! Dependence Node.js run.
+# https://github.com/jaywcjlove/idoc
+
+name: idoc
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Create idoc config.
+        run: |
+          cat > idoc.yml << EOF
+          site: ${{ github.repository }}
+          description: ${{ github.repository_description }}
+          favicon: icon/icon16.png
+          logo: icon/icon128.png
+
+          openSource: ${{ github.repository_url }}
+
+          tocs: false
+
+          element:
+            wrapper: style=max-width:720px;
+
+          menus:
+            Home: index.html
+            About:
+              url: https://github.com/samzong
+              target: __blank
+
+          cacheFileStat: true
+
+          footer: |
+            Copyright © {{idocYear}} <a href="https://github.com/samzong" target="_blank">samzong</a><br />
+          EOF
+
+      - run: npm install idoc@1 -g
+      - run: idoc
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v4
+        if: github.ref == 'refs/heads/main'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
