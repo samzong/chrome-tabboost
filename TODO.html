@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>chrome-tabboost</title>
+    <meta name="description" content="作为项目的持续改进计划，以下是一系列优化建议，将逐步实施：">
+    <meta name="keywords" content="Chrome,Extension,Arc,TabBoost,Chrome Extension,Arc Browser,Chrome TabBoost">
+    <link rel="stylesheet" type="text/css" href="css/main.css?v=1.34.1">
+    <link rel="stylesheet" type="text/css" href="css/tocbot.css?v=1.34.1">
+    <link rel="stylesheet" type="text/css" href="css/media.css?v=1.34.1">
+    <link rel="stylesheet" type="text/css" href="css/sidebar.css?v=1.34.1">
+    <link rel="stylesheet" type="text/css" href="css/copy.css?v=1.34.1">
+    <link rel="stylesheet" type="text/css" href="css/demo-preview.css?v=1.34.1">
+    <script src="js/copy.js?v=1.34.1"></script>
+    <script src="js/dark-mode.js?v=1.34.1"></script>
+    <script src="js/markdown-style.js?v=1.34.1"></script>
+  </head>
+  <body id="idoctotop"><a href="#idoctotop" class="gototop">top</a>
+    <header class="header">
+      <article class="inner warpper" style="max-width:720px;"><a class="logo" href="index.html"><span class="title">chrome-tabboost</span></a>
+        <div class="content">
+          <ul class="menu">
+            <li><a href="index.html" target="" class="">Home</a></li>
+            <li><a href="https://github.com/samzong" target="__blank" class="">About</a></li>
+          </ul><a href="https://github.com/samzong/chrome-tabboost" target="_blank" rel="noopener noreferrer" title="Github" name="Github" class="github"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+            </svg></a>
+          <dark-mode permanent=""></dark-mode>
+        </div>
+      </article>
+    </header>
+    <div style="max-width:720px;" class="warpper-content warpper notocs">
+      <markdown-style theme-auto-switch-disabled="">
+        <h2 id="优化计划-todo"><a aria-hidden="true" tabindex="-1" href="#优化计划-todo" class="anchor"><span class="icon icon-link"></span></a>优化计划 (TODO)</h2>
+        <p>作为项目的持续改进计划，以下是一系列优化建议，将逐步实施：</p>
+        <h3 id="代码结构与模块化"><a aria-hidden="true" tabindex="-1" href="#代码结构与模块化" class="anchor"><span class="icon icon-link"></span></a>代码结构与模块化</h3>
+        <ul class="contains-task-list">
+          <li class="task-list-item"><input type="checkbox" disabled> 重构重复代码，将共享功能统一到 utils.js 中</li>
+          <li class="task-list-item"><input type="checkbox" disabled> 采用 ES 模块标准化导入/导出方式</li>
+          <li class="task-list-item"><input type="checkbox" disabled> 引入构建工具（如 webpack/vite）优化产物大小和加载性能</li>
+          <li class="task-list-item"><input type="checkbox" disabled> 实现更严格的目录结构，将 CSS 移到单独的样式目录</li>
+          <li class="task-list-item"><input type="checkbox" disabled> 考虑使用 TypeScript 增强类型安全</li>
+        </ul>
+        <h3 id="性能优化"><a aria-hidden="true" tabindex="-1" href="#性能优化" class="anchor"><span class="icon icon-link"></span></a>性能优化</h3>
+        <ul class="contains-task-list">
+          <li class="task-list-item"><input type="checkbox" disabled> 减少 DOM 操作，优化弹窗创建过程</li>
+          <li class="task-list-item"><input type="checkbox" disabled> 使用防抖/节流优化事件处理器</li>
+          <li class="task-list-item"><input type="checkbox" disabled> 优化 CSS 选择器，减少重排/重绘</li>
+          <li class="task-list-item"><input type="checkbox" disabled> 实现资源懒加载策略</li>
+          <li class="task-list-item"><input type="checkbox" disabled> 审查并移除开发调试用的 console.log</li>
+        </ul>
+        <h3 id="错误处理与健壮性"><a aria-hidden="true" tabindex="-1" href="#错误处理与健壮性" class="anchor"><span class="icon icon-link"></span></a>错误处理与健壮性</h3>
+        <ul class="contains-task-list">
+          <li class="task-list-item"><input type="checkbox" disabled> 实现完整的错误边界处理</li>
+          <li class="task-list-item"><input type="checkbox" disabled> 增强跨域处理策略，优化 iframe 加载失败体验</li>
+          <li class="task-list-item"><input type="checkbox" disabled> 添加全局错误捕获机制</li>
+          <li class="task-list-item"><input type="checkbox" disabled> 改进网络请求的超时和重试机制</li>
+          <li class="task-list-item"><input type="checkbox" disabled> 实现更友好的错误提示界面</li>
+        </ul>
+        <h3 id="用户体验改进"><a aria-hidden="true" tabindex="-1" href="#用户体验改进" class="anchor"><span class="icon icon-link"></span></a>用户体验改进</h3>
+        <ul class="contains-task-list">
+          <li class="task-list-item"><input type="checkbox" disabled> 添加国际化支持（i18n）</li>
+          <li class="task-list-item"><input type="checkbox" disabled> 优化键盘导航体验</li>
+          <li class="task-list-item"><input type="checkbox" disabled> 优化暗黑模式支持</li>
+          <li class="task-list-item"><input type="checkbox" checked disabled> 完善"Split View Mode"（分屏模式）功能</li>
+          <li class="task-list-item"><input type="checkbox" disabled> 增加用户自定义主题选项</li>
+        </ul>
+        <h3 id="测试与质量保证"><a aria-hidden="true" tabindex="-1" href="#测试与质量保证" class="anchor"><span class="icon icon-link"></span></a>测试与质量保证</h3>
+        <ul class="contains-task-list">
+          <li class="task-list-item"><input type="checkbox" disabled> 添加单元测试框架（Jest/Mocha）</li>
+          <li class="task-list-item"><input type="checkbox" disabled> 实现端到端测试（Cypress/Playwright）</li>
+          <li class="task-list-item"><input type="checkbox" disabled> 编写集成测试验证核心功能</li>
+          <li class="task-list-item"><input type="checkbox" disabled> 设置 CI/CD 流程自动化测试与部署</li>
+          <li class="task-list-item"><input type="checkbox" disabled> 添加代码质量工具（ESLint/Prettier）</li>
+        </ul>
+        <h3 id="安全性增强"><a aria-hidden="true" tabindex="-1" href="#安全性增强" class="anchor"><span class="icon icon-link"></span></a>安全性增强</h3>
+        <ul class="contains-task-list">
+          <li class="task-list-item"><input type="checkbox" disabled> 审查权限使用，遵循最小权限原则</li>
+          <li class="task-list-item"><input type="checkbox" disabled> 加强数据处理的安全性</li>
+          <li class="task-list-item"><input type="checkbox" disabled> 实现 CSP (Content Security Policy) 规则</li>
+          <li class="task-list-item"><input type="checkbox" disabled> 优化隐私保护措施</li>
+        </ul>
+        <h3 id="文档完善"><a aria-hidden="true" tabindex="-1" href="#文档完善" class="anchor"><span class="icon icon-link"></span></a>文档完善</h3>
+        <ul class="contains-task-list">
+          <li class="task-list-item"><input type="checkbox" disabled> 编写详细的 API 文档</li>
+          <li class="task-list-item"><input type="checkbox" disabled> 完善代码注释，使用标准的 JSDoc 格式</li>
+          <li class="task-list-item"><input type="checkbox" disabled> 制作功能演示视频/GIF</li>
+          <li class="task-list-item"><input type="checkbox" disabled> 添加常见问题解答（FAQ）部分</li>
+          <li class="task-list-item"><input type="checkbox" disabled> 创建贡献指南，方便社区参与</li>
+        </ul>
+      </markdown-style>
+    </div>
+    <script src="js/demo-preview.js?v=1.34.1"></script>
+    <div class="footer warpper" style="max-width:720px;">Copyright © 2025 <a href="https://github.com/samzong" target="_blank">samzong</a><br></div>
+    <script src="js/tocbot.js?v=1.34.1"></script>
+  </body>
+</html>
