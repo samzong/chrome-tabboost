@@ -10,3 +10,7 @@ node_modules/
 *.bak
 
 # 你还可以根据需要添加其他需要忽略的文件或文件夹
+
+# 忽略 build 和 dist 文件夹
+build/
+dist/
