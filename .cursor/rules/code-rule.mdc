@@ -1,0 +1,91 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+
+
+
+# Chrome Extension (JavaScript/TypeScript)
+
+# Chrome Extension Development Guide (JavaScript/TypeScript)
+
+## Code Style and Structure
+- **Concise and Technical Code**: Write JavaScript/TypeScript code that is concise and technical, with accurate examples.
+- **Modern JavaScript Features**: Utilize modern JavaScript features and best practices.
+- **Functional Programming**: Prefer functional programming patterns; minimize the use of classes.
+- **Descriptive Variable Names**: Use descriptive variable names (e.g., `isExtensionEnabled`, `hasPermission`).
+- **File Structure**: Organize files as follows:
+  - `manifest.json`
+  - Background scripts
+  - Content scripts
+  - Popup scripts
+  - Options page
+
+## Naming Conventions
+- **File Names**: Use lowercase with underscores (e.g., `content_script.js`, `background_worker.js`).
+- **Function and Variable Names**: Use camelCase (e.g., `fetchUserData`).
+- **Class Names**: Use PascalCase (e.g., `UserProfile`).
+
+## TypeScript Usage
+- **Type Safety**: Encourage TypeScript for type safety and better developer experience.
+- **Interfaces**: Use interfaces for defining message structures and API responses.
+- **Union Types and Type Guards**: Leverage TypeScript's union types and type guards for runtime checks.
+
+## Extension Architecture
+- **Separation of Concerns**: Implement a clear separation of concerns between different extension components.
+- **Message Passing**: Use message passing for communication between different parts of the extension.
+- **State Management**: Implement proper state management using `chrome.storage` API.
+
+## Manifest and Permissions
+- **Manifest Version**: Use the latest manifest version (v3) unless there's a specific need for v2.
+- **Least Privilege**: Follow the principle of least privilege for permissions.
+- **Optional Permissions**: Implement optional permissions where possible.
+
+## Security and Privacy
+- **Content Security Policy (CSP)**: Implement CSP in `manifest.json`.
+- **HTTPS**: Use HTTPS for all network requests.
+- **Input Sanitization**: Sanitize user inputs and validate data from external sources.
+- **Error Handling**: Implement proper error handling and logging.
+
+## UI and Styling
+- **Responsive Design**: Create responsive designs for popup and options pages.
+- **CSS Grid/Flexbox**: Use CSS Grid or Flexbox for layouts.
+- **Consistent Styling**: Implement consistent styling across all extension UI elements.
+
+## Performance Optimization
+- **Resource Usage**: Minimize resource usage in background scripts.
+- **Event Pages**: Use event pages instead of persistent background pages when possible.
+- **Lazy Loading**: Implement lazy loading for non-critical extension features.
+- **Content Scripts**: Optimize content scripts to minimize impact on web page performance.
+
+## Browser API Usage
+- **Chrome APIs**: Utilize `chrome.*` APIs effectively (e.g., `chrome.tabs`, `chrome.storage`, `chrome.runtime`).
+- **Error Handling**: Implement proper error handling for all API calls.
+- **Scheduling Tasks**: Use `chrome.alarms` for scheduling tasks instead of `setInterval`.
+
+## Cross-browser Compatibility
+- **WebExtensions API**: Use WebExtensions API for cross-browser support where possible.
+- **Graceful Degradation**: Implement graceful degradation for browser-specific features.
+
+## Testing and Debugging
+- **Chrome DevTools**: Utilize Chrome DevTools for debugging.
+- **Unit Tests**: Implement unit tests for core extension functionality.
+- **Extension Loading**: Use Chrome's built-in extension loading for testing during development.
+
+## Context-Aware Development
+- **Project Context**: Always consider the whole project context when providing suggestions or generating code.
+- **Avoid Duplication**: Avoid duplicating existing functionality or creating conflicting implementations.
+- **Seamless Integration**: Ensure that new code integrates seamlessly with the existing project structure and architecture.
+- **Review Current State**: Before adding new features or modifying existing ones, review the current project state to maintain consistency and avoid redundancy.
+- **Prevent Contradictions**: When answering questions or providing solutions, take into account previously discussed or implemented features to prevent contradictions or repetitions.
+
+## Code Output
+- **Complete File Content**: When providing code, always output the entire file content, not just new or modified parts.
+- **Imports and Declarations**: Include all necessary imports, declarations, and surrounding code to ensure the file is complete and functional.
+- **Comments and Explanations**: Provide comments or explanations for significant changes or additions within the file.
+- **Large Files**: If the file is too large to reasonably include in full, provide the most relevant complete section and clearly indicate where it fits in the larger file structure.
+
+## Follow Best Practices
+- **Chrome Extension Documentation**: Always refer to the official Chrome Extension documentation for best practices, security guidelines, and API usage.
+
