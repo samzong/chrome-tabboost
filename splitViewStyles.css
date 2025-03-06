@@ -1,0 +1,248 @@
+/* splitViewStyles.css - 分屏模式样式 */
+
+/* 分屏容器样式 */
+#tabboost-split-view-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  background-color: #fff;
+  display: flex;
+  flex-wrap: wrap;
+  overflow: hidden;
+}
+
+/* 顶部控制栏样式 */
+#tabboost-split-controls {
+  width: 100%;
+  height: 40px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0 15px;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+/* 关闭按钮样式 */
+#tabboost-split-close {
+  padding: 5px 10px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+#tabboost-split-close:hover {
+  background-color: #d32f2f;
+}
+
+/* 左侧视图样式 */
+#tabboost-split-left {
+  width: 50%;
+  height: calc(100% - 40px); /* 减去顶部控制栏高度 */
+  overflow: hidden;
+  position: relative;
+  border-right: 1px solid #ddd;
+}
+
+/* 右侧视图样式 */
+#tabboost-split-right {
+  width: 50%;
+  height: calc(100% - 40px); /* 减去顶部控制栏高度 */
+  overflow: hidden;
+  position: relative;
+}
+
+/* 分隔线样式 */
+#tabboost-split-divider {
+  position: absolute;
+  top: 40px; /* 从控制栏下方开始 */
+  left: 50%;
+  width: 6px;
+  height: calc(100% - 40px);
+  background-color: #ddd;
+  z-index: 9;
+  transform: translateX(-50%);
+}
+
+#tabboost-split-divider:hover,
+#tabboost-split-divider:active {
+  background-color: #ddd;
+}
+
+/* iframe 样式 */
+#tabboost-left-iframe,
+#tabboost-right-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  overflow: hidden;
+}
+
+/* iframe错误提示样式 */
+.tabboost-iframe-error {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.9);
+  display: none; /* 默认隐藏 */
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.tabboost-error-content {
+  text-align: center;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  max-width: 80%;
+}
+
+.tabboost-error-content h3 {
+  margin-top: 0;
+  color: #f44336;
+}
+
+.tabboost-error-content p {
+  margin-bottom: 20px;
+  color: #666;
+}
+
+.tabboost-open-in-tab {
+  padding: 8px 16px;
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.tabboost-open-in-tab:hover {
+  background-color: #0b7dda;
+}
+
+/* 通用错误提示 */
+.tabboost-error {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  background-color: white;
+  border: 2px solid #f44336;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  font-size: 16px;
+  color: #f44336;
+  text-align: center;
+  z-index: 100000;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  #tabboost-split-left,
+  #tabboost-split-right {
+    width: 100%;
+    height: 50%;
+  }
+  
+  #tabboost-split-left {
+    border-right: none;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  #tabboost-split-divider {
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    cursor: row-resize;
+    transform: translateY(-50%);
+  }
+}
+
+/* 添加动画效果 */
+#tabboost-split-left,
+#tabboost-split-right {
+  transition: width 0.3s ease;
+}
+
+/* 添加分屏指示器 */
+#tabboost-split-left::before,
+#tabboost-split-right::before {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 30px;
+  height: 30px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  z-index: 8;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+
+#tabboost-split-left::before {
+  content: '1';
+}
+
+#tabboost-split-right::before {
+  content: '2';
+}
+
+#tabboost-split-left:hover::before,
+#tabboost-split-right:hover::before {
+  opacity: 0;
+}
+
+/* 分屏中单独区域的关闭按钮 */
+.tabboost-view-close {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 30px;
+  height: 30px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 10001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.3;
+  transition: opacity 0.3s, background-color 0.3s;
+}
+
+.tabboost-view-close:hover {
+  opacity: 1;
+  background-color: rgba(255, 0, 0, 0.8);
+}
+
+/* 左侧和右侧分屏区域需要是relative定位，以便关闭按钮能够正确定位 */
+#tabboost-split-left,
+#tabboost-split-right {
+  position: relative;
+} 

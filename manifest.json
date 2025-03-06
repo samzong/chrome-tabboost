@@ -11,11 +11,14 @@
     "clipboardWrite",
     "scripting"
   ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
       "js": ["contentScript.js"],
-      "css": ["popupStyles.css"],
+      "css": ["popupStyles.css", "splitViewStyles.css"],
       "run_at": "document_start"
     }
   ],
@@ -54,8 +57,21 @@
       },
       "description": "复制当前标签页网址"
     },
+    "toggle-split-view": {
+      "suggested_key": {
+        "default": "Alt+S",
+        "mac": "Shift+Command+S"
+      },
+      "description": "切换分屏模式"
+    },
     "open-options": {
       "description": "打开插件配置页"
     }
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["splitViewStyles.css"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }

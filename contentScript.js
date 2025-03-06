@@ -19,6 +19,35 @@ document.addEventListener(
       if (event.metaKey) {
         console.log("chrome-tabboost: Command key is pressed");
 
+        // 检查是否同时按下了 Shift 键 (用于分屏模式)
+        if (event.shiftKey) {
+          console.log("chrome-tabboost: Shift key is also pressed - Split View mode");
+          
+          // 检查点击的元素是否是链接
+          let target = event.target;
+          while (target && target.tagName !== "A") {
+            target = target.parentElement;
+          }
+          
+          if (target && target.tagName === "A" && target.href) {
+            console.log(`chrome-tabboost: Intercepted link for split view: ${target.href}`);
+            event.preventDefault(); // 阻止默认行为
+            event.stopPropagation(); // 阻止事件冒泡
+            
+            // 发送消息到 background 处理分屏
+            chrome.runtime.sendMessage({
+              action: "openInSplitView",
+              url: target.href
+            }, function(response) {
+              // 处理响应
+              if (response && response.status === 'error') {
+                console.error("chrome-tabboost: Split view error:", response.message);
+              }
+            });
+          }
+          return;
+        }
+
         // 检查点击的元素是否是链接
         let target = event.target;
         while (target && target.tagName !== "A") {
@@ -37,6 +66,17 @@ document.addEventListener(
         }
       }
     } catch (error) {
+      // 检查是否是扩展上下文失效错误
+      if (error.message && error.message.includes("Extension context invalidated")) {
+        console.warn("chrome-tabboost: 扩展上下文已失效，请刷新页面或重新加载扩展");
+        // 可以尝试移除现有监听器
+        try {
+          document.removeEventListener("click", arguments.callee, true);
+        } catch (e) {
+          // 忽略移除监听器时可能出现的错误
+        }
+        return;
+      }
       console.error("chrome-tabboost: Error in click handler:", error);
     }
   },
@@ -77,7 +117,7 @@ function createPopup(url) {
     const buttonsContainer = document.createElement("div");
     buttonsContainer.id = "tabboost-popup-buttons";
 
-    // 创建“在新标签页中打开”按钮
+    // 创建"在新标签页中打开"按钮
     const newTabButton = document.createElement("button");
     newTabButton.className = "tabboost-button tabboost-newtab-button";
     newTabButton.innerText = "在新标签页中打开";
@@ -217,3 +257,21 @@ function createPopup(url) {
     console.error("chrome-tabboost: Error in createPopup:", error);
   }
 }
+
+// 监听来自 background 的消息
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  console.log("chrome-tabboost: Message received in content script:", request);
+  
+  if (request.action === "openRightSplitView" && request.url) {
+    // 更新右侧分屏内容
+    const rightIframe = document.getElementById('tabboost-right-iframe');
+    if (rightIframe) {
+      rightIframe.src = request.url;
+      sendResponse({ status: "Right split view updated" });
+    } else {
+      sendResponse({ status: "Split view not active" });
+    }
+  }
+  
+  return true; // 保持消息通道开启，以支持异步响应
+});

@@ -26,27 +26,71 @@
         border: none;
         cursor: pointer;
       }
+      .section {
+        margin-top: 20px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+      }
+      .section-title {
+        margin-top: 0;
+        margin-bottom: 15px;
+        color: #333;
+      }
     </style>
   </head>
   <body>
     <h2>TabBoost 设置</h2>
 
-    <label for="duplicateTabShortcut">复制标签页快捷键:</label>
-    <input type="text" id="duplicateTabShortcut" placeholder="例如：Ctrl+M" />
+    <div class="section">
+      <h3 class="section-title">快捷键设置</h3>
+      
+      <label for="duplicateTabShortcut">复制标签页快捷键:</label>
+      <input type="text" id="duplicateTabShortcut" placeholder="例如：Ctrl+M" />
+  
+      <label for="copyUrlShortcut">复制网址快捷键:</label>
+      <input
+        type="text"
+        id="copyUrlShortcut"
+        placeholder="例如：Shift+Alt+C"
+      />
 
-    <label for="copyUrlShortcut">复制网址快捷键:</label>
-    <input
-      type="text"
-      id="copyUrlShortcut"
-      placeholder="例如：Shift+Alt+C"
-    />
+      <label for="splitViewShortcut">分屏模式快捷键:</label>
+      <input
+        type="text"
+        id="splitViewShortcut"
+        placeholder="例如：Shift+Command+S"
+      />
+    </div>
     
-    <label for="defaultAction">默认操作:</label>
-    <select id="defaultAction">
-        <option value="copy-url">复制当前标签页网址</option>
-        <option value="duplicate-tab">复制当前标签页</option>
-        <option value="open-options">打开插件配置页</option>
-    </select>
+    <div class="section">
+      <h3 class="section-title">通用设置</h3>
+      
+      <label for="defaultAction">点击扩展图标默认操作:</label>
+      <select id="defaultAction">
+          <option value="copy-url">复制当前标签页网址</option>
+          <option value="duplicate-tab">复制当前标签页</option>
+          <option value="toggle-split-view">切换分屏模式</option>
+          <option value="open-options">打开插件配置页</option>
+      </select>
+    </div>
+
+    <div class="section">
+      <h3 class="section-title">分屏模式设置</h3>
+      
+      <label>
+        <input type="checkbox" id="splitViewEnabled" />
+        启用分屏模式
+      </label>
+      
+      <p>分屏模式使用说明:</p>
+      <ul>
+        <li>使用快捷键 <code>Shift+Command+S</code> 激活分屏模式</li>
+        <li>在分屏模式下，按住 <code>Command+Shift</code> 并点击链接，会在右侧打开</li>
+        <li>拖动中间分隔线可以调整左右区域的比例</li>
+      </ul>
+    </div>
 
     <button id="saveButton">保存</button>
 

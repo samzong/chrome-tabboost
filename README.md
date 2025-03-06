@@ -18,7 +18,7 @@ TabBoost 是一款 Chrome 扩展，灵感来源于我对 Arc 浏览器的深度�
 - [x] 支持 `Arc Boost` 的方式弹窗打开，并在有需要时才在新 Tab 打开。
   - [x] 按住 `Command` 键点击链接时，弹窗打开链接，Arc 使用的是 `Shift` 键，这里我选择了 `Command` 键，因为我更习惯这样的操作
   - [x] 支持使用 `Esc` 快速关闭当前弹窗
-- [ ] 支持 `Split View Mode`，：支持在当前标签页中并排显示两个网页，左右分屏浏览。
+- [x] 支持 `Split View Mode`，：按住 `Shift+Command`键点击链接时，支持在当前标签页中并排显示两个网页，左右分屏浏览。
 
 ![key-shortcuts](docs/key-shortcuts.png)
 
