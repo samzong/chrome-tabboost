@@ -132,54 +132,60 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 // 处理分屏请求
 async function handleSplitViewRequest(url) {
-  // 检查URL是否可以在iframe中加载
-  if (!canLoadInIframe(url)) {
-    console.log(`URL ${url} 不允许在iframe中加载，将在新标签页中打开`);
-    chrome.tabs.create({ url });
-    return { 
-      status: "opened_in_new_tab", 
-      message: "此网站不允许在分屏中加载，已在新标签页中打开" 
-    };
-  }
-  
-  const currentTab = await getCurrentTab();
-  if (!currentTab) {
-    throw new Error("无法获取当前标签页");
-  }
-
   try {
-    // 检查分屏是否已激活
-    const [isActive] = await chrome.scripting.executeScript({
-      target: { tabId: currentTab.id },
-      func: () => document.getElementById('tabboost-split-view-container') !== null
-    });
+    // 检查URL是否可以在iframe中加载
+    const canLoad = await canLoadInIframe(url);
+    if (!canLoad) {
+      console.log(`URL ${url} 不允许在iframe中加载，将在新标签页中打开`);
+      chrome.tabs.create({ url });
+      return { 
+        status: "opened_in_new_tab", 
+        message: "此网站不允许在分屏中加载，已在新标签页中打开" 
+      };
+    }
     
-    if (isActive.result) {
-      // 如果分屏已激活，则只更新右侧内容
-      await updateRightView(url);
-      return { status: "Right split view updated" };
-    } else {
-      // 否则创建新的分屏视图
-      await createSplitView();
-      // 稍等片刻确保分屏视图已创建
-      await new Promise(resolve => setTimeout(resolve, 300));
-      // 然后更新右侧内容
-      await updateRightView(url);
-      return { status: "Split view created and right view updated" };
+    const currentTab = await getCurrentTab();
+    if (!currentTab) {
+      throw new Error("无法获取当前标签页");
+    }
+
+    try {
+      // 检查分屏是否已激活
+      const [isActive] = await chrome.scripting.executeScript({
+        target: { tabId: currentTab.id },
+        func: () => document.getElementById('tabboost-split-view-container') !== null
+      });
+      
+      if (isActive.result) {
+        // 如果分屏已激活，则只更新右侧内容
+        await updateRightView(url);
+        return { status: "Right split view updated" };
+      } else {
+        // 否则创建新的分屏视图
+        await createSplitView();
+        // 稍等片刻确保分屏视图已创建
+        await new Promise(resolve => setTimeout(resolve, 300));
+        // 然后更新右侧内容
+        await updateRightView(url);
+        return { status: "Split view created and right view updated" };
+      }
+    } catch (error) {
+      console.error("处理分屏请求时发生错误:", error);
+      
+      // 在捕获到错误时尝试恢复
+      try {
+        // 如果分屏视图创建失败，尝试关闭现有分屏视图
+        await closeSplitView();
+      } catch (e) {
+        // 如果关闭也失败，忽略并继续
+        console.warn("关闭分屏视图失败:", e);
+      }
+      
+      // 重新抛出错误，让上层处理
+      throw error;
     }
   } catch (error) {
     console.error("处理分屏请求时发生错误:", error);
-    
-    // 在捕获到错误时尝试恢复
-    try {
-      // 如果分屏视图创建失败，尝试关闭现有分屏视图
-      await closeSplitView();
-    } catch (e) {
-      // 如果关闭也失败，忽略并继续
-      console.warn("关闭分屏视图失败:", e);
-    }
-    
-    // 重新抛出错误，让上层处理
     throw error;
   }
 }

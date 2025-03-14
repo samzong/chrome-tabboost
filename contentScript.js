@@ -94,6 +94,52 @@ function createPopup(url) {
       return;
     }
 
+    // 检查URL是否在忽略列表中
+    chrome.storage.sync.get(['iframeIgnoreEnabled', 'iframeIgnoreList'], (result) => {
+      try {
+        // 如果功能未启用，直接创建弹窗
+        if (!result.iframeIgnoreEnabled) {
+          createPopupDOM(url);
+          return;
+        }
+        
+        // 如果忽略列表不存在或为空，直接创建弹窗
+        if (!result.iframeIgnoreList || !Array.isArray(result.iframeIgnoreList) || result.iframeIgnoreList.length === 0) {
+          createPopupDOM(url);
+          return;
+        }
+        
+        // 解析URL获取域名
+        const urlObj = new URL(url);
+        const hostname = urlObj.hostname;
+        
+        // 检查域名是否在忽略列表中
+        const isIgnored = result.iframeIgnoreList.some(domain => hostname.includes(domain));
+        
+        if (isIgnored) {
+          // 如果在忽略列表中，直接在新标签页中打开
+          console.log(`chrome-tabboost: URL ${url} is in ignore list, opening in new tab`);
+          window.open(url, "_blank");
+        } else {
+          // 否则创建弹窗
+          createPopupDOM(url);
+        }
+      } catch (error) {
+        console.error("chrome-tabboost: Error checking ignore list:", error);
+        // 出错时默认创建弹窗
+        createPopupDOM(url);
+      }
+    });
+  } catch (error) {
+    console.error("chrome-tabboost: Error in createPopup:", error);
+    // 出错时在新标签页中打开
+    window.open(url, "_blank");
+  }
+}
+
+// 函数：创建弹窗DOM
+function createPopupDOM(url) {
+  try {
     // 创建弹窗覆盖层
     const popupOverlay = document.createElement("div");
     popupOverlay.id = "tabboost-popup-overlay";
@@ -157,46 +203,124 @@ function createPopup(url) {
     errorMsg.innerHTML = `
       <p>无法在弹窗中加载此网站。</p>
       <button id="tabboost-open-newtab">在新标签页中打开</button>
+      <button id="tabboost-add-to-ignore">添加到忽略列表</button>
     `;
 
     // 创建 iframe 以加载链接内容
     const iframe = document.createElement("iframe");
     iframe.id = "tabboost-popup-iframe";
+    
+    // 标记是否已处理过加载失败
+    let hasHandledFailure = false;
+    
+    // 创建一个函数来处理加载失败
+    const handleLoadFailure = (reason) => {
+      if (hasHandledFailure) return; // 防止重复处理
+      hasHandledFailure = true;
+      
+      console.log(`chrome-tabboost: Iframe load failed: ${reason}`);
+      loader.style.display = "none";
+      errorMsg.classList.add("show");
+      
+      // 检查是否需要自动添加到忽略列表
+      chrome.storage.sync.get(['autoAddToIgnoreList'], (result) => {
+        if (result.autoAddToIgnoreList) {
+          try {
+            // 解析URL获取域名
+            const urlObj = new URL(url);
+            const hostname = urlObj.hostname;
+            
+            // 添加到忽略列表
+            chrome.storage.sync.get(['iframeIgnoreList'], (result) => {
+              let ignoreList = result.iframeIgnoreList || [];
+              
+              // 确保ignoreList是数组
+              if (!Array.isArray(ignoreList)) {
+                ignoreList = [];
+              }
+              
+              // 检查域名是否已在列表中
+              if (!ignoreList.includes(hostname)) {
+                ignoreList.push(hostname);
+                
+                // 保存更新后的列表
+                chrome.storage.sync.set({ iframeIgnoreList: ignoreList }, () => {
+                  console.log(`chrome-tabboost: Automatically added ${hostname} to ignore list`);
+                  
+                  // 显示通知
+                  const autoAddNotice = document.createElement('p');
+                  autoAddNotice.className = 'tabboost-auto-add-notice';
+                  autoAddNotice.textContent = `已自动将 ${hostname} 添加到忽略列表，下次将直接在新标签页中打开`;
+                  errorMsg.appendChild(autoAddNotice);
+                });
+              }
+            });
+          } catch (error) {
+            console.error("chrome-tabboost: Error auto-adding to ignore list:", error);
+          }
+        }
+      });
+    };
+    
+    // 监听 iframe 加载错误
+    iframe.onerror = () => {
+      handleLoadFailure("iframe error event");
+    };
+
+    // 监听 iframe 加载完成
+    iframe.onload = () => {
+      try {
+        clearTimeout(loadTimeout);
+        console.log("chrome-tabboost: Iframe content loaded");
+        
+        // 检查iframe是否真的加载成功
+        if (iframe.contentDocument === null || iframe.contentWindow === null) {
+          // 可能是跨域限制或其他问题
+          handleLoadFailure("无法访问iframe内容");
+          return;
+        }
+        
+        // 检查是否加载了错误页面
+        const iframeContent = iframe.contentDocument.documentElement.innerHTML || '';
+        if (iframeContent.includes('refused to connect') || 
+            iframeContent.includes('拒绝连接') ||
+            iframeContent.includes('ERR_CONNECTION_REFUSED')) {
+          handleLoadFailure("网站拒绝连接");
+          return;
+        }
+        
+        // 加载成功，隐藏加载指示器
+        loader.style.display = "none";
+
+        // 更新标题为 iframe 中的页面标题
+        try {
+          const iframeTitle = iframe.contentDocument.title;
+          title.innerText = iframeTitle || "加载页面";
+        } catch (e) {
+          console.log(
+            "chrome-tabboost: Unable to access iframe content title due to CORS restrictions"
+          );
+          title.innerText = "加载页面";
+        }
+      } catch (e) {
+        console.warn("chrome-tabboost: Error handling iframe load event:", e);
+        
+        // 如果是跨域错误，我们假设加载成功了
+        // 因为跨域限制只是阻止我们访问内容，但iframe可能已经正确加载
+        loader.style.display = "none";
+        title.innerText = "加载页面";
+      }
+    };
+
+    // 设置iframe源
     iframe.src = url;
     console.log("chrome-tabboost: Iframe created and URL set");
 
     // 设置超时（例如 5 秒）
     const loadTimeout = setTimeout(() => {
       console.log("chrome-tabboost: Iframe load timed out");
-      loader.style.display = "none";
-      errorMsg.classList.add("show");
+      handleLoadFailure("加载超时");
     }, 5000);
-
-    // 监听 iframe 加载完成
-    iframe.addEventListener("load", () => {
-      clearTimeout(loadTimeout);
-      console.log("chrome-tabboost: Iframe content loaded");
-      loader.style.display = "none";
-
-      // 更新标题为 iframe 中的页面标题
-      try {
-        const iframeTitle = iframe.contentDocument.title;
-        title.innerText = iframeTitle || "加载页面";
-      } catch (e) {
-        console.log(
-          "chrome-tabboost: Unable to access iframe content title due to CORS restrictions"
-        );
-        title.innerText = "加载页面";
-      }
-    });
-
-    // 监听 iframe 加载错误
-    iframe.addEventListener("error", () => {
-      clearTimeout(loadTimeout);
-      console.log("chrome-tabboost: Iframe failed to load content");
-      loader.innerText = "加载失败";
-      errorMsg.classList.add("show");
-    });
 
     // 组装弹窗内容
     popupContent.appendChild(toolbar);
@@ -235,9 +359,90 @@ function createPopup(url) {
       closePopup();
     });
 
+    // 监听添加到忽略列表按钮
+    const addToIgnoreButton = errorMsg.querySelector("#tabboost-add-to-ignore");
+    addToIgnoreButton.addEventListener("click", () => {
+      console.log("chrome-tabboost: Add to ignore list button clicked");
+      try {
+        // 解析URL获取域名
+        const urlObj = new URL(url);
+        const hostname = urlObj.hostname;
+        
+        // 添加到忽略列表
+        chrome.storage.sync.get(['iframeIgnoreList'], (result) => {
+          let ignoreList = result.iframeIgnoreList || [];
+          
+          // 确保ignoreList是数组
+          if (!Array.isArray(ignoreList)) {
+            ignoreList = [];
+          }
+          
+          // 检查域名是否已在列表中
+          if (!ignoreList.includes(hostname)) {
+            ignoreList.push(hostname);
+            
+            // 保存更新后的列表
+            chrome.storage.sync.set({ iframeIgnoreList: ignoreList }, () => {
+              console.log(`chrome-tabboost: Added ${hostname} to ignore list`);
+              // 显示成功消息
+              alert(`已将 ${hostname} 添加到忽略列表，下次将直接在新标签页中打开`);
+              
+              // 关闭弹窗并在新标签页中打开
+              window.open(url, "_blank");
+              closePopup();
+            });
+          } else {
+            console.log(`chrome-tabboost: ${hostname} is already in ignore list`);
+            alert(`${hostname} 已在忽略列表中`);
+            
+            // 关闭弹窗并在新标签页中打开
+            window.open(url, "_blank");
+            closePopup();
+          }
+        });
+      } catch (error) {
+        console.error("chrome-tabboost: Error adding to ignore list:", error);
+        alert("添加到忽略列表失败");
+      }
+    });
+    
+    // 添加额外的检测机制 - 定期检查
+    let checkCount = 0;
+    const checkInterval = setInterval(() => {
+      checkCount++;
+      
+      // 如果已经处理过失败，或者检查次数达到上限，停止检查
+      if (hasHandledFailure || checkCount >= 5) {
+        clearInterval(checkInterval);
+        return;
+      }
+      
+      try {
+        // 检查iframe是否已加载
+        if (iframe.contentDocument === null || iframe.contentWindow === null) {
+          // 还没加载完，继续等待
+          return;
+        }
+        
+        // 检查是否加载了错误页面
+        const iframeContent = iframe.contentDocument.documentElement.innerHTML || '';
+        if (iframeContent.includes('refused to connect') || 
+            iframeContent.includes('拒绝连接') ||
+            iframeContent.includes('ERR_CONNECTION_REFUSED')) {
+          handleLoadFailure('检测到拒绝连接错误');
+          clearInterval(checkInterval);
+        }
+      } catch (e) {
+        // 忽略跨域错误
+      }
+    }, 1000);
+
     // 函数：关闭弹窗
     function closePopup() {
       try {
+        // 清除检查间隔
+        clearInterval(checkInterval);
+        
         console.log("chrome-tabboost: Closing popup");
         popupOverlay.classList.remove("show");
         setTimeout(() => {
@@ -248,13 +453,23 @@ function createPopup(url) {
               "chrome-tabboost: Popup overlay removed and Esc listener detached"
             );
           }
-        }, 300); // 与 CSS 过渡时间一致
+        }, 300); // 等待动画完成
       } catch (error) {
-        console.error("chrome-tabboost: Error while closing popup:", error);
+        console.error("chrome-tabboost: Error closing popup:", error);
+        // 尝试强制移除
+        try {
+          if (popupOverlay && popupOverlay.parentNode) {
+            popupOverlay.parentNode.removeChild(popupOverlay);
+          }
+        } catch (e) {
+          console.error("chrome-tabboost: Error force removing popup:", e);
+        }
       }
     }
   } catch (error) {
-    console.error("chrome-tabboost: Error in createPopup:", error);
+    console.error("chrome-tabboost: Error creating popup DOM:", error);
+    // 出错时在新标签页中打开
+    window.open(url, "_blank");
   }
 }
 

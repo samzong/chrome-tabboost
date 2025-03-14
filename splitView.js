@@ -164,8 +164,44 @@ export function canLoadInIframe(url) {
         return false;
       }
       
-      // 检查是否在限制列表中
-      return !restrictedDomains.some(domain => urlObj.hostname.includes(domain));
+      // 获取域名
+      const hostname = urlObj.hostname;
+      
+      // 特殊处理某些已知的网站
+      // 这些网站需要精确匹配，而不是部分匹配
+      const exactMatchDomains = ['x.com', 'twitter.com'];
+      for (const domain of exactMatchDomains) {
+        if (hostname === domain || hostname === 'www.' + domain) {
+          console.log(`精确匹配到限制域名: ${domain}`);
+          return false;
+        }
+      }
+      
+      // 检查是否在默认限制列表中
+      if (restrictedDomains.some(domain => hostname.includes(domain))) {
+        return false;
+      }
+      
+      // 检查是否在用户自定义的忽略列表中
+      return new Promise((resolve) => {
+        chrome.storage.sync.get(['iframeIgnoreEnabled', 'iframeIgnoreList'], (result) => {
+          // 如果功能未启用，直接返回true
+          if (!result.iframeIgnoreEnabled) {
+            resolve(true);
+            return;
+          }
+          
+          // 如果忽略列表不存在或为空，直接返回true
+          if (!result.iframeIgnoreList || !Array.isArray(result.iframeIgnoreList) || result.iframeIgnoreList.length === 0) {
+            resolve(true);
+            return;
+          }
+          
+          // 检查域名是否在忽略列表中
+          const isIgnored = result.iframeIgnoreList.some(domain => hostname.includes(domain));
+          resolve(!isIgnored);
+        });
+      });
     } catch (e) {
       console.warn("URL解析错误:", e);
       return false; // URL无效，不尝试加载
@@ -285,6 +321,7 @@ function initSplitViewDOM(leftUrl) {
         <h3>无法在分屏中加载此内容</h3>
         <p>此网站可能不允许在iframe中嵌入显示</p>
         <button class="tabboost-open-in-tab" data-url="${leftUrl}">在新标签页中打开</button>
+        <button class="tabboost-add-to-ignore" data-url="${leftUrl}">添加到忽略列表</button>
       </div>
     `;
     leftView.appendChild(leftErrorContainer);
@@ -378,6 +415,7 @@ function initSplitViewDOM(leftUrl) {
         <h3>无法在分屏中加载此内容</h3>
         <p>此网站可能不允许在iframe中嵌入显示</p>
         <button class="tabboost-open-in-tab" data-url="">在新标签页中打开</button>
+        <button class="tabboost-add-to-ignore" data-url="">添加到忽略列表</button>
       </div>
     `;
     rightView.appendChild(rightErrorContainer);
@@ -499,19 +537,65 @@ function initSplitViewDOM(leftUrl) {
       }
     }, 100);
     
-    // 添加在新标签页中打开按钮的事件监听
-    try {
-      document.querySelectorAll('.tabboost-open-in-tab').forEach(button => {
-        button.addEventListener('click', (e) => {
-          const url = e.target.dataset.url;
-          if (url) {
+    // 添加事件监听器
+    document.addEventListener('click', (event) => {
+      // 处理"在新标签页中打开"按钮点击
+      if (event.target.classList.contains('tabboost-open-in-tab')) {
+        const url = event.target.dataset.url;
+        if (url) {
+          window.open(url, '_blank');
+        }
+      }
+      
+      // 处理"添加到忽略列表"按钮点击
+      if (event.target.classList.contains('tabboost-add-to-ignore')) {
+        const url = event.target.dataset.url;
+        if (url) {
+          try {
+            // 解析URL获取域名
+            const urlObj = new URL(url);
+            const hostname = urlObj.hostname;
+            
+            // 添加到忽略列表
+            chrome.storage.sync.get(['iframeIgnoreList'], (result) => {
+              let ignoreList = result.iframeIgnoreList || [];
+              
+              // 确保ignoreList是数组
+              if (!Array.isArray(ignoreList)) {
+                ignoreList = [];
+              }
+              
+              // 检查域名是否已在列表中
+              if (!ignoreList.includes(hostname)) {
+                ignoreList.push(hostname);
+                
+                // 保存更新后的列表
+                chrome.storage.sync.set({ iframeIgnoreList: ignoreList }, () => {
+                  console.log(`已将 ${hostname} 添加到忽略列表`);
+                  // 显示成功消息
+                  alert(`已将 ${hostname} 添加到忽略列表，下次将直接在新标签页中打开`);
+                  
+                  // 在新标签页中打开
+                  window.open(url, '_blank');
+                });
+              } else {
+                console.log(`${hostname} 已在忽略列表中`);
+                alert(`${hostname} 已在忽略列表中`);
+                
+                // 在新标签页中打开
+                window.open(url, '_blank');
+              }
+            });
+          } catch (error) {
+            console.error("添加到忽略列表失败:", error);
+            alert("添加到忽略列表失败");
+            
+            // 在新标签页中打开
             window.open(url, '_blank');
           }
-        });
-      });
-    } catch (e) {
-      console.warn("无法添加打开新标签页按钮事件:", e);
-    }
+        }
+      }
+    });
   } catch (error) {
     console.error("初始化分屏DOM结构失败:", error);
     // 尝试恢复原始页面
@@ -620,12 +704,126 @@ function updateRightViewDOM(url) {
       return;
     }
     
+    // 记录加载开始时间，用于检测加载超时
+    const loadStartTime = Date.now();
+    
+    // 标记是否已处理过加载失败
+    let hasHandledFailure = false;
+    
+    // 创建一个函数来处理加载失败
+    const handleLoadFailure = (reason) => {
+      if (hasHandledFailure) return; // 防止重复处理
+      hasHandledFailure = true;
+      
+      console.log(`右侧iframe加载失败: ${reason}`);
+      
+      // 显示错误容器
+      if (rightErrorContainer) {
+        rightErrorContainer.style.display = 'flex';
+        
+        // 更新按钮的URL
+        const openButton = rightErrorContainer.querySelector('.tabboost-open-in-tab');
+        if (openButton) {
+          openButton.dataset.url = url;
+        }
+        
+        const addToIgnoreButton = rightErrorContainer.querySelector('.tabboost-add-to-ignore');
+        if (addToIgnoreButton) {
+          addToIgnoreButton.dataset.url = url;
+        }
+      }
+      
+      // 检查是否需要自动添加到忽略列表
+      chrome.storage.sync.get(['autoAddToIgnoreList'], (result) => {
+        if (result.autoAddToIgnoreList) {
+          try {
+            // 解析URL获取域名
+            const urlObj = new URL(url);
+            const hostname = urlObj.hostname;
+            
+            // 添加到忽略列表
+            chrome.storage.sync.get(['iframeIgnoreList'], (result) => {
+              let ignoreList = result.iframeIgnoreList || [];
+              
+              // 确保ignoreList是数组
+              if (!Array.isArray(ignoreList)) {
+                ignoreList = [];
+              }
+              
+              // 检查域名是否已在列表中
+              if (!ignoreList.includes(hostname)) {
+                ignoreList.push(hostname);
+                
+                // 保存更新后的列表
+                chrome.storage.sync.set({ iframeIgnoreList: ignoreList }, () => {
+                  console.log(`已自动将 ${hostname} 添加到忽略列表`);
+                  
+                  // 显示通知
+                  if (rightErrorContainer) {
+                    const autoAddNotice = document.createElement('div');
+                    autoAddNotice.className = 'tabboost-auto-add-notice';
+                    autoAddNotice.textContent = `已自动将 ${hostname} 添加到忽略列表，下次将直接在新标签页中打开`;
+                    rightErrorContainer.appendChild(autoAddNotice);
+                  }
+                });
+              }
+            });
+          } catch (error) {
+            console.error("自动添加到忽略列表失败:", error);
+          }
+        }
+      });
+    };
+    
     // 更新iframe源
     try {
+      // 监听iframe加载错误
+      rightIframe.onerror = () => {
+        handleLoadFailure('iframe error event');
+      };
+      
+      // 监听iframe加载完成
+      rightIframe.onload = () => {
+        try {
+          // 检查iframe是否真的加载成功
+          if (rightIframe.contentDocument === null || rightIframe.contentWindow === null) {
+            // 可能是跨域限制或其他问题
+            handleLoadFailure('无法访问iframe内容');
+            return;
+          }
+          
+          // 检查是否加载了错误页面
+          const iframeContent = rightIframe.contentDocument.documentElement.innerHTML || '';
+          if (iframeContent.includes('refused to connect') || 
+              iframeContent.includes('拒绝连接') ||
+              iframeContent.includes('ERR_CONNECTION_REFUSED')) {
+            handleLoadFailure('网站拒绝连接');
+            return;
+          }
+          
+          // 加载成功，隐藏错误消息
+          if (rightErrorContainer) {
+            rightErrorContainer.style.display = 'none';
+          }
+        } catch (e) {
+          // 可能是跨域限制导致无法访问iframe内容
+          console.warn("处理右侧iframe加载事件失败:", e);
+          
+          // 如果是跨域错误，我们假设加载成功了
+          // 因为跨域限制只是阻止我们访问内容，但iframe可能已经正确加载
+          if (rightErrorContainer) {
+            rightErrorContainer.style.display = 'none';
+          }
+        }
+      };
+      
+      // 设置iframe源
       rightIframe.src = url;
       console.log("已更新右侧iframe源:", url);
     } catch (e) {
       console.error("设置iframe src失败:", e);
+      handleLoadFailure('设置iframe源失败');
+      
       // 尝试通过location来加载
       try {
         if (rightIframe.contentWindow) {
@@ -643,10 +841,69 @@ function updateRightViewDOM(url) {
         if (openButton) {
           openButton.dataset.url = url;
         }
+        
+        const addToIgnoreButton = rightErrorContainer.querySelector('.tabboost-add-to-ignore');
+        if (addToIgnoreButton) {
+          addToIgnoreButton.dataset.url = url;
+        }
       } catch (e) {
         console.warn("更新错误提示按钮失败:", e);
       }
     }
+    
+    // 添加多重检测机制
+    // 1. 超时检测 - 如果5秒后仍未加载完成
+    setTimeout(() => {
+      if (!hasHandledFailure) {
+        // 检查iframe是否已加载
+        if (rightIframe.contentDocument === null || rightIframe.contentWindow === null) {
+          handleLoadFailure('加载超时');
+        } else {
+          // 检查是否加载了错误页面
+          try {
+            const iframeContent = rightIframe.contentDocument.documentElement.innerHTML || '';
+            if (iframeContent.includes('refused to connect') || 
+                iframeContent.includes('拒绝连接') ||
+                iframeContent.includes('ERR_CONNECTION_REFUSED')) {
+              handleLoadFailure('网站拒绝连接');
+            }
+          } catch (e) {
+            // 忽略跨域错误
+          }
+        }
+      }
+    }, 5000);
+    
+    // 2. 定期检查 - 每秒检查一次，最多检查5次
+    let checkCount = 0;
+    const checkInterval = setInterval(() => {
+      checkCount++;
+      
+      // 如果已经处理过失败，或者检查次数达到上限，停止检查
+      if (hasHandledFailure || checkCount >= 5) {
+        clearInterval(checkInterval);
+        return;
+      }
+      
+      try {
+        // 检查iframe是否已加载
+        if (rightIframe.contentDocument === null || rightIframe.contentWindow === null) {
+          // 还没加载完，继续等待
+          return;
+        }
+        
+        // 检查是否加载了错误页面
+        const iframeContent = rightIframe.contentDocument.documentElement.innerHTML || '';
+        if (iframeContent.includes('refused to connect') || 
+            iframeContent.includes('拒绝连接') ||
+            iframeContent.includes('ERR_CONNECTION_REFUSED')) {
+          handleLoadFailure('检测到拒绝连接错误');
+          clearInterval(checkInterval);
+        }
+      } catch (e) {
+        // 忽略跨域错误
+      }
+    }, 1000);
   } catch (error) {
     console.error("更新右侧视图内容失败:", error);
     

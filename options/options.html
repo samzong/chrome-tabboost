@@ -38,6 +38,44 @@
         margin-bottom: 15px;
         color: #333;
       }
+      .ignore-list {
+        max-height: 150px;
+        overflow-y: auto;
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin-top: 10px;
+        background-color: white;
+      }
+      .ignore-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 5px 0;
+        border-bottom: 1px solid #eee;
+      }
+      .ignore-item:last-child {
+        border-bottom: none;
+      }
+      .remove-btn {
+        background-color: #f44336;
+        color: white;
+        border: none;
+        padding: 3px 8px;
+        border-radius: 3px;
+        cursor: pointer;
+      }
+      .add-domain-container {
+        display: flex;
+        margin-top: 10px;
+      }
+      .add-domain-container input {
+        flex: 1;
+        margin-right: 10px;
+        margin-bottom: 0;
+      }
+      .add-domain-container button {
+        white-space: nowrap;
+      }
     </style>
   </head>
   <body>
@@ -90,6 +128,33 @@
         <li>在分屏模式下，按住 <code>Command+Shift</code> 并点击链接，会在右侧打开</li>
         <li>拖动中间分隔线可以调整左右区域的比例</li>
       </ul>
+    </div>
+
+    <div class="section">
+      <h3 class="section-title">iframe 兼容性设置</h3>
+      
+      <label>
+        <input type="checkbox" id="iframeIgnoreEnabled" />
+        启用网站忽略列表功能
+      </label>
+      
+      <p>当启用此功能时，列表中的网站将不会使用弹窗或分屏模式，而是直接在新标签页中打开。</p>
+      
+      <label>
+        <input type="checkbox" id="autoAddToIgnoreList" />
+        自动将无法加载的网站添加到忽略列表
+      </label>
+      
+      <h4>忽略列表</h4>
+      <div class="ignore-list" id="ignoreList">
+        <!-- 忽略列表项将通过 JavaScript 动态添加 -->
+        <div class="ignore-item-empty">暂无忽略的网站</div>
+      </div>
+      
+      <div class="add-domain-container">
+        <input type="text" id="newDomain" placeholder="输入要忽略的域名，例如：example.com" />
+        <button id="addDomainButton">添加</button>
+      </div>
     </div>
 
     <button id="saveButton">保存</button>
