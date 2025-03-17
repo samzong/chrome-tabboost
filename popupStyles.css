@@ -7,17 +7,19 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 10000;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease, backdrop-filter 0.3s ease;
+  backdrop-filter: blur(0);
 }
 
 #tabboost-popup-overlay.show {
   opacity: 1;
+  backdrop-filter: blur(3px);
 }
 
 /* 弹窗内容容器 */
@@ -26,15 +28,16 @@
   width: 80%;
   height: 80%;
   background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
   overflow: hidden;
-  transform: scale(0.8);
-  transition: transform 0.3s ease;
+  transform: scale(0.9);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   flex-direction: column;
-  padding: 0; /* 移除内边距 */
+  padding: 0;
   box-sizing: border-box;
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 #tabboost-popup-overlay.show #tabboost-popup-content {
@@ -46,18 +49,19 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
-  background-color: #f5f5f5;
-  border-bottom: 1px solid #ddd;
-  z-index: 5; /* 高于 iframe 和加载指示器 */
+  padding: 12px 20px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #eaeaea;
+  z-index: 5;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 /* 标题 */
 #tabboost-popup-title {
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 600;
   color: #333;
-  max-width: 60%; /* 限制最大宽度 */
+  max-width: 60%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -67,42 +71,76 @@
 #tabboost-popup-buttons {
   display: flex;
   align-items: center;
+  gap: 8px;
 }
 
 /* 按钮样式 */
 .tabboost-button {
   background: transparent;
   border: none;
-  font-size: 16px;
+  font-size: 14px;
   cursor: pointer;
-  margin-left: 10px;
-  transition: color 0.2s ease;
-  z-index: 6; /* 高于加载指示器 */
+  transition: all 0.2s ease;
+  z-index: 6;
+  padding: 6px 12px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .tabboost-button:hover {
-  color: #007bff;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.tabboost-button:focus {
+  outline: 2px solid rgba(59, 130, 246, 0.5);
+  outline-offset: 2px;
 }
 
 /* 关闭按钮 */
 .tabboost-close-button {
   font-size: 20px;
   font-weight: bold;
-  color: #ff0000; /* 红色 */
+  color: #666;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .tabboost-close-button:hover {
-  color: #cc0000; /* 深红色 */
+  background-color: rgba(220, 38, 38, 0.1);
+  color: #dc2626;
 }
 
 /* 新标签页按钮 */
 .tabboost-newtab-button {
   font-size: 14px;
-  color: #007bff;
+  color: #3b82f6;
+  background-color: rgba(59, 130, 246, 0.1);
+  border-radius: 6px;
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .tabboost-newtab-button:hover {
-  text-decoration: underline;
+  background-color: rgba(59, 130, 246, 0.2);
+}
+
+.tabboost-newtab-button::before {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%233b82f6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14'%3E%3C/path%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
 /* iframe 样式 */
@@ -112,6 +150,7 @@
   height: 100%;
   border: none;
   box-sizing: border-box;
+  background-color: #fff;
 }
 
 /* 加载指示器 */
@@ -120,9 +159,29 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 18px;
-  color: #007bff;
-  z-index: 2; /* 低于工具栏和按钮 */
+  font-size: 16px;
+  color: #3b82f6;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+#tabboost-popup-loader::before {
+  content: '';
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(59, 130, 246, 0.2);
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: loader-spin 1s linear infinite;
+}
+
+@keyframes loader-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* 错误消息样式 */
@@ -131,35 +190,64 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 18px;
-  color: #ff0000;
+  font-size: 16px;
+  color: #dc2626;
   text-align: center;
-  z-index: 7; /* 高于所有元素 */
-  display: none; /* 默认隐藏 */
-  background-color: rgba(255, 255, 255, 0.95);
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  z-index: 7;
+  display: none;
+  background-color: #fff;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  width: 80%;
+  max-width: 400px;
 }
 
 #tabboost-popup-error.show {
   display: block;
+  animation: error-appear 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes error-appear {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+#tabboost-popup-error p {
+  margin-bottom: 16px;
+  line-height: 1.5;
 }
 
 #tabboost-popup-error button {
-  margin-top: 10px;
+  margin: 8px;
   padding: 8px 16px;
-  font-size: 16px;
+  font-size: 14px;
   cursor: pointer;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  transition: background-color 0.2s ease;
+  background-color: #fff;
+  color: #3b82f6;
+  border: 1px solid #3b82f6;
+  border-radius: 6px;
+  transition: all 0.2s ease;
 }
 
 #tabboost-popup-error button:hover {
-  background-color: #0056b3;
+  background-color: #3b82f6;
+  color: #fff;
+}
+
+#tabboost-open-newtab {
+  background-color: #3b82f6 !important;
+  color: #fff !important;
+}
+
+#tabboost-open-newtab:hover {
+  background-color: #2563eb !important;
 }
 
 /* 响应式设计 */
@@ -167,24 +255,102 @@
   #tabboost-popup-content {
     width: 95%;
     height: 90%;
+    border-radius: 12px;
   }
 
   #tabboost-popup-title {
     font-size: 14px;
-    max-width: 50%; /* 进一步调整 */
+    max-width: 50%;
   }
 
   .tabboost-button {
-    font-size: 14px;
+    font-size: 13px;
+    padding: 5px 10px;
   }
 
   #tabboost-popup-error {
     width: 90%;
+    padding: 20px;
   }
 }
 
-/* 按钮可聚焦样式 */
-.tabboost-button:focus {
-  outline: 2px solid #007bff;
-  outline-offset: 2px;
+/* 深色模式支持 */
+@media (prefers-color-scheme: dark) {
+  #tabboost-popup-content {
+    background-color: #1f2937;
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  #tabboost-popup-toolbar {
+    background-color: #111827;
+    border-bottom-color: #374151;
+  }
+  
+  #tabboost-popup-title {
+    color: #e5e7eb;
+  }
+  
+  .tabboost-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .tabboost-close-button {
+    color: #9ca3af;
+  }
+  
+  .tabboost-close-button:hover {
+    background-color: rgba(248, 113, 113, 0.2);
+    color: #f87171;
+  }
+  
+  .tabboost-newtab-button {
+    color: #60a5fa;
+    background-color: rgba(96, 165, 250, 0.1);
+  }
+  
+  .tabboost-newtab-button:hover {
+    background-color: rgba(96, 165, 250, 0.2);
+  }
+  
+  .tabboost-newtab-button::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2360a5fa'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14'%3E%3C/path%3E%3C/svg%3E");
+  }
+  
+  #tabboost-popup-iframe {
+    background-color: #1f2937;
+  }
+  
+  #tabboost-popup-loader {
+    color: #60a5fa;
+  }
+  
+  #tabboost-popup-loader::before {
+    border-color: rgba(96, 165, 250, 0.2);
+    border-top-color: #60a5fa;
+  }
+  
+  #tabboost-popup-error {
+    background-color: #1f2937;
+    color: #f87171;
+  }
+  
+  #tabboost-popup-error button {
+    background-color: #1f2937;
+    color: #60a5fa;
+    border-color: #60a5fa;
+  }
+  
+  #tabboost-popup-error button:hover {
+    background-color: #60a5fa;
+    color: #1f2937;
+  }
+  
+  #tabboost-open-newtab {
+    background-color: #60a5fa !important;
+    color: #1f2937 !important;
+  }
+  
+  #tabboost-open-newtab:hover {
+    background-color: #3b82f6 !important;
+  }
 }
