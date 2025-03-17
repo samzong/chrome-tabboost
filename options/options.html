@@ -2,163 +2,196 @@
 <html>
   <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TabBoost 设置</title>
-    <style>
-      body {
-        font-family: sans-serif;
-        width: 400px;
-        padding: 20px;
-      }
-      label {
-        display: block;
-        margin-bottom: 5px;
-      }
-      input {
-        width: 100%;
-        padding: 5px;
-        margin-bottom: 10px;
-        box-sizing: border-box;
-      }
-      button {
-        padding: 8px 15px;
-        background-color: #4caf50;
-        color: white;
-        border: none;
-        cursor: pointer;
-      }
-      .section {
-        margin-top: 20px;
-        padding: 15px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        background-color: #f9f9f9;
-      }
-      .section-title {
-        margin-top: 0;
-        margin-bottom: 15px;
-        color: #333;
-      }
-      .ignore-list {
-        max-height: 150px;
-        overflow-y: auto;
-        border: 1px solid #ddd;
-        padding: 10px;
-        margin-top: 10px;
-        background-color: white;
-      }
-      .ignore-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 5px 0;
-        border-bottom: 1px solid #eee;
-      }
-      .ignore-item:last-child {
-        border-bottom: none;
-      }
-      .remove-btn {
-        background-color: #f44336;
-        color: white;
-        border: none;
-        padding: 3px 8px;
-        border-radius: 3px;
-        cursor: pointer;
-      }
-      .add-domain-container {
-        display: flex;
-        margin-top: 10px;
-      }
-      .add-domain-container input {
-        flex: 1;
-        margin-right: 10px;
-        margin-bottom: 0;
-      }
-      .add-domain-container button {
-        white-space: nowrap;
-      }
-    </style>
+    <link rel="stylesheet" href="options.css">
   </head>
   <body>
-    <h2>TabBoost 设置</h2>
+    <div class="header">
+      <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path>
+      </svg>
+      <h1 class="title">TabBoost 设置</h1>
+    </div>
 
-    <div class="section">
-      <h3 class="section-title">快捷键设置</h3>
-      
-      <label for="duplicateTabShortcut">复制标签页快捷键:</label>
-      <input type="text" id="duplicateTabShortcut" placeholder="例如：Ctrl+M" />
-  
-      <label for="copyUrlShortcut">复制网址快捷键:</label>
-      <input
-        type="text"
-        id="copyUrlShortcut"
-        placeholder="例如：Shift+Alt+C"
-      />
+    <div class="tabs">
+      <div class="tab active" data-tab="shortcuts">
+        <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path>
+        </svg>
+        快捷键设置
+      </div>
+      <div class="tab" data-tab="general">
+        <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+        通用设置
+      </div>
+      <div class="tab" data-tab="splitview">
+        <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="12" y1="3" x2="12" y2="21"></line>
+        </svg>
+        分屏模式
+      </div>
+      <div class="tab" data-tab="iframe">
+        <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="2" y1="12" x2="22" y2="12"></line>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+        </svg>
+        iframe兼容性
+      </div>
+    </div>
 
-      <label for="splitViewShortcut">分屏模式快捷键:</label>
-      <input
-        type="text"
-        id="splitViewShortcut"
-        placeholder="例如：Shift+Command+S"
-      />
+    <!-- 快捷键设置 -->
+    <div class="tab-content active" id="shortcuts-content">
+      <div class="card">
+        <h2 class="card-title">
+          <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path>
+          </svg>
+          快捷键设置
+        </h2>
+        <p class="card-description">自定义各项功能的快捷键，提高工作效率</p>
+        
+        <div class="form-group">
+          <label for="duplicateTabShortcut">复制标签页快捷键:</label>
+          <input type="text" id="duplicateTabShortcut" placeholder="例如：Ctrl+M" />
+        </div>
+    
+        <div class="form-group">
+          <label for="copyUrlShortcut">复制网址快捷键:</label>
+          <input type="text" id="copyUrlShortcut" placeholder="例如：Shift+Alt+C" />
+        </div>
+
+        <div class="form-group">
+          <label for="splitViewShortcut">分屏模式快捷键:</label>
+          <input type="text" id="splitViewShortcut" placeholder="例如：Shift+Command+S" />
+        </div>
+      </div>
     </div>
     
-    <div class="section">
-      <h3 class="section-title">通用设置</h3>
-      
-      <label for="defaultAction">点击扩展图标默认操作:</label>
-      <select id="defaultAction">
-          <option value="copy-url">复制当前标签页网址</option>
-          <option value="duplicate-tab">复制当前标签页</option>
-          <option value="toggle-split-view">切换分屏模式</option>
-          <option value="open-options">打开插件配置页</option>
-      </select>
-    </div>
-
-    <div class="section">
-      <h3 class="section-title">分屏模式设置</h3>
-      
-      <label>
-        <input type="checkbox" id="splitViewEnabled" />
-        启用分屏模式
-      </label>
-      
-      <p>分屏模式使用说明:</p>
-      <ul>
-        <li>使用快捷键 <code>Shift+Command+S</code> 激活分屏模式</li>
-        <li>在分屏模式下，按住 <code>Command+Shift</code> 并点击链接，会在右侧打开</li>
-        <li>拖动中间分隔线可以调整左右区域的比例</li>
-      </ul>
-    </div>
-
-    <div class="section">
-      <h3 class="section-title">iframe 兼容性设置</h3>
-      
-      <label>
-        <input type="checkbox" id="iframeIgnoreEnabled" />
-        启用网站忽略列表功能
-      </label>
-      
-      <p>当启用此功能时，列表中的网站将不会使用弹窗或分屏模式，而是直接在新标签页中打开。</p>
-      
-      <label>
-        <input type="checkbox" id="autoAddToIgnoreList" />
-        自动将无法加载的网站添加到忽略列表
-      </label>
-      
-      <h4>忽略列表</h4>
-      <div class="ignore-list" id="ignoreList">
-        <!-- 忽略列表项将通过 JavaScript 动态添加 -->
-        <div class="ignore-item-empty">暂无忽略的网站</div>
-      </div>
-      
-      <div class="add-domain-container">
-        <input type="text" id="newDomain" placeholder="输入要忽略的域名，例如：example.com" />
-        <button id="addDomainButton">添加</button>
+    <!-- 通用设置 -->
+    <div class="tab-content" id="general-content">
+      <div class="card">
+        <h2 class="card-title">
+          <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          通用设置
+        </h2>
+        <p class="card-description">配置扩展的基本行为</p>
+        
+        <div class="form-group">
+          <label for="defaultAction">点击扩展图标默认操作:</label>
+          <select id="defaultAction">
+            <option value="copy-url">复制当前标签页网址</option>
+            <option value="duplicate-tab">复制当前标签页</option>
+            <option value="toggle-split-view">切换分屏模式</option>
+            <option value="open-options">打开插件配置页</option>
+          </select>
+        </div>
       </div>
     </div>
 
-    <button id="saveButton">保存</button>
+    <!-- 分屏模式设置 -->
+    <div class="tab-content" id="splitview-content">
+      <div class="card">
+        <h2 class="card-title">
+          <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="12" y1="3" x2="12" y2="21"></line>
+          </svg>
+          分屏模式设置
+        </h2>
+        <p class="card-description">配置分屏模式的行为和外观</p>
+        
+        <div class="form-group">
+          <div class="checkbox-wrapper">
+            <input type="checkbox" id="splitViewEnabled" />
+            <label for="splitViewEnabled">启用分屏模式</label>
+          </div>
+        </div>
+        
+        <div class="card-description">
+          <strong>分屏模式使用说明:</strong>
+          <ul class="usage-list">
+            <li>在分屏模式下，按住 <code>Command+Shift</code> 并点击链接，会在右侧打开</li>
+          </ul>
+        </div>
+      </div>
+    </div>
 
+    <!-- iframe兼容性设置 -->
+    <div class="tab-content" id="iframe-content">
+      <div class="card">
+        <h2 class="card-title">
+          <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          iframe兼容性设置
+        </h2>
+        <p class="card-description">配置网站在弹窗和分屏模式中的加载方式</p>
+        
+        <div class="form-group">
+          <div class="checkbox-wrapper">
+            <input type="checkbox" id="iframeIgnoreEnabled" />
+            <label for="iframeIgnoreEnabled">启用网站忽略列表功能</label>
+          </div>
+          <p class="hint-text">
+            当启用此功能时，列表中的网站将不会使用弹窗或分屏模式，而是直接在新标签页中打开。
+          </p>
+        </div>
+        
+        <div class="form-group">
+          <div class="checkbox-wrapper">
+            <input type="checkbox" id="autoAddToIgnoreList" />
+            <label for="autoAddToIgnoreList">自动将无法加载的网站添加到忽略列表</label>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>忽略列表</label>
+          <div class="ignore-list" id="ignoreList">
+            <!-- 忽略列表项将通过 JavaScript 动态添加 -->
+            <div class="ignore-item-empty">暂无忽略的网站</div>
+          </div>
+          
+          <div class="add-domain-container">
+            <input type="text" id="newDomain" placeholder="输入要忽略的域名，例如：example.com" />
+            <button id="addDomainButton" class="button">
+              <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              添加
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="saveButton" class="button">
+        <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+          <polyline points="17 21 17 13 7 13 7 21"></polyline>
+          <polyline points="7 3 7 8 15 8"></polyline>
+        </svg>
+        保存设置
+      </button>
+    </div>
+
+    <div class="footer">
+      TabBoost v2.0 - 让您的浏览体验更高效
+    </div>
+
+    <script src="tabs.js"></script>
     <script src="options.js"></script>
   </body>
 </html>

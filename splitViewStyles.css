@@ -12,70 +12,134 @@
   display: flex;
   flex-wrap: wrap;
   overflow: hidden;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.2);
+  animation: split-view-appear 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes split-view-appear {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 /* 顶部控制栏样式 */
 #tabboost-split-controls {
   width: 100%;
-  height: 40px;
+  height: 48px;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
-  padding: 0 15px;
-  background-color: #f5f5f5;
-  border-bottom: 1px solid #ddd;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 0 16px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #eaeaea;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   z-index: 10;
+}
+
+/* 控制栏标题 */
+.tabboost-split-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tabboost-split-title::before {
+  content: '';
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  background-color: #3b82f6;
+  border-radius: 50%;
 }
 
 /* 关闭按钮样式 */
 #tabboost-split-close {
-  padding: 5px 10px;
-  background-color: #f44336;
-  color: white;
+  padding: 6px 12px;
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
-  transition: background-color 0.2s;
+  font-weight: 500;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#tabboost-split-close::before {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23ef4444'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 18L18 6M6 6l12 12'%3E%3C/path%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
 #tabboost-split-close:hover {
-  background-color: #d32f2f;
+  background-color: rgba(239, 68, 68, 0.2);
 }
 
 /* 左侧视图样式 */
 #tabboost-split-left {
   width: 50%;
-  height: calc(100% - 40px); /* 减去顶部控制栏高度 */
+  height: calc(100% - 48px); /* 减去顶部控制栏高度 */
   overflow: hidden;
   position: relative;
-  border-right: 1px solid #ddd;
+  border-right: 1px solid #eaeaea;
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* 右侧视图样式 */
 #tabboost-split-right {
   width: 50%;
-  height: calc(100% - 40px); /* 减去顶部控制栏高度 */
+  height: calc(100% - 48px); /* 减去顶部控制栏高度 */
   overflow: hidden;
   position: relative;
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* 分隔线样式 */
 #tabboost-split-divider {
   position: absolute;
-  top: 40px; /* 从控制栏下方开始 */
+  top: 48px; /* 从控制栏下方开始 */
   left: 50%;
-  width: 6px;
-  height: calc(100% - 40px);
-  background-color: #ddd;
+  width: 8px;
+  height: calc(100% - 48px);
+  background-color: transparent;
   z-index: 9;
   transform: translateX(-50%);
+  cursor: col-resize;
+  transition: background-color 0.2s;
 }
 
-#tabboost-split-divider:hover,
-#tabboost-split-divider:active {
-  background-color: #ddd;
+#tabboost-split-divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 4px;
+  height: 40px;
+  background-color: #e5e7eb;
+  border-radius: 4px;
+  transition: background-color 0.2s, height 0.2s;
+}
+
+#tabboost-split-divider:hover::after,
+#tabboost-split-divider:active::after {
+  background-color: #3b82f6;
+  height: 60px;
 }
 
 /* iframe 样式 */
@@ -85,6 +149,8 @@
   height: 100%;
   border: none;
   overflow: hidden;
+  background-color: #fff;
+  transition: opacity 0.3s;
 }
 
 /* iframe错误提示样式 */
@@ -94,45 +160,77 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255, 255, 255, 0.95);
   display: none; /* 默认隐藏 */
   justify-content: center;
   align-items: center;
   z-index: 10;
+  backdrop-filter: blur(4px);
 }
 
 .tabboost-error-content {
   text-align: center;
-  padding: 20px;
+  padding: 24px;
   background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   max-width: 80%;
+  animation: error-content-appear 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes error-content-appear {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .tabboost-error-content h3 {
   margin-top: 0;
-  color: #f44336;
+  color: #ef4444;
+  font-size: 18px;
+  font-weight: 600;
 }
 
 .tabboost-error-content p {
   margin-bottom: 20px;
-  color: #666;
+  color: #4b5563;
+  line-height: 1.5;
 }
 
 .tabboost-open-in-tab {
   padding: 8px 16px;
-  background-color: #2196F3;
+  background-color: #3b82f6;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
-  transition: background-color 0.2s;
+  font-weight: 500;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tabboost-open-in-tab::before {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14'%3E%3C/path%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
 .tabboost-open-in-tab:hover {
-  background-color: #0b7dda;
+  background-color: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(37, 99, 235, 0.3);
 }
 
 /* 通用错误提示 */
@@ -141,15 +239,36 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  padding: 20px;
+  padding: 24px;
   background-color: white;
-  border: 2px solid #f44336;
+  border-left: 4px solid #ef4444;
   border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   font-size: 16px;
-  color: #f44336;
+  color: #4b5563;
   text-align: center;
   z-index: 100000;
+  max-width: 90%;
+  width: 400px;
+  animation: error-appear 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes error-appear {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.tabboost-error strong {
+  display: block;
+  color: #ef4444;
+  margin-bottom: 8px;
+  font-size: 18px;
 }
 
 /* 响应式设计 */
@@ -162,43 +281,50 @@
   
   #tabboost-split-left {
     border-right: none;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #eaeaea;
   }
   
   #tabboost-split-divider {
     top: 50%;
     left: 0;
     width: 100%;
-    height: 6px;
+    height: 8px;
     cursor: row-resize;
     transform: translateY(-50%);
   }
-}
-
-/* 添加动画效果 */
-#tabboost-split-left,
-#tabboost-split-right {
-  transition: width 0.3s ease;
+  
+  #tabboost-split-divider::after {
+    width: 40px;
+    height: 4px;
+  }
+  
+  #tabboost-split-divider:hover::after,
+  #tabboost-split-divider:active::after {
+    width: 60px;
+    height: 4px;
+  }
 }
 
 /* 添加分屏指示器 */
 #tabboost-split-left::before,
 #tabboost-split-right::before {
   position: absolute;
-  top: 10px;
-  left: 10px;
-  width: 30px;
-  height: 30px;
-  background-color: rgba(0, 0, 0, 0.5);
+  top: 12px;
+  left: 12px;
+  width: 24px;
+  height: 24px;
+  background-color: rgba(59, 130, 246, 0.9);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  font-weight: bold;
+  font-weight: 600;
+  font-size: 12px;
   z-index: 8;
-  opacity: 0.7;
-  transition: opacity 0.3s;
+  opacity: 0.8;
+  transition: opacity 0.3s, transform 0.3s;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 #tabboost-split-left::before {
@@ -212,37 +338,142 @@
 #tabboost-split-left:hover::before,
 #tabboost-split-right:hover::before {
   opacity: 0;
+  transform: scale(0.8);
 }
 
 /* 分屏中单独区域的关闭按钮 */
 .tabboost-view-close {
   position: absolute;
-  top: 5px;
-  right: 5px;
-  width: 30px;
-  height: 30px;
-  background-color: rgba(0, 0, 0, 0.5);
-  color: white;
+  top: 12px;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
   border: none;
   border-radius: 50%;
-  font-size: 20px;
+  font-size: 16px;
   line-height: 1;
   cursor: pointer;
   z-index: 10001;
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0.3;
-  transition: opacity 0.3s, background-color 0.3s;
+  opacity: 0;
+  transition: opacity 0.3s, background-color 0.3s, transform 0.2s;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#tabboost-split-left:hover .tabboost-view-close,
+#tabboost-split-right:hover .tabboost-view-close {
+  opacity: 1;
 }
 
 .tabboost-view-close:hover {
-  opacity: 1;
-  background-color: rgba(255, 0, 0, 0.8);
+  background-color: rgba(239, 68, 68, 0.2);
+  transform: scale(1.1);
 }
 
-/* 左侧和右侧分屏区域需要是relative定位，以便关闭按钮能够正确定位 */
-#tabboost-split-left,
-#tabboost-split-right {
-  position: relative;
+/* 深色模式支持 */
+@media (prefers-color-scheme: dark) {
+  #tabboost-split-view-container {
+    background-color: #1f2937;
+  }
+  
+  #tabboost-split-controls {
+    background-color: #111827;
+    border-bottom-color: #374151;
+  }
+  
+  .tabboost-split-title {
+    color: #e5e7eb;
+  }
+  
+  #tabboost-split-close {
+    background-color: rgba(248, 113, 113, 0.1);
+    color: #f87171;
+  }
+  
+  #tabboost-split-close::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23f87171'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 18L18 6M6 6l12 12'%3E%3C/path%3E%3C/svg%3E");
+  }
+  
+  #tabboost-split-close:hover {
+    background-color: rgba(248, 113, 113, 0.2);
+  }
+  
+  #tabboost-split-left {
+    border-right-color: #374151;
+  }
+  
+  #tabboost-split-divider::after {
+    background-color: #4b5563;
+  }
+  
+  #tabboost-split-divider:hover::after,
+  #tabboost-split-divider:active::after {
+    background-color: #60a5fa;
+  }
+  
+  #tabboost-left-iframe,
+  #tabboost-right-iframe {
+    background-color: #1f2937;
+  }
+  
+  .tabboost-iframe-error {
+    background-color: rgba(31, 41, 55, 0.95);
+  }
+  
+  .tabboost-error-content {
+    background-color: #1f2937;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  }
+  
+  .tabboost-error-content h3 {
+    color: #f87171;
+  }
+  
+  .tabboost-error-content p {
+    color: #9ca3af;
+  }
+  
+  .tabboost-open-in-tab {
+    background-color: #60a5fa;
+  }
+  
+  .tabboost-open-in-tab:hover {
+    background-color: #3b82f6;
+    box-shadow: 0 2px 5px rgba(96, 165, 250, 0.3);
+  }
+  
+  .tabboost-error {
+    background-color: #1f2937;
+    border-left-color: #f87171;
+    color: #9ca3af;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  }
+  
+  .tabboost-error strong {
+    color: #f87171;
+  }
+  
+  #tabboost-split-left::before,
+  #tabboost-split-right::before {
+    background-color: rgba(96, 165, 250, 0.9);
+  }
+  
+  .tabboost-view-close {
+    background-color: rgba(248, 113, 113, 0.1);
+    color: #f87171;
+  }
+  
+  .tabboost-view-close:hover {
+    background-color: rgba(248, 113, 113, 0.2);
+  }
+  
+  @media (max-width: 768px) {
+    #tabboost-split-left {
+      border-bottom-color: #374151;
+    }
+  }
 } 
