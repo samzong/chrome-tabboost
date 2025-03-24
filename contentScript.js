@@ -149,6 +149,23 @@ function createPopupDOM(url) {
     // 创建弹窗内容容器
     const popupContent = document.createElement("div");
     popupContent.id = "tabboost-popup-content";
+    
+    // 获取用户的弹窗大小设置并应用
+    chrome.storage.sync.get({
+      popupSizePreset: 'default',
+      customWidth: 80,
+      customHeight: 80
+    }, (settings) => {
+      // 应用弹窗大小
+      if (settings.popupSizePreset === 'large') {
+        popupContent.classList.add('size-large');
+      } else if (settings.popupSizePreset === 'custom') {
+        popupContent.classList.add('size-custom');
+        popupContent.style.width = `${settings.customWidth}%`;
+        popupContent.style.height = `${settings.customHeight}%`;
+      }
+      // 默认尺寸不需要额外处理
+    });
 
     // 创建工具栏
     const toolbar = document.createElement("div");
@@ -186,6 +203,18 @@ function createPopupDOM(url) {
 
     // 组装按钮容器
     buttonsContainer.appendChild(newTabButton);
+
+    // 创建尺寸提示按钮
+    const sizeHintButton = document.createElement("button");
+    sizeHintButton.className = "tabboost-button tabboost-size-hint";
+    sizeHintButton.title = "在扩展选项中可调整弹窗大小";
+    sizeHintButton.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+    sizeHintButton.addEventListener("click", () => {
+      chrome.runtime.sendMessage({ action: "openOptionsPage", section: "popup-size" });
+    });
+
+    // 添加尺寸提示按钮和关闭按钮
+    buttonsContainer.appendChild(sizeHintButton);
     buttonsContainer.appendChild(closeButton);
 
     // 组装工具栏
