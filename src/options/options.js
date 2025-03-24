@@ -1,3 +1,5 @@
+import { showNotification } from "../utils/utils.js";
+
 const saveButton = document.getElementById("saveButton");
 const duplicateTabShortcutInput = document.getElementById(
   "duplicateTabShortcut"

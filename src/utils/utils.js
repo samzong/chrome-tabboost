@@ -11,7 +11,7 @@ export function showNotification(message) {
   chrome.notifications.create(
     {
       type: "basic",
-      iconUrl: "icons/icon48.png", // 注意：这里需要根据实际情况修改 iconUrl
+      iconUrl: "../assets/icons/icon48.png", // 更新图标路径
       title: "TabBoost",
       message: message,
     },

@@ -1,3 +1,6 @@
+// 导入工具函数
+import { getCurrentTab, showNotification } from "../utils/utils.js";
+
 const duplicateTabButton = document.getElementById("duplicateTabButton");
 const copyUrlButton = document.getElementById("copyUrlButton");
 const openOptionsButton = document.getElementById("openOptionsButton");

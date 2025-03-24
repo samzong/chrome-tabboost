@@ -1,0 +1,29 @@
+{
+  "name": "chrome-tabboost",
+  "version": "2.0.0",
+  "description": "TabBoost is a Chrome extension that helps you manage your tabs more efficiently.",
+  "main": "src/js/background.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samzong/chrome-tabboost.git"
+  },
+  "keywords": [
+    "chrome",
+    "extension",
+    "tabs",
+    "productivity"
+  ],
+  "author": "samzong",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/samzong/chrome-tabboost/issues"
+  },
+  "homepage": "https://github.com/samzong/chrome-tabboost#readme",
+  "devDependencies": {
+    "eslint": "^8.55.0",
+    "prettier": "^3.1.0"
+  }
+} 
