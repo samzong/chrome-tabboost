@@ -1,8 +1,35 @@
-# 忽略 node_modules 文件夹（如果将来使用 npm 或 yarn）
+# Dependencies
 node_modules/
+yarn.lock
+package-lock.json
 
-# 忽略 macOS 系统生成的 .DS_Store 文件
+# Build
+dist/
+builds/
+
+# Environment
+.env
+.env.local
+.env.*
+!.env.example
+
+# IDE
+.idea/
+.vscode/
+*.sublime-*
 .DS_Store
+
+# Chrome Extension
+key.pem
+*.pem
+*.crx
+*.zip
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # 忽略一些常见的编辑器生成的临时文件
 *.swp
@@ -10,7 +37,3 @@ node_modules/
 *.bak
 
 # 你还可以根据需要添加其他需要忽略的文件或文件夹
-
-# 忽略 build 和 dist 文件夹
-build/
-dist/
