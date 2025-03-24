@@ -77,17 +77,29 @@ async function duplicateCurrentTab() {
   }
 }
 
-// 监听消息
+// 监听来自内容脚本的消息
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  console.log("Message received in background:", request);
+  console.log("chrome-tabboost: Background received message:", request);
   
-  if (request.action === "openInPopup") {
-    // 原有功能保持不变
-    sendResponse({ status: "Message received by background" });
+  // 处理打开选项页请求
+  if (request.action === "openOptionsPage") {
+    console.log("chrome-tabboost: Opening options page, section:", request.section);
+    chrome.runtime.openOptionsPage(() => {
+      // 向选项页发送消息，指示要滚动到的部分
+      if (request.section) {
+        setTimeout(() => {
+          chrome.runtime.sendMessage({ 
+            action: "scrollToSection", 
+            section: request.section 
+          });
+        }, 300); // 给选项页一些加载时间
+      }
+    });
+    return true;
   }
   
-  // 处理分屏视图相关消息
-  else if (request.action === "openInSplitView") {
+  // 处理在分屏视图中打开URL的请求
+  if (request.action === "openInSplitView" && request.url) {
     handleSplitViewRequest(request.url)
       .then(result => sendResponse(result))
       .catch(error => {

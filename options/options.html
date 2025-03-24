@@ -19,14 +19,22 @@
         <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path>
         </svg>
-        快捷键设置
+        <span>快捷键</span>
       </div>
       <div class="tab" data-tab="general">
         <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3"></circle>
           <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
         </svg>
-        通用设置
+        <span>通用设置</span>
+      </div>
+      <div class="tab" data-tab="popup">
+        <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+          <line x1="8" y1="21" x2="16" y2="21"></line>
+          <line x1="12" y1="17" x2="12" y2="21"></line>
+        </svg>
+        <span>弹窗设置</span>
       </div>
       <div class="tab" data-tab="splitview">
         <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -172,6 +180,48 @@
               添加
             </button>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 弹窗设置内容 -->
+    <div class="tab-content" id="popup-content">
+      <div class="card" id="popup-size-section">
+        <h2 class="card-title">
+          <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+          弹窗大小设置
+        </h2>
+        <p class="card-description">调整弹窗大小以获得最佳浏览体验</p>
+        
+        <div class="form-group">
+          <label for="popupSizePreset">弹窗大小预设</label>
+          <select id="popupSizePreset" class="form-control">
+            <option value="default">默认 (80%)</option>
+            <option value="large">大号 (90%)</option>
+            <option value="custom">自定义</option>
+          </select>
+        </div>
+        
+        <div class="form-group custom-size-controls" style="display: none;">
+          <label for="customWidthSlider">自定义宽度: <span id="customWidthValue">80%</span></label>
+          <input type="range" id="customWidthSlider" class="range-slider" min="50" max="95" step="1" value="80">
+        </div>
+        
+        <div class="form-group custom-size-controls" style="display: none;">
+          <label for="customHeightSlider">自定义高度: <span id="customHeightValue">80%</span></label>
+          <input type="range" id="customHeightSlider" class="range-slider" min="50" max="95" step="1" value="80">
+        </div>
+        
+        <div class="size-preview-container">
+          <h3 class="preview-title">大小预览</h3>
+          <div class="size-preview-window">
+            <div class="size-preview-popup" id="sizePreviewBox"></div>
+          </div>
+          <p class="preview-description">灰色区域表示可点击的空白区域</p>
         </div>
       </div>
     </div>
