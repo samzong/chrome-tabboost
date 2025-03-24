@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "TabBoost",
-  "version": "2.0",
+  "version": "2.1.0",
   "description": "TabBoost is a Chrome extension that helps you manage your tabs more efficiently.",
   "permissions": [
     "activeTab",
@@ -17,30 +17,31 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["contentScript.js"],
-      "css": ["popupStyles.css", "splitViewStyles.css"],
+      "js": ["src/js/contentScript.js"],
+      "css": ["src/styles/popupStyles.css", "src/styles/splitViewStyles.css"],
       "run_at": "document_start"
     }
   ],
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'; style-src 'self'; img-src 'self' data:;"
+    "extension_pages": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;"
   },
   "action": {
     "default_icon": {
-      "16": "icons/icon16.png",
-      "48": "icons/icon48.png",
-      "128": "icons/icon128.png"
-    }
+      "16": "src/assets/icons/icon16.png",
+      "48": "src/assets/icons/icon48.png",
+      "128": "src/assets/icons/icon128.png"
+    },
+    "default_popup": "src/popup/popup.html"
   },
-  "options_page": "options/options.html",
+  "options_page": "src/options/options.html",
   "background": {
-    "service_worker": "background.js",
+    "service_worker": "src/js/background.js",
     "type": "module"
   },
   "icons": {
-    "16": "icons/icon16.png",
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
+    "16": "src/assets/icons/icon16.png",
+    "48": "src/assets/icons/icon48.png",
+    "128": "src/assets/icons/icon128.png"
   },
   "commands": {
     "duplicate-tab": {
@@ -70,7 +71,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["splitViewStyles.css"],
+      "resources": ["src/styles/splitViewStyles.css"],
       "matches": ["<all_urls>"]
     }
   ]

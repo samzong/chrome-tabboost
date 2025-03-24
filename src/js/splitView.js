@@ -1,6 +1,6 @@
 // splitView.js - 实现分屏模式功能
 
-import { getCurrentTab } from "./utils.js";
+import { getCurrentTab } from "../utils/utils.js";
 
 // 保存分屏状态的变量
 let isSplitViewActive = false;

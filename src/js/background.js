@@ -1,4 +1,4 @@
-import { getCurrentTab, showNotification } from "./utils.js";
+import { getCurrentTab, showNotification } from "../utils/utils.js";
 import { createSplitView, closeSplitView, toggleSplitView, updateRightView, canLoadInIframe } from "./splitView.js";
 
 // 监听插件图标点击事件
