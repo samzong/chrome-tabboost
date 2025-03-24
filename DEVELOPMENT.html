@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>开发指南 chrome-tabboost</title>
+    <meta name="description" content="为了开发和测试 Chrome 扩展，你需要生成自己的密钥文件。这个密钥用于签名你的扩展。">
+    <meta name="keywords" content="Chrome,Extension,Arc,TabBoost,Chrome Extension,Arc Browser,Chrome TabBoost">
+    <link rel="stylesheet" type="text/css" href="css/main.css?v=1.34.1">
+    <link rel="stylesheet" type="text/css" href="css/tocbot.css?v=1.34.1">
+    <link rel="stylesheet" type="text/css" href="css/media.css?v=1.34.1">
+    <link rel="stylesheet" type="text/css" href="css/sidebar.css?v=1.34.1">
+    <link rel="stylesheet" type="text/css" href="css/copy.css?v=1.34.1">
+    <link rel="stylesheet" type="text/css" href="css/demo-preview.css?v=1.34.1">
+    <script src="js/copy.js?v=1.34.1"></script>
+    <script src="js/dark-mode.js?v=1.34.1"></script>
+    <script src="js/markdown-style.js?v=1.34.1"></script>
+  </head>
+  <body id="idoctotop"><a href="#idoctotop" class="gototop">top</a>
+    <header class="header">
+      <article class="inner warpper" style="max-width:720px;"><a class="logo" href="index.html"><span class="title">chrome-tabboost</span></a>
+        <div class="content">
+          <ul class="menu">
+            <li><a href="index.html" target="" class="">Home</a></li>
+            <li><a href="https://github.com/samzong" target="__blank" class="">About</a></li>
+          </ul><a href="https://github.com/samzong/chrome-tabboost" target="_blank" rel="noopener noreferrer" title="Github" name="Github" class="github"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+            </svg></a>
+          <dark-mode permanent=""></dark-mode>
+        </div>
+      </article>
+    </header>
+    <div style="max-width:720px;" class="warpper-content warpper notocs">
+      <markdown-style theme-auto-switch-disabled="">
+        <h1 id="开发指南"><a aria-hidden="true" tabindex="-1" href="#开发指南" class="anchor"><span class="icon icon-link"></span></a>开发指南</h1>
+        <h2 id="环境设置"><a aria-hidden="true" tabindex="-1" href="#环境设置" class="anchor"><span class="icon icon-link"></span></a>环境设置</h2>
+        <ol>
+          <li>克隆仓库：</li>
+        </ol>
+        <pre class="language-bash"><code class="language-bash code-highlight"><span class="code-line line-number" line="1"><span class="token function">git</span> clone https://github.com/samzong/chrome-tabboost.git
+</span><span class="code-line line-number" line="2"><span class="token builtin class-name">cd</span> chrome-tabboost
+</span></code><input type="hidden" value="git clone https://github.com/samzong/chrome-tabboost.git
+cd chrome-tabboost
+"><div onclick="copied(this)" class="copied"><svg class="octicon-copy" aria-hidden="true" viewBox="0 0 16 16" fill="currentColor" height="12" width="12"><path fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path><path fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path></svg><svg class="octicon-check" aria-hidden="true" viewBox="0 0 16 16" fill="currentColor" height="12" width="12"><path fill-rule="evenodd" d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"></path></svg></div></pre>
+        <ol start="2">
+          <li>安装依赖：</li>
+        </ol>
+        <pre class="language-bash"><code class="language-bash code-highlight"><span class="code-line line-number" line="1"><span class="token function">npm</span> <span class="token function">install</span>
+</span><span class="code-line line-number" line="2"><span class="token comment"># 或</span>
+</span><span class="code-line line-number" line="3"><span class="token function">yarn</span>
+</span></code><input type="hidden" value="npm install
+# 或
+yarn
+"><div onclick="copied(this)" class="copied"><svg class="octicon-copy" aria-hidden="true" viewBox="0 0 16 16" fill="currentColor" height="12" width="12"><path fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path><path fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path></svg><svg class="octicon-check" aria-hidden="true" viewBox="0 0 16 16" fill="currentColor" height="12" width="12"><path fill-rule="evenodd" d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"></path></svg></div></pre>
+        <h2 id="密钥管理"><a aria-hidden="true" tabindex="-1" href="#密钥管理" class="anchor"><span class="icon icon-link"></span></a>密钥管理</h2>
+        <p>为了开发和测试 Chrome 扩展，你需要生成自己的密钥文件。这个密钥用于签名你的扩展。</p>
+        <ol>
+          <li>生成新的密钥：</li>
+        </ol>
+        <pre class="language-bash"><code class="language-bash code-highlight"><span class="code-line line-number" line="1">openssl genrsa <span class="token parameter variable">-out</span> key.pem <span class="token number">2048</span>
+</span></code><input type="hidden" value="openssl genrsa -out key.pem 2048
+"><div onclick="copied(this)" class="copied"><svg class="octicon-copy" aria-hidden="true" viewBox="0 0 16 16" fill="currentColor" height="12" width="12"><path fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path><path fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path></svg><svg class="octicon-check" aria-hidden="true" viewBox="0 0 16 16" fill="currentColor" height="12" width="12"><path fill-rule="evenodd" d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"></path></svg></div></pre>
+        <p>⚠️ 重要提示：</p>
+        <ul>
+          <li>永远不要将 <code>key.pem</code> 提交到版本控制系统</li>
+          <li>将密钥文件保存在安全的地方</li>
+          <li>每个开发者应该使用自己的密钥</li>
+          <li>生产环境的密钥应该单独保管</li>
+        </ul>
+        <h2 id="开发流程"><a aria-hidden="true" tabindex="-1" href="#开发流程" class="anchor"><span class="icon icon-link"></span></a>开发流程</h2>
+        <ol>
+          <li>开发模式：</li>
+        </ol>
+        <pre class="language-bash"><code class="language-bash code-highlight"><span class="code-line line-number" line="1"><span class="token function">npm</span> run dev
+</span></code><input type="hidden" value="npm run dev
+"><div onclick="copied(this)" class="copied"><svg class="octicon-copy" aria-hidden="true" viewBox="0 0 16 16" fill="currentColor" height="12" width="12"><path fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path><path fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path></svg><svg class="octicon-check" aria-hidden="true" viewBox="0 0 16 16" fill="currentColor" height="12" width="12"><path fill-rule="evenodd" d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"></path></svg></div></pre>
+        <ol start="2">
+          <li>构建扩展：</li>
+        </ol>
+        <pre class="language-bash"><code class="language-bash code-highlight"><span class="code-line line-number" line="1"><span class="token function">npm</span> run build
+</span></code><input type="hidden" value="npm run build
+"><div onclick="copied(this)" class="copied"><svg class="octicon-copy" aria-hidden="true" viewBox="0 0 16 16" fill="currentColor" height="12" width="12"><path fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path><path fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path></svg><svg class="octicon-check" aria-hidden="true" viewBox="0 0 16 16" fill="currentColor" height="12" width="12"><path fill-rule="evenodd" d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"></path></svg></div></pre>
+        <ol start="3">
+          <li>打包扩展：</li>
+        </ol>
+        <pre class="language-bash"><code class="language-bash code-highlight"><span class="code-line line-number" line="1"><span class="token comment"># 生成 zip 文件（用于 Chrome Web Store）</span>
+</span><span class="code-line line-number" line="2"><span class="token function">npm</span> run <span class="token function">zip</span>
+</span><span class="code-line line-number" line="3">
+</span><span class="code-line line-number" line="4"><span class="token comment"># 生成 crx 文件（用于本地测试）</span>
+</span><span class="code-line line-number" line="5"><span class="token function">npm</span> run package
+</span></code><input type="hidden" value="# 生成 zip 文件（用于 Chrome Web Store）
+npm run zip
+
+# 生成 crx 文件（用于本地测试）
+npm run package
+"><div onclick="copied(this)" class="copied"><svg class="octicon-copy" aria-hidden="true" viewBox="0 0 16 16" fill="currentColor" height="12" width="12"><path fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path><path fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path></svg><svg class="octicon-check" aria-hidden="true" viewBox="0 0 16 16" fill="currentColor" height="12" width="12"><path fill-rule="evenodd" d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"></path></svg></div></pre>
+        <ol start="4">
+          <li>验证扩展：</li>
+        </ol>
+        <pre class="language-bash"><code class="language-bash code-highlight"><span class="code-line line-number" line="1"><span class="token function">npm</span> run validate
+</span></code><input type="hidden" value="npm run validate
+"><div onclick="copied(this)" class="copied"><svg class="octicon-copy" aria-hidden="true" viewBox="0 0 16 16" fill="currentColor" height="12" width="12"><path fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path><path fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path></svg><svg class="octicon-check" aria-hidden="true" viewBox="0 0 16 16" fill="currentColor" height="12" width="12"><path fill-rule="evenodd" d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"></path></svg></div></pre>
+        <h2 id="发布流程"><a aria-hidden="true" tabindex="-1" href="#发布流程" class="anchor"><span class="icon icon-link"></span></a>发布流程</h2>
+        <ol>
+          <li>设置环境变量：</li>
+        </ol>
+        <ul>
+          <li>复制 <code>.env.example</code> 到 <code>.env</code></li>
+          <li>填写必要的凭证信息</li>
+        </ul>
+        <ol start="2">
+          <li>发布到 Chrome Web Store：</li>
+        </ol>
+        <pre class="language-bash"><code class="language-bash code-highlight"><span class="code-line line-number" line="1"><span class="token comment"># 发布到测试用户</span>
+</span><span class="code-line line-number" line="2"><span class="token function">npm</span> run publish:test
+</span><span class="code-line line-number" line="3">
+</span><span class="code-line line-number" line="4"><span class="token comment"># 发布到所有用户</span>
+</span><span class="code-line line-number" line="5"><span class="token function">npm</span> run publish
+</span></code><input type="hidden" value="# 发布到测试用户
+npm run publish:test
+
+# 发布到所有用户
+npm run publish
+"><div onclick="copied(this)" class="copied"><svg class="octicon-copy" aria-hidden="true" viewBox="0 0 16 16" fill="currentColor" height="12" width="12"><path fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path><path fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path></svg><svg class="octicon-check" aria-hidden="true" viewBox="0 0 16 16" fill="currentColor" height="12" width="12"><path fill-rule="evenodd" d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"></path></svg></div></pre>
+        <h2 id="注意事项"><a aria-hidden="true" tabindex="-1" href="#注意事项" class="anchor"><span class="icon icon-link"></span></a>注意事项</h2>
+        <ol>
+          <li>密钥安全：</li>
+        </ol>
+        <ul>
+          <li>生产环境的密钥应该由项目管理员安全保管</li>
+          <li>开发者使用自己的本地密钥进行测试</li>
+          <li>不要在任何公开场合分享密钥</li>
+        </ul>
+        <ol start="2">
+          <li>版本控制：</li>
+        </ol>
+        <ul>
+          <li>所有构建产物都不应该提交到仓库</li>
+          <li>确保 <code>.gitignore</code> 正确配置</li>
+          <li>定期检查是否有敏感信息被意外提交</li>
+        </ul>
+        <ol start="3">
+          <li>最佳实践：</li>
+        </ol>
+        <ul>
+          <li>每次发布前运行验证</li>
+          <li>保持版本号的正确更新</li>
+          <li>记录所有重要的更改</li>
+        </ul>
+      </markdown-style>
+    </div>
+    <script src="js/demo-preview.js?v=1.34.1"></script>
+    <div class="footer warpper" style="max-width:720px;">Copyright © 2025 <a href="https://github.com/samzong" target="_blank">samzong</a><br></div>
+    <script src="js/tocbot.js?v=1.34.1"></script>
+  </body>
+</html>
