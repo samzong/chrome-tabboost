@@ -1,6 +1,12 @@
 // splitView.js - 实现分屏模式功能
 
 import { getCurrentTab } from "../utils/utils.js";
+import storageCache from "../utils/storageCache.js";
+
+// 确保缓存在使用前初始化
+storageCache.init().catch(error => {
+  console.error("splitView: 初始化存储缓存失败:", error);
+});
 
 // 保存分屏状态的变量
 let isSplitViewActive = false;
@@ -127,7 +133,7 @@ export async function updateRightView(url) {
 }
 
 // 检查是否可以在iframe中加载URL
-export function canLoadInIframe(url) {
+export async function canLoadInIframe(url) {
   try {
     // 已知不允许在iframe中加载的网站列表
     const restrictedDomains = [
@@ -183,25 +189,24 @@ export function canLoadInIframe(url) {
       }
       
       // 检查是否在用户自定义的忽略列表中
-      return new Promise((resolve) => {
-        chrome.storage.sync.get(['iframeIgnoreEnabled', 'iframeIgnoreList'], (result) => {
-          // 如果功能未启用，直接返回true
-          if (!result.iframeIgnoreEnabled) {
-            resolve(true);
-            return;
-          }
-          
-          // 如果忽略列表不存在或为空，直接返回true
-          if (!result.iframeIgnoreList || !Array.isArray(result.iframeIgnoreList) || result.iframeIgnoreList.length === 0) {
-            resolve(true);
-            return;
-          }
-          
-          // 检查域名是否在忽略列表中
-          const isIgnored = result.iframeIgnoreList.some(domain => hostname.includes(domain));
-          resolve(!isIgnored);
-        });
+      const result = await storageCache.get({
+        iframeIgnoreEnabled: false,
+        iframeIgnoreList: []
       });
+      
+      // 如果功能未启用，直接返回true
+      if (!result.iframeIgnoreEnabled) {
+        return true;
+      }
+      
+      // 如果忽略列表不存在或为空，直接返回true
+      if (!result.iframeIgnoreList || !Array.isArray(result.iframeIgnoreList) || result.iframeIgnoreList.length === 0) {
+        return true;
+      }
+      
+      // 检查域名是否在忽略列表中
+      const isIgnored = result.iframeIgnoreList.some(domain => hostname.includes(domain));
+      return !isIgnored;
     } catch (e) {
       console.warn("URL解析错误:", e);
       return false; // URL无效，不尝试加载

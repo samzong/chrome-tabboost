@@ -1,22 +1,27 @@
 import { getCurrentTab, showNotification } from "../utils/utils.js";
 import { createSplitView, closeSplitView, toggleSplitView, updateRightView, canLoadInIframe } from "./splitView.js";
+import storageCache from "../utils/storageCache.js";
+
+// 初始化存储缓存
+storageCache.init().catch(error => {
+  console.error("初始化存储缓存失败:", error);
+});
 
 // 监听插件图标点击事件
 chrome.action.onClicked.addListener(async (tab) => {
   // 获取默认操作
-  chrome.storage.sync.get(["defaultAction"], (result) => {
-    const defaultAction = result.defaultAction || "open-options"; // 设置默认操作为打开设置页面
+  const result = await storageCache.get({ defaultAction: "open-options" });
+  const defaultAction = result.defaultAction; // 设置默认操作为打开设置页面
 
-    if (defaultAction === "duplicate-tab") {
-      duplicateCurrentTab();
-    } else if (defaultAction === "copy-url") {
-      copyCurrentTabUrl();
-    } else if (defaultAction === "open-options") {
-      openOptionsPage();
-    } else if (defaultAction === "toggle-split-view") {
-      toggleSplitView();
-    }
-  });
+  if (defaultAction === "duplicate-tab") {
+    duplicateCurrentTab();
+  } else if (defaultAction === "copy-url") {
+    copyCurrentTabUrl();
+  } else if (defaultAction === "open-options") {
+    openOptionsPage();
+  } else if (defaultAction === "toggle-split-view") {
+    toggleSplitView();
+  }
 });
 
 // 监听快捷键命令
