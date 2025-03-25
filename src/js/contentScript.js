@@ -107,43 +107,37 @@ async function createPopup(url) {
       return;
     }
 
-    // 检查URL是否在忽略列表中
-    try {
-      const result = await storageCache.get({
-        iframeIgnoreEnabled: false,
-        iframeIgnoreList: []
-      });
-      
-      // 如果功能未启用，直接创建弹窗
-      if (!result.iframeIgnoreEnabled) {
-        createPopupDOM(url);
-        return;
-      }
-      
-      // 如果忽略列表不存在或为空，直接创建弹窗
-      if (!result.iframeIgnoreList || !Array.isArray(result.iframeIgnoreList) || result.iframeIgnoreList.length === 0) {
-        createPopupDOM(url);
-        return;
-      }
-      
-      // 解析URL获取域名
-      const urlObj = new URL(url);
-      const hostname = urlObj.hostname;
-      
-      // 检查域名是否在忽略列表中
-      const isIgnored = result.iframeIgnoreList.some(domain => hostname.includes(domain));
-      
-      if (isIgnored) {
-        // 如果在忽略列表中，直接在新标签页中打开
-        console.log(`chrome-tabboost: URL ${url} is in ignore list, opening in new tab`);
-        window.open(url, "_blank");
-      } else {
-        // 否则创建弹窗
-        createPopupDOM(url);
-      }
-    } catch (error) {
-      console.error("chrome-tabboost: Error checking ignore list:", error);
-      // 出错时默认创建弹窗
+    // 获取忽略列表相关设置
+    const config = await storageCache.get({
+      iframeIgnoreEnabled: false,
+      iframeIgnoreList: []
+    });
+    
+    // 如果功能未启用，直接创建弹窗
+    if (!config.iframeIgnoreEnabled) {
+      createPopupDOM(url);
+      return;
+    }
+    
+    // 如果忽略列表不存在或为空，直接创建弹窗
+    if (!config.iframeIgnoreList || !Array.isArray(config.iframeIgnoreList) || config.iframeIgnoreList.length === 0) {
+      createPopupDOM(url);
+      return;
+    }
+    
+    // 解析URL获取域名
+    const urlObj = new URL(url);
+    const hostname = urlObj.hostname;
+    
+    // 检查域名是否在忽略列表中
+    const isIgnored = config.iframeIgnoreList.some(domain => hostname.includes(domain));
+    
+    if (isIgnored) {
+      // 如果在忽略列表中，直接在新标签页中打开
+      console.log(`chrome-tabboost: URL ${url} is in ignore list, opening in new tab`);
+      window.open(url, "_blank");
+    } else {
+      // 否则创建弹窗
       createPopupDOM(url);
     }
   } catch (error) {
@@ -175,11 +169,13 @@ async function createPopupDOM(url) {
     const popupContent = document.createElement("div");
     popupContent.id = "tabboost-popup-content";
     
-    // 获取用户的弹窗大小设置并应用
+    // 一次性获取所有需要的设置
     const settings = await storageCache.get({
       popupSizePreset: 'default',
       customWidth: 80,
-      customHeight: 80
+      customHeight: 80,
+      autoAddToIgnoreList: false,
+      iframeIgnoreList: []
     });
     
     // 应用弹窗大小
@@ -267,6 +263,12 @@ async function createPopupDOM(url) {
     // 标记是否已处理过加载失败
     let hasHandledFailure = false;
     
+    // 保存所有定时器引用，便于一次性清理
+    const timers = {
+      loadTimeout: null,
+      checkInterval: null
+    };
+    
     // 创建一个函数来处理加载失败
     const handleLoadFailure = async (reason) => {
       if (hasHandledFailure) return; // 防止重复处理
@@ -276,17 +278,18 @@ async function createPopupDOM(url) {
       loader.style.display = "none";
       errorMsg.classList.add("show");
       
-      // 检查是否需要自动添加到忽略列表
-      const result = await storageCache.get({ autoAddToIgnoreList: false });
-      if (result.autoAddToIgnoreList) {
+      // 清理所有定时器
+      clearAllTimers();
+      
+      // 使用之前已经获取的settings中的autoAddToIgnoreList
+      if (settings.autoAddToIgnoreList) {
         try {
           // 解析URL获取域名
           const urlObj = new URL(url);
           const hostname = urlObj.hostname;
           
-          // 添加到忽略列表
-          const ignoreResult = await storageCache.get({ iframeIgnoreList: [] });
-          let ignoreList = ignoreResult.iframeIgnoreList;
+          // 使用之前已经获取的ignoreList
+          let ignoreList = settings.iframeIgnoreList;
           
           // 确保ignoreList是数组
           if (!Array.isArray(ignoreList)) {
@@ -313,6 +316,18 @@ async function createPopupDOM(url) {
       }
     };
     
+    // 清理所有定时器的函数
+    const clearAllTimers = () => {
+      if (timers.loadTimeout) {
+        clearTimeout(timers.loadTimeout);
+        timers.loadTimeout = null;
+      }
+      if (timers.checkInterval) {
+        clearInterval(timers.checkInterval);
+        timers.checkInterval = null;
+      }
+    };
+    
     // 监听 iframe 加载错误
     iframe.onerror = () => {
       handleLoadFailure("iframe error event");
@@ -321,7 +336,12 @@ async function createPopupDOM(url) {
     // 监听 iframe 加载完成
     iframe.onload = () => {
       try {
-        clearTimeout(loadTimeout);
+        // 清除超时定时器
+        if (timers.loadTimeout) {
+          clearTimeout(timers.loadTimeout);
+          timers.loadTimeout = null;
+        }
+        
         console.log("chrome-tabboost: Iframe content loaded");
         
         // 检查iframe是否真的加载成功
@@ -340,7 +360,10 @@ async function createPopupDOM(url) {
           return;
         }
         
-        // 加载成功，隐藏加载指示器
+        // 加载成功，停止所有检查
+        clearAllTimers();
+        
+        // 隐藏加载指示器
         loader.style.display = "none";
 
         // 更新标题为 iframe 中的页面标题
@@ -368,7 +391,7 @@ async function createPopupDOM(url) {
     console.log("chrome-tabboost: Iframe created and URL set");
 
     // 设置超时（例如 5 秒）
-    const loadTimeout = setTimeout(() => {
+    timers.loadTimeout = setTimeout(() => {
       handleLoadFailure("加载超时");
     }, 5000);
 
@@ -409,9 +432,8 @@ async function createPopupDOM(url) {
         const urlObj = new URL(url);
         const hostname = urlObj.hostname;
         
-        // 添加到忽略列表
-        const result = await storageCache.get({ iframeIgnoreList: [] });
-        let ignoreList = result.iframeIgnoreList;
+        // 使用之前已获取的ignoreList
+        let ignoreList = settings.iframeIgnoreList;
         
         // 确保ignoreList是数组
         if (!Array.isArray(ignoreList)) {
@@ -445,14 +467,17 @@ async function createPopupDOM(url) {
       }
     });
     
-    // 添加额外的检测机制 - 定期检查
+    // 添加额外的检测机制 - 使用间隔检查而不是多个setTimeout
     let checkCount = 0;
-    const checkInterval = setInterval(() => {
+    timers.checkInterval = setInterval(() => {
       checkCount++;
       
       // 如果已经处理过失败，或者检查次数达到上限，停止检查
       if (hasHandledFailure || checkCount >= 5) {
-        clearInterval(checkInterval);
+        if (timers.checkInterval) {
+          clearInterval(timers.checkInterval);
+          timers.checkInterval = null;
+        }
         return;
       }
       
@@ -469,7 +494,6 @@ async function createPopupDOM(url) {
             iframeContent.includes('拒绝连接') ||
             iframeContent.includes('ERR_CONNECTION_REFUSED')) {
           handleLoadFailure('检测到拒绝连接错误');
-          clearInterval(checkInterval);
         }
       } catch (e) {
         // 忽略跨域错误
@@ -479,8 +503,8 @@ async function createPopupDOM(url) {
     // 函数：关闭弹窗
     function closePopup() {
       try {
-        // 清除检查间隔
-        clearInterval(checkInterval);
+        // 清除所有定时器
+        clearAllTimers();
         
         console.log("chrome-tabboost: Closing popup");
         popupOverlay.classList.remove("show");
@@ -495,6 +519,7 @@ async function createPopupDOM(url) {
           }
         });
         
+        // 使用单个定时器处理动画完成后的DOM移除
         setTimeout(() => {
           if (popupOverlay && popupOverlay.parentNode) {
             popupOverlay.parentNode.removeChild(popupOverlay);
