@@ -1,4 +1,17 @@
 // contentScript.js
+import storageCache from "../utils/storageCache.js";
+
+// 确保缓存系统在使用前初始化
+const initStorageCache = async () => {
+  try {
+    await storageCache.init();
+    console.log("chrome-tabboost: Storage cache initialized in content script");
+  } catch (error) {
+    console.error("chrome-tabboost: Failed to initialize storage cache:", error);
+  }
+};
+
+initStorageCache();
 
 console.log("chrome-tabboost: Content script loaded");
 
@@ -84,7 +97,7 @@ document.addEventListener(
 );
 
 // 函数：创建并显示弹窗
-function createPopup(url) {
+async function createPopup(url) {
   try {
     console.log(`chrome-tabboost: Creating popup for URL: ${url}`);
 
@@ -95,41 +108,44 @@ function createPopup(url) {
     }
 
     // 检查URL是否在忽略列表中
-    chrome.storage.sync.get(['iframeIgnoreEnabled', 'iframeIgnoreList'], (result) => {
-      try {
-        // 如果功能未启用，直接创建弹窗
-        if (!result.iframeIgnoreEnabled) {
-          createPopupDOM(url);
-          return;
-        }
-        
-        // 如果忽略列表不存在或为空，直接创建弹窗
-        if (!result.iframeIgnoreList || !Array.isArray(result.iframeIgnoreList) || result.iframeIgnoreList.length === 0) {
-          createPopupDOM(url);
-          return;
-        }
-        
-        // 解析URL获取域名
-        const urlObj = new URL(url);
-        const hostname = urlObj.hostname;
-        
-        // 检查域名是否在忽略列表中
-        const isIgnored = result.iframeIgnoreList.some(domain => hostname.includes(domain));
-        
-        if (isIgnored) {
-          // 如果在忽略列表中，直接在新标签页中打开
-          console.log(`chrome-tabboost: URL ${url} is in ignore list, opening in new tab`);
-          window.open(url, "_blank");
-        } else {
-          // 否则创建弹窗
-          createPopupDOM(url);
-        }
-      } catch (error) {
-        console.error("chrome-tabboost: Error checking ignore list:", error);
-        // 出错时默认创建弹窗
+    try {
+      const result = await storageCache.get({
+        iframeIgnoreEnabled: false,
+        iframeIgnoreList: []
+      });
+      
+      // 如果功能未启用，直接创建弹窗
+      if (!result.iframeIgnoreEnabled) {
+        createPopupDOM(url);
+        return;
+      }
+      
+      // 如果忽略列表不存在或为空，直接创建弹窗
+      if (!result.iframeIgnoreList || !Array.isArray(result.iframeIgnoreList) || result.iframeIgnoreList.length === 0) {
+        createPopupDOM(url);
+        return;
+      }
+      
+      // 解析URL获取域名
+      const urlObj = new URL(url);
+      const hostname = urlObj.hostname;
+      
+      // 检查域名是否在忽略列表中
+      const isIgnored = result.iframeIgnoreList.some(domain => hostname.includes(domain));
+      
+      if (isIgnored) {
+        // 如果在忽略列表中，直接在新标签页中打开
+        console.log(`chrome-tabboost: URL ${url} is in ignore list, opening in new tab`);
+        window.open(url, "_blank");
+      } else {
+        // 否则创建弹窗
         createPopupDOM(url);
       }
-    });
+    } catch (error) {
+      console.error("chrome-tabboost: Error checking ignore list:", error);
+      // 出错时默认创建弹窗
+      createPopupDOM(url);
+    }
   } catch (error) {
     console.error("chrome-tabboost: Error in createPopup:", error);
     // 出错时在新标签页中打开
@@ -138,7 +154,7 @@ function createPopup(url) {
 }
 
 // 函数：创建弹窗DOM
-function createPopupDOM(url) {
+async function createPopupDOM(url) {
   try {
     // 用于跟踪所有添加的事件监听器，以便在关闭弹窗时清理
     const eventListeners = [];
@@ -160,21 +176,21 @@ function createPopupDOM(url) {
     popupContent.id = "tabboost-popup-content";
     
     // 获取用户的弹窗大小设置并应用
-    chrome.storage.sync.get({
+    const settings = await storageCache.get({
       popupSizePreset: 'default',
       customWidth: 80,
       customHeight: 80
-    }, (settings) => {
-      // 应用弹窗大小
-      if (settings.popupSizePreset === 'large') {
-        popupContent.classList.add('size-large');
-      } else if (settings.popupSizePreset === 'custom') {
-        popupContent.classList.add('size-custom');
-        popupContent.style.width = `${settings.customWidth}%`;
-        popupContent.style.height = `${settings.customHeight}%`;
-      }
-      // 默认尺寸不需要额外处理
     });
+    
+    // 应用弹窗大小
+    if (settings.popupSizePreset === 'large') {
+      popupContent.classList.add('size-large');
+    } else if (settings.popupSizePreset === 'custom') {
+      popupContent.classList.add('size-custom');
+      popupContent.style.width = `${settings.customWidth}%`;
+      popupContent.style.height = `${settings.customHeight}%`;
+    }
+    // 默认尺寸不需要额外处理
 
     // 创建工具栏
     const toolbar = document.createElement("div");
@@ -252,7 +268,7 @@ function createPopupDOM(url) {
     let hasHandledFailure = false;
     
     // 创建一个函数来处理加载失败
-    const handleLoadFailure = (reason) => {
+    const handleLoadFailure = async (reason) => {
       if (hasHandledFailure) return; // 防止重复处理
       hasHandledFailure = true;
       
@@ -261,43 +277,40 @@ function createPopupDOM(url) {
       errorMsg.classList.add("show");
       
       // 检查是否需要自动添加到忽略列表
-      chrome.storage.sync.get(['autoAddToIgnoreList'], (result) => {
-        if (result.autoAddToIgnoreList) {
-          try {
-            // 解析URL获取域名
-            const urlObj = new URL(url);
-            const hostname = urlObj.hostname;
-            
-            // 添加到忽略列表
-            chrome.storage.sync.get(['iframeIgnoreList'], (result) => {
-              let ignoreList = result.iframeIgnoreList || [];
-              
-              // 确保ignoreList是数组
-              if (!Array.isArray(ignoreList)) {
-                ignoreList = [];
-              }
-              
-              // 检查域名是否已在列表中
-              if (!ignoreList.includes(hostname)) {
-                ignoreList.push(hostname);
-                
-                // 保存更新后的列表
-                chrome.storage.sync.set({ iframeIgnoreList: ignoreList }, () => {
-                  console.log(`chrome-tabboost: Automatically added ${hostname} to ignore list`);
-                  
-                  // 显示通知
-                  const autoAddNotice = document.createElement('p');
-                  autoAddNotice.className = 'tabboost-auto-add-notice';
-                  autoAddNotice.textContent = `已自动将 ${hostname} 添加到忽略列表，下次将直接在新标签页中打开`;
-                  errorMsg.appendChild(autoAddNotice);
-                });
-              }
-            });
-          } catch (error) {
-            console.error("chrome-tabboost: Error auto-adding to ignore list:", error);
+      const result = await storageCache.get({ autoAddToIgnoreList: false });
+      if (result.autoAddToIgnoreList) {
+        try {
+          // 解析URL获取域名
+          const urlObj = new URL(url);
+          const hostname = urlObj.hostname;
+          
+          // 添加到忽略列表
+          const ignoreResult = await storageCache.get({ iframeIgnoreList: [] });
+          let ignoreList = ignoreResult.iframeIgnoreList;
+          
+          // 确保ignoreList是数组
+          if (!Array.isArray(ignoreList)) {
+            ignoreList = [];
           }
+          
+          // 检查域名是否已在列表中
+          if (!ignoreList.includes(hostname)) {
+            ignoreList.push(hostname);
+            
+            // 保存更新后的列表
+            await storageCache.set({ iframeIgnoreList: ignoreList });
+            console.log(`chrome-tabboost: Automatically added ${hostname} to ignore list`);
+            
+            // 显示通知
+            const autoAddNotice = document.createElement('p');
+            autoAddNotice.className = 'tabboost-auto-add-notice';
+            autoAddNotice.textContent = `已自动将 ${hostname} 添加到忽略列表，下次将直接在新标签页中打开`;
+            errorMsg.appendChild(autoAddNotice);
+          }
+        } catch (error) {
+          console.error("chrome-tabboost: Error auto-adding to ignore list:", error);
         }
-      });
+      }
     };
     
     // 监听 iframe 加载错误
@@ -389,7 +402,7 @@ function createPopupDOM(url) {
 
     // 监听添加到忽略列表按钮
     const addToIgnoreButton = errorMsg.querySelector("#tabboost-add-to-ignore");
-    addTrackedEventListener(addToIgnoreButton, "click", () => {
+    addTrackedEventListener(addToIgnoreButton, "click", async () => {
       console.log("chrome-tabboost: Add to ignore list button clicked");
       try {
         // 解析URL获取域名
@@ -397,37 +410,35 @@ function createPopupDOM(url) {
         const hostname = urlObj.hostname;
         
         // 添加到忽略列表
-        chrome.storage.sync.get(['iframeIgnoreList'], (result) => {
-          let ignoreList = result.iframeIgnoreList || [];
+        const result = await storageCache.get({ iframeIgnoreList: [] });
+        let ignoreList = result.iframeIgnoreList;
+        
+        // 确保ignoreList是数组
+        if (!Array.isArray(ignoreList)) {
+          ignoreList = [];
+        }
+        
+        // 检查域名是否已在列表中
+        if (!ignoreList.includes(hostname)) {
+          ignoreList.push(hostname);
           
-          // 确保ignoreList是数组
-          if (!Array.isArray(ignoreList)) {
-            ignoreList = [];
-          }
+          // 保存更新后的列表
+          await storageCache.set({ iframeIgnoreList: ignoreList });
+          console.log(`chrome-tabboost: Added ${hostname} to ignore list`);
+          // 显示成功消息
+          alert(`已将 ${hostname} 添加到忽略列表，下次将直接在新标签页中打开`);
           
-          // 检查域名是否已在列表中
-          if (!ignoreList.includes(hostname)) {
-            ignoreList.push(hostname);
-            
-            // 保存更新后的列表
-            chrome.storage.sync.set({ iframeIgnoreList: ignoreList }, () => {
-              console.log(`chrome-tabboost: Added ${hostname} to ignore list`);
-              // 显示成功消息
-              alert(`已将 ${hostname} 添加到忽略列表，下次将直接在新标签页中打开`);
-              
-              // 关闭弹窗并在新标签页中打开
-              window.open(url, "_blank");
-              closePopup();
-            });
-          } else {
-            console.log(`chrome-tabboost: ${hostname} is already in ignore list`);
-            alert(`${hostname} 已在忽略列表中`);
-            
-            // 关闭弹窗并在新标签页中打开
-            window.open(url, "_blank");
-            closePopup();
-          }
-        });
+          // 关闭弹窗并在新标签页中打开
+          window.open(url, "_blank");
+          closePopup();
+        } else {
+          console.log(`chrome-tabboost: ${hostname} is already in ignore list`);
+          alert(`${hostname} 已在忽略列表中`);
+          
+          // 关闭弹窗并在新标签页中打开
+          window.open(url, "_blank");
+          closePopup();
+        }
       } catch (error) {
         console.error("chrome-tabboost: Error adding to ignore list:", error);
         alert("添加到忽略列表失败");
