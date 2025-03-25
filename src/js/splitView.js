@@ -13,6 +13,64 @@ let isSplitViewActive = false;
 let leftUrl = "";
 let rightUrl = "";
 
+// 提取常量，避免重复创建
+const RESTRICTED_DOMAINS = [
+  'accounts.google.com', 
+  'mail.google.com', 
+  'www.youtube.com',
+  'youtube.com',
+  'github.com',
+  'facebook.com',
+  'twitter.com',
+  'x.com',
+  'linkedin.com',
+  'instagram.com',
+  'netflix.com',
+  'amazon.com',
+  'apple.com',
+  'microsoft.com',
+  'login',   // 包含login的域名通常不允许iframe加载
+  'signin',  // 包含signin的域名通常不允许iframe加载
+  'auth',    // 包含auth的域名通常不允许iframe加载
+  'account'  // 包含account的域名通常不允许iframe加载
+];
+
+const EXACT_MATCH_DOMAINS = ['x.com', 'twitter.com'];
+
+// 缓存用户配置
+let userConfigCache = {
+  iframeIgnoreEnabled: false,
+  iframeIgnoreList: [],
+  lastUpdated: 0
+};
+
+// 配置缓存有效期（毫秒）
+const CONFIG_CACHE_TTL = 60 * 1000; // 1分钟
+
+// 更新用户配置缓存
+async function updateUserConfigCache() {
+  try {
+    // 检查缓存是否过期
+    const now = Date.now();
+    if (now - userConfigCache.lastUpdated > CONFIG_CACHE_TTL) {
+      const result = await storageCache.get({
+        iframeIgnoreEnabled: false,
+        iframeIgnoreList: []
+      });
+      
+      userConfigCache = {
+        iframeIgnoreEnabled: result.iframeIgnoreEnabled,
+        iframeIgnoreList: result.iframeIgnoreList || [],
+        lastUpdated: now
+      };
+      
+      console.log("分屏视图: 用户配置缓存已更新");
+    }
+  } catch (error) {
+    console.error("分屏视图: 更新用户配置缓存失败:", error);
+  }
+}
+
 // 创建分屏视图
 export async function createSplitView() {
   try {
@@ -135,28 +193,6 @@ export async function updateRightView(url) {
 // 检查是否可以在iframe中加载URL
 export async function canLoadInIframe(url) {
   try {
-    // 已知不允许在iframe中加载的网站列表
-    const restrictedDomains = [
-      'accounts.google.com', 
-      'mail.google.com', 
-      'www.youtube.com',
-      'youtube.com',
-      'github.com',
-      'facebook.com',
-      'twitter.com',
-      'x.com',
-      'linkedin.com',
-      'instagram.com',
-      'netflix.com',
-      'amazon.com',
-      'apple.com',
-      'microsoft.com',
-      'login',   // 包含login的域名通常不允许iframe加载
-      'signin',  // 包含signin的域名通常不允许iframe加载
-      'auth',    // 包含auth的域名通常不允许iframe加载
-      'account'  // 包含account的域名通常不允许iframe加载
-    ];
-    
     // 检查URL是否有效
     if (!url || url === 'about:blank') {
       return false;
@@ -175,8 +211,7 @@ export async function canLoadInIframe(url) {
       
       // 特殊处理某些已知的网站
       // 这些网站需要精确匹配，而不是部分匹配
-      const exactMatchDomains = ['x.com', 'twitter.com'];
-      for (const domain of exactMatchDomains) {
+      for (const domain of EXACT_MATCH_DOMAINS) {
         if (hostname === domain || hostname === 'www.' + domain) {
           console.log(`精确匹配到限制域名: ${domain}`);
           return false;
@@ -184,28 +219,25 @@ export async function canLoadInIframe(url) {
       }
       
       // 检查是否在默认限制列表中
-      if (restrictedDomains.some(domain => hostname.includes(domain))) {
+      if (RESTRICTED_DOMAINS.some(domain => hostname.includes(domain))) {
         return false;
       }
       
-      // 检查是否在用户自定义的忽略列表中
-      const result = await storageCache.get({
-        iframeIgnoreEnabled: false,
-        iframeIgnoreList: []
-      });
+      // 更新用户配置缓存
+      await updateUserConfigCache();
       
       // 如果功能未启用，直接返回true
-      if (!result.iframeIgnoreEnabled) {
+      if (!userConfigCache.iframeIgnoreEnabled) {
         return true;
       }
       
       // 如果忽略列表不存在或为空，直接返回true
-      if (!result.iframeIgnoreList || !Array.isArray(result.iframeIgnoreList) || result.iframeIgnoreList.length === 0) {
+      if (!userConfigCache.iframeIgnoreList || !Array.isArray(userConfigCache.iframeIgnoreList) || userConfigCache.iframeIgnoreList.length === 0) {
         return true;
       }
       
       // 检查域名是否在忽略列表中
-      const isIgnored = result.iframeIgnoreList.some(domain => hostname.includes(domain));
+      const isIgnored = userConfigCache.iframeIgnoreList.some(domain => hostname.includes(domain));
       return !isIgnored;
     } catch (e) {
       console.warn("URL解析错误:", e);
@@ -277,204 +309,213 @@ function initSplitViewDOM(leftUrl) {
     
     // 将原始内容安全地保存为数据属性
     try {
+      // 避免将过大的内容存储为属性值，可能会导致性能问题
+      if (originalContent.length > 500000) { // 限制为约500KB
+        // 仅保存关键信息
+        originalContent = `<html><head><title>${document.title}</title></head><body><div class="tabboost-restored-content">原始内容太大，无法保存。请刷新页面。</div></body></html>`;
+      }
       document.body.setAttribute('data-tabboost-original-content', originalContent);
     } catch (e) {
       console.warn("无法保存原始内容:", e);
     }
     
-    // 使用DocumentFragment创建完整的DOM结构，减少页面重绘
-    const fragment = document.createDocumentFragment();
-    
-    // 创建分屏容器
-    const splitViewContainer = document.createElement('div');
-    splitViewContainer.id = 'tabboost-split-view-container';
-    
-    // 创建顶部控制栏
-    const controlBar = document.createElement('div');
-    controlBar.id = 'tabboost-split-controls';
-    
-    // 关闭按钮
-    const closeButton = document.createElement('button');
-    closeButton.id = 'tabboost-split-close';
-    closeButton.innerText = '关闭分屏';
-    closeButton.dataset.action = 'close-split-view';
-    
-    controlBar.appendChild(closeButton);
-    splitViewContainer.appendChild(controlBar);
-    
-    // 创建左侧区域
-    const leftView = document.createElement('div');
-    leftView.id = 'tabboost-split-left';
-    
-    // 添加左侧关闭按钮
-    const leftCloseButton = document.createElement('button');
-    leftCloseButton.className = 'tabboost-view-close';
-    leftCloseButton.innerText = '×';
-    leftCloseButton.title = '关闭左侧内容并保留右侧';
-    leftCloseButton.dataset.action = 'close-left-view';
-    
-    leftView.appendChild(leftCloseButton);
-    
-    // 创建左侧错误提示
-    const leftErrorContainer = document.createElement('div');
-    leftErrorContainer.id = 'tabboost-left-error';
-    leftErrorContainer.className = 'tabboost-iframe-error';
-    leftErrorContainer.innerHTML = `
-      <div class="tabboost-error-content">
-        <h3>无法在分屏中加载此内容</h3>
-        <p>此网站可能不允许在iframe中嵌入显示</p>
-        <button class="tabboost-open-in-tab" data-url="${leftUrl}">在新标签页中打开</button>
-        <button class="tabboost-add-to-ignore" data-url="${leftUrl}">添加到忽略列表</button>
-      </div>
-    `;
-    leftView.appendChild(leftErrorContainer);
-    
-    // 创建左侧iframe
-    const leftIframe = document.createElement('iframe');
-    leftIframe.id = 'tabboost-left-iframe';
-    leftIframe.src = leftUrl;
-    leftIframe.setAttribute('sandbox', 'allow-same-origin allow-scripts allow-popups allow-forms');
-    leftIframe.setAttribute('loading', 'lazy');
-
-    // 增强iframe错误处理
-    try {
-      leftIframe.addEventListener('load', () => {
-        try {
-          // iframe加载成功，隐藏错误消息
-          leftErrorContainer.style.display = 'none';
-        } catch (e) {
-          console.warn("处理左侧iframe加载事件失败:", e);
-        }
-      });
+    // 使用单次DOM操作，减少重绘
+    const domOperations = () => {
+      // 使用DocumentFragment创建完整的DOM结构
+      const fragment = document.createDocumentFragment();
       
-      leftIframe.addEventListener('error', () => {
-        try {
-          // iframe加载失败，显示错误消息
-          leftErrorContainer.style.display = 'flex';
-        } catch (e) {
-          console.warn("处理左侧iframe错误事件失败:", e);
-        }
-      });
-    } catch (e) {
-      console.warn("添加左侧iframe事件监听器失败:", e);
-    }
+      // 创建分屏容器
+      const splitViewContainer = document.createElement('div');
+      splitViewContainer.id = 'tabboost-split-view-container';
+      
+      // 创建顶部控制栏
+      const controlBar = document.createElement('div');
+      controlBar.id = 'tabboost-split-controls';
+      
+      // 关闭按钮
+      const closeButton = document.createElement('button');
+      closeButton.id = 'tabboost-split-close';
+      closeButton.innerText = '关闭分屏';
+      closeButton.dataset.action = 'close-split-view';
+      
+      controlBar.appendChild(closeButton);
+      splitViewContainer.appendChild(controlBar);
+      
+      // 创建左侧区域
+      const leftView = document.createElement('div');
+      leftView.id = 'tabboost-split-left';
+      
+      // 添加左侧关闭按钮
+      const leftCloseButton = document.createElement('button');
+      leftCloseButton.className = 'tabboost-view-close';
+      leftCloseButton.innerText = '×';
+      leftCloseButton.title = '关闭左侧内容并保留右侧';
+      leftCloseButton.dataset.action = 'close-left-view';
+      
+      leftView.appendChild(leftCloseButton);
+      
+      // 创建左侧错误提示
+      const leftErrorContainer = document.createElement('div');
+      leftErrorContainer.id = 'tabboost-left-error';
+      leftErrorContainer.className = 'tabboost-iframe-error';
+      leftErrorContainer.innerHTML = `
+        <div class="tabboost-error-content">
+          <h3>无法在分屏中加载此内容</h3>
+          <p>此网站可能不允许在iframe中嵌入显示</p>
+          <button class="tabboost-open-in-tab" data-url="${leftUrl}">在新标签页中打开</button>
+          <button class="tabboost-add-to-ignore" data-url="${leftUrl}">添加到忽略列表</button>
+        </div>
+      `;
+      leftView.appendChild(leftErrorContainer);
+      
+      // 创建左侧iframe
+      const leftIframe = document.createElement('iframe');
+      leftIframe.id = 'tabboost-left-iframe';
+      leftIframe.src = leftUrl;
+      leftIframe.setAttribute('sandbox', 'allow-same-origin allow-scripts allow-popups allow-forms');
+      leftIframe.setAttribute('loading', 'lazy');
 
-    // 处理iframe无法加载的情况
-    leftIframe.onerror = () => {
-      leftErrorContainer.style.display = 'flex';
-    };
-
-    // 添加超时处理，防止iframe永久加载
-    setTimeout(() => {
-      if (leftIframe.contentDocument === null || leftIframe.contentWindow === null) {
-        // 可能被阻止加载，显示错误信息
-        leftErrorContainer.style.display = 'flex';
-      }
-    }, 5000);
-
-    leftView.appendChild(leftIframe);
-    splitViewContainer.appendChild(leftView);
-    
-    // 创建分隔线
-    const divider = document.createElement('div');
-    divider.id = 'tabboost-split-divider';
-    splitViewContainer.appendChild(divider);
-    
-    // 创建右侧区域
-    const rightView = document.createElement('div');
-    rightView.id = 'tabboost-split-right';
-    
-    // 添加右侧关闭按钮
-    const rightCloseButton = document.createElement('button');
-    rightCloseButton.className = 'tabboost-view-close';
-    rightCloseButton.innerText = '×';
-    rightCloseButton.title = '关闭右侧内容';
-    rightCloseButton.dataset.action = 'close-right-view';
-    
-    rightView.appendChild(rightCloseButton);
-    
-    // 创建右侧错误提示
-    const rightErrorContainer = document.createElement('div');
-    rightErrorContainer.id = 'tabboost-right-error';
-    rightErrorContainer.className = 'tabboost-iframe-error';
-    rightErrorContainer.innerHTML = `
-      <div class="tabboost-error-content">
-        <h3>无法在分屏中加载此内容</h3>
-        <p>此网站可能不允许在iframe中嵌入显示</p>
-        <button class="tabboost-open-in-tab" data-url="">在新标签页中打开</button>
-        <button class="tabboost-add-to-ignore" data-url="">添加到忽略列表</button>
-      </div>
-    `;
-    rightView.appendChild(rightErrorContainer);
-    
-    // 创建右侧iframe
-    const rightIframe = document.createElement('iframe');
-    rightIframe.id = 'tabboost-right-iframe';
-    rightIframe.src = 'about:blank';
-    rightIframe.setAttribute('sandbox', 'allow-same-origin allow-scripts allow-popups allow-forms');
-    rightIframe.setAttribute('loading', 'lazy');
-
-    // 增强iframe错误处理
-    try {
-      rightIframe.addEventListener('load', () => {
-        try {
-          if (rightIframe.src !== 'about:blank') {
+      // 增强iframe错误处理
+      try {
+        leftIframe.addEventListener('load', () => {
+          try {
             // iframe加载成功，隐藏错误消息
-            rightErrorContainer.style.display = 'none';
+            leftErrorContainer.style.display = 'none';
+          } catch (e) {
+            console.warn("处理左侧iframe加载事件失败:", e);
           }
-        } catch (e) {
-          console.warn("处理右侧iframe加载事件失败:", e);
+        });
+        
+        leftIframe.addEventListener('error', () => {
+          try {
+            // iframe加载失败，显示错误消息
+            leftErrorContainer.style.display = 'flex';
+          } catch (e) {
+            console.warn("处理左侧iframe错误事件失败:", e);
+          }
+        });
+      } catch (e) {
+        console.warn("添加左侧iframe事件监听器失败:", e);
+      }
+
+      // 处理iframe无法加载的情况
+      leftIframe.onerror = () => {
+        leftErrorContainer.style.display = 'flex';
+      };
+
+      // 添加超时处理，防止iframe永久加载
+      setTimeout(() => {
+        if (leftIframe.contentDocument === null || leftIframe.contentWindow === null) {
+          // 可能被阻止加载，显示错误信息
+          leftErrorContainer.style.display = 'flex';
         }
-      });
+      }, 5000);
+
+      leftView.appendChild(leftIframe);
+      splitViewContainer.appendChild(leftView);
       
-      rightIframe.addEventListener('error', () => {
-        try {
-          // iframe加载失败，显示错误消息
-          rightErrorContainer.style.display = 'flex';
-          // 更新按钮的URL
-          const openButton = rightErrorContainer.querySelector('.tabboost-open-in-tab');
-          if (openButton) {
-            openButton.dataset.url = rightIframe.src;
+      // 创建分隔线
+      const divider = document.createElement('div');
+      divider.id = 'tabboost-split-divider';
+      splitViewContainer.appendChild(divider);
+      
+      // 创建右侧区域
+      const rightView = document.createElement('div');
+      rightView.id = 'tabboost-split-right';
+      
+      // 添加右侧关闭按钮
+      const rightCloseButton = document.createElement('button');
+      rightCloseButton.className = 'tabboost-view-close';
+      rightCloseButton.innerText = '×';
+      rightCloseButton.title = '关闭右侧内容';
+      rightCloseButton.dataset.action = 'close-right-view';
+      
+      rightView.appendChild(rightCloseButton);
+      
+      // 创建右侧错误提示
+      const rightErrorContainer = document.createElement('div');
+      rightErrorContainer.id = 'tabboost-right-error';
+      rightErrorContainer.className = 'tabboost-iframe-error';
+      rightErrorContainer.innerHTML = `
+        <div class="tabboost-error-content">
+          <h3>无法在分屏中加载此内容</h3>
+          <p>此网站可能不允许在iframe中嵌入显示</p>
+          <button class="tabboost-open-in-tab" data-url="">在新标签页中打开</button>
+          <button class="tabboost-add-to-ignore" data-url="">添加到忽略列表</button>
+        </div>
+      `;
+      rightView.appendChild(rightErrorContainer);
+      
+      // 创建右侧iframe
+      const rightIframe = document.createElement('iframe');
+      rightIframe.id = 'tabboost-right-iframe';
+      rightIframe.src = 'about:blank';
+      rightIframe.setAttribute('sandbox', 'allow-same-origin allow-scripts allow-popups allow-forms');
+      rightIframe.setAttribute('loading', 'lazy');
+
+      // 增强iframe错误处理
+      try {
+        rightIframe.addEventListener('load', () => {
+          try {
+            if (rightIframe.src !== 'about:blank') {
+              // iframe加载成功，隐藏错误消息
+              rightErrorContainer.style.display = 'none';
+            }
+          } catch (e) {
+            console.warn("处理右侧iframe加载事件失败:", e);
           }
-        } catch (e) {
-          console.warn("处理右侧iframe错误事件失败:", e);
-        }
-      });
-    } catch (e) {
-      console.warn("添加右侧iframe事件监听器失败:", e);
-    }
-
-    // 处理iframe无法加载的情况
-    rightIframe.onerror = () => {
-      rightErrorContainer.style.display = 'flex';
-      const openButton = rightErrorContainer.querySelector('.tabboost-open-in-tab');
-      if (openButton) {
-        openButton.dataset.url = rightIframe.src;
+        });
+        
+        rightIframe.addEventListener('error', () => {
+          try {
+            // iframe加载失败，显示错误消息
+            rightErrorContainer.style.display = 'flex';
+            // 更新按钮的URL
+            const openButton = rightErrorContainer.querySelector('.tabboost-open-in-tab');
+            if (openButton) {
+              openButton.dataset.url = rightIframe.src;
+            }
+          } catch (e) {
+            console.warn("处理右侧iframe错误事件失败:", e);
+          }
+        });
+      } catch (e) {
+        console.warn("添加右侧iframe事件监听器失败:", e);
       }
-    };
 
-    // 添加超时处理
-    setTimeout(() => {
-      if (rightIframe.src !== 'about:blank' && 
-          (rightIframe.contentDocument === null || rightIframe.contentWindow === null)) {
-        // 可能被阻止加载，显示错误信息
+      // 处理iframe无法加载的情况
+      rightIframe.onerror = () => {
         rightErrorContainer.style.display = 'flex';
-      }
-    }, 5000);
+        const openButton = rightErrorContainer.querySelector('.tabboost-open-in-tab');
+        if (openButton) {
+          openButton.dataset.url = rightIframe.src;
+        }
+      };
 
-    rightView.appendChild(rightIframe);
-    splitViewContainer.appendChild(rightView);
-    
-    // 将整个分屏容器添加到DocumentFragment
-    fragment.appendChild(splitViewContainer);
-    
-    // 安全地修改页面DOM
-    try {
+      // 添加超时处理
+      setTimeout(() => {
+        if (rightIframe.src !== 'about:blank' && 
+            (rightIframe.contentDocument === null || rightIframe.contentWindow === null)) {
+          // 可能被阻止加载，显示错误信息
+          rightErrorContainer.style.display = 'flex';
+        }
+      }, 5000);
+
+      rightView.appendChild(rightIframe);
+      splitViewContainer.appendChild(rightView);
+      
+      // 将整个分屏容器添加到DocumentFragment
+      fragment.appendChild(splitViewContainer);
+      
+      // 先隐藏，避免引起闪烁
+      splitViewContainer.style.opacity = '0';
+      
       // 清空页面内容前先保存body引用
       const bodyRef = document.body;
       
-      // 尝试清空页面内容
+      // 安全地修改页面DOM
       try {
+        // 尝试清空页面内容
         bodyRef.innerHTML = '';
       } catch (e) {
         console.warn("无法完全清空页面内容:", e);
@@ -487,33 +528,29 @@ function initSplitViewDOM(leftUrl) {
       // 一次性将整个DocumentFragment添加到页面
       bodyRef.appendChild(fragment);
       
-      console.log("分屏DOM结构成功添加到页面");
-    } catch (e) {
-      console.error("无法修改页面DOM:", e);
-      throw e; // 重新抛出错误以便外部捕获
-    }
+      // 使用requestAnimationFrame来确保在下一帧渲染前应用样式
+      requestAnimationFrame(() => {
+        // 在下一帧应用淡入效果
+        splitViewContainer.style.transition = 'opacity 0.3s';
+        splitViewContainer.style.opacity = '1';
+      });
+    };
     
-    // 等待DOM完全渲染后
-    setTimeout(() => {
-      try {
-        console.log("分屏模式已初始化");
-      } catch (e) {
-        console.error("分屏模式初始化后处理失败:", e);
-      }
-    }, 100);
+    // 立即执行DOM操作
+    domOperations();
     
-    // 使用事件委托模式添加事件监听器，减少监听器数量
+    // 使用事件委托，减少事件监听器数量
     document.addEventListener('click', (event) => {
       const target = event.target;
       
-      // 处理关闭分屏按钮
-      if (target.id === 'tabboost-split-close' || target.dataset.action === 'close-split-view') {
+      // 使用target.closest方法来简化多个按钮的处理
+      if (target.closest('#tabboost-split-close, [data-action="close-split-view"]')) {
         chrome.runtime.sendMessage({ action: 'closeSplitView' });
         return;
       }
       
       // 处理左侧关闭按钮
-      if (target.classList.contains('tabboost-view-close') && target.dataset.action === 'close-left-view') {
+      if (target.closest('.tabboost-view-close[data-action="close-left-view"]')) {
         const rightIframe = document.getElementById('tabboost-right-iframe');
         
         // 检查右侧是否有内容
@@ -536,7 +573,7 @@ function initSplitViewDOM(leftUrl) {
       }
       
       // 处理右侧关闭按钮
-      if (target.classList.contains('tabboost-view-close') && target.dataset.action === 'close-right-view') {
+      if (target.closest('.tabboost-view-close[data-action="close-right-view"]')) {
         // 清空右侧内容
         const rightIframe = document.getElementById('tabboost-right-iframe');
         if (rightIframe) {
@@ -562,18 +599,19 @@ function initSplitViewDOM(leftUrl) {
         return;
       }
       
-      // 处理"在新标签页中打开"按钮点击
-      if (target.classList.contains('tabboost-open-in-tab')) {
-        const url = target.dataset.url;
+      // 处理其他按钮 - 使用更简洁的查找方式
+      const openTabButton = target.closest('.tabboost-open-in-tab');
+      if (openTabButton) {
+        const url = openTabButton.dataset.url;
         if (url) {
           window.open(url, '_blank');
         }
         return;
       }
       
-      // 处理"添加到忽略列表"按钮点击
-      if (target.classList.contains('tabboost-add-to-ignore')) {
-        const url = target.dataset.url;
+      const addToIgnoreButton = target.closest('.tabboost-add-to-ignore');
+      if (addToIgnoreButton) {
+        const url = addToIgnoreButton.dataset.url;
         if (url) {
           try {
             // 解析URL获取域名
@@ -621,6 +659,8 @@ function initSplitViewDOM(leftUrl) {
         return;
       }
     });
+    
+    console.log("分屏DOM结构成功添加到页面");
   } catch (error) {
     console.error("初始化分屏DOM结构失败:", error);
     // 尝试恢复原始页面

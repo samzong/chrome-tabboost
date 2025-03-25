@@ -2,6 +2,53 @@ import { getCurrentTab, showNotification } from "../utils/utils.js";
 import { createSplitView, closeSplitView, toggleSplitView, updateRightView, canLoadInIframe } from "./splitView.js";
 import storageCache from "../utils/storageCache.js";
 
+// 当前标签页缓存
+let currentTabCache = {
+  tab: null,
+  timestamp: 0
+};
+
+// 标签页缓存有效期（毫秒）
+const TAB_CACHE_TTL = 1000; // 1秒
+
+// 获取当前标签页，带缓存
+async function getCachedCurrentTab() {
+  const now = Date.now();
+  // 检查缓存是否有效
+  if (currentTabCache.tab && now - currentTabCache.timestamp < TAB_CACHE_TTL) {
+    return currentTabCache.tab;
+  }
+  
+  // 缓存无效或不存在，获取新的标签页
+  const tab = await getCurrentTab();
+  if (tab) {
+    currentTabCache = {
+      tab,
+      timestamp: now
+    };
+  }
+  return tab;
+}
+
+// 清除标签页缓存
+function invalidateTabCache() {
+  currentTabCache = {
+    tab: null,
+    timestamp: 0
+  };
+}
+
+// 监听标签页变化，清除缓存
+chrome.tabs.onActivated.addListener(() => {
+  invalidateTabCache();
+});
+
+chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
+  if (changeInfo.status === 'complete' || changeInfo.url) {
+    invalidateTabCache();
+  }
+});
+
 // 初始化存储缓存
 storageCache.init().catch(error => {
   console.error("初始化存储缓存失败:", error);
@@ -9,6 +56,14 @@ storageCache.init().catch(error => {
 
 // 监听插件图标点击事件
 chrome.action.onClicked.addListener(async (tab) => {
+  // 更新当前标签页缓存
+  if (tab) {
+    currentTabCache = {
+      tab,
+      timestamp: Date.now()
+    };
+  }
+  
   // 获取默认操作
   const result = await storageCache.get({ defaultAction: "open-options" });
   const defaultAction = result.defaultAction; // 设置默认操作为打开设置页面
@@ -44,7 +99,7 @@ async function openOptionsPage() {
 
 // 复制当前标签页网址
 async function copyCurrentTabUrl() {
-  let currentTab = await getCurrentTab();
+  let currentTab = await getCachedCurrentTab();
   console.log("Current tab:", currentTab); // 打印当前标签页信息
   if (currentTab) {
     try {
@@ -76,7 +131,7 @@ async function copyCurrentTabUrl() {
 
 // 复制当前标签页
 async function duplicateCurrentTab() {
-  let currentTab = await getCurrentTab();
+  let currentTab = await getCachedCurrentTab();
   if (currentTab) {
     chrome.tabs.duplicate(currentTab.id);
   }
@@ -161,7 +216,7 @@ async function handleSplitViewRequest(url) {
       };
     }
     
-    const currentTab = await getCurrentTab();
+    const currentTab = await getCachedCurrentTab();
     if (!currentTab) {
       throw new Error("无法获取当前标签页");
     }
