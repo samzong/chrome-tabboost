@@ -95,6 +95,42 @@ cd chrome-tabboost
 
 # 安装依赖
 npm install
+
+# 运行开发服务器
+npm run dev
+
+# 构建生产版本
+npm run build
+```
+
+### 版本管理与发布
+
+本项目采用[语义化版本](https://semver.org/lang/zh-CN/)进行版本控制：
+
+- **主版本号**：不兼容的API修改时递增（如：2.0.0 → 3.0.0）
+- **次版本号**：向下兼容的功能性新增时递增（如：2.1.0 → 2.2.0）
+- **修订号**：向下兼容的问题修正时递增（如：2.2.0 → 2.2.1）
+
+#### 开发流程
+
+1. 创建功能分支：`git checkout -b feature/your-feature`
+2. 开发并提交更改：`npm run commit`（使用规范化提交信息）
+3. 合并到主分支：`git checkout main && git merge feature/your-feature`
+
+#### 发布流程
+
+```bash
+# 更新版本号（patch/minor/major）
+npm run version:minor
+
+# 发布前检查
+npm run prerelease
+
+# 构建并打包
+npm run release
+
+# 发布到Chrome Web Store
+npm run publish
 ```
 
 ### 文件说明
@@ -112,7 +148,7 @@ npm install
 
 1. Fork 本仓库
 2. 创建您的特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交您的修改 (`git commit -m 'Add some AmazingFeature'`)
+3. 提交您的修改 (`npm run commit` 使用规范化提交)
 4. 推送到分支 (`git push origin feature/AmazingFeature`)
 5. 创建Pull Request
 
