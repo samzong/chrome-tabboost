@@ -2,10 +2,173 @@
 
 import storageCache from "../../utils/storageCache.js";
 
+// 存储拖动状态
+let isDragging = false;
+let startX = 0;
+let startY = 0;
+let leftWidth = 50; // 左侧宽度百分比
+
 // 处理分屏视图中的事件
 export function setupSplitViewEvents() {
   // 使用事件委托，减少事件监听器数量
   document.addEventListener('click', handleSplitViewClick);
+  
+  // 设置分隔线拖动事件
+  setupDividerDrag();
+}
+
+// 优化的分隔线拖动事件处理
+function setupDividerDrag() {
+  const divider = document.getElementById('tabboost-split-divider');
+  if (!divider) return;
+  
+  // 添加拖动事件监听器
+  divider.addEventListener('mousedown', startDrag);
+  
+  // 使用被动事件监听器提高性能
+  document.addEventListener('mousemove', onDrag, { passive: true });
+  document.addEventListener('mouseup', stopDrag);
+  
+  // 触摸设备支持
+  divider.addEventListener('touchstart', startDragTouch, { passive: true });
+  document.addEventListener('touchmove', onDragTouch, { passive: true });
+  document.addEventListener('touchend', stopDrag);
+}
+
+// 开始拖动 - 鼠标
+function startDrag(e) {
+  isDragging = true;
+  startX = e.clientX;
+  startY = e.clientY;
+  
+  // 获取当前左侧宽度
+  const leftView = document.getElementById('tabboost-split-left');
+  if (leftView) {
+    const computedStyle = window.getComputedStyle(leftView);
+    leftWidth = parseFloat(computedStyle.width) / window.innerWidth * 100;
+  }
+  
+  // 添加拖动指示类
+  document.body.classList.add('tabboost-dragging');
+  
+  // 防止文本选择
+  e.preventDefault();
+}
+
+// 开始拖动 - 触摸
+function startDragTouch(e) {
+  if (e.touches.length !== 1) return;
+  
+  isDragging = true;
+  startX = e.touches[0].clientX;
+  startY = e.touches[0].clientY;
+  
+  // 获取当前左侧宽度
+  const leftView = document.getElementById('tabboost-split-left');
+  if (leftView) {
+    const computedStyle = window.getComputedStyle(leftView);
+    leftWidth = parseFloat(computedStyle.width) / window.innerWidth * 100;
+  }
+  
+  // 添加拖动指示类
+  document.body.classList.add('tabboost-dragging');
+}
+
+// 拖动中 - 鼠标
+function onDrag(e) {
+  if (!isDragging) return;
+  
+  // 使用requestAnimationFrame优化性能
+  requestAnimationFrame(() => {
+    updateSplitPosition(e.clientX, e.clientY);
+  });
+}
+
+// 拖动中 - 触摸
+function onDragTouch(e) {
+  if (!isDragging || e.touches.length !== 1) return;
+  
+  // 使用requestAnimationFrame优化性能
+  requestAnimationFrame(() => {
+    updateSplitPosition(e.touches[0].clientX, e.touches[0].clientY);
+  });
+}
+
+// 更新分屏位置
+function updateSplitPosition(clientX, clientY) {
+  const container = document.getElementById('tabboost-views-container');
+  const leftView = document.getElementById('tabboost-split-left');
+  const rightView = document.getElementById('tabboost-split-right');
+  
+  if (!container || !leftView || !rightView) return;
+  
+  // 检查是否为横向或纵向分屏
+  const isHorizontalSplit = window.innerWidth > 768;
+  
+  if (isHorizontalSplit) {
+    // 计算鼠标移动距离转换为百分比
+    const deltaX = clientX - startX;
+    const containerWidth = container.offsetWidth;
+    const deltaPercent = (deltaX / containerWidth) * 100;
+    
+    // 计算新的左侧宽度百分比
+    let newLeftWidth = leftWidth + deltaPercent;
+    
+    // 限制拖动范围
+    newLeftWidth = Math.max(20, Math.min(80, newLeftWidth));
+    
+    // 使用CSS变量更新分屏比例，减少重排重绘
+    container.style.setProperty('--left-width', `${newLeftWidth}%`);
+    container.style.setProperty('--right-width', `${100 - newLeftWidth}%`);
+    
+    // 更新宽度（利用CSS变量）
+    leftView.style.width = 'var(--left-width)';
+    rightView.style.width = 'var(--right-width)';
+  } else {
+    // 纵向分屏逻辑（移动设备）
+    const deltaY = clientY - startY;
+    const containerHeight = container.offsetHeight;
+    const deltaPercent = (deltaY / containerHeight) * 100;
+    
+    // 计算新的左侧（此时是上方）高度百分比
+    let newTopHeight = leftWidth + deltaPercent;
+    
+    // 限制拖动范围
+    newTopHeight = Math.max(20, Math.min(80, newTopHeight));
+    
+    // 使用CSS变量更新分屏比例
+    container.style.setProperty('--top-height', `${newTopHeight}%`);
+    container.style.setProperty('--bottom-height', `${100 - newTopHeight}%`);
+    
+    // 更新高度（利用CSS变量）
+    leftView.style.height = 'var(--top-height)';
+    rightView.style.height = 'var(--bottom-height)';
+  }
+}
+
+// 停止拖动
+function stopDrag() {
+  if (!isDragging) return;
+  
+  isDragging = false;
+  
+  // 移除拖动指示类
+  document.body.classList.remove('tabboost-dragging');
+  
+  // 保存分屏比例设置
+  const leftView = document.getElementById('tabboost-split-left');
+  if (leftView) {
+    const computedStyle = window.getComputedStyle(leftView);
+    const isHorizontalSplit = window.innerWidth > 768;
+    
+    if (isHorizontalSplit) {
+      const width = parseFloat(computedStyle.width) / window.innerWidth * 100;
+      storageCache.set({ 'splitViewHorizontalRatio': width });
+    } else {
+      const height = parseFloat(computedStyle.height) / window.innerHeight * 100;
+      storageCache.set({ 'splitViewVerticalRatio': height });
+    }
+  }
 }
 
 // 处理分屏视图中的点击事件
@@ -136,6 +299,17 @@ async function handleAddToIgnoreList(url) {
 export function cleanupSplitViewEvents() {
   // 移除事件监听器，避免内存泄漏
   document.removeEventListener('click', handleSplitViewClick);
+  
+  const divider = document.getElementById('tabboost-split-divider');
+  if (divider) {
+    divider.removeEventListener('mousedown', startDrag);
+    divider.removeEventListener('touchstart', startDragTouch);
+  }
+  
+  document.removeEventListener('mousemove', onDrag);
+  document.removeEventListener('mouseup', stopDrag);
+  document.removeEventListener('touchmove', onDragTouch);
+  document.removeEventListener('touchend', stopDrag);
 }
 
 // 自动添加到忽略列表

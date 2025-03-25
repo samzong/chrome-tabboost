@@ -82,6 +82,9 @@ export function initSplitViewDOM(leftUrl) {
       const splitViewContainer = document.createElement('div');
       splitViewContainer.id = 'tabboost-split-view-container';
       
+      // 使用CSS类控制初始不可见状态，而不是直接操作style
+      splitViewContainer.classList.add('tabboost-initially-hidden');
+      
       // 创建顶部控制栏
       const controlBar = document.createElement('div');
       controlBar.id = 'tabboost-split-controls';
@@ -94,6 +97,11 @@ export function initSplitViewDOM(leftUrl) {
       
       controlBar.appendChild(closeButton);
       splitViewContainer.appendChild(controlBar);
+      
+      // 预先创建所有元素再一次性添加，减少DOM操作和重绘
+      // 创建分屏内容容器
+      const viewsContainer = document.createElement('div');
+      viewsContainer.id = 'tabboost-views-container';
       
       // 创建左侧区域
       const leftView = document.createElement('div');
@@ -125,9 +133,11 @@ export function initSplitViewDOM(leftUrl) {
       // 创建左侧iframe
       const leftIframe = document.createElement('iframe');
       leftIframe.id = 'tabboost-left-iframe';
-      leftIframe.src = leftUrl;
-      leftIframe.setAttribute('sandbox', 'allow-same-origin allow-scripts allow-popups allow-forms');
+      // 设置loading="lazy"属性以延迟加载iframe内容
       leftIframe.setAttribute('loading', 'lazy');
+      leftIframe.setAttribute('sandbox', 'allow-same-origin allow-scripts allow-popups allow-forms');
+      // 将src设置放在最后，避免过早触发加载
+      leftIframe.src = leftUrl;
 
       // 增强iframe错误处理
       try {
@@ -152,26 +162,7 @@ export function initSplitViewDOM(leftUrl) {
         console.warn("添加左侧iframe事件监听器失败:", e);
       }
 
-      // 处理iframe无法加载的情况
-      leftIframe.onerror = () => {
-        leftErrorContainer.style.display = 'flex';
-      };
-
-      // 添加超时处理，防止iframe永久加载
-      setTimeout(() => {
-        if (leftIframe.contentDocument === null || leftIframe.contentWindow === null) {
-          // 可能被阻止加载，显示错误信息
-          leftErrorContainer.style.display = 'flex';
-        }
-      }, 5000);
-
       leftView.appendChild(leftIframe);
-      splitViewContainer.appendChild(leftView);
-      
-      // 创建分隔线
-      const divider = document.createElement('div');
-      divider.id = 'tabboost-split-divider';
-      splitViewContainer.appendChild(divider);
       
       // 创建右侧区域
       const rightView = document.createElement('div');
@@ -203,9 +194,9 @@ export function initSplitViewDOM(leftUrl) {
       // 创建右侧iframe
       const rightIframe = document.createElement('iframe');
       rightIframe.id = 'tabboost-right-iframe';
-      rightIframe.src = 'about:blank';
-      rightIframe.setAttribute('sandbox', 'allow-same-origin allow-scripts allow-popups allow-forms');
       rightIframe.setAttribute('loading', 'lazy');
+      rightIframe.setAttribute('sandbox', 'allow-same-origin allow-scripts allow-popups allow-forms');
+      rightIframe.src = 'about:blank';
 
       // 增强iframe错误处理
       try {
@@ -256,37 +247,50 @@ export function initSplitViewDOM(leftUrl) {
       }, 5000);
 
       rightView.appendChild(rightIframe);
-      splitViewContainer.appendChild(rightView);
+      
+      // 创建分隔线
+      const divider = document.createElement('div');
+      divider.id = 'tabboost-split-divider';
+      
+      // 将分屏视图元素合并到视图容器中
+      viewsContainer.appendChild(leftView);
+      viewsContainer.appendChild(divider);
+      viewsContainer.appendChild(rightView);
+      splitViewContainer.appendChild(viewsContainer);
       
       // 将整个分屏容器添加到DocumentFragment
       fragment.appendChild(splitViewContainer);
       
-      // 先隐藏，避免引起闪烁
-      splitViewContainer.style.opacity = '0';
-      
       // 清空页面内容前先保存body引用
       const bodyRef = document.body;
       
+      // 防止页面闪烁，先设置body样式
+      bodyRef.style.overflow = 'hidden';
+      
       // 安全地修改页面DOM
       try {
-        // 尝试清空页面内容
-        bodyRef.innerHTML = '';
+        // 使用文档片段替换页面内容，而不是清空后再添加
+        // 这减少了DOM操作和重绘次数
+        while (bodyRef.firstChild) {
+          bodyRef.removeChild(bodyRef.firstChild);
+        }
+        
+        // 一次性将整个DocumentFragment添加到页面
+        bodyRef.appendChild(fragment);
       } catch (e) {
         console.warn("无法完全清空页面内容:", e);
         // 尝试更保守的方法：隐藏现有内容
         Array.from(bodyRef.children).forEach(child => {
           child.style.display = 'none';
         });
+        bodyRef.appendChild(fragment);
       }
       
-      // 一次性将整个DocumentFragment添加到页面
-      bodyRef.appendChild(fragment);
-      
-      // 使用requestAnimationFrame来确保在下一帧渲染前应用样式
+      // 使用requestAnimationFrame并批量应用样式变更，减少重排和重绘
       requestAnimationFrame(() => {
-        // 在下一帧应用淡入效果
-        splitViewContainer.style.transition = 'opacity 0.3s';
-        splitViewContainer.style.opacity = '1';
+        // 移除隐藏类以显示分屏视图
+        splitViewContainer.classList.remove('tabboost-initially-hidden');
+        splitViewContainer.classList.add('tabboost-visible');
       });
     };
     
