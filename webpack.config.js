@@ -9,7 +9,8 @@ module.exports = {
   entry: {
     popup: './src/popup/popup.js',
     options: './src/options/options.js',
-    background: './src/js/background.js'
+    background: './src/js/background.js',
+    contentScript: './src/js/contentScript.js',  // 添加 content script 入口
   },
   // Output configuration
   output: {
@@ -54,12 +55,18 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './src/popup/popup.html',
       filename: 'popup.html',
-      chunks: ['popup']
+      chunks: ['popup'],
+      templateParameters: {
+        cssPath: './assets/styles/popup.css'
+      }
     }),
     new HtmlWebpackPlugin({
       template: './src/options/options.html',
       filename: 'options.html',
-      chunks: ['options']
+      chunks: ['options'],
+      templateParameters: {
+        cssPath: './assets/styles/options.css'
+      }
     }),
     new CopyWebpackPlugin({
       patterns: [
@@ -67,12 +74,61 @@ module.exports = {
           from: './manifest.json',
           to: 'manifest.json',
           transform(content) {
-            // 如果需要在构建时修改 manifest
-            return Buffer.from(JSON.stringify({
-              ...JSON.parse(content.toString()),
-              version: process.env.npm_package_version || '1.0.0'
-            }, null, 2))
+            // 修改 manifest.json 中的路径
+            const manifest = JSON.parse(content.toString());
+            
+            // 修正 action 中的图标路径
+            if (manifest.action && manifest.action.default_icon) {
+              manifest.action.default_icon = {
+                "16": "assets/icons/icon16.png",
+                "48": "assets/icons/icon48.png",
+                "128": "assets/icons/icon128.png"
+              };
+            }
+            
+            // 修正 icons 路径
+            if (manifest.icons) {
+              manifest.icons = {
+                "16": "assets/icons/icon16.png",
+                "48": "assets/icons/icon48.png",
+                "128": "assets/icons/icon128.png"
+              };
+            }
+            
+            // 修正 content_scripts 路径
+            if (manifest.content_scripts && manifest.content_scripts.length > 0) {
+              manifest.content_scripts[0].js = ["contentScript.js"];
+              manifest.content_scripts[0].css = ["assets/styles/popupStyles.css", "assets/styles/splitViewStyles.css"];
+            }
+            
+            // 修正 web_accessible_resources 路径
+            if (manifest.web_accessible_resources && manifest.web_accessible_resources.length > 0) {
+              manifest.web_accessible_resources[0].resources = ["assets/styles/splitViewStyles.css"];
+            }
+            
+            // 修正 background 路径
+            if (manifest.background) {
+              manifest.background.service_worker = "background.js";
+            }
+            
+            // 修正 options_page 路径
+            if (manifest.options_page) {
+              manifest.options_page = "options.html";
+            }
+            
+            // 修正 action 中的 default_popup 路径
+            if (manifest.action && manifest.action.default_popup) {
+              manifest.action.default_popup = "popup.html";
+            }
+            
+            return Buffer.from(JSON.stringify(manifest, null, 2));
           }
+        },
+        // 复制 CSS 文件到 assets 目录
+        { 
+          from: 'src/styles',
+          to: 'assets/styles',
+          noErrorOnMissing: true
         },
         { 
           from: 'src/assets',
