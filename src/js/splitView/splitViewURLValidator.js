@@ -1,6 +1,7 @@
 // splitViewURLValidator.js - URL验证和安全检查
 
 import storageCache from "../../utils/storageCache.js";
+import { validateUrl } from "../../utils/utils.js";
 
 // 提取常量，避免重复创建
 const RESTRICTED_DOMAINS = [
@@ -21,10 +22,52 @@ const RESTRICTED_DOMAINS = [
   'login',   // 包含login的域名通常不允许iframe加载
   'signin',  // 包含signin的域名通常不允许iframe加载
   'auth',    // 包含auth的域名通常不允许iframe加载
-  'account'  // 包含account的域名通常不允许iframe加载
+  'account', // 包含account的域名通常不允许iframe加载
+  'payment', // 支付相关
+  'checkout', // 结账相关
+  'banking', // 银行相关
+  'wallet',  // 钱包相关
+  'secure',  // 安全相关
+  'admin',   // 管理后台
+  'webmail', // 邮件服务
+  'dashboard', // 控制面板
+  'pay',     // 支付相关
+  'bank',    // 银行相关
+  'finance'  // 金融相关
+];
+
+// 危险协议列表 - 现在从utils.js导入
+const DANGEROUS_PROTOCOLS = [
+  'javascript:', 
+  'data:', 
+  'vbscript:', 
+  'file:',
+  'about:',
+  'blob:',
+  'ftp:'
 ];
 
 const EXACT_MATCH_DOMAINS = ['x.com', 'twitter.com'];
+
+// 危险URL模式 - 现在从utils.js导入
+const DANGEROUS_URL_PATTERNS = [
+  /<script>/i,
+  /javascript:/i,
+  /onerror=/i,
+  /onload=/i,
+  /onclick=/i,
+  /onmouseover=/i,
+  /eval\(/i,
+  /document\.cookie/i,
+  /document\.domain/i,
+  /document\.write/i,
+  /\balert\(/i,
+  /\bprompt\(/i,
+  /\bconfirm\(/i,
+  /fromCharCode/i,
+  /&#/i,  // HTML编码
+  /%3C/i  // URL编码的 < 符号
+];
 
 // 缓存用户配置
 let userConfigCache = {
@@ -63,18 +106,20 @@ async function updateUserConfigCache() {
 // 检查是否可以在iframe中加载URL
 export async function canLoadInIframe(url) {
   try {
-    // 检查URL是否有效
-    if (!url || url === 'about:blank') {
+    // 使用通用URL验证函数进行安全检查
+    const validationResult = validateUrl(url);
+    
+    // 如果URL不安全，记录原因并返回false
+    if (!validationResult.isValid) {
+      console.log(`URL验证失败: ${validationResult.reason}`);
       return false;
     }
     
+    // 使用经过安全处理的URL
+    url = validationResult.sanitizedUrl;
+    
     try {
       const urlObj = new URL(url);
-      
-      // 检查URL协议
-      if (urlObj.protocol !== 'http:' && urlObj.protocol !== 'https:') {
-        return false;
-      }
       
       // 获取域名
       const hostname = urlObj.hostname;
@@ -120,4 +165,4 @@ export async function canLoadInIframe(url) {
 }
 
 // 导出常量便于其他模块使用
-export { RESTRICTED_DOMAINS, EXACT_MATCH_DOMAINS };
+export { RESTRICTED_DOMAINS, EXACT_MATCH_DOMAINS, DANGEROUS_PROTOCOLS, DANGEROUS_URL_PATTERNS };

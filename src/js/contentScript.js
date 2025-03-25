@@ -1,5 +1,7 @@
 // contentScript.js
 import storageCache from "../utils/storageCache.js";
+import { DANGEROUS_URL_PATTERNS, DANGEROUS_PROTOCOLS } from "../js/splitView/splitViewURLValidator.js";
+import { validateUrl } from "../utils/utils.js";
 
 // 确保缓存系统在使用前初始化
 const initStorageCache = async () => {
@@ -139,24 +141,17 @@ async function createPopup(url) {
     }
     
     // 验证URL的安全性
-    try {
-      // 确保URL是有效的
-      const urlObj = new URL(url);
-      
-      // 只允许http和https协议
-      if (urlObj.protocol !== 'http:' && urlObj.protocol !== 'https:') {
-        console.error(`chrome-tabboost: 不安全的URL协议: ${urlObj.protocol}`);
-        window.open(url, "_blank"); // 使用浏览器自身的安全措施
-        return;
-      }
-      
-      // 编码URL以防止XSS
-      url = encodeURI(decodeURI(url));
-    } catch (urlError) {
-      console.error("chrome-tabboost: 无效的URL:", urlError);
-      // 无效URL，不处理
+    const validationResult = validateUrl(url);
+    
+    // 如果URL不安全，记录原因并在新标签页中打开（让浏览器处理安全性）
+    if (!validationResult.isValid) {
+      console.error(`chrome-tabboost: URL安全验证失败: ${validationResult.reason}`);
+      window.open(url, "_blank");
       return;
     }
+    
+    // 使用经过安全处理的URL
+    url = validationResult.sanitizedUrl;
 
     // 获取忽略列表相关设置
     const config = await storageCache.get({
