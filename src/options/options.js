@@ -1,5 +1,6 @@
 import { showNotification } from "../utils/utils.js";
 import storageCache from "../utils/storageCache.js"; // 导入storageCache
+import { RESTRICTED_DOMAINS } from "../js/splitView/splitViewURLValidator.js"; // 导入系统预设的限制域名
 
 const saveButton = document.getElementById("saveButton");
 const defaultActionInput = document.getElementById("defaultAction");
@@ -9,6 +10,7 @@ const autoAddToIgnoreListCheckbox = document.getElementById("autoAddToIgnoreList
 const ignoreListContainer = document.getElementById("ignoreList");
 const newDomainInput = document.getElementById("newDomain");
 const addDomainButton = document.getElementById("addDomainButton");
+const wildCardExample = document.getElementById("wildCardExample");
 
 // 弹窗大小设置相关元素
 const popupSizePreset = document.getElementById('popupSizePreset');
@@ -207,8 +209,14 @@ function renderIgnoreList(ignoreList) {
   // 清空列表
   ignoreListContainer.innerHTML = '';
   
-  // 如果列表为空，显示提示信息
-  if (!ignoreList.length) {
+  // 首先添加系统预设的限制域名（无法删除）
+  const systemDomains = RESTRICTED_DOMAINS;
+  
+  // 合并用户忽略列表和系统限制域名
+  const combinedList = [...new Set([...ignoreList, ...systemDomains])];
+  
+  // 如果合并后的列表为空，显示提示信息
+  if (!combinedList.length) {
     const emptyItem = document.createElement('div');
     emptyItem.className = 'ignore-item-empty';
     emptyItem.textContent = '暂无忽略的网站';
@@ -216,23 +224,68 @@ function renderIgnoreList(ignoreList) {
     return;
   }
   
-  // 添加列表项
-  ignoreList.forEach(domain => {
-    const item = document.createElement('div');
-    item.className = 'ignore-item';
+  // 添加系统保留域名列表标题
+  if (systemDomains.length > 0) {
+    const systemTitle = document.createElement('div');
+    systemTitle.className = 'ignore-list-section-title';
+    systemTitle.textContent = '系统保留域名（无法删除）';
+    ignoreListContainer.appendChild(systemTitle);
     
-    const domainText = document.createElement('span');
-    domainText.textContent = domain;
+    // 添加系统保留域名
+    systemDomains.forEach(domain => {
+      const item = document.createElement('div');
+      item.className = 'ignore-item system-domain';
+      
+      const domainText = document.createElement('span');
+      domainText.textContent = domain;
+      
+      // 添加标签指示匹配类型
+      const matchTypeBadge = document.createElement('span');
+      matchTypeBadge.className = domain.startsWith('*.') ? 'match-type wildcard' : 'match-type exact';
+      matchTypeBadge.textContent = domain.startsWith('*.') ? '通配符' : '精确';
+      
+      const systemBadge = document.createElement('span');
+      systemBadge.className = 'system-badge';
+      systemBadge.textContent = '系统';
+      
+      item.appendChild(domainText);
+      item.appendChild(matchTypeBadge);
+      item.appendChild(systemBadge);
+      ignoreListContainer.appendChild(item);
+    });
+  }
+  
+  // 添加用户自定义忽略列表标题（如果有用户自定义的域名）
+  if (ignoreList.length > 0) {
+    const userTitle = document.createElement('div');
+    userTitle.className = 'ignore-list-section-title';
+    userTitle.textContent = '用户自定义域名';
+    ignoreListContainer.appendChild(userTitle);
     
-    const removeButton = document.createElement('button');
-    removeButton.className = 'remove-btn';
-    removeButton.textContent = '删除';
-    removeButton.addEventListener('click', () => removeDomain(domain));
-    
-    item.appendChild(domainText);
-    item.appendChild(removeButton);
-    ignoreListContainer.appendChild(item);
-  });
+    // 添加用户自定义域名列表项
+    ignoreList.forEach(domain => {
+      const item = document.createElement('div');
+      item.className = 'ignore-item';
+      
+      const domainText = document.createElement('span');
+      domainText.textContent = domain;
+      
+      // 添加标签指示匹配类型
+      const matchTypeBadge = document.createElement('span');
+      matchTypeBadge.className = domain.startsWith('*.') ? 'match-type wildcard' : 'match-type exact';
+      matchTypeBadge.textContent = domain.startsWith('*.') ? '通配符' : '精确';
+      
+      const removeButton = document.createElement('button');
+      removeButton.className = 'remove-btn';
+      removeButton.textContent = '删除';
+      removeButton.addEventListener('click', () => removeDomain(domain));
+      
+      item.appendChild(domainText);
+      item.appendChild(matchTypeBadge);
+      item.appendChild(removeButton);
+      ignoreListContainer.appendChild(item);
+    });
+  }
 }
 
 // 添加域名到忽略列表
@@ -242,6 +295,36 @@ function addDomain() {
   // 验证域名
   if (!domain) {
     alert('请输入有效的域名');
+    return;
+  }
+  
+  // 验证通配符域名格式
+  if (domain.startsWith('*.') && domain.split('.').length < 3) {
+    alert('通配符域名格式不正确，正确格式为: *.example.com');
+    return;
+  }
+  
+  // 检查是否与系统保留域名冲突
+  if (RESTRICTED_DOMAINS.some(restrictedDomain => {
+    // 如果两个域名完全相同，则冲突
+    if (domain === restrictedDomain) return true;
+    
+    // 如果用户输入的是通配符域名，系统中是非通配符，则检查基础域名
+    if (domain.startsWith('*.') && !restrictedDomain.startsWith('*.')) {
+      const baseDomain = domain.substring(2);
+      return baseDomain === restrictedDomain;
+    }
+    
+    // 如果用户输入的是非通配符，系统中是通配符，则检查基础域名
+    if (!domain.startsWith('*.') && restrictedDomain.startsWith('*.')) {
+      const systemBaseDomain = restrictedDomain.substring(2);
+      return domain === systemBaseDomain || domain.endsWith('.' + systemBaseDomain);
+    }
+    
+    return false;
+  })) {
+    alert(`"${domain}" 已包含在系统保留域名中，无需重复添加`);
+    newDomainInput.value = '';
     return;
   }
   

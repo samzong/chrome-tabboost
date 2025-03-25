@@ -300,6 +300,7 @@ async function createPopupDOM(url) {
       <p>无法在弹窗中加载此网站。</p>
       <button id="tabboost-open-newtab">在新标签页中打开</button>
       <button id="tabboost-add-to-ignore">添加到忽略列表</button>
+      <button id="tabboost-close-error">关闭</button>
     `;
 
     // 创建 iframe 以加载链接内容
@@ -514,6 +515,14 @@ async function createPopupDOM(url) {
         console.error("chrome-tabboost: Error adding to ignore list:", error);
         alert("添加到忽略列表失败");
       }
+    });
+    
+    // 监听关闭按钮
+    const closeErrorButton = errorMsg.querySelector("#tabboost-close-error");
+    addTrackedEventListener(closeErrorButton, "click", () => {
+      console.log("chrome-tabboost: Close error button clicked");
+      errorMsg.classList.remove("show");
+      closePopup();
     });
     
     // 添加额外的检测机制 - 使用间隔检查而不是多个setTimeout

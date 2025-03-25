@@ -5,35 +5,8 @@ import { validateUrl } from "../../utils/utils.js";
 
 // 提取常量，避免重复创建
 const RESTRICTED_DOMAINS = [
-  'accounts.google.com', 
-  'mail.google.com', 
-  'www.youtube.com',
-  'youtube.com',
-  'github.com',
-  'facebook.com',
-  'twitter.com',
-  'x.com',
-  'linkedin.com',
-  'instagram.com',
-  'netflix.com',
-  'amazon.com',
-  'apple.com',
-  'microsoft.com',
-  'login',   // 包含login的域名通常不允许iframe加载
-  'signin',  // 包含signin的域名通常不允许iframe加载
-  'auth',    // 包含auth的域名通常不允许iframe加载
-  'account', // 包含account的域名通常不允许iframe加载
-  'payment', // 支付相关
-  'checkout', // 结账相关
-  'banking', // 银行相关
-  'wallet',  // 钱包相关
-  'secure',  // 安全相关
-  'admin',   // 管理后台
-  'webmail', // 邮件服务
-  'dashboard', // 控制面板
-  'pay',     // 支付相关
-  'bank',    // 银行相关
-  'finance'  // 金融相关
+  'github.com',  // 匹配所有 github.com 的子域名
+  '*.facebook.com' // 匹配所有 facebook.com 的子域名
 ];
 
 // 危险协议列表 - 现在从utils.js导入
@@ -46,8 +19,6 @@ const DANGEROUS_PROTOCOLS = [
   'blob:',
   'ftp:'
 ];
-
-const EXACT_MATCH_DOMAINS = ['x.com', 'twitter.com'];
 
 // 危险URL模式 - 现在从utils.js导入
 const DANGEROUS_URL_PATTERNS = [
@@ -78,6 +49,34 @@ let userConfigCache = {
 
 // 配置缓存有效期（毫秒）
 const CONFIG_CACHE_TTL = 60 * 1000; // 1分钟
+
+/**
+ * 检查域名是否匹配规则
+ * @param {string} hostname 待检查的域名
+ * @param {string} rule 匹配规则，支持 *.domain.com 或 domain.com 格式
+ * @returns {boolean} 是否匹配
+ */
+function isDomainMatch(hostname, rule) {
+  // 转换为小写以消除大小写差异
+  hostname = hostname.toLowerCase();
+  rule = rule.toLowerCase();
+
+  // 如果规则以 *. 开头，是通配符匹配 (*.example.com)
+  if (rule.startsWith('*.')) {
+    const baseDomain = rule.substring(2); // 去掉 *. 前缀
+    
+    // 更精确的子域名检查：
+    // 1. 完全匹配基础域名
+    // 2. 是子域名 (必须以.baseDomain结尾且前面有内容)
+    return hostname === baseDomain || 
+           (hostname.endsWith('.' + baseDomain) && 
+            hostname.length > baseDomain.length + 1);
+  } 
+  // 否则是精确匹配
+  else {
+    return hostname === rule || hostname === 'www.' + rule;
+  }
+}
 
 // 更新用户配置缓存
 async function updateUserConfigCache() {
@@ -124,17 +123,9 @@ export async function canLoadInIframe(url) {
       // 获取域名
       const hostname = urlObj.hostname;
       
-      // 特殊处理某些已知的网站
-      // 这些网站需要精确匹配，而不是部分匹配
-      for (const domain of EXACT_MATCH_DOMAINS) {
-        if (hostname === domain || hostname === 'www.' + domain) {
-          console.log(`精确匹配到限制域名: ${domain}`);
-          return false;
-        }
-      }
-      
-      // 检查是否在默认限制列表中
-      if (RESTRICTED_DOMAINS.some(domain => hostname.includes(domain))) {
+      // 检查是否在默认限制列表中，使用新的匹配函数
+      if (RESTRICTED_DOMAINS.some(domain => isDomainMatch(hostname, domain))) {
+        console.log(`匹配到限制域名规则: ${hostname}`);
         return false;
       }
       
@@ -151,8 +142,8 @@ export async function canLoadInIframe(url) {
         return true;
       }
       
-      // 检查域名是否在忽略列表中
-      const isIgnored = userConfigCache.iframeIgnoreList.some(domain => hostname.includes(domain));
+      // 检查域名是否在忽略列表中，使用新的匹配函数
+      const isIgnored = userConfigCache.iframeIgnoreList.some(domain => isDomainMatch(hostname, domain));
       return !isIgnored;
     } catch (e) {
       console.warn("URL解析错误:", e);
@@ -165,4 +156,4 @@ export async function canLoadInIframe(url) {
 }
 
 // 导出常量便于其他模块使用
-export { RESTRICTED_DOMAINS, EXACT_MATCH_DOMAINS, DANGEROUS_PROTOCOLS, DANGEROUS_URL_PATTERNS };
+export { RESTRICTED_DOMAINS, DANGEROUS_PROTOCOLS, DANGEROUS_URL_PATTERNS, isDomainMatch };

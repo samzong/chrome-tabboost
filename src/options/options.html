@@ -178,8 +178,16 @@
             <div class="ignore-item-empty">暂无忽略的网站</div>
           </div>
           
+          <div class="domain-format-guide">
+            <p><strong>域名格式说明：</strong></p>
+            <ul id="wildCardExample">
+              <li><code>example.com</code> - 仅匹配 example.com（精确匹配）</li>
+              <li><code>*.example.com</code> - 匹配 example.com 及其所有子域名</li>
+            </ul>
+          </div>
+          
           <div class="add-domain-container">
-            <input type="text" id="newDomain" placeholder="输入要忽略的域名，例如：example.com" />
+            <input type="text" id="newDomain" placeholder="输入要忽略的域名，例如：example.com 或 *.example.com" />
             <button id="addDomainButton" class="button">
               <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="12" y1="5" x2="12" y2="19"></line>
