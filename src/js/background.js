@@ -1,6 +1,6 @@
 import { getCurrentTab, showNotification, validateUrl } from "../utils/utils.js";
 import { createSplitView, closeSplitView, toggleSplitView, updateRightView, canLoadInIframe } from "./splitView.js";
-import storageCache from "../utils/storageCache.js";
+import storageCache from "../utils/storage-cache.js";
 
 // 当前标签页缓存
 let currentTabCache = {

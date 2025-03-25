@@ -1,5 +1,5 @@
 import { showNotification } from "../utils/utils.js";
-import storageCache from "../utils/storageCache.js"; // 导入storageCache
+import storageCache from "../utils/storage-cache.js"; // 导入storageCache
 import { RESTRICTED_DOMAINS } from "../js/splitView/splitViewURLValidator.js"; // 导入系统预设的限制域名
 
 const saveButton = document.getElementById("saveButton");

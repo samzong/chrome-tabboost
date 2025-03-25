@@ -1,6 +1,6 @@
 // splitViewEvents.js - 处理分屏视图的事件
 
-import storageCache from "../../utils/storageCache.js";
+import storageCache from "../../utils/storage-cache.js";
 
 // 存储拖动状态
 let isDragging = false;

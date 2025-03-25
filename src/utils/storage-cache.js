@@ -1,4 +1,4 @@
-// storageCache.js - 用于减少对chrome.storage的频繁访问
+// storage-cache.js - 用于减少对chrome.storage的频繁访问
 
 /**
  * 存储缓存管理器类
@@ -10,14 +10,12 @@ class StorageCache {
     this.cache = {};
     // 记录每个键的过期时间
     this.expiration = {};
-    // 默认缓存过期时间（毫秒）
-    this.defaultExpiration = 10 * 60 * 1000; // 10分钟，提高缓存时间
-    // 使用频率计数器
-    this.usageCount = {};
+    // 统一缓存过期时间（毫秒）
+    this.cacheExpiration = 30 * 60 * 1000; // 30分钟统一缓存时间
     // 初始化标记
     this.initialized = false;
-    // 高频使用键的列表
-    this.frequentKeys = [
+    // 常用键的列表
+    this.commonKeys = [
       'iframeIgnoreEnabled',
       'iframeIgnoreList',
       'popupSizePreset',
@@ -25,17 +23,8 @@ class StorageCache {
       'customHeight',
       'autoAddToIgnoreList',
       'defaultAction',
-      'splitViewEnabled'  // 新增高频键
+      'splitViewEnabled'
     ];
-    // 上次清理缓存的时间
-    this.lastCleanup = Date.now();
-    // 清理间隔（毫秒）
-    this.cleanupInterval = 60 * 60 * 1000; // 延长到60分钟
-    
-    // 添加调用计数器，控制清理频率
-    this.getCallCount = 0;
-    // 每多少次get调用执行一次清理检查
-    this.cleanupCheckFrequency = 100; // 增加到100次，减少检查频率
     
     // 批量写入队列
     this.writeQueue = {};
@@ -54,7 +43,7 @@ class StorageCache {
     if (this.initialized) return Promise.resolve();
 
     // 合并用户指定的键和常用键
-    const allKeys = [...new Set([...keys, ...this.frequentKeys])];
+    const allKeys = [...new Set([...keys, ...this.commonKeys])];
 
     // 加载所有指定的键
     return new Promise((resolve) => {
@@ -62,8 +51,7 @@ class StorageCache {
         // 将结果存入缓存
         Object.keys(result).forEach((key) => {
           this.cache[key] = result[key];
-          this.setExpiration(key, this.getExpirationTime(key));
-          this.usageCount[key] = 0;
+          this.setExpiration(key);
         });
         
         console.log("chrome-tabboost: Storage cache initialized with keys:", Object.keys(this.cache));
@@ -74,27 +62,20 @@ class StorageCache {
   }
 
   /**
-   * 获取键的过期时间，基于使用频率和重要性
+   * 设置键的过期时间
    * @param {string} key 键名
-   * @returns {number} 过期时间（毫秒）
    */
-  getExpirationTime(key) {
-    // 高频使用的重要键保留更长时间
-    if (this.frequentKeys.includes(key)) {
-      return 60 * 60 * 1000; // 延长到60分钟
-    }
-    
-    // 基于使用频率动态调整过期时间
-    const usageCount = this.usageCount[key] || 0;
-    if (usageCount > 15) {
-      return 45 * 60 * 1000; // 45分钟
-    } else if (usageCount > 10) {
-      return 30 * 60 * 1000; // 30分钟
-    } else if (usageCount > 5) {
-      return 15 * 60 * 1000; // 15分钟
-    } else {
-      return this.defaultExpiration; // 默认10分钟
-    }
+  setExpiration(key) {
+    this.expiration[key] = Date.now() + this.cacheExpiration;
+  }
+
+  /**
+   * 检查键是否已过期
+   * @param {string} key 键名
+   * @returns {boolean} 是否已过期
+   */
+  isExpired(key) {
+    return !this.expiration[key] || Date.now() > this.expiration[key];
   }
 
   /**
@@ -106,16 +87,6 @@ class StorageCache {
     // 确保已初始化
     if (!this.initialized) {
       await this.init();
-    }
-    
-    // 增加调用计数
-    this.getCallCount++;
-    
-    // 仅在达到指定频率或距离上次清理已经过了指定时间时才执行清理
-    if (this.getCallCount >= this.cleanupCheckFrequency || 
-        (Date.now() - this.lastCleanup) >= this.cleanupInterval) {
-      this.maybeCleanupCache();
-      this.getCallCount = 0; // 重置计数器
     }
     
     // 标准化keys为数组
@@ -130,11 +101,6 @@ class StorageCache {
       keyList = Object.keys(keys);
       defaults = keys;
     }
-
-    // 更新使用频率统计
-    keyList.forEach(key => {
-      this.usageCount[key] = (this.usageCount[key] || 0) + 1;
-    });
 
     // 检查哪些键需要从存储中获取（未缓存或已过期）
     const keysToFetch = keyList.filter(key => 
@@ -156,7 +122,7 @@ class StorageCache {
         // 更新缓存
         Object.keys(items).forEach(key => {
           this.cache[key] = items[key];
-          this.setExpiration(key, this.getExpirationTime(key));
+          this.setExpiration(key);
         });
 
         // 合并从缓存和新获取的结果
@@ -181,7 +147,7 @@ class StorageCache {
     // 更新本地缓存，立即可用
     Object.keys(items).forEach(key => {
       this.cache[key] = items[key];
-      this.setExpiration(key, this.getExpirationTime(key));
+      this.setExpiration(key);
       
       // 添加到写入队列
       this.writeQueue[key] = items[key];
@@ -252,126 +218,58 @@ class StorageCache {
    * @returns {Promise} 操作完成的Promise
    */
   async remove(keys) {
+    // 标准化keys为数组
     const keyList = Array.isArray(keys) ? keys : [keys];
     
     // 从缓存中移除
     keyList.forEach(key => {
       delete this.cache[key];
       delete this.expiration[key];
-      delete this.usageCount[key];
       
-      // 从写入队列中移除
+      // 如果键在写入队列中，也移除它
       if (key in this.writeQueue) {
         delete this.writeQueue[key];
       }
     });
     
+    // 从存储中移除
     return new Promise((resolve) => {
       chrome.storage.sync.remove(keyList, () => {
+        if (chrome.runtime.lastError) {
+          console.error("chrome-tabboost: 移除键失败:", chrome.runtime.lastError);
+        }
         resolve();
       });
     });
   }
 
   /**
-   * 清空存储和缓存
+   * 清除整个缓存和存储
    * @returns {Promise} 操作完成的Promise
    */
   async clear() {
-    return new Promise((resolve) => {
-      chrome.storage.sync.clear(() => {
-        this.cache = {};
-        this.expiration = {};
-        this.usageCount = {};
-        this.writeQueue = {};
-        
-        if (this.writeTimerId) {
-          clearTimeout(this.writeTimerId);
-          this.writeTimerId = null;
-        }
-        
-        resolve();
-      });
-    });
-  }
-
-  /**
-   * 设置键的过期时间
-   * @param {string} key 键名
-   * @param {number} duration 过期时间（毫秒），默认使用this.defaultExpiration
-   */
-  setExpiration(key, duration = this.defaultExpiration) {
-    this.expiration[key] = Date.now() + duration;
-  }
-
-  /**
-   * 检查键是否已过期
-   * @param {string} key 键名
-   * @returns {boolean} 是否已过期
-   */
-  isExpired(key) {
-    return !(key in this.expiration) || Date.now() > this.expiration[key];
-  }
-
-  /**
-   * 手动更新缓存的值，不访问存储
-   * @param {string} key 键名
-   * @param {any} value 值
-   */
-  updateCache(key, value) {
-    this.cache[key] = value;
-    this.setExpiration(key, this.getExpirationTime(key));
-    this.usageCount[key] = (this.usageCount[key] || 0) + 1;
-  }
-
-  /**
-   * 手动使某个键的缓存失效
-   * @param {string} key 键名
-   */
-  invalidate(key) {
-    delete this.cache[key];
-    delete this.expiration[key];
-  }
-  
-  /**
-   * 检查是否需要清理过期缓存
-   * 定期清理不常用的缓存项以减少内存占用
-   */
-  maybeCleanupCache() {
-    const now = Date.now();
-    // 定期执行清理，避免频繁检查
-    if ((now - this.lastCleanup) < this.cleanupInterval) {
-      return;
+    // 清空缓存
+    this.cache = {};
+    this.expiration = {};
+    this.writeQueue = {};
+    
+    if (this.writeTimerId) {
+      clearTimeout(this.writeTimerId);
+      this.writeTimerId = null;
     }
     
-    this.lastCleanup = now;
-    console.log("chrome-tabboost: Cleaning up storage cache");
-    
-    // 在清理前执行所有挂起的写入
-    this.flushWrites();
-    
-    // 清理过期缓存
-    Object.keys(this.cache).forEach(key => {
-      // 如果不是高频键，且已过期或使用频率低，则从缓存中移除
-      if (!this.frequentKeys.includes(key) && 
-          (this.isExpired(key) || (this.usageCount[key] || 0) < 3)) {
-        delete this.cache[key];
-        delete this.expiration[key];
-        delete this.usageCount[key];
-      }
-    });
-    
-    // 重置使用计数但保留高频键的计数
-    Object.keys(this.usageCount).forEach(key => {
-      if (!this.frequentKeys.includes(key)) {
-        this.usageCount[key] = Math.max(0, Math.floor(this.usageCount[key] / 2));
-      }
+    // 清空存储
+    return new Promise((resolve) => {
+      chrome.storage.sync.clear(() => {
+        if (chrome.runtime.lastError) {
+          console.error("chrome-tabboost: 清除存储失败:", chrome.runtime.lastError);
+        }
+        resolve();
+      });
     });
   }
 }
 
-// 创建单例
+// 创建单例并导出
 const storageCache = new StorageCache();
-
-// 导出单例
 export default storageCache; 

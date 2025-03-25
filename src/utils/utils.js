@@ -24,36 +24,8 @@ export function showNotification(message) {
   );
 }
 
-// 危险协议列表
-const DANGEROUS_PROTOCOLS = [
-  'javascript:', 
-  'data:', 
-  'vbscript:', 
-  'file:',
-  'about:',
-  'blob:',
-  'ftp:'
-];
-
-// 危险URL模式 - 用于检测可能的XSS攻击
-const DANGEROUS_URL_PATTERNS = [
-  /<script>/i,
-  /javascript:/i,
-  /onerror=/i,
-  /onload=/i,
-  /onclick=/i,
-  /onmouseover=/i,
-  /eval\(/i,
-  /document\.cookie/i,
-  /document\.domain/i,
-  /document\.write/i,
-  /\balert\(/i,
-  /\bprompt\(/i,
-  /\bconfirm\(/i,
-  /fromCharCode/i,
-  /&#/i,  // HTML编码
-  /%3C/i  // URL编码的 < 符号
-];
+// 导入常量定义，而不是重复定义它们
+import { DANGEROUS_PROTOCOLS, DANGEROUS_URL_PATTERNS } from "../config/constants.js";
 
 /**
  * 检查URL是否安全，防止恶意URL和XSS攻击

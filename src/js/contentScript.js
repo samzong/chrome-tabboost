@@ -1,7 +1,9 @@
 // contentScript.js
-import storageCache from "../utils/storageCache.js";
+import storageCache from "../utils/storage-cache.js";
 import { validateUrl } from "../utils/utils.js";
-import { canLoadInIframe, DANGEROUS_URL_PATTERNS, DANGEROUS_PROTOCOLS } from "../utils/iframeCompatibility.js";
+import { isDomainMatch } from "../utils/iframe-compatibility.js"; 
+import { DANGEROUS_URL_PATTERNS, DANGEROUS_PROTOCOLS } from "../config/constants.js";
+import { canLoadInIframe } from "../utils/iframe-compatibility.js";
 
 // 确保缓存系统在使用前初始化
 const initStorageCache = async () => {
