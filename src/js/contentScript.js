@@ -186,6 +186,9 @@ async function createPopupDOM(url) {
       eventListeners.push({ element, eventType, listener });
     };
   
+    // 使用DocumentFragment减少DOM重排
+    const fragment = document.createDocumentFragment();
+    
     // 创建弹窗覆盖层
     const popupOverlay = document.createElement("div");
     popupOverlay.id = "tabboost-popup-overlay";
@@ -215,65 +218,28 @@ async function createPopupDOM(url) {
     }
     // 默认尺寸不需要额外处理
 
-    // 创建工具栏
-    const toolbar = document.createElement("div");
-    toolbar.id = "tabboost-popup-toolbar";
-
-    // 创建标题
-    const title = document.createElement("span");
-    title.id = "tabboost-popup-title";
-    title.innerText = "加载中...";
-
-    // 创建按钮容器
-    const buttonsContainer = document.createElement("div");
-    buttonsContainer.id = "tabboost-popup-buttons";
-
-    // 创建"在新标签页中打开"按钮
-    const newTabButton = document.createElement("button");
-    newTabButton.className = "tabboost-button tabboost-newtab-button";
-    newTabButton.innerText = "在新标签页中打开";
-    newTabButton.title = "在新标签页中打开链接";
-    newTabButton.setAttribute("aria-label", "在新标签页中打开链接");
-    addTrackedEventListener(newTabButton, "click", () => {
-      console.log("chrome-tabboost: New Tab button clicked");
-      window.open(url, "_blank");
-      closePopup();
-    });
-
-    // 创建关闭按钮
-    const closeButton = document.createElement("button");
-    closeButton.className = "tabboost-button tabboost-close-button";
-    closeButton.innerHTML = "&times;"; // Unicode × 符号
-    closeButton.title = "关闭弹窗";
-    closeButton.setAttribute("aria-label", "关闭弹窗");
-    addTrackedEventListener(closeButton, "click", closePopup);
-    console.log("chrome-tabboost: Close button event listener added");
-
-    // 组装按钮容器
-    buttonsContainer.appendChild(newTabButton);
-
-    // 创建尺寸提示按钮
-    const sizeHintButton = document.createElement("button");
-    sizeHintButton.className = "tabboost-button tabboost-size-hint";
-    sizeHintButton.title = "在扩展选项中可调整弹窗大小";
-    sizeHintButton.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
-    addTrackedEventListener(sizeHintButton, "click", () => {
-      chrome.runtime.sendMessage({ action: "openOptionsPage", section: "popup-size" });
-    });
-
-    // 添加尺寸提示按钮和关闭按钮
-    buttonsContainer.appendChild(sizeHintButton);
-    buttonsContainer.appendChild(closeButton);
-
-    // 组装工具栏
-    toolbar.appendChild(title);
-    toolbar.appendChild(buttonsContainer);
-
-    // 创建加载指示器
-    const loader = document.createElement("div");
-    loader.id = "tabboost-popup-loader";
-    loader.innerText = "加载中...";
-
+    // 使用模板字符串预构建工具栏HTML
+    const toolbarHtml = `
+      <div id="tabboost-popup-toolbar">
+        <span id="tabboost-popup-title">加载中...</span>
+        <div id="tabboost-popup-buttons">
+          <button class="tabboost-button tabboost-newtab-button" title="在新标签页中打开链接" aria-label="在新标签页中打开链接">在新标签页中打开</button>
+          <button class="tabboost-button tabboost-size-hint" title="在扩展选项中可调整弹窗大小">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+          </button>
+          <button class="tabboost-button tabboost-close-button" title="关闭弹窗" aria-label="关闭弹窗">&times;</button>
+        </div>
+      </div>
+      <div id="tabboost-popup-loader">加载中...</div>
+    `;
+    
+    // 使用innerHTML设置工具栏内容
+    popupContent.innerHTML = toolbarHtml;
+    
     // 创建错误消息
     const errorMsg = document.createElement("div");
     errorMsg.id = "tabboost-popup-error";
@@ -283,10 +249,20 @@ async function createPopupDOM(url) {
       <button id="tabboost-add-to-ignore">添加到忽略列表</button>
       <button id="tabboost-close-error">关闭</button>
     `;
-
+    
     // 创建 iframe 以加载链接内容
     const iframe = document.createElement("iframe");
     iframe.id = "tabboost-popup-iframe";
+    
+    // 按顺序添加元素到弹窗内容容器
+    popupContent.appendChild(iframe);
+    popupContent.appendChild(errorMsg);
+    
+    // 将弹窗内容添加到覆盖层
+    popupOverlay.appendChild(popupContent);
+    
+    // 将覆盖层添加到文档片段
+    fragment.appendChild(popupOverlay);
     
     // 标记是否已处理过加载失败
     let hasHandledFailure = false;
@@ -304,7 +280,8 @@ async function createPopupDOM(url) {
       hasHandledFailure = true;
       
       console.log(`chrome-tabboost: Iframe load failed: ${reason}`);
-      loader.style.display = "none";
+      const loader = document.getElementById('tabboost-popup-loader');
+      if (loader) loader.style.display = "none";
       errorMsg.classList.add("show");
       
       // 清理所有定时器
@@ -395,25 +372,30 @@ async function createPopupDOM(url) {
         clearAllTimers();
         
         // 隐藏加载指示器
-        loader.style.display = "none";
+        const loader = document.getElementById('tabboost-popup-loader');
+        if (loader) loader.style.display = "none";
 
         // 更新标题为 iframe 中的页面标题
         try {
           const iframeTitle = iframe.contentDocument.title;
-          title.innerText = iframeTitle || "加载页面";
+          const title = document.getElementById('tabboost-popup-title');
+          if (title) title.innerText = iframeTitle || "加载页面";
         } catch (e) {
           console.log(
             "chrome-tabboost: Unable to access iframe content title due to CORS restrictions"
           );
-          title.innerText = "加载页面";
+          const title = document.getElementById('tabboost-popup-title');
+          if (title) title.innerText = "加载页面";
         }
       } catch (e) {
         console.warn("chrome-tabboost: Error handling iframe load event:", e);
         
         // 如果是跨域错误，我们假设加载成功了
         // 因为跨域限制只是阻止我们访问内容，但iframe可能已经正确加载
-        loader.style.display = "none";
-        title.innerText = "加载页面";
+        const loader = document.getElementById('tabboost-popup-loader');
+        if (loader) loader.style.display = "none";
+        const title = document.getElementById('tabboost-popup-title');
+        if (title) title.innerText = "加载页面";
       }
     };
 
@@ -426,15 +408,8 @@ async function createPopupDOM(url) {
       handleLoadFailure("加载超时");
     }, 5000);
 
-    // 组装弹窗内容
-    popupContent.appendChild(toolbar);
-    popupContent.appendChild(loader);
-    popupContent.appendChild(iframe);
-    popupContent.appendChild(errorMsg);
-    popupOverlay.appendChild(popupContent);
-
-    // 添加到页面
-    document.body.appendChild(popupOverlay);
+    // 将构建好的文档片段一次性添加到DOM中
+    document.body.appendChild(fragment);
 
     // 添加监听 Esc 键关闭弹窗
     const escListener = function (event) {
@@ -446,65 +421,103 @@ async function createPopupDOM(url) {
     addTrackedEventListener(document, "keydown", escListener);
     console.log("chrome-tabboost: Esc key listener added");
 
-    // 监听错误消息中的按钮
-    const openNewTabButton = errorMsg.querySelector("#tabboost-open-newtab");
-    addTrackedEventListener(openNewTabButton, "click", () => {
-      console.log("chrome-tabboost: Open in new tab button clicked");
-      window.open(url, "_blank");
-      closePopup();
-    });
-
-    // 监听添加到忽略列表按钮
-    const addToIgnoreButton = errorMsg.querySelector("#tabboost-add-to-ignore");
-    addTrackedEventListener(addToIgnoreButton, "click", async () => {
-      console.log("chrome-tabboost: Add to ignore list button clicked");
-      try {
-        // 解析URL获取域名
-        const urlObj = new URL(url);
-        const hostname = urlObj.hostname;
-        
-        // 使用之前已获取的ignoreList
-        let ignoreList = settings.iframeIgnoreList;
-        
-        // 确保ignoreList是数组
-        if (!Array.isArray(ignoreList)) {
-          ignoreList = [];
-        }
-        
-        // 检查域名是否已在列表中
-        if (!ignoreList.includes(hostname)) {
-          ignoreList.push(hostname);
-          
-          // 保存更新后的列表
-          await storageCache.set({ iframeIgnoreList: ignoreList });
-          console.log(`chrome-tabboost: Added ${hostname} to ignore list`);
-          // 显示成功消息
-          alert(`已将 ${hostname} 添加到忽略列表，下次将直接在新标签页中打开`);
-          
-          // 关闭弹窗并在新标签页中打开
+    // 查找并添加各种按钮的事件监听器
+    const addButtonListeners = () => {
+      // 新标签页按钮
+      const newTabButton = document.querySelector('.tabboost-newtab-button');
+      if (newTabButton) {
+        addTrackedEventListener(newTabButton, "click", () => {
+          console.log("chrome-tabboost: New Tab button clicked");
           window.open(url, "_blank");
           closePopup();
-        } else {
-          console.log(`chrome-tabboost: ${hostname} is already in ignore list`);
-          alert(`${hostname} 已在忽略列表中`);
-          
-          // 关闭弹窗并在新标签页中打开
-          window.open(url, "_blank");
-          closePopup();
-        }
-      } catch (error) {
-        console.error("chrome-tabboost: Error adding to ignore list:", error);
-        alert("添加到忽略列表失败");
+        });
       }
-    });
+      
+      // 关闭按钮
+      const closeButton = document.querySelector('.tabboost-close-button');
+      if (closeButton) {
+        addTrackedEventListener(closeButton, "click", closePopup);
+        console.log("chrome-tabboost: Close button event listener added");
+      }
+      
+      // 尺寸提示按钮
+      const sizeHintButton = document.querySelector('.tabboost-size-hint');
+      if (sizeHintButton) {
+        addTrackedEventListener(sizeHintButton, "click", () => {
+          chrome.runtime.sendMessage({ action: "openOptionsPage", section: "popup-size" });
+        });
+      }
+      
+      // 错误信息中的按钮
+      const openNewTabButton = document.getElementById("tabboost-open-newtab");
+      if (openNewTabButton) {
+        addTrackedEventListener(openNewTabButton, "click", () => {
+          console.log("chrome-tabboost: Open in new tab button clicked");
+          window.open(url, "_blank");
+          closePopup();
+        });
+      }
+
+      // 监听添加到忽略列表按钮
+      const addToIgnoreButton = document.getElementById("tabboost-add-to-ignore");
+      if (addToIgnoreButton) {
+        addTrackedEventListener(addToIgnoreButton, "click", async () => {
+          console.log("chrome-tabboost: Add to ignore list button clicked");
+          try {
+            // 解析URL获取域名
+            const urlObj = new URL(url);
+            const hostname = urlObj.hostname;
+            
+            // 使用之前已获取的ignoreList
+            let ignoreList = settings.iframeIgnoreList;
+            
+            // 确保ignoreList是数组
+            if (!Array.isArray(ignoreList)) {
+              ignoreList = [];
+            }
+            
+            // 检查域名是否已在列表中
+            if (!ignoreList.includes(hostname)) {
+              ignoreList.push(hostname);
+              
+              // 保存更新后的列表
+              await storageCache.set({ iframeIgnoreList: ignoreList });
+              console.log(`chrome-tabboost: Added ${hostname} to ignore list`);
+              // 显示成功消息
+              alert(`已将 ${hostname} 添加到忽略列表，下次将直接在新标签页中打开`);
+              
+              // 关闭弹窗并在新标签页中打开
+              window.open(url, "_blank");
+              closePopup();
+            } else {
+              console.log(`chrome-tabboost: ${hostname} is already in ignore list`);
+              alert(`${hostname} 已在忽略列表中`);
+              
+              // 关闭弹窗并在新标签页中打开
+              window.open(url, "_blank");
+              closePopup();
+            }
+          } catch (error) {
+            console.error("chrome-tabboost: Error adding to ignore list:", error);
+            alert("添加到忽略列表失败");
+          }
+        });
+      }
     
-    // 监听关闭按钮
-    const closeErrorButton = errorMsg.querySelector("#tabboost-close-error");
-    addTrackedEventListener(closeErrorButton, "click", () => {
-      console.log("chrome-tabboost: Close error button clicked");
-      errorMsg.classList.remove("show");
-      closePopup();
-    });
+      // 监听关闭按钮
+      const closeErrorButton = document.getElementById("tabboost-close-error");
+      if (closeErrorButton) {
+        addTrackedEventListener(closeErrorButton, "click", () => {
+          console.log("chrome-tabboost: Close error button clicked");
+          const errorMsg = document.getElementById('tabboost-popup-error');
+          if (errorMsg) errorMsg.classList.remove("show");
+          closePopup();
+        });
+      }
+    };
+    
+    // 添加按钮监听器
+    addButtonListeners();
     
     // 添加额外的检测机制 - 使用间隔检查而不是多个setTimeout
     let checkCount = 0;

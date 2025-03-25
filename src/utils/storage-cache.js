@@ -12,6 +12,10 @@ class StorageCache {
     this.expiration = {};
     // 统一缓存过期时间（毫秒）
     this.cacheExpiration = 30 * 60 * 1000; // 30分钟统一缓存时间
+    // 常变化配置的缓存时间（较短）
+    this.frequentUpdateExpiration = 30 * 60 * 1000; // 30分钟
+    // 不常变化配置的缓存时间（较长）
+    this.stableConfigExpiration = 12 * 60 * 60 * 1000; // 12小时
     // 初始化标记
     this.initialized = false;
     // 常用键的列表
@@ -25,6 +29,21 @@ class StorageCache {
       'defaultAction',
       'splitViewEnabled'
     ];
+    
+    // 不常变化的配置项
+    this.stableConfigKeys = [
+      'popupSizePreset',
+      'customWidth',
+      'customHeight',
+      'defaultAction',
+      'splitViewEnabled',
+      'iframeIgnoreEnabled',
+    ];
+    
+    // 批量读取缓存
+    this.batchReadCache = {};
+    this.batchReadTimer = null;
+    this.batchReadDelay = 50; // 50毫秒内的读取请求会被批量处理
     
     // 批量写入队列
     this.writeQueue = {};
@@ -62,11 +81,16 @@ class StorageCache {
   }
 
   /**
-   * 设置键的过期时间
+   * 设置键的过期时间，基于配置稳定性
    * @param {string} key 键名
    */
   setExpiration(key) {
-    this.expiration[key] = Date.now() + this.cacheExpiration;
+    // 对不常变化的配置使用更长的缓存时间
+    if (this.stableConfigKeys.includes(key)) {
+      this.expiration[key] = Date.now() + this.stableConfigExpiration;
+    } else {
+      this.expiration[key] = Date.now() + this.frequentUpdateExpiration;
+    }
   }
 
   /**
@@ -79,7 +103,7 @@ class StorageCache {
   }
 
   /**
-   * 获取存储的值
+   * 获取存储的值，支持批量读取优化
    * @param {string|Array|Object} keys 要获取的键或键的列表或默认值对象
    * @returns {Promise} 包含请求数据的Promise
    */
@@ -89,7 +113,7 @@ class StorageCache {
       await this.init();
     }
     
-    // 标准化keys为数组
+    // 标准化keys为数组和默认值对象
     let keyList = [];
     let defaults = {};
     
@@ -116,24 +140,99 @@ class StorageCache {
       return Promise.resolve(result);
     }
 
-    // 否则从存储中获取缺失的键
+    // 将需要获取的键添加到批量读取缓存
     return new Promise((resolve) => {
-      chrome.storage.sync.get(keysToFetch.length > 0 ? keysToFetch : defaults, (items) => {
-        // 更新缓存
-        Object.keys(items).forEach(key => {
-          this.cache[key] = items[key];
-          this.setExpiration(key);
-        });
-
-        // 合并从缓存和新获取的结果
-        const result = {};
-        keyList.forEach(key => {
-          result[key] = (key in this.cache) ? this.cache[key] : 
-                       (key in items) ? items[key] : 
-                       defaults[key];
-        });
+      // 为每个需要获取的键创建一个解析器
+      const resolvers = {};
+      keysToFetch.forEach(key => {
+        if (!this.batchReadCache[key]) {
+          this.batchReadCache[key] = [];
+        }
         
-        resolve(result);
+        // 添加当前请求的解析器
+        this.batchReadCache[key].push((value) => {
+          resolvers[key] = value;
+        });
+      });
+      
+      // 如果已有计时器在运行，清除它
+      if (this.batchReadTimer) {
+        clearTimeout(this.batchReadTimer);
+      }
+      
+      // 设置新的计时器，延迟执行批量读取
+      this.batchReadTimer = setTimeout(() => {
+        this.executeBatchRead();
+      }, this.batchReadDelay);
+      
+      // 当批量读取完成后，组合结果并解析promise
+      const checkComplete = () => {
+        // 检查是否所有需要的键都已获取
+        const allResolved = keysToFetch.every(key => key in resolvers);
+        
+        if (allResolved) {
+          // 合并从缓存、批量读取和默认值获取的结果
+          const result = {};
+          keyList.forEach(key => {
+            if (key in resolvers) {
+              result[key] = resolvers[key];
+            } else if (key in this.cache) {
+              result[key] = this.cache[key];
+            } else {
+              result[key] = defaults[key];
+            }
+          });
+          
+          resolve(result);
+        } else {
+          // 如果还有未解析的键，继续等待
+          setTimeout(checkComplete, 10);
+        }
+      };
+      
+      // 开始检查是否完成
+      checkComplete();
+    });
+  }
+  
+  /**
+   * 执行批量读取操作
+   */
+  executeBatchRead() {
+    // 获取所有需要批量读取的键
+    const keysToFetch = Object.keys(this.batchReadCache);
+    
+    if (keysToFetch.length === 0) {
+      return;
+    }
+    
+    // 创建当前批量读取缓存的副本并清空原缓存
+    const currentBatch = {...this.batchReadCache};
+    this.batchReadCache = {};
+    this.batchReadTimer = null;
+    
+    // 执行批量读取
+    chrome.storage.sync.get(keysToFetch, (items) => {
+      // 更新缓存
+      Object.keys(items).forEach(key => {
+        this.cache[key] = items[key];
+        this.setExpiration(key);
+        
+        // 通知所有等待这个键的解析器
+        if (currentBatch[key]) {
+          currentBatch[key].forEach(resolver => {
+            resolver(items[key]);
+          });
+        }
+      });
+      
+      // 处理未能获取的键（使用默认值）
+      keysToFetch.forEach(key => {
+        if (!(key in items) && currentBatch[key]) {
+          currentBatch[key].forEach(resolver => {
+            resolver(undefined);
+          });
+        }
       });
     });
   }
@@ -252,10 +351,16 @@ class StorageCache {
     this.cache = {};
     this.expiration = {};
     this.writeQueue = {};
+    this.batchReadCache = {};
     
     if (this.writeTimerId) {
       clearTimeout(this.writeTimerId);
       this.writeTimerId = null;
+    }
+    
+    if (this.batchReadTimer) {
+      clearTimeout(this.batchReadTimer);
+      this.batchReadTimer = null;
     }
     
     // 清空存储
