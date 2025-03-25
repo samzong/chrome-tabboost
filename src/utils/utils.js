@@ -11,7 +11,7 @@ export function showNotification(message) {
   chrome.notifications.create(
     {
       type: "basic",
-      iconUrl: "../assets/icons/icon48.png", // 更新图标路径
+      iconUrl: chrome.runtime.getURL("assets/icons/icon48.png"), // 使用chrome.runtime.getURL获取正确路径
       title: "TabBoost",
       message: message,
     },

@@ -55,6 +55,37 @@ document.addEventListener(
               // 处理响应
               if (response && response.status === 'error') {
                 console.error("chrome-tabboost: Split view error:", response.message);
+                
+                // 显示临时通知，告知用户分屏失败
+                const notification = document.createElement('div');
+                notification.className = 'tabboost-notification';
+                notification.textContent = '分屏视图加载失败，正在尝试新标签页打开...';
+                notification.style.cssText = `
+                  position: fixed;
+                  bottom: 20px;
+                  right: 20px;
+                  background: rgba(0, 0, 0, 0.8);
+                  color: white;
+                  padding: 10px 15px;
+                  border-radius: 4px;
+                  z-index: 999999;
+                  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+                  font-family: system-ui, -apple-system, sans-serif;
+                  font-size: 14px;
+                `;
+                document.body.appendChild(notification);
+                
+                // 在新标签页中打开链接
+                setTimeout(() => {
+                  window.open(target.href, "_blank");
+                  
+                  // 3秒后移除通知
+                  setTimeout(() => {
+                    if (notification.parentNode) {
+                      notification.parentNode.removeChild(notification);
+                    }
+                  }, 3000);
+                }, 500);
               }
             });
           }
@@ -104,6 +135,26 @@ async function createPopup(url) {
     // 检查是否已经存在弹窗，避免重复创建
     if (document.getElementById("tabboost-popup-overlay")) {
       console.log("chrome-tabboost: Popup already exists");
+      return;
+    }
+    
+    // 验证URL的安全性
+    try {
+      // 确保URL是有效的
+      const urlObj = new URL(url);
+      
+      // 只允许http和https协议
+      if (urlObj.protocol !== 'http:' && urlObj.protocol !== 'https:') {
+        console.error(`chrome-tabboost: 不安全的URL协议: ${urlObj.protocol}`);
+        window.open(url, "_blank"); // 使用浏览器自身的安全措施
+        return;
+      }
+      
+      // 编码URL以防止XSS
+      url = encodeURI(decodeURI(url));
+    } catch (urlError) {
+      console.error("chrome-tabboost: 无效的URL:", urlError);
+      // 无效URL，不处理
       return;
     }
 
