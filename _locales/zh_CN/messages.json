@@ -52,8 +52,12 @@
     "description": "iframe忽略列表设置"
   },
   "autoAddToIgnoreList": {
-    "message": "自动添加到忽略列表",
-    "description": "自动添加到忽略列表设置"
+    "message": "已自动添加到忽略列表，下次将直接在新标签页中打开",
+    "description": "Message shown when a website is automatically added to ignore list"
+  },
+  "autoAddToIgnoreListOption": {
+    "message": "自动将无法加载的网站添加到忽略列表",
+    "description": "Option to automatically add websites that fail to load to the ignore list"
   },
   "save": {
     "message": "保存",
@@ -127,7 +131,7 @@
     "message": "自定义宽度: $WIDTH$%",
     "description": "自定义宽度标签",
     "placeholders": {
-      "width": {
+      "WIDTH": {
         "content": "$1",
         "example": "80"
       }
@@ -137,7 +141,7 @@
     "message": "自定义高度: $HEIGHT$%",
     "description": "自定义高度标签",
     "placeholders": {
-      "height": {
+      "HEIGHT": {
         "content": "$1",
         "example": "80"
       }
@@ -152,7 +156,127 @@
     "description": "预览描述"
   },
   "iframeCompatibility": {
-    "message": "Iframe兼容性",
-    "description": "Iframe兼容性设置标题"
+    "message": "iframe兼容性",
+    "description": "iframe兼容性设置标签"
+  },
+  "closeSplitView": {
+    "message": "关闭分屏",
+    "description": "关闭分屏按钮"
+  },
+  "closeLeftView": {
+    "message": "关闭左侧内容",
+    "description": "关闭分屏左侧视图按钮"
+  },
+  "closeRightView": {
+    "message": "关闭右侧内容",
+    "description": "关闭分屏右侧视图按钮"
+  },
+  "cannotLoadInSplitView": {
+    "message": "无法在分屏中加载此内容",
+    "description": "无法在分屏中加载内容的错误信息"
+  },
+  "websiteNotAllowed": {
+    "message": "此网站可能不允许在iframe中嵌入显示",
+    "description": "解释为什么内容无法在分屏中加载的消息"
+  },
+  "splitViewFailure": {
+    "message": "分屏视图加载失败，正在新标签页中打开...",
+    "description": "分屏视图加载失败时的通知"
+  },
+  "generalSettings": {
+    "message": "通用设置",
+    "description": "通用设置标签"
+  },
+  "browsingMode": {
+    "message": "浏览模式",
+    "description": "浏览模式部分标题"
+  },
+  "splitViewSettings": {
+    "message": "分屏模式设置",
+    "description": "分屏模式设置标题"
+  },
+  "configureExtension": {
+    "message": "配置扩展的基本行为",
+    "description": "通用设置描述"
+  },
+  "configureSplitView": {
+    "message": "配置分屏模式的行为和外观",
+    "description": "分屏模式设置描述"
+  },
+  "splitViewUsage": {
+    "message": "分屏模式使用说明:",
+    "description": "分屏模式使用说明标题"
+  },
+  "splitViewInstructions": {
+    "message": "在分屏模式下，按住 Command+Shift 并点击链接，会在右侧打开",
+    "description": "分屏模式使用说明"
+  },
+  "configureExtensionBehavior": {
+    "message": "配置扩展的基本行为",
+    "description": "通用设置描述"
+  },
+  "viewModeSettings": {
+    "message": "浏览模式",
+    "description": "浏览模式设置标签"
+  },
+  "splitViewDescription": {
+    "message": "配置分屏模式的行为和外观",
+    "description": "Description for split view settings"
+  },
+  "splitViewUsageInstructions": {
+    "message": "分屏模式使用说明:",
+    "description": "分屏模式使用说明标题"
+  },
+  "splitViewUsageDetail": {
+    "message": "在分屏模式下，按住 Command+Shift 并点击链接，会在右侧打开",
+    "description": "分屏模式使用说明详情"
+  },
+  "iframeCompatibilityDescription": {
+    "message": "配置网站在弹窗和分屏模式中的加载方式",
+    "description": "iframe兼容性设置描述"
+  },
+  "iframeIgnoreEnabledDescription": {
+    "message": "当启用此功能时，列表中的网站将不会使用弹窗或分屏模式，而是直接在新标签页中打开。",
+    "description": "启用网站忽略列表功能描述"
+  },
+  "noIgnoredWebsites": {
+    "message": "暂无忽略的网站",
+    "description": "当忽略列表为空时显示的文本"
+  },
+  "domainFormatGuide": {
+    "message": "域名格式说明：",
+    "description": "域名格式说明标题"
+  },
+  "exactMatchExample": {
+    "message": "example.com - 仅匹配 example.com（精确匹配）",
+    "description": "精确匹配域名示例"
+  },
+  "wildcardMatchExample": {
+    "message": "*.example.com - 匹配 example.com 所有子域名",
+    "description": "通配符匹配域名示例"
+  },
+  "enterDomainPlaceholder": {
+    "message": "输入要忽略的域名，例如：example.com 或 *.example.com",
+    "description": "输入域名的占位文本"
+  },
+  "systemReservedDomains": {
+    "message": "系统保留域名（无法删除）",
+    "description": "Title for system reserved domains section"
+  },
+  "exactMatch": {
+    "message": "精确",
+    "description": "Badge text for exact match type"
+  },
+  "wildcardMatch": {
+    "message": "通配符",
+    "description": "Badge text for wildcard match type"
+  },
+  "systemBadge": {
+    "message": "系统",
+    "description": "Badge text for system domains"
+  },
+  "extensionFooter": {
+    "message": "TabBoost v2.0 - 让您的浏览体验更高效",
+    "description": "扩展页脚文本"
   }
 } 

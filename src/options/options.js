@@ -8,6 +8,18 @@ document.addEventListener('DOMContentLoaded', () => {
   // 本地化所有标记了data-i18n的元素
   localizePage();
   
+  // 处理标记了data-i18n-placeholder的元素
+  const placeholderElements = document.querySelectorAll('[data-i18n-placeholder]');
+  placeholderElements.forEach(el => {
+    const i18nKey = el.getAttribute('data-i18n-placeholder');
+    if (i18nKey) {
+      const placeholderText = getMessage(i18nKey);
+      if (placeholderText) {
+        el.setAttribute('placeholder', placeholderText);
+      }
+    }
+  });
+  
   // 特殊处理需要动态插入的文本
   updateDynamicLabels();
   
@@ -32,11 +44,23 @@ function updateCustomSizeLabels() {
   const customHeightLabel = document.getElementById('customHeightLabel');
   
   if (customWidthLabel) {
-    customWidthLabel.textContent = getMessage("customWidthLabel", [customWidthValue]);
+    const widthMsg = getMessage("customWidthLabel", [customWidthValue]);
+    if (widthMsg) {
+      customWidthLabel.textContent = widthMsg;
+    } else {
+      // 回退处理：如果获取不到本地化消息，则直接使用默认格式
+      customWidthLabel.textContent = `自定义宽度: ${customWidthValue}%`;
+    }
   }
   
   if (customHeightLabel) {
-    customHeightLabel.textContent = getMessage("customHeightLabel", [customHeightValue]);
+    const heightMsg = getMessage("customHeightLabel", [customHeightValue]);
+    if (heightMsg) {
+      customHeightLabel.textContent = heightMsg;
+    } else {
+      // 回退处理：如果获取不到本地化消息，则直接使用默认格式
+      customHeightLabel.textContent = `自定义高度: ${customHeightValue}%`;
+    }
   }
 }
 
@@ -170,7 +194,7 @@ function renderIgnoreList(ignoreList) {
   if (!combinedList.length) {
     const emptyItem = document.createElement('div');
     emptyItem.className = 'ignore-item-empty';
-    emptyItem.textContent = '暂无忽略的网站';
+    emptyItem.textContent = getMessage("noIgnoredWebsites") || '暂无忽略的网站';
     ignoreListContainer.appendChild(emptyItem);
     return;
   }
@@ -179,7 +203,7 @@ function renderIgnoreList(ignoreList) {
   if (systemDomains.length > 0) {
     const systemTitle = document.createElement('div');
     systemTitle.className = 'ignore-list-section-title';
-    systemTitle.textContent = '系统保留域名（无法删除）';
+    systemTitle.textContent = getMessage("systemReservedDomains") || '系统保留域名（无法删除）';
     ignoreListContainer.appendChild(systemTitle);
     
     // 添加系统保留域名
@@ -193,28 +217,28 @@ function renderIgnoreList(ignoreList) {
       // 添加标签指示匹配类型
       const matchTypeBadge = document.createElement('span');
       matchTypeBadge.className = domain.startsWith('*.') ? 'match-type wildcard' : 'match-type exact';
-      matchTypeBadge.textContent = domain.startsWith('*.') ? '通配符' : '精确';
+      matchTypeBadge.textContent = domain.startsWith('*.') 
+        ? (getMessage("wildcardMatch") || '通配符') 
+        : (getMessage("exactMatch") || '精确');
       
       const systemBadge = document.createElement('span');
       systemBadge.className = 'system-badge';
-      systemBadge.textContent = '系统';
+      systemBadge.textContent = getMessage("systemBadge") || '系统';
       
       item.appendChild(domainText);
       item.appendChild(matchTypeBadge);
       item.appendChild(systemBadge);
+      
       ignoreListContainer.appendChild(item);
     });
   }
   
-  // 添加用户自定义忽略列表标题（如果有用户自定义的域名）
-  if (ignoreList.length > 0) {
-    const userTitle = document.createElement('div');
-    userTitle.className = 'ignore-list-section-title';
-    userTitle.textContent = '用户自定义域名';
-    ignoreListContainer.appendChild(userTitle);
-    
-    // 添加用户自定义域名列表项
-    ignoreList.forEach(domain => {
+  // 添加用户忽略列表中非系统域名
+  const userDomains = ignoreList.filter(domain => !systemDomains.includes(domain));
+  
+  if (userDomains.length > 0) {
+    // 添加用户自定义域名
+    userDomains.forEach(domain => {
       const item = document.createElement('div');
       item.className = 'ignore-item';
       
@@ -224,16 +248,21 @@ function renderIgnoreList(ignoreList) {
       // 添加标签指示匹配类型
       const matchTypeBadge = document.createElement('span');
       matchTypeBadge.className = domain.startsWith('*.') ? 'match-type wildcard' : 'match-type exact';
-      matchTypeBadge.textContent = domain.startsWith('*.') ? '通配符' : '精确';
+      matchTypeBadge.textContent = domain.startsWith('*.') 
+        ? (getMessage("wildcardMatch") || '通配符') 
+        : (getMessage("exactMatch") || '精确');
       
       const removeButton = document.createElement('button');
-      removeButton.className = 'remove-btn';
-      removeButton.textContent = '删除';
-      removeButton.addEventListener('click', () => removeDomain(domain));
+      removeButton.className = 'remove-domain-button';
+      removeButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+      removeButton.addEventListener('click', () => {
+        removeDomain(domain);
+      });
       
       item.appendChild(domainText);
       item.appendChild(matchTypeBadge);
       item.appendChild(removeButton);
+      
       ignoreListContainer.appendChild(item);
     });
   }
