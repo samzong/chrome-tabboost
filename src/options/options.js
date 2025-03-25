@@ -1,6 +1,68 @@
 import { showNotification } from "../utils/utils.js";
-import storageCache from "../utils/storageCache.js"; // 导入storageCache
+import storageCache from "../utils/storage-cache.js"; // 导入storageCache
 import { RESTRICTED_DOMAINS } from "../js/splitView/splitViewURLValidator.js"; // 导入系统预设的限制域名
+import { localizePage, getMessage } from "../utils/i18n.js"; // 导入国际化工具
+
+// 初始化页面时本地化
+document.addEventListener('DOMContentLoaded', () => {
+  // 本地化所有标记了data-i18n的元素
+  localizePage();
+  
+  // 处理标记了data-i18n-placeholder的元素
+  const placeholderElements = document.querySelectorAll('[data-i18n-placeholder]');
+  placeholderElements.forEach(el => {
+    const i18nKey = el.getAttribute('data-i18n-placeholder');
+    if (i18nKey) {
+      const placeholderText = getMessage(i18nKey);
+      if (placeholderText) {
+        el.setAttribute('placeholder', placeholderText);
+      }
+    }
+  });
+  
+  // 特殊处理需要动态插入的文本
+  updateDynamicLabels();
+  
+  // 初始化其他功能
+  initTabs();
+  loadSettings();
+  setupEventListeners();
+});
+
+// 更新需要动态设置的标签文本
+function updateDynamicLabels() {
+  // 更新自定义宽度和高度标签（带有动态值）
+  updateCustomSizeLabels();
+}
+
+// 更新自定义尺寸标签
+function updateCustomSizeLabels() {
+  const customWidthValue = document.getElementById('customWidthValue').textContent.replace('%', '');
+  const customHeightValue = document.getElementById('customHeightValue').textContent.replace('%', '');
+  
+  const customWidthLabel = document.getElementById('customWidthLabel');
+  const customHeightLabel = document.getElementById('customHeightLabel');
+  
+  if (customWidthLabel) {
+    const widthMsg = getMessage("customWidthLabel", [customWidthValue]);
+    if (widthMsg) {
+      customWidthLabel.textContent = widthMsg;
+    } else {
+      // 回退处理：如果获取不到本地化消息，则直接使用默认格式
+      customWidthLabel.textContent = `自定义宽度: ${customWidthValue}%`;
+    }
+  }
+  
+  if (customHeightLabel) {
+    const heightMsg = getMessage("customHeightLabel", [customHeightValue]);
+    if (heightMsg) {
+      customHeightLabel.textContent = heightMsg;
+    } else {
+      // 回退处理：如果获取不到本地化消息，则直接使用默认格式
+      customHeightLabel.textContent = `自定义高度: ${customHeightValue}%`;
+    }
+  }
+}
 
 const saveButton = document.getElementById("saveButton");
 const defaultActionInput = document.getElementById("defaultAction");
@@ -26,21 +88,53 @@ const tabs = document.querySelectorAll('.tab');
 const tabContents = document.querySelectorAll('.tab-content');
 
 // 处理标签切换
-tabs.forEach(tab => {
-  tab.addEventListener('click', () => {
-    const tabId = tab.getAttribute('data-tab');
-    
-    // 切换标签高亮
-    tabs.forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    
-    // 切换内容显示
-    tabContents.forEach(content => {
-      content.style.display = 'none';
+function setupEventListeners() {
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const tabId = tab.getAttribute('data-tab');
+      
+      // 切换标签高亮
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      
+      // 切换内容显示
+      tabContents.forEach(content => {
+        content.style.display = 'none';
+      });
+      document.getElementById(`${tabId}-content`).style.display = 'block';
     });
-    document.getElementById(`${tabId}-content`).style.display = 'block';
   });
-});
+  
+  // 设置自定义宽度和高度滑块的事件监听
+  if (customWidthSlider) {
+    customWidthSlider.addEventListener('input', function() {
+      customWidthValue.textContent = this.value + '%';
+      updateCustomSizeLabels();
+      updateSizePreview();
+    });
+  }
+  
+  if (customHeightSlider) {
+    customHeightSlider.addEventListener('input', function() {
+      customHeightValue.textContent = this.value + '%';
+      updateCustomSizeLabels();
+      updateSizePreview();
+    });
+  }
+  
+  // 其他事件监听器...
+}
+
+// 更新大小预览
+function updateSizePreview() {
+  if (sizePreviewBox) {
+    const widthValue = customWidthSlider ? customWidthSlider.value : 80;
+    const heightValue = customHeightSlider ? customHeightSlider.value : 80;
+    
+    sizePreviewBox.style.width = widthValue + '%';
+    sizePreviewBox.style.height = heightValue + '%';
+  }
+}
 
 // 初始化标签显示
 function initTabs() {
@@ -61,125 +155,6 @@ function initTabs() {
     }
   }
 }
-
-// 处理预设大小选择变更
-popupSizePreset.addEventListener('change', function() {
-  updateSizeControls();
-  updateSizePreview();
-});
-
-// 处理自定义宽度滑块变更
-customWidthSlider.addEventListener('input', function() {
-  customWidthValue.textContent = this.value + '%';
-  updateSizePreview();
-});
-
-// 处理自定义高度滑块变更
-customHeightSlider.addEventListener('input', function() {
-  customHeightValue.textContent = this.value + '%';
-  updateSizePreview();
-});
-
-// 更新尺寸控件显示状态
-function updateSizeControls() {
-  if (popupSizePreset.value === 'custom') {
-    customSizeControls.forEach(control => control.style.display = 'block');
-  } else {
-    customSizeControls.forEach(control => control.style.display = 'none');
-  }
-}
-
-// 更新预览框
-function updateSizePreview() {
-  const preset = popupSizePreset.value;
-  
-  if (preset === 'default') {
-    sizePreviewBox.style.width = '80%';
-    sizePreviewBox.style.height = '80%';
-  } else if (preset === 'large') {
-    sizePreviewBox.style.width = '90%';
-    sizePreviewBox.style.height = '90%';
-  } else if (preset === 'custom') {
-    sizePreviewBox.style.width = customWidthSlider.value + '%';
-    sizePreviewBox.style.height = customHeightSlider.value + '%';
-  }
-}
-
-// 加载弹窗大小设置
-function loadPopupSizeSettings() {
-  storageCache.get({
-    popupSizePreset: 'default',
-    customWidth: 80,
-    customHeight: 80
-  }).then((settings) => {
-    popupSizePreset.value = settings.popupSizePreset;
-    customWidthSlider.value = settings.customWidth;
-    customHeightSlider.value = settings.customHeight;
-    customWidthValue.textContent = settings.customWidth + '%';
-    customHeightValue.textContent = settings.customHeight + '%';
-    
-    updateSizeControls();
-    updateSizePreview();
-  });
-}
-
-// 监听来自后台脚本的消息
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === 'scrollToSection' && request.section) {
-    const section = document.getElementById(request.section + '-section');
-    if (section) {
-      // 找到对应的标签并点击
-      let tabId = '';
-      
-      // 映射旧标签到新标签
-      if (request.section === 'popup') {
-        tabId = 'viewmode';
-      } else if (request.section === 'splitview') {
-        tabId = 'viewmode';
-      } else {
-        tabId = request.section.split('-')[0]; // 获取主标签ID
-      }
-      
-      const tab = document.querySelector(`.tab[data-tab="${tabId}"]`);
-      if (tab) {
-        tab.click();
-        
-        // 滚动到对应区域
-        setTimeout(() => {
-          section.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
-      }
-    }
-  }
-});
-
-// 保存设置
-saveButton.addEventListener("click", () => {
-  const defaultAction = defaultActionInput.value;
-  const splitViewEnabled = splitViewEnabledCheckbox.checked;
-  const iframeIgnoreEnabled = iframeIgnoreEnabledCheckbox.checked;
-  const autoAddToIgnoreList = autoAddToIgnoreListCheckbox.checked;
-
-  // 获取弹窗大小设置
-  const popupSizePresetValue = popupSizePreset.value;
-  const customWidthValue = parseInt(customWidthSlider.value);
-  const customHeightValue = parseInt(customHeightSlider.value);
-
-  storageCache.set(
-    {
-      defaultAction: defaultAction,
-      splitViewEnabled: splitViewEnabled,
-      iframeIgnoreEnabled: iframeIgnoreEnabled,
-      autoAddToIgnoreList: autoAddToIgnoreList,
-      // 添加弹窗大小设置
-      popupSizePreset: popupSizePresetValue,
-      customWidth: customWidthValue,
-      customHeight: customHeightValue
-    }
-  ).then(() => {
-    showNotification("设置已保存!");
-  });
-});
 
 // 加载设置
 function loadSettings() {
@@ -219,7 +194,7 @@ function renderIgnoreList(ignoreList) {
   if (!combinedList.length) {
     const emptyItem = document.createElement('div');
     emptyItem.className = 'ignore-item-empty';
-    emptyItem.textContent = '暂无忽略的网站';
+    emptyItem.textContent = getMessage("noIgnoredWebsites") || '暂无忽略的网站';
     ignoreListContainer.appendChild(emptyItem);
     return;
   }
@@ -228,7 +203,7 @@ function renderIgnoreList(ignoreList) {
   if (systemDomains.length > 0) {
     const systemTitle = document.createElement('div');
     systemTitle.className = 'ignore-list-section-title';
-    systemTitle.textContent = '系统保留域名（无法删除）';
+    systemTitle.textContent = getMessage("systemReservedDomains") || '系统保留域名（无法删除）';
     ignoreListContainer.appendChild(systemTitle);
     
     // 添加系统保留域名
@@ -242,28 +217,28 @@ function renderIgnoreList(ignoreList) {
       // 添加标签指示匹配类型
       const matchTypeBadge = document.createElement('span');
       matchTypeBadge.className = domain.startsWith('*.') ? 'match-type wildcard' : 'match-type exact';
-      matchTypeBadge.textContent = domain.startsWith('*.') ? '通配符' : '精确';
+      matchTypeBadge.textContent = domain.startsWith('*.') 
+        ? (getMessage("wildcardMatch") || '通配符') 
+        : (getMessage("exactMatch") || '精确');
       
       const systemBadge = document.createElement('span');
       systemBadge.className = 'system-badge';
-      systemBadge.textContent = '系统';
+      systemBadge.textContent = getMessage("systemBadge") || '系统';
       
       item.appendChild(domainText);
       item.appendChild(matchTypeBadge);
       item.appendChild(systemBadge);
+      
       ignoreListContainer.appendChild(item);
     });
   }
   
-  // 添加用户自定义忽略列表标题（如果有用户自定义的域名）
-  if (ignoreList.length > 0) {
-    const userTitle = document.createElement('div');
-    userTitle.className = 'ignore-list-section-title';
-    userTitle.textContent = '用户自定义域名';
-    ignoreListContainer.appendChild(userTitle);
-    
-    // 添加用户自定义域名列表项
-    ignoreList.forEach(domain => {
+  // 添加用户忽略列表中非系统域名
+  const userDomains = ignoreList.filter(domain => !systemDomains.includes(domain));
+  
+  if (userDomains.length > 0) {
+    // 添加用户自定义域名
+    userDomains.forEach(domain => {
       const item = document.createElement('div');
       item.className = 'ignore-item';
       
@@ -273,16 +248,21 @@ function renderIgnoreList(ignoreList) {
       // 添加标签指示匹配类型
       const matchTypeBadge = document.createElement('span');
       matchTypeBadge.className = domain.startsWith('*.') ? 'match-type wildcard' : 'match-type exact';
-      matchTypeBadge.textContent = domain.startsWith('*.') ? '通配符' : '精确';
+      matchTypeBadge.textContent = domain.startsWith('*.') 
+        ? (getMessage("wildcardMatch") || '通配符') 
+        : (getMessage("exactMatch") || '精确');
       
       const removeButton = document.createElement('button');
-      removeButton.className = 'remove-btn';
-      removeButton.textContent = '删除';
-      removeButton.addEventListener('click', () => removeDomain(domain));
+      removeButton.className = 'remove-domain-button';
+      removeButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+      removeButton.addEventListener('click', () => {
+        removeDomain(domain);
+      });
       
       item.appendChild(domainText);
       item.appendChild(matchTypeBadge);
       item.appendChild(removeButton);
+      
       ignoreListContainer.appendChild(item);
     });
   }
@@ -389,17 +369,4 @@ newDomainInput.addEventListener('keypress', (event) => {
   if (event.key === 'Enter') {
     addDomain();
   }
-});
-
-// 页面加载时初始化
-document.addEventListener('DOMContentLoaded', function() {
-  // 确保storageCache初始化
-  storageCache.init().then(() => {
-    // 加载已有设置
-    loadSettings();
-    loadPopupSizeSettings();
-    
-    // 初始化标签显示
-    initTabs();
-  });
 });

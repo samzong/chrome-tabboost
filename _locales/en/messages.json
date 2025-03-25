@@ -1,0 +1,360 @@
+{
+  "appName": {
+    "message": "TabBoost",
+    "description": "The name of the extension"
+  },
+  "appDesc": {
+    "message": "TabBoost is a Chrome extension that helps you manage your tabs more efficiently.",
+    "description": "The description of the extension"
+  },
+  "duplicateTab": {
+    "message": "Duplicate current tab",
+    "description": "Action to duplicate the current tab"
+  },
+  "copyUrl": {
+    "message": "Copy URL",
+    "description": "Action to copy the current URL"
+  },
+  "toggleSplitView": {
+    "message": "Toggle split view",
+    "description": "Action to toggle split view mode"
+  },
+  "openOptions": {
+    "message": "Open options",
+    "description": "Action to open options page"
+  },
+  "popupSizePreset": {
+    "message": "Popup size preset",
+    "description": "Setting for popup size preset"
+  },
+  "customWidth": {
+    "message": "Custom width",
+    "description": "Setting for custom width"
+  },
+  "customHeight": {
+    "message": "Custom height",
+    "description": "Setting for custom height"
+  },
+  "defaultAction": {
+    "message": "Default action",
+    "description": "Setting for default action"
+  },
+  "splitViewEnabled": {
+    "message": "Split view enabled",
+    "description": "Setting for split view enabled"
+  },
+  "iframeIgnoreEnabled": {
+    "message": "Iframe ignore enabled",
+    "description": "Setting for iframe ignore enabled"
+  },
+  "iframeIgnoreList": {
+    "message": "Iframe ignore list",
+    "description": "Setting for iframe ignore list"
+  },
+  "autoAddToIgnoreList": {
+    "message": "$hostname$ has been automatically added to the ignore list. Next time it will open in a new tab",
+    "description": "Message shown when a website is automatically added to ignore list",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "save": {
+    "message": "Save",
+    "description": "Save button text"
+  },
+  "cancel": {
+    "message": "Cancel",
+    "description": "Cancel button text"
+  },
+  "reset": {
+    "message": "Reset",
+    "description": "Reset button text"
+  },
+  "urlCopied": {
+    "message": "URL copied successfully!",
+    "description": "Notification when URL is copied"
+  },
+  "urlCopyFailed": {
+    "message": "Failed to copy URL!",
+    "description": "Notification when URL copy fails"
+  },
+  "loading": {
+    "message": "Loading...",
+    "description": "Loading text"
+  },
+  "loadingPage": {
+    "message": "Loading page",
+    "description": "Loading page text"
+  },
+  "loadTimeout": {
+    "message": "Loading timeout",
+    "description": "Loading timeout text"
+  },
+  "cannotLoadInPopup": {
+    "message": "Cannot load this website in popup.",
+    "description": "Message when site cannot be loaded in popup"
+  },
+  "openInNewTab": {
+    "message": "Open in new tab",
+    "description": "Button to open in new tab"
+  },
+  "addToIgnoreList": {
+    "message": "Add to ignore list",
+    "description": "Button to add to ignore list"
+  },
+  "close": {
+    "message": "Close",
+    "description": "Close button text"
+  },
+  "popupSizeSettings": {
+    "message": "Popup Size Settings",
+    "description": "Title for popup size settings"
+  },
+  "adjustPopupSize": {
+    "message": "Adjust popup size for optimal browsing experience",
+    "description": "Description for popup size settings"
+  },
+  "defaultSize": {
+    "message": "Default (80%)",
+    "description": "Default size option"
+  },
+  "largeSize": {
+    "message": "Large (90%)",
+    "description": "Large size option"
+  },
+  "customSize": {
+    "message": "Custom",
+    "description": "Custom size option"
+  },
+  "customWidthLabel": {
+    "message": "Custom width: $WIDTH$%",
+    "description": "Label for custom width slider",
+    "placeholders": {
+      "WIDTH": {
+        "content": "$1",
+        "example": "80"
+      }
+    }
+  },
+  "customHeightLabel": {
+    "message": "Custom height: $HEIGHT$%",
+    "description": "Label for custom height slider",
+    "placeholders": {
+      "HEIGHT": {
+        "content": "$1",
+        "example": "80"
+      }
+    }
+  },
+  "sizePreview": {
+    "message": "Size Preview",
+    "description": "Size preview title"
+  },
+  "previewDescription": {
+    "message": "Gray area represents clickable empty space",
+    "description": "Preview description"
+  },
+  "iframeCompatibility": {
+    "message": "Iframe Compatibility",
+    "description": "Title for iframe compatibility settings"
+  },
+  "closeSplitView": {
+    "message": "Close split view",
+    "description": "Button to close split view"
+  },
+  "closeLeftView": {
+    "message": "Close left view",
+    "description": "Button to close left view in split view"
+  },
+  "closeRightView": {
+    "message": "Close right view",
+    "description": "Button to close right view in split view"
+  },
+  "cannotLoadInSplitView": {
+    "message": "Cannot load this content in split view",
+    "description": "Error message when content cannot be loaded in split view"
+  },
+  "websiteNotAllowed": {
+    "message": "This website may not allow embedding in an iframe",
+    "description": "Message explaining why content cannot be loaded in split view"
+  },
+  "splitViewFailure": {
+    "message": "Split view loading failed, opening in new tab...",
+    "description": "Notification when split view fails to load"
+  },
+  "generalSettings": {
+    "message": "General Settings",
+    "description": "Title for general settings tab"
+  },
+  "browsingMode": {
+    "message": "Browsing Mode",
+    "description": "Title for browsing mode section"
+  },
+  "splitViewSettings": {
+    "message": "Split View Settings",
+    "description": "Title for split view settings section"
+  },
+  "configureExtension": {
+    "message": "Configure extension behavior",
+    "description": "Description for general settings"
+  },
+  "configureSplitView": {
+    "message": "Configure split view behavior and appearance",
+    "description": "Description for split view settings"
+  },
+  "splitViewUsage": {
+    "message": "Split View Usage:",
+    "description": "Title for split view usage instructions"
+  },
+  "splitViewInstructions": {
+    "message": "In split view mode, hold Command+Shift and click links to open them on the right side",
+    "description": "Instructions for using split view"
+  },
+  "configureExtensionBehavior": {
+    "message": "Configure basic behavior of the extension",
+    "description": "Description for general settings section"
+  },
+  "viewModeSettings": {
+    "message": "View Mode Settings",
+    "description": "Title for view mode settings tab"
+  },
+  "splitViewDescription": {
+    "message": "Configure behavior and appearance of split view mode",
+    "description": "Description for split view settings"
+  },
+  "splitViewUsageInstructions": {
+    "message": "Split View Usage Instructions:",
+    "description": "Title for split view usage instructions"
+  },
+  "splitViewUsageDetail": {
+    "message": "In split view mode, hold Command+Shift and click a link to open it on the right side",
+    "description": "Instructions for using split view mode"
+  },
+  "adjustPopupSize": {
+    "message": "Adjust popup size to get the best browsing experience",
+    "description": "Description for popup size settings"
+  },
+  "popupSizePreset": {
+    "message": "Popup size preset",
+    "description": "Label for popup size preset dropdown"
+  },
+  "defaultSize": {
+    "message": "Default (80%)",
+    "description": "Default size option"
+  },
+  "largeSize": {
+    "message": "Large (90%)",
+    "description": "Large size option"
+  },
+  "customSize": {
+    "message": "Custom",
+    "description": "Custom size option"
+  },
+  "customWidthLabel": {
+    "message": "Custom width: $WIDTH$%",
+    "description": "Label for custom width slider",
+    "placeholders": {
+      "WIDTH": {
+        "content": "$1",
+        "example": "80"
+      }
+    }
+  },
+  "customHeightLabel": {
+    "message": "Custom height: $HEIGHT$%",
+    "description": "Label for custom height slider",
+    "placeholders": {
+      "HEIGHT": {
+        "content": "$1",
+        "example": "80"
+      }
+    }
+  },
+  "sizePreview": {
+    "message": "Size Preview",
+    "description": "Title for size preview section"
+  },
+  "previewDescription": {
+    "message": "Gray area represents clickable empty space",
+    "description": "Description for size preview"
+  },
+  "iframeCompatibility": {
+    "message": "iframe Compatibility Settings",
+    "description": "Title for iframe compatibility settings tab"
+  },
+  "iframeCompatibilityDescription": {
+    "message": "Configure how websites load in popup and split view mode",
+    "description": "Description for iframe compatibility settings"
+  },
+  "iframeIgnoreEnabled": {
+    "message": "Enable website ignore list feature",
+    "description": "Label for enabling iframe ignore list"
+  },
+  "iframeIgnoreEnabledDescription": {
+    "message": "When enabled, websites on the list will not use popup or split view mode, but will open directly in a new tab.",
+    "description": "Description for iframe ignore list feature"
+  },
+  "iframeIgnoreList": {
+    "message": "Ignore List",
+    "description": "Label for iframe ignore list"
+  },
+  "noIgnoredWebsites": {
+    "message": "No ignored websites",
+    "description": "Text shown when ignore list is empty"
+  },
+  "domainFormatGuide": {
+    "message": "Domain Format Guide:",
+    "description": "Title for domain format guide"
+  },
+  "exactMatchExample": {
+    "message": "example.com - matches only example.com (exact match)",
+    "description": "Example of exact match domain format"
+  },
+  "wildcardMatchExample": {
+    "message": "*.example.com - matches all subdomains of example.com",
+    "description": "Example of wildcard domain format"
+  },
+  "enterDomainPlaceholder": {
+    "message": "Enter domain to ignore, e.g.: example.com or *.example.com",
+    "description": "Placeholder for new domain input"
+  },
+  "addToIgnoreList": {
+    "message": "Add",
+    "description": "Button text to add domain to ignore list"
+  },
+  "systemReservedDomains": {
+    "message": "System Reserved Domains (cannot be removed)",
+    "description": "Title for system reserved domains section"
+  },
+  "exactMatch": {
+    "message": "Exact",
+    "description": "Badge text for exact match type"
+  },
+  "wildcardMatch": {
+    "message": "Wildcard",
+    "description": "Badge text for wildcard match type"
+  },
+  "systemBadge": {
+    "message": "System",
+    "description": "Badge text for system domains"
+  },
+  "extensionFooter": {
+    "message": "TabBoost v2.0 - Make your browsing experience more efficient",
+    "description": "Footer text in options page"
+  },
+  "popupFooter": {
+    "message": "TabBoost v2.0",
+    "description": "Footer text in popup"
+  },
+  "autoAddToIgnoreListOption": {
+    "message": "Automatically add websites that fail to load to the ignore list",
+    "description": "Option to automatically add websites that fail to load to the ignore list"
+  },
+  "popupSizeHint": {
+    "message": "Popup size can be adjusted in extension options",
+    "description": "Hint that popup size can be adjusted in options"
+  }
+} 

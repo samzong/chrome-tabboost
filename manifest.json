@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "TabBoost",
+  "name": "__MSG_appName__",
   "version": "2.1.0",
-  "description": "TabBoost is a Chrome extension that helps you manage your tabs more efficiently.",
+  "description": "__MSG_appDesc__",
+  "default_locale": "en",
   "permissions": [
     "activeTab",
     "storage",
@@ -50,24 +51,24 @@
         "default": "Ctrl+M",
         "mac": "Ctrl+M"
       },
-      "description": "复制当前标签页"
+      "description": "__MSG_duplicateTab__"
     },
     "copy-url": {
       "suggested_key": {
         "default": "Alt+C",
         "mac": "Shift+Command+C"
       },
-      "description": "复制当前标签页网址"
+      "description": "__MSG_copyUrl__"
     },
     "toggle-split-view": {
       "suggested_key": {
         "default": "Alt+S",
         "mac": "Shift+Command+S"
       },
-      "description": "切换分屏模式"
+      "description": "__MSG_toggleSplitView__"
     },
     "open-options": {
-      "description": "打开插件配置页"
+      "description": "__MSG_openOptions__"
     }
   },
   "web_accessible_resources": [

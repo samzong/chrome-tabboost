@@ -37,3 +37,12 @@ yarn-error.log*
 *.bak
 
 # 你还可以根据需要添加其他需要忽略的文件或文件夹
+# 测试覆盖率报告
+coverage/
+.nyc_output/
+
+# 测试报告
+tests/reports/
+
+# 测试缓存
+tests/cache/

@@ -11,7 +11,7 @@ module.exports = {
     options: './src/options/options.js',
     background: './src/js/background.js',
     contentScript: './src/js/contentScript.js',  // 添加 content script 入口
-    storageCache: './src/utils/storageCache.js', // 添加存储缓存入口
+    storageCache: './src/utils/storage-cache.js', // 添加存储缓存入口
   },
   // Output configuration
   output: {
@@ -134,6 +134,12 @@ module.exports = {
         { 
           from: 'src/assets',
           to: 'assets',
+          noErrorOnMissing: true
+        },
+        // 复制 _locales 目录
+        {
+          from: '_locales',
+          to: '_locales',
           noErrorOnMissing: true
         }
       ],

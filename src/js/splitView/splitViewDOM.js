@@ -1,6 +1,6 @@
 // splitViewDOM.js - 处理分屏视图DOM操作
 
-import storageCache from "../../utils/storageCache.js";
+import storageCache from "../../utils/storage-cache.js";
 import { canLoadInIframe } from "./splitViewURLValidator.js";
 
 // 确保存储缓存已初始化

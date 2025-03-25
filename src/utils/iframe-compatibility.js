@@ -1,4 +1,4 @@
-// iframeCompatibility.js - 统一的iframe兼容性检查模块
+// iframe-compatibility.js - 统一的iframe兼容性检查模块
 
 import storageCache from "./storage-cache.js";
 import { validateUrl } from "./utils.js";

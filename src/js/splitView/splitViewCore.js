@@ -1,7 +1,7 @@
 // splitViewCore.js - 分屏视图的核心功能和状态管理
 
 import { getCurrentTab } from "../../utils/utils.js";
-import storageCache from "../../utils/storageCache.js";
+import storageCache from "../../utils/storage-cache.js";
 import { canLoadInIframe } from "./splitViewURLValidator.js";
 import { initSplitViewDOM, removeSplitViewDOM, updateRightViewDOM } from "./splitViewDOM.js";
 import { setupSplitViewEvents, cleanupSplitViewEvents } from "./splitViewEvents.js";

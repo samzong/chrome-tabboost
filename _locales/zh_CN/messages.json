@@ -1,0 +1,296 @@
+{
+  "appName": {
+    "message": "TabBoost",
+    "description": "扩展的名称"
+  },
+  "appDesc": {
+    "message": "TabBoost 是一个帮助您更高效地管理标签页的Chrome扩展。",
+    "description": "扩展的描述"
+  },
+  "duplicateTab": {
+    "message": "复制当前标签页",
+    "description": "复制当前标签页的操作"
+  },
+  "copyUrl": {
+    "message": "复制网址",
+    "description": "复制当前网址的操作"
+  },
+  "toggleSplitView": {
+    "message": "切换分屏模式",
+    "description": "切换分屏模式的操作"
+  },
+  "openOptions": {
+    "message": "打开选项页",
+    "description": "打开选项页的操作"
+  },
+  "popupSizePreset": {
+    "message": "弹出窗口尺寸预设",
+    "description": "弹出窗口尺寸预设设置"
+  },
+  "customWidth": {
+    "message": "自定义宽度",
+    "description": "自定义宽度设置"
+  },
+  "customHeight": {
+    "message": "自定义高度",
+    "description": "自定义高度设置"
+  },
+  "defaultAction": {
+    "message": "默认操作",
+    "description": "默认操作设置"
+  },
+  "splitViewEnabled": {
+    "message": "启用分屏模式",
+    "description": "启用分屏模式设置"
+  },
+  "iframeIgnoreEnabled": {
+    "message": "启用iframe忽略",
+    "description": "启用iframe忽略设置"
+  },
+  "iframeIgnoreList": {
+    "message": "iframe忽略列表",
+    "description": "iframe忽略列表设置"
+  },
+  "autoAddToIgnoreList": {
+    "message": "已自动将 $hostname$ 添加到忽略列表，下次将直接在新标签页中打开",
+    "description": "Message shown when a website is automatically added to ignore list",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "autoAddToIgnoreListOption": {
+    "message": "自动将无法加载的网站添加到忽略列表",
+    "description": "Option to automatically add websites that fail to load to the ignore list"
+  },
+  "save": {
+    "message": "保存",
+    "description": "保存按钮文本"
+  },
+  "cancel": {
+    "message": "取消",
+    "description": "取消按钮文本"
+  },
+  "reset": {
+    "message": "重置",
+    "description": "重置按钮文本"
+  },
+  "urlCopied": {
+    "message": "网址复制成功！",
+    "description": "网址复制成功的通知"
+  },
+  "urlCopyFailed": {
+    "message": "网址复制失败！",
+    "description": "网址复制失败的通知"
+  },
+  "loading": {
+    "message": "加载中...",
+    "description": "加载中文本"
+  },
+  "loadingPage": {
+    "message": "加载页面",
+    "description": "加载页面文本"
+  },
+  "loadTimeout": {
+    "message": "加载超时",
+    "description": "加载超时文本"
+  },
+  "cannotLoadInPopup": {
+    "message": "无法在弹窗中加载此网站。",
+    "description": "无法在弹窗中加载网站时的消息"
+  },
+  "openInNewTab": {
+    "message": "在新标签页中打开",
+    "description": "在新标签页中打开按钮"
+  },
+  "addToIgnoreList": {
+    "message": "添加到忽略列表",
+    "description": "添加到忽略列表按钮"
+  },
+  "close": {
+    "message": "关闭",
+    "description": "关闭按钮文本"
+  },
+  "popupSizeSettings": {
+    "message": "弹窗大小设置",
+    "description": "弹窗大小设置标题"
+  },
+  "adjustPopupSize": {
+    "message": "调整弹窗大小以获得最佳浏览体验",
+    "description": "弹窗大小设置描述"
+  },
+  "defaultSize": {
+    "message": "默认 (80%)",
+    "description": "默认尺寸选项"
+  },
+  "largeSize": {
+    "message": "大号 (90%)",
+    "description": "大号尺寸选项"
+  },
+  "customSize": {
+    "message": "自定义",
+    "description": "自定义尺寸选项"
+  },
+  "customWidthLabel": {
+    "message": "自定义宽度: $WIDTH$%",
+    "description": "自定义宽度标签",
+    "placeholders": {
+      "WIDTH": {
+        "content": "$1",
+        "example": "80"
+      }
+    }
+  },
+  "customHeightLabel": {
+    "message": "自定义高度: $HEIGHT$%",
+    "description": "自定义高度标签",
+    "placeholders": {
+      "HEIGHT": {
+        "content": "$1",
+        "example": "80"
+      }
+    }
+  },
+  "sizePreview": {
+    "message": "大小预览",
+    "description": "大小预览标题"
+  },
+  "previewDescription": {
+    "message": "灰色区域表示可点击的空白区域",
+    "description": "预览描述"
+  },
+  "iframeCompatibility": {
+    "message": "iframe兼容性",
+    "description": "iframe兼容性设置标签"
+  },
+  "closeSplitView": {
+    "message": "关闭分屏",
+    "description": "关闭分屏按钮"
+  },
+  "closeLeftView": {
+    "message": "关闭左侧内容",
+    "description": "关闭分屏左侧视图按钮"
+  },
+  "closeRightView": {
+    "message": "关闭右侧内容",
+    "description": "关闭分屏右侧视图按钮"
+  },
+  "cannotLoadInSplitView": {
+    "message": "无法在分屏中加载此内容",
+    "description": "无法在分屏中加载内容的错误信息"
+  },
+  "websiteNotAllowed": {
+    "message": "此网站可能不允许在iframe中嵌入显示",
+    "description": "解释为什么内容无法在分屏中加载的消息"
+  },
+  "splitViewFailure": {
+    "message": "分屏视图加载失败，正在新标签页中打开...",
+    "description": "分屏视图加载失败时的通知"
+  },
+  "generalSettings": {
+    "message": "通用设置",
+    "description": "通用设置标签"
+  },
+  "browsingMode": {
+    "message": "浏览模式",
+    "description": "浏览模式部分标题"
+  },
+  "splitViewSettings": {
+    "message": "分屏模式设置",
+    "description": "分屏模式设置标题"
+  },
+  "configureExtension": {
+    "message": "配置扩展的基本行为",
+    "description": "通用设置描述"
+  },
+  "configureSplitView": {
+    "message": "配置分屏模式的行为和外观",
+    "description": "分屏模式设置描述"
+  },
+  "splitViewUsage": {
+    "message": "分屏模式使用说明:",
+    "description": "分屏模式使用说明标题"
+  },
+  "splitViewInstructions": {
+    "message": "在分屏模式下，按住 Command+Shift 并点击链接，会在右侧打开",
+    "description": "分屏模式使用说明"
+  },
+  "configureExtensionBehavior": {
+    "message": "配置扩展的基本行为",
+    "description": "通用设置描述"
+  },
+  "viewModeSettings": {
+    "message": "浏览模式",
+    "description": "浏览模式设置标签"
+  },
+  "splitViewDescription": {
+    "message": "配置分屏模式的行为和外观",
+    "description": "Description for split view settings"
+  },
+  "splitViewUsageInstructions": {
+    "message": "分屏模式使用说明:",
+    "description": "分屏模式使用说明标题"
+  },
+  "splitViewUsageDetail": {
+    "message": "在分屏模式下，按住 Command+Shift 并点击链接，会在右侧打开",
+    "description": "分屏模式使用说明详情"
+  },
+  "iframeCompatibilityDescription": {
+    "message": "配置网站在弹窗和分屏模式中的加载方式",
+    "description": "iframe兼容性设置描述"
+  },
+  "iframeIgnoreEnabledDescription": {
+    "message": "当启用此功能时，列表中的网站将不会使用弹窗或分屏模式，而是直接在新标签页中打开。",
+    "description": "启用网站忽略列表功能描述"
+  },
+  "noIgnoredWebsites": {
+    "message": "暂无忽略的网站",
+    "description": "当忽略列表为空时显示的文本"
+  },
+  "domainFormatGuide": {
+    "message": "域名格式说明：",
+    "description": "域名格式说明标题"
+  },
+  "exactMatchExample": {
+    "message": "example.com - 仅匹配 example.com（精确匹配）",
+    "description": "精确匹配域名示例"
+  },
+  "wildcardMatchExample": {
+    "message": "*.example.com - 匹配 example.com 所有子域名",
+    "description": "通配符匹配域名示例"
+  },
+  "enterDomainPlaceholder": {
+    "message": "输入要忽略的域名，例如：example.com 或 *.example.com",
+    "description": "输入域名的占位文本"
+  },
+  "systemReservedDomains": {
+    "message": "系统保留域名（无法删除）",
+    "description": "Title for system reserved domains section"
+  },
+  "exactMatch": {
+    "message": "精确",
+    "description": "Badge text for exact match type"
+  },
+  "wildcardMatch": {
+    "message": "通配符",
+    "description": "Badge text for wildcard match type"
+  },
+  "systemBadge": {
+    "message": "系统",
+    "description": "Badge text for system domains"
+  },
+  "extensionFooter": {
+    "message": "TabBoost v2.0 - 让您的浏览体验更高效",
+    "description": "扩展页脚文本"
+  },
+  "popupFooter": {
+    "message": "TabBoost v2.0",
+    "description": "弹出窗口页脚文本"
+  },
+  "popupSizeHint": {
+    "message": "在扩展选项中可调整弹窗大小",
+    "description": "提示用户可以在选项中调整弹窗大小"
+  }
+} 

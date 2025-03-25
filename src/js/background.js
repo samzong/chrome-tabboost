@@ -1,6 +1,8 @@
-import { getCurrentTab, showNotification, validateUrl } from "../utils/utils.js";
+import { getCurrentTab, validateUrl } from "../utils/utils.js";
 import { createSplitView, closeSplitView, toggleSplitView, updateRightView, canLoadInIframe } from "./splitView.js";
-import storageCache from "../utils/storageCache.js";
+import storageCache from "../utils/storage-cache.js";
+import { DANGEROUS_PROTOCOLS } from "../config/constants.js";
+import { getMessage } from "../utils/i18n.js"; // 导入i18n工具
 
 // 当前标签页缓存
 let currentTabCache = {
@@ -54,88 +56,89 @@ storageCache.init().catch(error => {
   console.error("初始化存储缓存失败:", error);
 });
 
-// 监听插件图标点击事件
+// 处理扩展图标点击
 chrome.action.onClicked.addListener(async (tab) => {
-  // 更新当前标签页缓存
-  if (tab) {
-    currentTabCache = {
-      tab,
-      timestamp: Date.now()
-    };
-  }
-  
   // 获取默认操作
-  const result = await storageCache.get({ defaultAction: "open-options" });
-  const defaultAction = result.defaultAction; // 设置默认操作为打开设置页面
+  const { defaultAction } = await storageCache.get({
+    defaultAction: 'copy-url'
+  });
 
-  if (defaultAction === "duplicate-tab") {
-    duplicateCurrentTab();
-  } else if (defaultAction === "copy-url") {
-    copyCurrentTabUrl();
-  } else if (defaultAction === "open-options") {
-    openOptionsPage();
-  } else if (defaultAction === "toggle-split-view") {
-    toggleSplitView();
-  }
+  // 根据默认操作执行相应的命令
+  executeAction(defaultAction, tab);
 });
+
+// 执行指定的操作
+async function executeAction(action, tab) {
+  switch (action) {
+    case 'copy-url':
+      copyTabUrl(tab);
+      break;
+    case 'duplicate-tab':
+      duplicateTab(tab);
+      break;
+    case 'toggle-split-view':
+      toggleSplitView(tab);
+      break;
+    case 'open-options':
+      chrome.runtime.openOptionsPage();
+      break;
+    default:
+      copyTabUrl(tab);
+  }
+}
+
+// 复制当前标签页URL
+async function copyTabUrl(tab) {
+  try {
+    // 将URL复制到剪贴板
+    await navigator.clipboard.writeText(tab.url);
+    showNotification(getMessage("urlCopied") || "网址复制成功！");
+  } catch (error) {
+    console.error("Failed to copy URL: ", error);
+    showNotification(getMessage("urlCopyFailed") || "网址复制失败！");
+  }
+}
+
+// 复制当前标签页
+function duplicateTab(tab) {
+  chrome.tabs.duplicate(tab.id);
+}
+
+// 显示通知
+function showNotification(message) {
+  chrome.notifications.create({
+    type: 'basic',
+    iconUrl: 'src/assets/icons/icon128.png',
+    title: 'TabBoost',
+    message: message
+  });
+}
 
 // 监听快捷键命令
 chrome.commands.onCommand.addListener(async (command) => {
   console.log("Listener triggered"); // 确认监听器被触发
   console.log("Command received:", command); // 打印接收到的命令
   if (command === "duplicate-tab") {
-    duplicateCurrentTab();
+    const currentTab = await getCachedCurrentTab();
+    if (currentTab) {
+      duplicateTab(currentTab);
+    }
   } else if (command === "copy-url") {
-    copyCurrentTabUrl();
+    const currentTab = await getCachedCurrentTab();
+    if (currentTab) {
+      copyTabUrl(currentTab);
+    }
   } else if (command === "toggle-split-view") {
-    toggleSplitView();
+    const currentTab = await getCachedCurrentTab();
+    if (currentTab) {
+      toggleSplitView(currentTab);
+    } else {
+      toggleSplitView();
+    }
+  } else if (command === "open-options") {
+    chrome.runtime.openOptionsPage();
   }
 });
-
-// 定义打开设置页面的函数
-async function openOptionsPage() {
-  chrome.runtime.openOptionsPage();
-}
-
-// 复制当前标签页网址
-async function copyCurrentTabUrl() {
-  let currentTab = await getCachedCurrentTab();
-  console.log("Current tab:", currentTab); // 打印当前标签页信息
-  if (currentTab) {
-    try {
-      await chrome.scripting.executeScript({
-        target: { tabId: currentTab.id },
-        func: (url) => {
-          navigator.clipboard
-            .writeText(url)
-            .then(() => {
-              console.log("URL copied to clipboard:", url);
-            })
-            .catch((err) => {
-              console.error("复制失败：", err);
-            });
-        },
-        args: [currentTab.url],
-      });
-      console.log("URL copied:", currentTab.url);
-      showNotification("网址复制成功！");
-    } catch (err) {
-      console.error("执行脚本失败：", err);
-      showNotification("网址复制失败！");
-    }
-  } else {
-    console.error("未找到当前标签页");
-    showNotification("未找到当前标签页");
-  }
-}
-
-// 复制当前标签页
-async function duplicateCurrentTab() {
-  let currentTab = await getCachedCurrentTab();
-  if (currentTab) {
-    chrome.tabs.duplicate(currentTab.id);
-  }
-}
 
 // 监听来自内容脚本的消息
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
