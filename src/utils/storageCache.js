@@ -30,6 +30,11 @@ class StorageCache {
     this.lastCleanup = Date.now();
     // 清理间隔（毫秒）
     this.cleanupInterval = 30 * 60 * 1000; // 30分钟
+    
+    // 添加调用计数器，控制清理频率
+    this.getCallCount = 0;
+    // 每多少次get调用执行一次清理检查
+    this.cleanupCheckFrequency = 50;
   }
 
   /**
@@ -88,8 +93,15 @@ class StorageCache {
    * @returns {Promise} 包含请求数据的Promise
    */
   async get(keys) {
-    // 检查是否需要清理过期缓存
-    this.maybeCleanupCache();
+    // 增加调用计数
+    this.getCallCount++;
+    
+    // 仅在达到指定频率或距离上次清理已经过了指定时间时才执行清理
+    if (this.getCallCount >= this.cleanupCheckFrequency || 
+        (Date.now() - this.lastCleanup) >= this.cleanupInterval) {
+      this.maybeCleanupCache();
+      this.getCallCount = 0; // 重置计数器
+    }
     
     // 标准化keys为数组
     let keyList = [];
