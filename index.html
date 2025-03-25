@@ -42,6 +42,7 @@
           <li><strong>分屏模式</strong>：在单个标签内同时查看两个网页</li>
           <li><strong>快捷键支持</strong>：所有功能均可通过自定义快捷键快速访问</li>
           <li><strong>自定义设置</strong>：灵活的配置选项，满足个人使用习惯</li>
+          <li><strong>安全增强</strong>：严格的内容安全策略(CSP)保障扩展安全</li>
         </ul>
         <h2 id="项目结构"><a aria-hidden="true" tabindex="-1" href="#项目结构" class="anchor"><span class="icon icon-link"></span></a>项目结构</h2>
         <p>项目采用模块化结构设计，主要目录如下：</p>
@@ -97,6 +98,29 @@
           <li>左侧显示当前页面，右侧可以通过点击左侧页面的链接进行加载</li>
           <li>可以通过拖动中间分隔线调整两个视图的宽度比例</li>
         </ol>
+        <h2 id="安全性"><a aria-hidden="true" tabindex="-1" href="#安全性" class="anchor"><span class="icon icon-link"></span></a>安全性</h2>
+        <p>TabBoost采用严格的内容安全策略(CSP)，确保扩展安全可靠：</p>
+        <h3 id="内容安全策略csp"><a aria-hidden="true" tabindex="-1" href="#内容安全策略csp" class="anchor"><span class="icon icon-link"></span></a>内容安全策略(CSP)</h3>
+        <p>我们在以下方面实施了严格的安全策略：</p>
+        <ul>
+          <li><strong>script-src 'self'</strong>: 只允许加载扩展自身域的JavaScript脚本</li>
+          <li><strong>object-src 'none'</strong>: 禁止所有插件内容(如Flash)</li>
+          <li><strong>style-src 'self' 'unsafe-inline'</strong>: 只允许扩展自身域和行内样式表</li>
+          <li><strong>img-src 'self' data: https://*.google.com</strong>: 图片只能从扩展自身、data URLs和Google服务加载</li>
+          <li><strong>connect-src 'self' https://*.google.com</strong>: 网络连接只能到扩展自身或Google服务</li>
+          <li><strong>frame-src 'self'</strong>: 只允许扩展自身的iframe</li>
+          <li><strong>form-action 'none'</strong>: 禁止所有表单提交</li>
+          <li><strong>base-uri 'none'</strong>: 禁止使用BASE标签修改基准URL</li>
+          <li><strong>upgrade-insecure-requests</strong>: 自动将HTTP请求升级为HTTPS</li>
+        </ul>
+        <p>此外，扩展的沙箱页面实施了额外的安全控制，只允许有限的权限。</p>
+        <h3 id="url安全验证"><a aria-hidden="true" tabindex="-1" href="#url安全验证" class="anchor"><span class="icon icon-link"></span></a>URL安全验证</h3>
+        <p>我们还实现了严格的URL验证机制，以防止XSS和其他恶意URL攻击：</p>
+        <ul>
+          <li>白名单协议限制：只允许http和https协议</li>
+          <li>黑名单域名检测：阻止已知的敏感和潜在危险域名</li>
+          <li>危险模式检测：识别并阻止包含潜在XSS攻击代码的URL</li>
+        </ul>
         <h2 id="开发"><a aria-hidden="true" tabindex="-1" href="#开发" class="anchor"><span class="icon icon-link"></span></a>开发</h2>
         <h3 id="本地开发"><a aria-hidden="true" tabindex="-1" href="#本地开发" class="anchor"><span class="icon icon-link"></span></a>本地开发</h3>
         <pre class="language-bash"><code class="language-bash code-highlight"><span class="code-line line-number" line="1"><span class="token comment"># 克隆仓库</span>
