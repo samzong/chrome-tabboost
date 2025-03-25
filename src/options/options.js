@@ -1,11 +1,6 @@
 import { showNotification } from "../utils/utils.js";
 
 const saveButton = document.getElementById("saveButton");
-const duplicateTabShortcutInput = document.getElementById(
-  "duplicateTabShortcut"
-);
-const copyUrlShortcutInput = document.getElementById("copyUrlShortcut");
-const splitViewShortcutInput = document.getElementById("splitViewShortcut");
 const defaultActionInput = document.getElementById("defaultAction");
 const splitViewEnabledCheckbox = document.getElementById("splitViewEnabled");
 const iframeIgnoreEnabledCheckbox = document.getElementById("iframeIgnoreEnabled");
@@ -46,11 +41,11 @@ tabs.forEach(tab => {
 
 // 初始化标签显示
 function initTabs() {
-  // 默认显示第一个标签内容
+  // 默认显示第一个标签内容（通用设置）
   tabContents.forEach(content => {
     content.style.display = 'none';
   });
-  tabContents[0].style.display = 'block';
+  document.getElementById('general-content').style.display = 'block';
   
   // 从URL参数获取要显示的标签
   const urlParams = new URLSearchParams(window.location.search);
@@ -131,7 +126,17 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     const section = document.getElementById(request.section + '-section');
     if (section) {
       // 找到对应的标签并点击
-      const tabId = request.section.split('-')[0]; // 获取主标签ID
+      let tabId = '';
+      
+      // 映射旧标签到新标签
+      if (request.section === 'popup') {
+        tabId = 'viewmode';
+      } else if (request.section === 'splitview') {
+        tabId = 'viewmode';
+      } else {
+        tabId = request.section.split('-')[0]; // 获取主标签ID
+      }
+      
       const tab = document.querySelector(`.tab[data-tab="${tabId}"]`);
       if (tab) {
         tab.click();
@@ -147,9 +152,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 // 保存设置
 saveButton.addEventListener("click", () => {
-  const duplicateTabShortcut = duplicateTabShortcutInput.value;
-  const copyUrlShortcut = copyUrlShortcutInput.value;
-  const splitViewShortcut = splitViewShortcutInput.value;
   const defaultAction = defaultActionInput.value;
   const splitViewEnabled = splitViewEnabledCheckbox.checked;
   const iframeIgnoreEnabled = iframeIgnoreEnabledCheckbox.checked;
@@ -162,9 +164,6 @@ saveButton.addEventListener("click", () => {
 
   chrome.storage.sync.set(
     {
-      duplicateTabShortcut: duplicateTabShortcut,
-      copyUrlShortcut: copyUrlShortcut,
-      splitViewShortcut: splitViewShortcut,
       defaultAction: defaultAction,
       splitViewEnabled: splitViewEnabled,
       iframeIgnoreEnabled: iframeIgnoreEnabled,
@@ -175,7 +174,7 @@ saveButton.addEventListener("click", () => {
       customHeight: customHeightValue
     },
     () => {
-      alert("设置已保存!");
+      showNotification("设置已保存!");
     }
   );
 });
@@ -184,9 +183,6 @@ saveButton.addEventListener("click", () => {
 function loadSettings() {
   chrome.storage.sync.get(
     [
-      "duplicateTabShortcut", 
-      "copyUrlShortcut", 
-      "splitViewShortcut", 
       "defaultAction", 
       "splitViewEnabled",
       "iframeIgnoreEnabled",
@@ -194,9 +190,6 @@ function loadSettings() {
       "iframeIgnoreList"
     ],
     (result) => {
-      duplicateTabShortcutInput.value = result.duplicateTabShortcut || "Ctrl+M";
-      copyUrlShortcutInput.value = result.copyUrlShortcut || "Shift+Ctrl+C";
-      splitViewShortcutInput.value = result.splitViewShortcut || "Shift+Command+S";
       defaultActionInput.value = result.defaultAction || "copy-url";
       splitViewEnabledCheckbox.checked = result.splitViewEnabled !== undefined 
         ? result.splitViewEnabled 

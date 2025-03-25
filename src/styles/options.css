@@ -50,6 +50,7 @@ body {
   display: flex;
   align-items: center;
   margin-bottom: 24px;
+  position: relative;
 }
 
 .logo {
@@ -61,6 +62,12 @@ body {
 .title {
   font-size: 24px;
   font-weight: 600;
+}
+
+.save-button {
+  margin-left: auto;
+  padding: 8px 14px;
+  font-size: 13px;
 }
 
 .tabs {
