@@ -4,6 +4,7 @@ import { validateUrl } from "../utils/utils.js";
 import { isDomainMatch } from "../utils/iframe-compatibility.js"; 
 import { DANGEROUS_URL_PATTERNS, DANGEROUS_PROTOCOLS } from "../config/constants.js";
 import { canLoadInIframe } from "../utils/iframe-compatibility.js";
+import { getMessage } from "../utils/i18n.js"; // 导入i18n工具
 
 // 确保缓存系统在使用前初始化
 const initStorageCache = async () => {
@@ -218,12 +219,17 @@ async function createPopupDOM(url) {
     }
     // 默认尺寸不需要额外处理
 
+    // 使用国际化消息
+    const loadingText = getMessage("loading") || "加载中...";
+    const openInNewTabText = getMessage("openInNewTab") || "在新标签页中打开";
+    const closeText = getMessage("close") || "关闭";
+
     // 使用模板字符串预构建工具栏HTML
     const toolbarHtml = `
       <div id="tabboost-popup-toolbar">
-        <span id="tabboost-popup-title">加载中...</span>
+        <span id="tabboost-popup-title">${loadingText}</span>
         <div id="tabboost-popup-buttons">
-          <button class="tabboost-button tabboost-newtab-button" title="在新标签页中打开链接" aria-label="在新标签页中打开链接">在新标签页中打开</button>
+          <button class="tabboost-button tabboost-newtab-button" title="${openInNewTabText}" aria-label="${openInNewTabText}">${openInNewTabText}</button>
           <button class="tabboost-button tabboost-size-hint" title="在扩展选项中可调整弹窗大小">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="10"/>
@@ -231,23 +237,27 @@ async function createPopupDOM(url) {
               <line x1="12" y1="17" x2="12.01" y2="17"/>
             </svg>
           </button>
-          <button class="tabboost-button tabboost-close-button" title="关闭弹窗" aria-label="关闭弹窗">&times;</button>
+          <button class="tabboost-button tabboost-close-button" title="${closeText}" aria-label="${closeText}">&times;</button>
         </div>
       </div>
-      <div id="tabboost-popup-loader">加载中...</div>
+      <div id="tabboost-popup-loader">${loadingText}</div>
     `;
     
     // 使用innerHTML设置工具栏内容
     popupContent.innerHTML = toolbarHtml;
     
+    // 获取更多国际化消息
+    const cannotLoadText = getMessage("cannotLoadInPopup") || "无法在弹窗中加载此网站。";
+    const addToIgnoreText = getMessage("addToIgnoreList") || "添加到忽略列表";
+    
     // 创建错误消息
     const errorMsg = document.createElement("div");
     errorMsg.id = "tabboost-popup-error";
     errorMsg.innerHTML = `
-      <p>无法在弹窗中加载此网站。</p>
-      <button id="tabboost-open-newtab">在新标签页中打开</button>
-      <button id="tabboost-add-to-ignore">添加到忽略列表</button>
-      <button id="tabboost-close-error">关闭</button>
+      <p>${cannotLoadText}</p>
+      <button id="tabboost-open-newtab">${openInNewTabText}</button>
+      <button id="tabboost-add-to-ignore">${addToIgnoreText}</button>
+      <button id="tabboost-close-error">${closeText}</button>
     `;
     
     // 创建 iframe 以加载链接内容
@@ -338,7 +348,7 @@ async function createPopupDOM(url) {
     
     // 监听 iframe 加载错误
     iframe.onerror = () => {
-      handleLoadFailure("iframe error event");
+      handleLoadFailure(getMessage("cannotLoadInPopup") || "iframe error event");
     };
 
     // 监听 iframe 加载完成
@@ -355,7 +365,7 @@ async function createPopupDOM(url) {
         // 检查iframe是否真的加载成功
         if (iframe.contentDocument === null || iframe.contentWindow === null) {
           // 可能是跨域限制或其他问题
-          handleLoadFailure("无法访问iframe内容");
+          handleLoadFailure(getMessage("cannotLoadInPopup") || "无法访问iframe内容");
           return;
         }
         
@@ -364,7 +374,7 @@ async function createPopupDOM(url) {
         if (iframeContent.includes('refused to connect') || 
             iframeContent.includes('拒绝连接') ||
             iframeContent.includes('ERR_CONNECTION_REFUSED')) {
-          handleLoadFailure("网站拒绝连接");
+          handleLoadFailure(getMessage("cannotLoadInPopup") || "网站拒绝连接");
           return;
         }
         
@@ -379,13 +389,13 @@ async function createPopupDOM(url) {
         try {
           const iframeTitle = iframe.contentDocument.title;
           const title = document.getElementById('tabboost-popup-title');
-          if (title) title.innerText = iframeTitle || "加载页面";
+          if (title) title.innerText = iframeTitle || getMessage("loadingPage") || "加载页面";
         } catch (e) {
           console.log(
             "chrome-tabboost: Unable to access iframe content title due to CORS restrictions"
           );
           const title = document.getElementById('tabboost-popup-title');
-          if (title) title.innerText = "加载页面";
+          if (title) title.innerText = getMessage("loadingPage") || "加载页面";
         }
       } catch (e) {
         console.warn("chrome-tabboost: Error handling iframe load event:", e);
@@ -395,7 +405,7 @@ async function createPopupDOM(url) {
         const loader = document.getElementById('tabboost-popup-loader');
         if (loader) loader.style.display = "none";
         const title = document.getElementById('tabboost-popup-title');
-        if (title) title.innerText = "加载页面";
+        if (title) title.innerText = getMessage("loadingPage") || "加载页面";
       }
     };
 
@@ -405,7 +415,7 @@ async function createPopupDOM(url) {
 
     // 设置超时（例如 5 秒）
     timers.loadTimeout = setTimeout(() => {
-      handleLoadFailure("加载超时");
+      handleLoadFailure(getMessage("loadTimeout") || "加载超时");
     }, 5000);
 
     // 将构建好的文档片段一次性添加到DOM中
@@ -545,7 +555,7 @@ async function createPopupDOM(url) {
         if (iframeContent.includes('refused to connect') || 
             iframeContent.includes('拒绝连接') ||
             iframeContent.includes('ERR_CONNECTION_REFUSED')) {
-          handleLoadFailure('检测到拒绝连接错误');
+          handleLoadFailure(getMessage("cannotLoadInPopup") || '检测到拒绝连接错误');
         }
       } catch (e) {
         // 忽略跨域错误

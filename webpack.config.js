@@ -135,6 +135,12 @@ module.exports = {
           from: 'src/assets',
           to: 'assets',
           noErrorOnMissing: true
+        },
+        // 复制 _locales 目录
+        {
+          from: '_locales',
+          to: '_locales',
+          noErrorOnMissing: true
         }
       ],
     }),

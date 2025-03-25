@@ -1,0 +1,158 @@
+{
+  "appName": {
+    "message": "TabBoost",
+    "description": "扩展的名称"
+  },
+  "appDesc": {
+    "message": "TabBoost 是一个帮助您更高效地管理标签页的Chrome扩展。",
+    "description": "扩展的描述"
+  },
+  "duplicateTab": {
+    "message": "复制当前标签页",
+    "description": "复制当前标签页的操作"
+  },
+  "copyUrl": {
+    "message": "复制网址",
+    "description": "复制当前网址的操作"
+  },
+  "toggleSplitView": {
+    "message": "切换分屏模式",
+    "description": "切换分屏模式的操作"
+  },
+  "openOptions": {
+    "message": "打开选项页",
+    "description": "打开选项页的操作"
+  },
+  "popupSizePreset": {
+    "message": "弹出窗口尺寸预设",
+    "description": "弹出窗口尺寸预设设置"
+  },
+  "customWidth": {
+    "message": "自定义宽度",
+    "description": "自定义宽度设置"
+  },
+  "customHeight": {
+    "message": "自定义高度",
+    "description": "自定义高度设置"
+  },
+  "defaultAction": {
+    "message": "默认操作",
+    "description": "默认操作设置"
+  },
+  "splitViewEnabled": {
+    "message": "启用分屏模式",
+    "description": "启用分屏模式设置"
+  },
+  "iframeIgnoreEnabled": {
+    "message": "启用iframe忽略",
+    "description": "启用iframe忽略设置"
+  },
+  "iframeIgnoreList": {
+    "message": "iframe忽略列表",
+    "description": "iframe忽略列表设置"
+  },
+  "autoAddToIgnoreList": {
+    "message": "自动添加到忽略列表",
+    "description": "自动添加到忽略列表设置"
+  },
+  "save": {
+    "message": "保存",
+    "description": "保存按钮文本"
+  },
+  "cancel": {
+    "message": "取消",
+    "description": "取消按钮文本"
+  },
+  "reset": {
+    "message": "重置",
+    "description": "重置按钮文本"
+  },
+  "urlCopied": {
+    "message": "网址复制成功！",
+    "description": "网址复制成功的通知"
+  },
+  "urlCopyFailed": {
+    "message": "网址复制失败！",
+    "description": "网址复制失败的通知"
+  },
+  "loading": {
+    "message": "加载中...",
+    "description": "加载中文本"
+  },
+  "loadingPage": {
+    "message": "加载页面",
+    "description": "加载页面文本"
+  },
+  "loadTimeout": {
+    "message": "加载超时",
+    "description": "加载超时文本"
+  },
+  "cannotLoadInPopup": {
+    "message": "无法在弹窗中加载此网站。",
+    "description": "无法在弹窗中加载网站时的消息"
+  },
+  "openInNewTab": {
+    "message": "在新标签页中打开",
+    "description": "在新标签页中打开按钮"
+  },
+  "addToIgnoreList": {
+    "message": "添加到忽略列表",
+    "description": "添加到忽略列表按钮"
+  },
+  "close": {
+    "message": "关闭",
+    "description": "关闭按钮文本"
+  },
+  "popupSizeSettings": {
+    "message": "弹窗大小设置",
+    "description": "弹窗大小设置标题"
+  },
+  "adjustPopupSize": {
+    "message": "调整弹窗大小以获得最佳浏览体验",
+    "description": "弹窗大小设置描述"
+  },
+  "defaultSize": {
+    "message": "默认 (80%)",
+    "description": "默认尺寸选项"
+  },
+  "largeSize": {
+    "message": "大号 (90%)",
+    "description": "大号尺寸选项"
+  },
+  "customSize": {
+    "message": "自定义",
+    "description": "自定义尺寸选项"
+  },
+  "customWidthLabel": {
+    "message": "自定义宽度: $WIDTH$%",
+    "description": "自定义宽度标签",
+    "placeholders": {
+      "width": {
+        "content": "$1",
+        "example": "80"
+      }
+    }
+  },
+  "customHeightLabel": {
+    "message": "自定义高度: $HEIGHT$%",
+    "description": "自定义高度标签",
+    "placeholders": {
+      "height": {
+        "content": "$1",
+        "example": "80"
+      }
+    }
+  },
+  "sizePreview": {
+    "message": "大小预览",
+    "description": "大小预览标题"
+  },
+  "previewDescription": {
+    "message": "灰色区域表示可点击的空白区域",
+    "description": "预览描述"
+  },
+  "iframeCompatibility": {
+    "message": "Iframe兼容性",
+    "description": "Iframe兼容性设置标题"
+  }
+} 

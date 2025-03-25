@@ -1,0 +1,158 @@
+{
+  "appName": {
+    "message": "TabBoost",
+    "description": "The name of the extension"
+  },
+  "appDesc": {
+    "message": "TabBoost is a Chrome extension that helps you manage your tabs more efficiently.",
+    "description": "The description of the extension"
+  },
+  "duplicateTab": {
+    "message": "Duplicate current tab",
+    "description": "Action to duplicate the current tab"
+  },
+  "copyUrl": {
+    "message": "Copy URL",
+    "description": "Action to copy the current URL"
+  },
+  "toggleSplitView": {
+    "message": "Toggle split view",
+    "description": "Action to toggle split view mode"
+  },
+  "openOptions": {
+    "message": "Open options",
+    "description": "Action to open options page"
+  },
+  "popupSizePreset": {
+    "message": "Popup size preset",
+    "description": "Setting for popup size preset"
+  },
+  "customWidth": {
+    "message": "Custom width",
+    "description": "Setting for custom width"
+  },
+  "customHeight": {
+    "message": "Custom height",
+    "description": "Setting for custom height"
+  },
+  "defaultAction": {
+    "message": "Default action",
+    "description": "Setting for default action"
+  },
+  "splitViewEnabled": {
+    "message": "Split view enabled",
+    "description": "Setting for split view enabled"
+  },
+  "iframeIgnoreEnabled": {
+    "message": "Iframe ignore enabled",
+    "description": "Setting for iframe ignore enabled"
+  },
+  "iframeIgnoreList": {
+    "message": "Iframe ignore list",
+    "description": "Setting for iframe ignore list"
+  },
+  "autoAddToIgnoreList": {
+    "message": "Auto add to ignore list",
+    "description": "Setting for auto add to ignore list"
+  },
+  "save": {
+    "message": "Save",
+    "description": "Save button text"
+  },
+  "cancel": {
+    "message": "Cancel",
+    "description": "Cancel button text"
+  },
+  "reset": {
+    "message": "Reset",
+    "description": "Reset button text"
+  },
+  "urlCopied": {
+    "message": "URL copied successfully!",
+    "description": "Notification when URL is copied"
+  },
+  "urlCopyFailed": {
+    "message": "Failed to copy URL!",
+    "description": "Notification when URL copy fails"
+  },
+  "loading": {
+    "message": "Loading...",
+    "description": "Loading text"
+  },
+  "loadingPage": {
+    "message": "Loading page",
+    "description": "Loading page text"
+  },
+  "loadTimeout": {
+    "message": "Loading timeout",
+    "description": "Loading timeout text"
+  },
+  "cannotLoadInPopup": {
+    "message": "Cannot load this website in popup.",
+    "description": "Message when site cannot be loaded in popup"
+  },
+  "openInNewTab": {
+    "message": "Open in new tab",
+    "description": "Button to open in new tab"
+  },
+  "addToIgnoreList": {
+    "message": "Add to ignore list",
+    "description": "Button to add to ignore list"
+  },
+  "close": {
+    "message": "Close",
+    "description": "Close button text"
+  },
+  "popupSizeSettings": {
+    "message": "Popup Size Settings",
+    "description": "Title for popup size settings"
+  },
+  "adjustPopupSize": {
+    "message": "Adjust popup size for optimal browsing experience",
+    "description": "Description for popup size settings"
+  },
+  "defaultSize": {
+    "message": "Default (80%)",
+    "description": "Default size option"
+  },
+  "largeSize": {
+    "message": "Large (90%)",
+    "description": "Large size option"
+  },
+  "customSize": {
+    "message": "Custom",
+    "description": "Custom size option"
+  },
+  "customWidthLabel": {
+    "message": "Custom width: $WIDTH$%",
+    "description": "Label for custom width",
+    "placeholders": {
+      "width": {
+        "content": "$1",
+        "example": "80"
+      }
+    }
+  },
+  "customHeightLabel": {
+    "message": "Custom height: $HEIGHT$%",
+    "description": "Label for custom height",
+    "placeholders": {
+      "height": {
+        "content": "$1",
+        "example": "80"
+      }
+    }
+  },
+  "sizePreview": {
+    "message": "Size Preview",
+    "description": "Size preview title"
+  },
+  "previewDescription": {
+    "message": "Gray area represents clickable empty space",
+    "description": "Preview description"
+  },
+  "iframeCompatibility": {
+    "message": "Iframe Compatibility",
+    "description": "Title for iframe compatibility settings"
+  }
+} 

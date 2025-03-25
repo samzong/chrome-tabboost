@@ -1,6 +1,44 @@
 import { showNotification } from "../utils/utils.js";
 import storageCache from "../utils/storage-cache.js"; // 导入storageCache
 import { RESTRICTED_DOMAINS } from "../js/splitView/splitViewURLValidator.js"; // 导入系统预设的限制域名
+import { localizePage, getMessage } from "../utils/i18n.js"; // 导入国际化工具
+
+// 初始化页面时本地化
+document.addEventListener('DOMContentLoaded', () => {
+  // 本地化所有标记了data-i18n的元素
+  localizePage();
+  
+  // 特殊处理需要动态插入的文本
+  updateDynamicLabels();
+  
+  // 初始化其他功能
+  initTabs();
+  loadSettings();
+  setupEventListeners();
+});
+
+// 更新需要动态设置的标签文本
+function updateDynamicLabels() {
+  // 更新自定义宽度和高度标签（带有动态值）
+  updateCustomSizeLabels();
+}
+
+// 更新自定义尺寸标签
+function updateCustomSizeLabels() {
+  const customWidthValue = document.getElementById('customWidthValue').textContent.replace('%', '');
+  const customHeightValue = document.getElementById('customHeightValue').textContent.replace('%', '');
+  
+  const customWidthLabel = document.getElementById('customWidthLabel');
+  const customHeightLabel = document.getElementById('customHeightLabel');
+  
+  if (customWidthLabel) {
+    customWidthLabel.textContent = getMessage("customWidthLabel", [customWidthValue]);
+  }
+  
+  if (customHeightLabel) {
+    customHeightLabel.textContent = getMessage("customHeightLabel", [customHeightValue]);
+  }
+}
 
 const saveButton = document.getElementById("saveButton");
 const defaultActionInput = document.getElementById("defaultAction");
@@ -26,21 +64,53 @@ const tabs = document.querySelectorAll('.tab');
 const tabContents = document.querySelectorAll('.tab-content');
 
 // 处理标签切换
-tabs.forEach(tab => {
-  tab.addEventListener('click', () => {
-    const tabId = tab.getAttribute('data-tab');
-    
-    // 切换标签高亮
-    tabs.forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    
-    // 切换内容显示
-    tabContents.forEach(content => {
-      content.style.display = 'none';
+function setupEventListeners() {
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const tabId = tab.getAttribute('data-tab');
+      
+      // 切换标签高亮
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      
+      // 切换内容显示
+      tabContents.forEach(content => {
+        content.style.display = 'none';
+      });
+      document.getElementById(`${tabId}-content`).style.display = 'block';
     });
-    document.getElementById(`${tabId}-content`).style.display = 'block';
   });
-});
+  
+  // 设置自定义宽度和高度滑块的事件监听
+  if (customWidthSlider) {
+    customWidthSlider.addEventListener('input', function() {
+      customWidthValue.textContent = this.value + '%';
+      updateCustomSizeLabels();
+      updateSizePreview();
+    });
+  }
+  
+  if (customHeightSlider) {
+    customHeightSlider.addEventListener('input', function() {
+      customHeightValue.textContent = this.value + '%';
+      updateCustomSizeLabels();
+      updateSizePreview();
+    });
+  }
+  
+  // 其他事件监听器...
+}
+
+// 更新大小预览
+function updateSizePreview() {
+  if (sizePreviewBox) {
+    const widthValue = customWidthSlider ? customWidthSlider.value : 80;
+    const heightValue = customHeightSlider ? customHeightSlider.value : 80;
+    
+    sizePreviewBox.style.width = widthValue + '%';
+    sizePreviewBox.style.height = heightValue + '%';
+  }
+}
 
 // 初始化标签显示
 function initTabs() {
@@ -61,125 +131,6 @@ function initTabs() {
     }
   }
 }
-
-// 处理预设大小选择变更
-popupSizePreset.addEventListener('change', function() {
-  updateSizeControls();
-  updateSizePreview();
-});
-
-// 处理自定义宽度滑块变更
-customWidthSlider.addEventListener('input', function() {
-  customWidthValue.textContent = this.value + '%';
-  updateSizePreview();
-});
-
-// 处理自定义高度滑块变更
-customHeightSlider.addEventListener('input', function() {
-  customHeightValue.textContent = this.value + '%';
-  updateSizePreview();
-});
-
-// 更新尺寸控件显示状态
-function updateSizeControls() {
-  if (popupSizePreset.value === 'custom') {
-    customSizeControls.forEach(control => control.style.display = 'block');
-  } else {
-    customSizeControls.forEach(control => control.style.display = 'none');
-  }
-}
-
-// 更新预览框
-function updateSizePreview() {
-  const preset = popupSizePreset.value;
-  
-  if (preset === 'default') {
-    sizePreviewBox.style.width = '80%';
-    sizePreviewBox.style.height = '80%';
-  } else if (preset === 'large') {
-    sizePreviewBox.style.width = '90%';
-    sizePreviewBox.style.height = '90%';
-  } else if (preset === 'custom') {
-    sizePreviewBox.style.width = customWidthSlider.value + '%';
-    sizePreviewBox.style.height = customHeightSlider.value + '%';
-  }
-}
-
-// 加载弹窗大小设置
-function loadPopupSizeSettings() {
-  storageCache.get({
-    popupSizePreset: 'default',
-    customWidth: 80,
-    customHeight: 80
-  }).then((settings) => {
-    popupSizePreset.value = settings.popupSizePreset;
-    customWidthSlider.value = settings.customWidth;
-    customHeightSlider.value = settings.customHeight;
-    customWidthValue.textContent = settings.customWidth + '%';
-    customHeightValue.textContent = settings.customHeight + '%';
-    
-    updateSizeControls();
-    updateSizePreview();
-  });
-}
-
-// 监听来自后台脚本的消息
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === 'scrollToSection' && request.section) {
-    const section = document.getElementById(request.section + '-section');
-    if (section) {
-      // 找到对应的标签并点击
-      let tabId = '';
-      
-      // 映射旧标签到新标签
-      if (request.section === 'popup') {
-        tabId = 'viewmode';
-      } else if (request.section === 'splitview') {
-        tabId = 'viewmode';
-      } else {
-        tabId = request.section.split('-')[0]; // 获取主标签ID
-      }
-      
-      const tab = document.querySelector(`.tab[data-tab="${tabId}"]`);
-      if (tab) {
-        tab.click();
-        
-        // 滚动到对应区域
-        setTimeout(() => {
-          section.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
-      }
-    }
-  }
-});
-
-// 保存设置
-saveButton.addEventListener("click", () => {
-  const defaultAction = defaultActionInput.value;
-  const splitViewEnabled = splitViewEnabledCheckbox.checked;
-  const iframeIgnoreEnabled = iframeIgnoreEnabledCheckbox.checked;
-  const autoAddToIgnoreList = autoAddToIgnoreListCheckbox.checked;
-
-  // 获取弹窗大小设置
-  const popupSizePresetValue = popupSizePreset.value;
-  const customWidthValue = parseInt(customWidthSlider.value);
-  const customHeightValue = parseInt(customHeightSlider.value);
-
-  storageCache.set(
-    {
-      defaultAction: defaultAction,
-      splitViewEnabled: splitViewEnabled,
-      iframeIgnoreEnabled: iframeIgnoreEnabled,
-      autoAddToIgnoreList: autoAddToIgnoreList,
-      // 添加弹窗大小设置
-      popupSizePreset: popupSizePresetValue,
-      customWidth: customWidthValue,
-      customHeight: customHeightValue
-    }
-  ).then(() => {
-    showNotification("设置已保存!");
-  });
-});
 
 // 加载设置
 function loadSettings() {
@@ -389,17 +340,4 @@ newDomainInput.addEventListener('keypress', (event) => {
   if (event.key === 'Enter') {
     addDomain();
   }
-});
-
-// 页面加载时初始化
-document.addEventListener('DOMContentLoaded', function() {
-  // 确保storageCache初始化
-  storageCache.init().then(() => {
-    // 加载已有设置
-    loadSettings();
-    loadPopupSizeSettings();
-    
-    // 初始化标签显示
-    initTabs();
-  });
 });
