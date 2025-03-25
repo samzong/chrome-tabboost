@@ -3,6 +3,13 @@
 import storageCache from "../../utils/storageCache.js";
 import { canLoadInIframe } from "./splitViewURLValidator.js";
 
+// 确保存储缓存已初始化
+async function ensureStorageCacheInit() {
+  if (!storageCache.initialized) {
+    await storageCache.init(['autoAddToIgnoreList', 'iframeIgnoreList']);
+  }
+}
+
 // 初始化分屏DOM结构
 export function initSplitViewDOM(leftUrl) {
   try {
@@ -557,7 +564,7 @@ export function updateRightViewDOM(url) {
       }
       
       // 检查是否需要自动添加到忽略列表
-      chrome.storage.sync.get(['autoAddToIgnoreList'], (result) => {
+      storageCache.get(['autoAddToIgnoreList']).then((result) => {
         if (result.autoAddToIgnoreList) {
           try {
             // 解析URL获取域名
@@ -565,7 +572,7 @@ export function updateRightViewDOM(url) {
             const hostname = urlObj.hostname;
             
             // 添加到忽略列表
-            chrome.storage.sync.get(['iframeIgnoreList'], (result) => {
+            storageCache.get(['iframeIgnoreList']).then((result) => {
               let ignoreList = result.iframeIgnoreList || [];
               
               // 确保ignoreList是数组
@@ -578,7 +585,7 @@ export function updateRightViewDOM(url) {
                 ignoreList.push(hostname);
                 
                 // 保存更新后的列表
-                chrome.storage.sync.set({ iframeIgnoreList: ignoreList }, () => {
+                storageCache.set({ iframeIgnoreList: ignoreList }).then(() => {
                   console.log(`已自动将 ${hostname} 添加到忽略列表`);
                   
                   // 显示通知

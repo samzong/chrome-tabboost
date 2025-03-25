@@ -1,4 +1,5 @@
 import { showNotification } from "../utils/utils.js";
+import storageCache from "../utils/storageCache.js"; // 导入storageCache
 
 const saveButton = document.getElementById("saveButton");
 const defaultActionInput = document.getElementById("defaultAction");
@@ -104,11 +105,11 @@ function updateSizePreview() {
 
 // 加载弹窗大小设置
 function loadPopupSizeSettings() {
-  chrome.storage.sync.get({
+  storageCache.get({
     popupSizePreset: 'default',
     customWidth: 80,
     customHeight: 80
-  }, (settings) => {
+  }).then((settings) => {
     popupSizePreset.value = settings.popupSizePreset;
     customWidthSlider.value = settings.customWidth;
     customHeightSlider.value = settings.customHeight;
@@ -162,7 +163,7 @@ saveButton.addEventListener("click", () => {
   const customWidthValue = parseInt(customWidthSlider.value);
   const customHeightValue = parseInt(customHeightSlider.value);
 
-  chrome.storage.sync.set(
+  storageCache.set(
     {
       defaultAction: defaultAction,
       splitViewEnabled: splitViewEnabled,
@@ -172,35 +173,33 @@ saveButton.addEventListener("click", () => {
       popupSizePreset: popupSizePresetValue,
       customWidth: customWidthValue,
       customHeight: customHeightValue
-    },
-    () => {
-      showNotification("设置已保存!");
     }
-  );
+  ).then(() => {
+    showNotification("设置已保存!");
+  });
 });
 
 // 加载设置
 function loadSettings() {
-  chrome.storage.sync.get(
+  storageCache.get(
     [
       "defaultAction", 
       "splitViewEnabled",
       "iframeIgnoreEnabled",
       "autoAddToIgnoreList",
       "iframeIgnoreList"
-    ],
-    (result) => {
-      defaultActionInput.value = result.defaultAction || "copy-url";
-      splitViewEnabledCheckbox.checked = result.splitViewEnabled !== undefined 
-        ? result.splitViewEnabled 
-        : true; // 默认启用
-      iframeIgnoreEnabledCheckbox.checked = result.iframeIgnoreEnabled || false;
-      autoAddToIgnoreListCheckbox.checked = result.autoAddToIgnoreList || false;
-      
-      // 加载忽略列表
-      renderIgnoreList(result.iframeIgnoreList || []);
-    }
-  );
+    ]
+  ).then((result) => {
+    defaultActionInput.value = result.defaultAction || "copy-url";
+    splitViewEnabledCheckbox.checked = result.splitViewEnabled !== undefined 
+      ? result.splitViewEnabled 
+      : true; // 默认启用
+    iframeIgnoreEnabledCheckbox.checked = result.iframeIgnoreEnabled || false;
+    autoAddToIgnoreListCheckbox.checked = result.autoAddToIgnoreList || false;
+    
+    // 加载忽略列表
+    renderIgnoreList(result.iframeIgnoreList || []);
+  });
 }
 
 // 渲染忽略列表
@@ -247,7 +246,7 @@ function addDomain() {
   }
   
   // 获取当前忽略列表
-  chrome.storage.sync.get(['iframeIgnoreList'], (result) => {
+  storageCache.get(['iframeIgnoreList']).then((result) => {
     let ignoreList = result.iframeIgnoreList || [];
     
     // 确保ignoreList是数组
@@ -265,7 +264,7 @@ function addDomain() {
     ignoreList.push(domain);
     
     // 保存更新后的列表
-    chrome.storage.sync.set({ iframeIgnoreList: ignoreList }, () => {
+    storageCache.set({ iframeIgnoreList: ignoreList }).then(() => {
       console.log(`已将 ${domain} 添加到忽略列表`);
       // 清空输入框
       newDomainInput.value = '';
@@ -278,7 +277,7 @@ function addDomain() {
 // 从忽略列表中移除域名
 function removeDomain(domain) {
   // 获取当前忽略列表
-  chrome.storage.sync.get(['iframeIgnoreList'], (result) => {
+  storageCache.get(['iframeIgnoreList']).then((result) => {
     let ignoreList = result.iframeIgnoreList || [];
     
     // 确保ignoreList是数组
@@ -291,7 +290,7 @@ function removeDomain(domain) {
     ignoreList = ignoreList.filter(item => item !== domain);
     
     // 保存更新后的列表
-    chrome.storage.sync.set({ iframeIgnoreList: ignoreList }, () => {
+    storageCache.set({ iframeIgnoreList: ignoreList }).then(() => {
       console.log(`已从忽略列表中移除 ${domain}`);
       // 重新渲染列表
       renderIgnoreList(ignoreList);
@@ -311,10 +310,13 @@ newDomainInput.addEventListener('keypress', (event) => {
 
 // 页面加载时初始化
 document.addEventListener('DOMContentLoaded', function() {
-  // 加载已有设置
-  loadSettings();
-  loadPopupSizeSettings();
-  
-  // 初始化标签显示
-  initTabs();
+  // 确保storageCache初始化
+  storageCache.init().then(() => {
+    // 加载已有设置
+    loadSettings();
+    loadPopupSizeSettings();
+    
+    // 初始化标签显示
+    initTabs();
+  });
 });
