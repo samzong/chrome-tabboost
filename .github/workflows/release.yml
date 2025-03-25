@@ -1,0 +1,99 @@
+name: 版本发布流程
+on:
+  workflow_dispatch:
+    inputs:
+      version_type:
+        description: '版本类型'
+        type: choice
+        options:
+        - patch
+        - minor
+        - major
+        - prepatch
+        - preminor
+        - premajor
+        required: true
+        default: 'patch'
+      publish_target:
+        description: '发布目标'
+        type: choice
+        options:
+        - none
+        - trusted-testers
+        - public
+        required: true
+        default: 'trusted-testers'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: 设置 Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'npm'
+      
+      - name: 安装依赖
+        run: npm ci
+      
+      - name: 执行测试
+        run: npm test
+      
+      - name: 更新版本号
+        id: version
+        run: |
+          npm run version:${{ github.event.inputs.version_type }}
+          VERSION=$(node -p "require('./package.json').version")
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+      
+      - name: 执行构建
+        run: npm run build
+      
+      - name: 运行验证
+        run: npm run validate
+      
+      - name: 创建 ZIP 文件
+        run: npm run zip
+      
+      - name: 发布到受信任测试者
+        if: github.event.inputs.publish_target == 'trusted-testers' || github.event.inputs.publish_target == 'public'
+        env:
+          EXTENSION_ID: ${{ secrets.EXTENSION_ID }}
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+          PUBLISH_TARGET: trusted-testers
+        run: npm run publish:test
+      
+      - name: 发布到公共渠道
+        if: github.event.inputs.publish_target == 'public'
+        env:
+          EXTENSION_ID: ${{ secrets.EXTENSION_ID }}
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+        run: npm run publish
+      
+      - name: 创建 GitHub 发布版本
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: v${{ env.VERSION }}
+          tag_name: v${{ env.VERSION }}
+          generate_release_notes: true
+          files: |
+            builds/chrome-tabboost-v${{ env.VERSION }}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: 推送标签
+        run: |
+          git push origin v${{ env.VERSION }}
+          git push 
