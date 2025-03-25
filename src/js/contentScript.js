@@ -1,5 +1,7 @@
 // contentScript.js
 import storageCache from "../utils/storageCache.js";
+import { validateUrl } from "../utils/utils.js";
+import { canLoadInIframe, DANGEROUS_URL_PATTERNS, DANGEROUS_PROTOCOLS } from "../utils/iframeCompatibility.js";
 
 // 确保缓存系统在使用前初始化
 const initStorageCache = async () => {
@@ -139,58 +141,30 @@ async function createPopup(url) {
     }
     
     // 验证URL的安全性
-    try {
-      // 确保URL是有效的
-      const urlObj = new URL(url);
-      
-      // 只允许http和https协议
-      if (urlObj.protocol !== 'http:' && urlObj.protocol !== 'https:') {
-        console.error(`chrome-tabboost: 不安全的URL协议: ${urlObj.protocol}`);
-        window.open(url, "_blank"); // 使用浏览器自身的安全措施
-        return;
-      }
-      
-      // 编码URL以防止XSS
-      url = encodeURI(decodeURI(url));
-    } catch (urlError) {
-      console.error("chrome-tabboost: 无效的URL:", urlError);
-      // 无效URL，不处理
-      return;
-    }
-
-    // 获取忽略列表相关设置
-    const config = await storageCache.get({
-      iframeIgnoreEnabled: false,
-      iframeIgnoreList: []
-    });
+    const validationResult = validateUrl(url);
     
-    // 如果功能未启用，直接创建弹窗
-    if (!config.iframeIgnoreEnabled) {
-      createPopupDOM(url);
-      return;
-    }
-    
-    // 如果忽略列表不存在或为空，直接创建弹窗
-    if (!config.iframeIgnoreList || !Array.isArray(config.iframeIgnoreList) || config.iframeIgnoreList.length === 0) {
-      createPopupDOM(url);
-      return;
-    }
-    
-    // 解析URL获取域名
-    const urlObj = new URL(url);
-    const hostname = urlObj.hostname;
-    
-    // 检查域名是否在忽略列表中
-    const isIgnored = config.iframeIgnoreList.some(domain => hostname.includes(domain));
-    
-    if (isIgnored) {
-      // 如果在忽略列表中，直接在新标签页中打开
-      console.log(`chrome-tabboost: URL ${url} is in ignore list, opening in new tab`);
+    // 如果URL不安全，记录原因并在新标签页中打开（让浏览器处理安全性）
+    if (!validationResult.isValid) {
+      console.error(`chrome-tabboost: URL安全验证失败: ${validationResult.reason}`);
       window.open(url, "_blank");
-    } else {
-      // 否则创建弹窗
-      createPopupDOM(url);
+      return;
     }
+    
+    // 使用经过安全处理的URL
+    url = validationResult.sanitizedUrl;
+
+    // 使用统一的iframe兼容性检查，指定isPopup选项
+    const canLoad = await canLoadInIframe(url, { isPopup: true });
+    
+    if (!canLoad) {
+      // 如果不能在iframe中加载，直接在新标签页中打开
+      console.log(`chrome-tabboost: URL ${url} 不能在弹窗中加载，直接在新标签页中打开`);
+      window.open(url, "_blank");
+      return;
+    }
+    
+    // 能够加载，创建弹窗
+    createPopupDOM(url);
   } catch (error) {
     console.error("chrome-tabboost: Error in createPopup:", error);
     // 出错时在新标签页中打开
@@ -305,6 +279,7 @@ async function createPopupDOM(url) {
       <p>无法在弹窗中加载此网站。</p>
       <button id="tabboost-open-newtab">在新标签页中打开</button>
       <button id="tabboost-add-to-ignore">添加到忽略列表</button>
+      <button id="tabboost-close-error">关闭</button>
     `;
 
     // 创建 iframe 以加载链接内容
@@ -519,6 +494,14 @@ async function createPopupDOM(url) {
         console.error("chrome-tabboost: Error adding to ignore list:", error);
         alert("添加到忽略列表失败");
       }
+    });
+    
+    // 监听关闭按钮
+    const closeErrorButton = errorMsg.querySelector("#tabboost-close-error");
+    addTrackedEventListener(closeErrorButton, "click", () => {
+      console.log("chrome-tabboost: Close error button clicked");
+      errorMsg.classList.remove("show");
+      closePopup();
     });
     
     // 添加额外的检测机制 - 使用间隔检查而不是多个setTimeout

@@ -11,7 +11,7 @@ class StorageCache {
     // 记录每个键的过期时间
     this.expiration = {};
     // 默认缓存过期时间（毫秒）
-    this.defaultExpiration = 5 * 60 * 1000; // 5分钟
+    this.defaultExpiration = 10 * 60 * 1000; // 10分钟，提高缓存时间
     // 使用频率计数器
     this.usageCount = {};
     // 初始化标记
@@ -24,17 +24,25 @@ class StorageCache {
       'customWidth',
       'customHeight',
       'autoAddToIgnoreList',
-      'defaultAction'
+      'defaultAction',
+      'splitViewEnabled'  // 新增高频键
     ];
     // 上次清理缓存的时间
     this.lastCleanup = Date.now();
     // 清理间隔（毫秒）
-    this.cleanupInterval = 30 * 60 * 1000; // 30分钟
+    this.cleanupInterval = 60 * 60 * 1000; // 延长到60分钟
     
     // 添加调用计数器，控制清理频率
     this.getCallCount = 0;
     // 每多少次get调用执行一次清理检查
-    this.cleanupCheckFrequency = 50;
+    this.cleanupCheckFrequency = 100; // 增加到100次，减少检查频率
+    
+    // 批量写入队列
+    this.writeQueue = {};
+    // 批量写入计时器ID
+    this.writeTimerId = null;
+    // 批量写入延迟（毫秒）
+    this.writeDelay = 1000; // 1秒延迟，收集多个写操作一次性提交
   }
 
   /**
@@ -73,17 +81,19 @@ class StorageCache {
   getExpirationTime(key) {
     // 高频使用的重要键保留更长时间
     if (this.frequentKeys.includes(key)) {
-      return 30 * 60 * 1000; // 30分钟
+      return 60 * 60 * 1000; // 延长到60分钟
     }
     
     // 基于使用频率动态调整过期时间
     const usageCount = this.usageCount[key] || 0;
-    if (usageCount > 10) {
-      return 20 * 60 * 1000; // 20分钟
+    if (usageCount > 15) {
+      return 45 * 60 * 1000; // 45分钟
+    } else if (usageCount > 10) {
+      return 30 * 60 * 1000; // 30分钟
     } else if (usageCount > 5) {
-      return 10 * 60 * 1000; // 10分钟
+      return 15 * 60 * 1000; // 15分钟
     } else {
-      return this.defaultExpiration; // 默认5分钟
+      return this.defaultExpiration; // 默认10分钟
     }
   }
 
@@ -93,6 +103,11 @@ class StorageCache {
    * @returns {Promise} 包含请求数据的Promise
    */
   async get(keys) {
+    // 确保已初始化
+    if (!this.initialized) {
+      await this.init();
+    }
+    
     // 增加调用计数
     this.getCallCount++;
     
@@ -158,20 +173,76 @@ class StorageCache {
   }
 
   /**
-   * 设置存储的值，同时更新缓存
+   * 设置存储的值，使用批量写入优化
    * @param {Object} items 要存储的键值对
    * @returns {Promise} 操作完成的Promise
    */
   async set(items) {
-    return new Promise((resolve) => {
-      chrome.storage.sync.set(items, () => {
-        // 更新缓存
-        Object.keys(items).forEach(key => {
-          this.cache[key] = items[key];
-          this.setExpiration(key, this.getExpirationTime(key));
+    // 更新本地缓存，立即可用
+    Object.keys(items).forEach(key => {
+      this.cache[key] = items[key];
+      this.setExpiration(key, this.getExpirationTime(key));
+      
+      // 添加到写入队列
+      this.writeQueue[key] = items[key];
+    });
+    
+    // 使用防抖模式延迟批量写入
+    this.scheduleWrite();
+    
+    // 立即返回Promise以提高响应速度
+    return Promise.resolve();
+  }
+  
+  /**
+   * 调度批量写入操作
+   */
+  scheduleWrite() {
+    // 如果已经有计时器在运行，清除它以重新开始计时
+    if (this.writeTimerId) {
+      clearTimeout(this.writeTimerId);
+    }
+    
+    // 设置新的计时器，延迟执行批量写入
+    this.writeTimerId = setTimeout(() => {
+      this.flushWrites();
+    }, this.writeDelay);
+  }
+  
+  /**
+   * 执行所有挂起的写入操作
+   */
+  flushWrites() {
+    // 如果没有挂起的写入，直接返回
+    if (Object.keys(this.writeQueue).length === 0) {
+      return;
+    }
+    
+    // 创建当前队列的副本
+    const itemsToWrite = {...this.writeQueue};
+    
+    // 清空队列
+    this.writeQueue = {};
+    
+    // 执行写入操作
+    chrome.storage.sync.set(itemsToWrite, () => {
+      if (chrome.runtime.lastError) {
+        console.error("chrome-tabboost: 批量写入失败:", chrome.runtime.lastError);
+        
+        // 如果写入失败，尝试恢复写入队列
+        Object.keys(itemsToWrite).forEach(key => {
+          if (!(key in this.writeQueue)) {
+            this.writeQueue[key] = itemsToWrite[key];
+          }
         });
-        resolve();
-      });
+        
+        // 重新调度写入（带延迟）
+        setTimeout(() => {
+          this.scheduleWrite();
+        }, 5000); // 5秒后重试
+      } else {
+        console.log("chrome-tabboost: 批量写入成功，键数量:", Object.keys(itemsToWrite).length);
+      }
     });
   }
 
@@ -183,14 +254,20 @@ class StorageCache {
   async remove(keys) {
     const keyList = Array.isArray(keys) ? keys : [keys];
     
+    // 从缓存中移除
+    keyList.forEach(key => {
+      delete this.cache[key];
+      delete this.expiration[key];
+      delete this.usageCount[key];
+      
+      // 从写入队列中移除
+      if (key in this.writeQueue) {
+        delete this.writeQueue[key];
+      }
+    });
+    
     return new Promise((resolve) => {
       chrome.storage.sync.remove(keyList, () => {
-        // 从缓存中移除
-        keyList.forEach(key => {
-          delete this.cache[key];
-          delete this.expiration[key];
-          delete this.usageCount[key];
-        });
         resolve();
       });
     });
@@ -206,6 +283,13 @@ class StorageCache {
         this.cache = {};
         this.expiration = {};
         this.usageCount = {};
+        this.writeQueue = {};
+        
+        if (this.writeTimerId) {
+          clearTimeout(this.writeTimerId);
+          this.writeTimerId = null;
+        }
+        
         resolve();
       });
     });
@@ -262,6 +346,9 @@ class StorageCache {
     
     this.lastCleanup = now;
     console.log("chrome-tabboost: Cleaning up storage cache");
+    
+    // 在清理前执行所有挂起的写入
+    this.flushWrites();
     
     // 清理过期缓存
     Object.keys(this.cache).forEach(key => {

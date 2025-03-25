@@ -50,6 +50,7 @@ body {
   display: flex;
   align-items: center;
   margin-bottom: 24px;
+  position: relative;
 }
 
 .logo {
@@ -61,6 +62,12 @@ body {
 .title {
   font-size: 24px;
   font-weight: 600;
+}
+
+.save-button {
+  margin-left: auto;
+  padding: 8px 14px;
+  font-size: 13px;
 }
 
 .tabs {
@@ -407,4 +414,78 @@ code {
   .size-preview-popup {
     background-color: var(--card-background);
   }
+}
+
+/* 忽略列表区域标题样式 */
+.ignore-list-section-title {
+  font-weight: 600;
+  margin: 15px 0 10px;
+  color: #4a5568;
+  border-bottom: 1px solid #edf2f7;
+  padding-bottom: 5px;
+}
+
+/* 系统域名项样式 */
+.ignore-item.system-domain {
+  background-color: #f9f9f9;
+  border-left: 3px solid #4299e1;
+}
+
+.system-badge {
+  background-color: #4299e1;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.7rem;
+  margin-left: auto;
+  text-transform: uppercase;
+}
+
+/* 域名格式说明样式 */
+.domain-format-guide {
+  margin: 15px 0;
+  padding: 10px 15px;
+  background-color: #f8f9fa;
+  border-left: 3px solid #4299e1;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.domain-format-guide p {
+  margin-top: 0;
+  margin-bottom: 8px;
+  color: #4a5568;
+}
+
+.domain-format-guide ul {
+  margin: 0;
+  padding-left: 20px;
+  list-style-type: disc;
+}
+
+.domain-format-guide code {
+  background-color: #edf2f7;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
+/* 匹配类型标签样式 */
+.match-type {
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.7rem;
+  margin-left: 8px;
+  text-transform: uppercase;
+}
+
+.match-type.exact {
+  background-color: #edf2f7;
+  color: #4a5568;
+}
+
+.match-type.wildcard {
+  background-color: #e9f5fe;
+  color: #3182ce;
 } 

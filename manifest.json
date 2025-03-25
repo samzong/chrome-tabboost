@@ -23,7 +23,8 @@
     }
   ],
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;"
+    "extension_pages": "script-src 'self'; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google.com; default-src 'self'; connect-src 'self' https://*.google.com; frame-src 'self'; font-src 'self'; form-action 'none'; base-uri 'none'; upgrade-insecure-requests;",
+    "sandbox": "sandbox allow-scripts allow-forms allow-popups allow-modals; script-src 'self'; object-src 'none'"
   },
   "action": {
     "default_icon": {

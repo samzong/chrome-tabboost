@@ -1,4 +1,4 @@
-import { getCurrentTab, showNotification } from "../utils/utils.js";
+import { getCurrentTab, showNotification, validateUrl } from "../utils/utils.js";
 import { createSplitView, closeSplitView, toggleSplitView, updateRightView, canLoadInIframe } from "./splitView.js";
 import storageCache from "../utils/storageCache.js";
 
@@ -205,6 +205,22 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 // 处理分屏请求
 async function handleSplitViewRequest(url) {
   try {
+    // 使用通用URL验证函数进行安全检查
+    const validationResult = validateUrl(url);
+    
+    // 如果URL不安全，记录原因并在新标签页中打开
+    if (!validationResult.isValid) {
+      console.error(`URL验证失败: ${validationResult.reason}`);
+      chrome.tabs.create({ url }); // 让浏览器处理不安全的URL
+      return { 
+        status: "opened_in_new_tab_due_to_validation", 
+        message: `由于安全原因，已在新标签页中打开: ${validationResult.reason}` 
+      };
+    }
+    
+    // 使用经过安全处理的URL
+    url = validationResult.sanitizedUrl;
+
     // 检查URL是否可以在iframe中加载
     const canLoad = await canLoadInIframe(url);
     if (!canLoad) {
@@ -248,16 +264,25 @@ async function handleSplitViewRequest(url) {
       try {
         // 如果分屏视图创建失败，尝试关闭现有分屏视图
         await closeSplitView();
-      } catch (e) {
-        // 如果关闭也失败，忽略并继续
-        console.warn("关闭分屏视图失败:", e);
+        
+        // 然后在新标签页中打开链接
+        chrome.tabs.create({ url });
+        return { 
+          status: "opened_in_new_tab_after_error", 
+          message: "分屏创建失败，已在新标签页中打开" 
+        };
+      } catch (cleanupError) {
+        console.error("尝试恢复时出错:", cleanupError);
+        // 最后的尝试，直接打开新标签
+        chrome.tabs.create({ url });
+        return { 
+          status: "recovery_failed",
+          message: "恢复失败，已在新标签页中打开" 
+        };
       }
-      
-      // 重新抛出错误，让上层处理
-      throw error;
     }
   } catch (error) {
-    console.error("处理分屏请求时发生错误:", error);
+    console.error("处理分屏请求出错:", error);
     throw error;
   }
 }

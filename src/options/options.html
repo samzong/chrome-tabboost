@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src 'self'; form-action 'none'; base-uri 'none'; upgrade-insecure-requests;">
     <title>TabBoost 设置</title>
     <link rel="stylesheet" href="<%= cssPath %>">
   </head>
@@ -12,36 +13,30 @@
         <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path>
       </svg>
       <h1 class="title">TabBoost 设置</h1>
+      <button id="saveButton" class="button save-button">
+        <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+          <polyline points="17 21 17 13 7 13 7 21"></polyline>
+          <polyline points="7 3 7 8 15 8"></polyline>
+        </svg>
+        保存设置
+      </button>
     </div>
 
     <div class="tabs">
-      <div class="tab active" data-tab="shortcuts">
-        <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path>
-        </svg>
-        <span>快捷键</span>
-      </div>
-      <div class="tab" data-tab="general">
+      <div class="tab active" data-tab="general">
         <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3"></circle>
           <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
         </svg>
         <span>通用设置</span>
       </div>
-      <div class="tab" data-tab="popup">
-        <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-          <line x1="8" y1="21" x2="16" y2="21"></line>
-          <line x1="12" y1="17" x2="12" y2="21"></line>
-        </svg>
-        <span>弹窗设置</span>
-      </div>
-      <div class="tab" data-tab="splitview">
+      <div class="tab" data-tab="viewmode">
         <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
           <line x1="12" y1="3" x2="12" y2="21"></line>
         </svg>
-        分屏模式
+        <span>浏览模式</span>
       </div>
       <div class="tab" data-tab="iframe">
         <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -49,40 +44,12 @@
           <line x1="2" y1="12" x2="22" y2="12"></line>
           <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
         </svg>
-        iframe兼容性
+        <span>iframe兼容性</span>
       </div>
     </div>
 
-    <!-- 快捷键设置 -->
-    <div class="tab-content active" id="shortcuts-content">
-      <div class="card">
-        <h2 class="card-title">
-          <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path>
-          </svg>
-          快捷键设置
-        </h2>
-        <p class="card-description">自定义各项功能的快捷键，提高工作效率</p>
-        
-        <div class="form-group">
-          <label for="duplicateTabShortcut">复制标签页快捷键:</label>
-          <input type="text" id="duplicateTabShortcut" placeholder="例如：Ctrl+M" />
-        </div>
-    
-        <div class="form-group">
-          <label for="copyUrlShortcut">复制网址快捷键:</label>
-          <input type="text" id="copyUrlShortcut" placeholder="例如：Shift+Alt+C" />
-        </div>
-
-        <div class="form-group">
-          <label for="splitViewShortcut">分屏模式快捷键:</label>
-          <input type="text" id="splitViewShortcut" placeholder="例如：Shift+Command+S" />
-        </div>
-      </div>
-    </div>
-    
     <!-- 通用设置 -->
-    <div class="tab-content" id="general-content">
+    <div class="tab-content active" id="general-content">
       <div class="card">
         <h2 class="card-title">
           <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -105,8 +72,9 @@
       </div>
     </div>
 
-    <!-- 分屏模式设置 -->
-    <div class="tab-content" id="splitview-content">
+    <!-- 浏览模式设置（合并弹窗和分屏） -->
+    <div class="tab-content" id="viewmode-content">
+      <!-- 分屏模式设置 -->
       <div class="card">
         <h2 class="card-title">
           <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -129,6 +97,46 @@
           <ul class="usage-list">
             <li>在分屏模式下，按住 <code>Command+Shift</code> 并点击链接，会在右侧打开</li>
           </ul>
+        </div>
+      </div>
+
+      <!-- 弹窗设置内容 -->
+      <div class="card" id="popup-size-section">
+        <h2 class="card-title">
+          <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+          弹窗大小设置
+        </h2>
+        <p class="card-description">调整弹窗大小以获得最佳浏览体验</p>
+        
+        <div class="form-group">
+          <label for="popupSizePreset">弹窗大小预设</label>
+          <select id="popupSizePreset" class="form-control">
+            <option value="default">默认 (80%)</option>
+            <option value="large">大号 (90%)</option>
+            <option value="custom">自定义</option>
+          </select>
+        </div>
+        
+        <div class="form-group custom-size-controls" style="display: none;">
+          <label for="customWidthSlider">自定义宽度: <span id="customWidthValue">80%</span></label>
+          <input type="range" id="customWidthSlider" class="range-slider" min="50" max="95" step="1" value="80">
+        </div>
+        
+        <div class="form-group custom-size-controls" style="display: none;">
+          <label for="customHeightSlider">自定义高度: <span id="customHeightValue">80%</span></label>
+          <input type="range" id="customHeightSlider" class="range-slider" min="50" max="95" step="1" value="80">
+        </div>
+        
+        <div class="size-preview-container">
+          <h3 class="preview-title">大小预览</h3>
+          <div class="size-preview-window">
+            <div class="size-preview-popup" id="sizePreviewBox"></div>
+          </div>
+          <p class="preview-description">灰色区域表示可点击的空白区域</p>
         </div>
       </div>
     </div>
@@ -170,8 +178,16 @@
             <div class="ignore-item-empty">暂无忽略的网站</div>
           </div>
           
+          <div class="domain-format-guide">
+            <p><strong>域名格式说明：</strong></p>
+            <ul id="wildCardExample">
+              <li><code>example.com</code> - 仅匹配 example.com（精确匹配）</li>
+              <li><code>*.example.com</code> - 匹配 example.com 所有子域名</li>
+            </ul>
+          </div>
+          
           <div class="add-domain-container">
-            <input type="text" id="newDomain" placeholder="输入要忽略的域名，例如：example.com" />
+            <input type="text" id="newDomain" placeholder="输入要忽略的域名，例如：example.com 或 *.example.com" />
             <button id="addDomainButton" class="button">
               <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -182,59 +198,6 @@
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- 弹窗设置内容 -->
-    <div class="tab-content" id="popup-content">
-      <div class="card" id="popup-size-section">
-        <h2 class="card-title">
-          <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-            <line x1="8" y1="21" x2="16" y2="21"></line>
-            <line x1="12" y1="17" x2="12" y2="21"></line>
-          </svg>
-          弹窗大小设置
-        </h2>
-        <p class="card-description">调整弹窗大小以获得最佳浏览体验</p>
-        
-        <div class="form-group">
-          <label for="popupSizePreset">弹窗大小预设</label>
-          <select id="popupSizePreset" class="form-control">
-            <option value="default">默认 (80%)</option>
-            <option value="large">大号 (90%)</option>
-            <option value="custom">自定义</option>
-          </select>
-        </div>
-        
-        <div class="form-group custom-size-controls" style="display: none;">
-          <label for="customWidthSlider">自定义宽度: <span id="customWidthValue">80%</span></label>
-          <input type="range" id="customWidthSlider" class="range-slider" min="50" max="95" step="1" value="80">
-        </div>
-        
-        <div class="form-group custom-size-controls" style="display: none;">
-          <label for="customHeightSlider">自定义高度: <span id="customHeightValue">80%</span></label>
-          <input type="range" id="customHeightSlider" class="range-slider" min="50" max="95" step="1" value="80">
-        </div>
-        
-        <div class="size-preview-container">
-          <h3 class="preview-title">大小预览</h3>
-          <div class="size-preview-window">
-            <div class="size-preview-popup" id="sizePreviewBox"></div>
-          </div>
-          <p class="preview-description">灰色区域表示可点击的空白区域</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="actions">
-      <button id="saveButton" class="button">
-        <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-          <polyline points="17 21 17 13 7 13 7 21"></polyline>
-          <polyline points="7 3 7 8 15 8"></polyline>
-        </svg>
-        保存设置
-      </button>
     </div>
 
     <div class="footer">
