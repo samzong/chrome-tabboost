@@ -64,7 +64,7 @@ document.addEventListener(
                 // 显示临时通知，告知用户分屏失败
                 const notification = document.createElement('div');
                 notification.className = 'tabboost-notification';
-                notification.textContent = '分屏视图加载失败，正在尝试新标签页打开...';
+                notification.textContent = getMessage("splitViewFailure") || '分屏视图加载失败，正在尝试新标签页打开...';
                 notification.style.cssText = `
                   position: fixed;
                   bottom: 20px;
@@ -230,7 +230,7 @@ async function createPopupDOM(url) {
         <span id="tabboost-popup-title">${loadingText}</span>
         <div id="tabboost-popup-buttons">
           <button class="tabboost-button tabboost-newtab-button" title="${openInNewTabText}" aria-label="${openInNewTabText}">${openInNewTabText}</button>
-          <button class="tabboost-button tabboost-size-hint" title="在扩展选项中可调整弹窗大小">
+          <button class="tabboost-button tabboost-size-hint" title="${getMessage("popupSizeHint") || "在扩展选项中可调整弹窗大小"}">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="10"/>
               <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
@@ -323,7 +323,8 @@ async function createPopupDOM(url) {
             // 显示通知
             const autoAddNotice = document.createElement('p');
             autoAddNotice.className = 'tabboost-auto-add-notice';
-            autoAddNotice.textContent = `已自动将 ${hostname} 添加到忽略列表，下次将直接在新标签页中打开`;
+            const autoAddMessage = getMessage("autoAddToIgnoreList", [hostname]);
+            autoAddNotice.textContent = autoAddMessage || `已自动将 ${hostname} 添加到忽略列表，下次将直接在新标签页中打开`;
             errorMsg.appendChild(autoAddNotice);
           }
         } catch (error) {

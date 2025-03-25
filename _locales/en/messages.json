@@ -52,8 +52,14 @@
     "description": "Setting for iframe ignore list"
   },
   "autoAddToIgnoreList": {
-    "message": "automatically added to ignore list. Next time it will open in a new tab",
-    "description": "Message shown when a website is automatically added to ignore list"
+    "message": "$hostname$ has been automatically added to the ignore list. Next time it will open in a new tab",
+    "description": "Message shown when a website is automatically added to ignore list",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
   },
   "save": {
     "message": "Save",
@@ -339,8 +345,16 @@
     "message": "TabBoost v2.0 - Make your browsing experience more efficient",
     "description": "Footer text in options page"
   },
+  "popupFooter": {
+    "message": "TabBoost v2.0",
+    "description": "Footer text in popup"
+  },
   "autoAddToIgnoreListOption": {
     "message": "Automatically add websites that fail to load to the ignore list",
     "description": "Option to automatically add websites that fail to load to the ignore list"
+  },
+  "popupSizeHint": {
+    "message": "Popup size can be adjusted in extension options",
+    "description": "Hint that popup size can be adjusted in options"
   }
 } 

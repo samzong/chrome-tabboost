@@ -7,12 +7,14 @@ export async function getCurrentTab() {
 }
 
 // 显示通知
+import { getMessage } from './i18n.js';
+
 export function showNotification(message) {
   chrome.notifications.create(
     {
       type: "basic",
       iconUrl: chrome.runtime.getURL("assets/icons/icon48.png"), // 使用chrome.runtime.getURL获取正确路径
-      title: "TabBoost",
+      title: getMessage("appName") || "TabBoost",
       message: message,
     },
     function (notificationId) {

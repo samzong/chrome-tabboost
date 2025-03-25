@@ -52,8 +52,14 @@
     "description": "iframe忽略列表设置"
   },
   "autoAddToIgnoreList": {
-    "message": "已自动添加到忽略列表，下次将直接在新标签页中打开",
-    "description": "Message shown when a website is automatically added to ignore list"
+    "message": "已自动将 $hostname$ 添加到忽略列表，下次将直接在新标签页中打开",
+    "description": "Message shown when a website is automatically added to ignore list",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
   },
   "autoAddToIgnoreListOption": {
     "message": "自动将无法加载的网站添加到忽略列表",
@@ -278,5 +284,13 @@
   "extensionFooter": {
     "message": "TabBoost v2.0 - 让您的浏览体验更高效",
     "description": "扩展页脚文本"
+  },
+  "popupFooter": {
+    "message": "TabBoost v2.0",
+    "description": "弹出窗口页脚文本"
+  },
+  "popupSizeHint": {
+    "message": "在扩展选项中可调整弹窗大小",
+    "description": "提示用户可以在选项中调整弹窗大小"
   }
 } 
