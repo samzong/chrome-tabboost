@@ -1,7 +1,7 @@
 // contentScript.js
 import storageCache from "../utils/storageCache.js";
-import { DANGEROUS_URL_PATTERNS, DANGEROUS_PROTOCOLS } from "../js/splitView/splitViewURLValidator.js";
 import { validateUrl } from "../utils/utils.js";
+import { canLoadInIframe, DANGEROUS_URL_PATTERNS, DANGEROUS_PROTOCOLS } from "../utils/iframeCompatibility.js";
 
 // 确保缓存系统在使用前初始化
 const initStorageCache = async () => {
@@ -153,39 +153,18 @@ async function createPopup(url) {
     // 使用经过安全处理的URL
     url = validationResult.sanitizedUrl;
 
-    // 获取忽略列表相关设置
-    const config = await storageCache.get({
-      iframeIgnoreEnabled: false,
-      iframeIgnoreList: []
-    });
+    // 使用统一的iframe兼容性检查，指定isPopup选项
+    const canLoad = await canLoadInIframe(url, { isPopup: true });
     
-    // 如果功能未启用，直接创建弹窗
-    if (!config.iframeIgnoreEnabled) {
-      createPopupDOM(url);
-      return;
-    }
-    
-    // 如果忽略列表不存在或为空，直接创建弹窗
-    if (!config.iframeIgnoreList || !Array.isArray(config.iframeIgnoreList) || config.iframeIgnoreList.length === 0) {
-      createPopupDOM(url);
-      return;
-    }
-    
-    // 解析URL获取域名
-    const urlObj = new URL(url);
-    const hostname = urlObj.hostname;
-    
-    // 检查域名是否在忽略列表中
-    const isIgnored = config.iframeIgnoreList.some(domain => hostname.includes(domain));
-    
-    if (isIgnored) {
-      // 如果在忽略列表中，直接在新标签页中打开
-      console.log(`chrome-tabboost: URL ${url} is in ignore list, opening in new tab`);
+    if (!canLoad) {
+      // 如果不能在iframe中加载，直接在新标签页中打开
+      console.log(`chrome-tabboost: URL ${url} 不能在弹窗中加载，直接在新标签页中打开`);
       window.open(url, "_blank");
-    } else {
-      // 否则创建弹窗
-      createPopupDOM(url);
+      return;
     }
+    
+    // 能够加载，创建弹窗
+    createPopupDOM(url);
   } catch (error) {
     console.error("chrome-tabboost: Error in createPopup:", error);
     // 出错时在新标签页中打开
