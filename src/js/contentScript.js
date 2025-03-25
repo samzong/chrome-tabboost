@@ -140,6 +140,15 @@ function createPopup(url) {
 // 函数：创建弹窗DOM
 function createPopupDOM(url) {
   try {
+    // 用于跟踪所有添加的事件监听器，以便在关闭弹窗时清理
+    const eventListeners = [];
+    
+    // 添加事件监听器的辅助函数，用于跟踪所有添加的事件监听器
+    const addTrackedEventListener = (element, eventType, listener) => {
+      element.addEventListener(eventType, listener);
+      eventListeners.push({ element, eventType, listener });
+    };
+  
     // 创建弹窗覆盖层
     const popupOverlay = document.createElement("div");
     popupOverlay.id = "tabboost-popup-overlay";
@@ -186,7 +195,7 @@ function createPopupDOM(url) {
     newTabButton.innerText = "在新标签页中打开";
     newTabButton.title = "在新标签页中打开链接";
     newTabButton.setAttribute("aria-label", "在新标签页中打开链接");
-    newTabButton.addEventListener("click", () => {
+    addTrackedEventListener(newTabButton, "click", () => {
       console.log("chrome-tabboost: New Tab button clicked");
       window.open(url, "_blank");
       closePopup();
@@ -198,7 +207,7 @@ function createPopupDOM(url) {
     closeButton.innerHTML = "&times;"; // Unicode × 符号
     closeButton.title = "关闭弹窗";
     closeButton.setAttribute("aria-label", "关闭弹窗");
-    closeButton.addEventListener("click", closePopup);
+    addTrackedEventListener(closeButton, "click", closePopup);
     console.log("chrome-tabboost: Close button event listener added");
 
     // 组装按钮容器
@@ -209,7 +218,7 @@ function createPopupDOM(url) {
     sizeHintButton.className = "tabboost-button tabboost-size-hint";
     sizeHintButton.title = "在扩展选项中可调整弹窗大小";
     sizeHintButton.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
-    sizeHintButton.addEventListener("click", () => {
+    addTrackedEventListener(sizeHintButton, "click", () => {
       chrome.runtime.sendMessage({ action: "openOptionsPage", section: "popup-size" });
     });
 
@@ -347,42 +356,32 @@ function createPopupDOM(url) {
 
     // 设置超时（例如 5 秒）
     const loadTimeout = setTimeout(() => {
-      console.log("chrome-tabboost: Iframe load timed out");
       handleLoadFailure("加载超时");
     }, 5000);
 
     // 组装弹窗内容
     popupContent.appendChild(toolbar);
     popupContent.appendChild(loader);
-    popupContent.appendChild(errorMsg); // 添加错误消息
     popupContent.appendChild(iframe);
-
-    // 组装弹窗覆盖层
+    popupContent.appendChild(errorMsg);
     popupOverlay.appendChild(popupContent);
 
     // 添加到页面
     document.body.appendChild(popupOverlay);
-    console.log("chrome-tabboost: Popup overlay added to the document");
 
-    // 触发显示动画
-    requestAnimationFrame(() => {
-      popupOverlay.classList.add("show");
-      console.log("chrome-tabboost: Popup overlay show animation triggered");
-    });
-
-    // 监听 Esc 键关闭弹窗
+    // 添加监听 Esc 键关闭弹窗
     const escListener = function (event) {
       if (event.key === "Escape") {
         console.log("chrome-tabboost: Escape key pressed");
         closePopup();
       }
     };
-    document.addEventListener("keydown", escListener);
+    addTrackedEventListener(document, "keydown", escListener);
     console.log("chrome-tabboost: Esc key listener added");
 
     // 监听错误消息中的按钮
     const openNewTabButton = errorMsg.querySelector("#tabboost-open-newtab");
-    openNewTabButton.addEventListener("click", () => {
+    addTrackedEventListener(openNewTabButton, "click", () => {
       console.log("chrome-tabboost: Open in new tab button clicked");
       window.open(url, "_blank");
       closePopup();
@@ -390,7 +389,7 @@ function createPopupDOM(url) {
 
     // 监听添加到忽略列表按钮
     const addToIgnoreButton = errorMsg.querySelector("#tabboost-add-to-ignore");
-    addToIgnoreButton.addEventListener("click", () => {
+    addTrackedEventListener(addToIgnoreButton, "click", () => {
       console.log("chrome-tabboost: Add to ignore list button clicked");
       try {
         // 解析URL获取域名
@@ -474,19 +473,36 @@ function createPopupDOM(url) {
         
         console.log("chrome-tabboost: Closing popup");
         popupOverlay.classList.remove("show");
+        
+        // 移除所有注册的事件监听器
+        eventListeners.forEach(({ element, eventType, listener }) => {
+          try {
+            element.removeEventListener(eventType, listener);
+            console.log(`chrome-tabboost: Removed ${eventType} listener from ${element.tagName || 'document'}`);
+          } catch (e) {
+            console.error(`chrome-tabboost: Error removing ${eventType} listener:`, e);
+          }
+        });
+        
         setTimeout(() => {
           if (popupOverlay && popupOverlay.parentNode) {
             popupOverlay.parentNode.removeChild(popupOverlay);
-            document.removeEventListener("keydown", escListener);
-            console.log(
-              "chrome-tabboost: Popup overlay removed and Esc listener detached"
-            );
+            console.log("chrome-tabboost: Popup overlay removed");
           }
         }, 300); // 等待动画完成
       } catch (error) {
         console.error("chrome-tabboost: Error closing popup:", error);
         // 尝试强制移除
         try {
+          // 尝试移除所有事件监听器，即使出错
+          eventListeners.forEach(({ element, eventType, listener }) => {
+            try {
+              element.removeEventListener(eventType, listener);
+            } catch (e) {
+              // 忽略错误，继续尝试移除其他监听器
+            }
+          });
+          
           if (popupOverlay && popupOverlay.parentNode) {
             popupOverlay.parentNode.removeChild(popupOverlay);
           }
@@ -495,6 +511,12 @@ function createPopupDOM(url) {
         }
       }
     }
+
+    // 显示弹窗并添加动画类
+    requestAnimationFrame(() => {
+      popupOverlay.classList.add("show");
+      console.log("chrome-tabboost: Popup overlay show animation triggered");
+    });
   } catch (error) {
     console.error("chrome-tabboost: Error creating popup DOM:", error);
     // 出错时在新标签页中打开
