@@ -266,7 +266,8 @@ async function createPopupDOM(url) {
     // 保存所有定时器引用，便于一次性清理
     const timers = {
       loadTimeout: null,
-      checkInterval: null
+      checkInterval: null,
+      closeTimeout: null  // 添加关闭动画定时器的引用
     };
     
     // 创建一个函数来处理加载失败
@@ -318,14 +319,16 @@ async function createPopupDOM(url) {
     
     // 清理所有定时器的函数
     const clearAllTimers = () => {
-      if (timers.loadTimeout) {
-        clearTimeout(timers.loadTimeout);
-        timers.loadTimeout = null;
-      }
-      if (timers.checkInterval) {
-        clearInterval(timers.checkInterval);
-        timers.checkInterval = null;
-      }
+      Object.keys(timers).forEach(key => {
+        if (timers[key]) {
+          if (key.includes('Interval')) {
+            clearInterval(timers[key]);
+          } else {
+            clearTimeout(timers[key]);
+          }
+          timers[key] = null;
+        }
+      });
     };
     
     // 监听 iframe 加载错误
@@ -512,32 +515,50 @@ async function createPopupDOM(url) {
         // 移除所有注册的事件监听器
         eventListeners.forEach(({ element, eventType, listener }) => {
           try {
-            element.removeEventListener(eventType, listener);
-            console.log(`chrome-tabboost: Removed ${eventType} listener from ${element.tagName || 'document'}`);
+            if (element && typeof element.removeEventListener === 'function') {
+              element.removeEventListener(eventType, listener);
+              console.log(`chrome-tabboost: Removed ${eventType} listener from ${element.tagName || 'document'}`);
+            }
           } catch (e) {
             console.error(`chrome-tabboost: Error removing ${eventType} listener:`, e);
           }
         });
         
+        // 清空事件监听器数组
+        eventListeners.length = 0;
+        
         // 使用单个定时器处理动画完成后的DOM移除
-        setTimeout(() => {
+        timers.closeTimeout = setTimeout(() => {
           if (popupOverlay && popupOverlay.parentNode) {
             popupOverlay.parentNode.removeChild(popupOverlay);
             console.log("chrome-tabboost: Popup overlay removed");
+          }
+          // 清除引用，帮助垃圾回收
+          if (timers.closeTimeout) {
+            clearTimeout(timers.closeTimeout);
+            timers.closeTimeout = null;
           }
         }, 300); // 等待动画完成
       } catch (error) {
         console.error("chrome-tabboost: Error closing popup:", error);
         // 尝试强制移除
         try {
+          // 清除所有定时器
+          clearAllTimers();
+          
           // 尝试移除所有事件监听器，即使出错
           eventListeners.forEach(({ element, eventType, listener }) => {
             try {
-              element.removeEventListener(eventType, listener);
+              if (element && typeof element.removeEventListener === 'function') {
+                element.removeEventListener(eventType, listener);
+              }
             } catch (e) {
               // 忽略错误，继续尝试移除其他监听器
             }
           });
+          
+          // 清空事件监听器数组
+          eventListeners.length = 0;
           
           if (popupOverlay && popupOverlay.parentNode) {
             popupOverlay.parentNode.removeChild(popupOverlay);
