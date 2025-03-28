@@ -90,8 +90,14 @@ async function executeAction(action, tab) {
 // 复制当前标签页URL
 async function copyTabUrl(tab) {
   try {
-    // 将URL复制到剪贴板
-    await navigator.clipboard.writeText(tab.url);
+    // Execute the copy operation in the context of the current tab
+    await chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      func: (url) => {
+        return navigator.clipboard.writeText(url);
+      },
+      args: [tab.url]
+    });
     showNotification(getMessage("urlCopied") || "网址复制成功！");
   } catch (error) {
     console.error("Failed to copy URL: ", error);
@@ -108,7 +114,7 @@ function duplicateTab(tab) {
 function showNotification(message) {
   chrome.notifications.create({
     type: 'basic',
-    iconUrl: 'src/assets/icons/icon128.png',
+    iconUrl: 'assets/icons/icon128.png',
     title: 'TabBoost',
     message: message
   });
@@ -116,8 +122,6 @@ function showNotification(message) {
 
 // 监听快捷键命令
 chrome.commands.onCommand.addListener(async (command) => {
-  console.log("Listener triggered"); // 确认监听器被触发
-  console.log("Command received:", command); // 打印接收到的命令
   if (command === "duplicate-tab") {
     const currentTab = await getCachedCurrentTab();
     if (currentTab) {
@@ -142,11 +146,7 @@ chrome.commands.onCommand.addListener(async (command) => {
 
 // 监听来自内容脚本的消息
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  console.log("chrome-tabboost: Background received message:", request);
-  
-  // 处理打开选项页请求
   if (request.action === "openOptionsPage") {
-    console.log("chrome-tabboost: Opening options page, section:", request.section);
     chrome.runtime.openOptionsPage(() => {
       // 向选项页发送消息，指示要滚动到的部分
       if (request.section) {
@@ -166,7 +166,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     handleSplitViewRequest(request.url)
       .then(result => sendResponse(result))
       .catch(error => {
-        console.error("Split view error:", error);
         // 如果发生错误，尝试在新标签页中打开
         try {
           chrome.tabs.create({ url: request.url });
@@ -184,7 +183,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     closeSplitView()
       .then(() => sendResponse({ status: "Split view closed" }))
       .catch(error => {
-        console.error("Close split view error:", error);
         sendResponse({ status: "error", message: error.message });
       });
     return true;
@@ -198,7 +196,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         message: "已在新标签页中打开" 
       });
     } catch (error) {
-      console.error("打开新标签页失败:", error);
       sendResponse({ status: "error", message: error.message });
     }
     return true;
@@ -227,7 +224,6 @@ async function handleSplitViewRequest(url) {
     // 检查URL是否可以在iframe中加载
     const canLoad = await canLoadInIframe(url);
     if (!canLoad) {
-      console.log(`URL ${url} 不允许在iframe中加载，将在新标签页中打开`);
       chrome.tabs.create({ url });
       return { 
         status: "opened_in_new_tab", 

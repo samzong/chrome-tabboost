@@ -15,7 +15,6 @@ export function initSplitViewDOM(leftUrl) {
   try {
     // 防止在复杂网站上执行出错，添加额外的安全检查
     if (!document || !document.body) {
-      console.error("无法访问文档或文档主体");
       return;
     }
     
@@ -26,10 +25,7 @@ export function initSplitViewDOM(leftUrl) {
       dummyMain.setAttribute('data-md-component', 'main');
       dummyMain.style.display = 'none';
       document.body.appendChild(dummyMain);
-      
-      console.log("添加了虚拟元素以防止特定网站错误");
     } catch (e) {
-      console.warn("添加虚拟元素失败:", e);
     }
 
     // 清除可能的冲突元素
@@ -45,7 +41,6 @@ export function initSplitViewDOM(leftUrl) {
         try {
           return document.querySelector(selector);
         } catch (e) {
-          console.warn(`查询元素 ${selector} 失败:`, e);
           return null;
         }
       };
@@ -54,8 +49,6 @@ export function initSplitViewDOM(leftUrl) {
       const knownProblematicSelectors = ['[data-md-component=main]'];
       knownProblematicSelectors.forEach(selector => safeQuerySelector(selector));
     } catch (e) {
-      console.warn("预处理特定网站元素时出错:", e);
-      // 继续执行，不中断主要功能
     }
 
     // 尝试保存原始内容前进行安全检查
@@ -63,7 +56,6 @@ export function initSplitViewDOM(leftUrl) {
     try {
       originalContent = document.documentElement.outerHTML || '';
     } catch (e) {
-      console.warn("无法完全保存原始内容:", e);
       // 尝试一个更简单的方法
       originalContent = document.body.innerHTML || '';
     }
@@ -77,7 +69,6 @@ export function initSplitViewDOM(leftUrl) {
       }
       document.body.setAttribute('data-tabboost-original-content', originalContent);
     } catch (e) {
-      console.warn("无法保存原始内容:", e);
     }
     
     // 使用单次DOM操作，减少重绘
@@ -153,7 +144,6 @@ export function initSplitViewDOM(leftUrl) {
             // iframe加载成功，隐藏错误消息
             leftErrorContainer.style.display = 'none';
           } catch (e) {
-            console.warn("处理左侧iframe加载事件失败:", e);
           }
         });
         
@@ -162,11 +152,9 @@ export function initSplitViewDOM(leftUrl) {
             // iframe加载失败，显示错误消息
             leftErrorContainer.style.display = 'flex';
           } catch (e) {
-            console.warn("处理左侧iframe错误事件失败:", e);
           }
         });
       } catch (e) {
-        console.warn("添加左侧iframe事件监听器失败:", e);
       }
 
       leftView.appendChild(leftIframe);
@@ -214,7 +202,6 @@ export function initSplitViewDOM(leftUrl) {
               rightErrorContainer.style.display = 'none';
             }
           } catch (e) {
-            console.warn("处理右侧iframe加载事件失败:", e);
           }
         });
         
@@ -228,11 +215,9 @@ export function initSplitViewDOM(leftUrl) {
               openButton.dataset.url = rightIframe.src;
             }
           } catch (e) {
-            console.warn("处理右侧iframe错误事件失败:", e);
           }
         });
       } catch (e) {
-        console.warn("添加右侧iframe事件监听器失败:", e);
       }
 
       // 处理iframe无法加载的情况
@@ -285,7 +270,6 @@ export function initSplitViewDOM(leftUrl) {
         // 一次性将整个DocumentFragment添加到页面
         bodyRef.appendChild(fragment);
       } catch (e) {
-        console.warn("无法完全清空页面内容:", e);
         // 尝试更保守的方法：隐藏现有内容
         Array.from(bodyRef.children).forEach(child => {
           child.style.display = 'none';
@@ -404,17 +388,14 @@ export function initSplitViewDOM(leftUrl) {
                 
                 // 保存更新后的列表
                 storageCache.set({ iframeIgnoreList: ignoreList }).then(() => {
-                  console.log(`已将 ${hostname} 添加到忽略列表`);
                   // 显示成功消息
                   alert(`已将 ${hostname} 添加到忽略列表，下次将直接在新标签页中打开`);
                 });
               } else {
-                console.log(`${hostname} 已在忽略列表中`);
                 alert(`${hostname} 已在忽略列表中`);
               }
             });
           } catch (error) {
-            console.error("添加到忽略列表失败:", error);
             alert("添加到忽略列表失败");
             
             // 在新标签页中打开
@@ -424,16 +405,11 @@ export function initSplitViewDOM(leftUrl) {
         return;
       }
     });
-    
-    console.log("分屏DOM结构成功添加到页面");
   } catch (error) {
-    console.error("初始化分屏DOM结构失败:", error);
     // 尝试恢复原始页面
     try {
       document.body.innerHTML = '<div class="tabboost-error">分屏初始化失败，请刷新页面</div>';
     } catch (e) {
-      // 如果连恢复都失败，不做进一步处理
-      console.error("无法显示错误信息:", e);
     }
   }
 }
@@ -443,7 +419,6 @@ export function removeSplitViewDOM() {
   try {
     // 防止在复杂网站上执行出错，添加额外的安全检查
     if (!document || !document.body) {
-      console.error("无法访问文档或文档主体");
       return;
     }
 
@@ -452,7 +427,6 @@ export function removeSplitViewDOM() {
     try {
       originalContent = document.body.getAttribute('data-tabboost-original-content') || '';
     } catch (e) {
-      console.warn("获取原始内容失败:", e);
     }
 
     if (originalContent) {
@@ -465,18 +439,14 @@ export function removeSplitViewDOM() {
         try {
           document.documentElement.innerHTML = originalDoc.documentElement.innerHTML;
         } catch (e) {
-          console.warn("无法完全恢复原始内容，尝试替代方案:", e);
-          
           // 尝试只恢复body内容
           try {
             document.body.innerHTML = originalDoc.body.innerHTML;
           } catch (e2) {
-            console.error("无法恢复页面内容:", e2);
             document.body.innerHTML = '<div class="tabboost-error">无法恢复原始页面，请刷新浏览器</div>';
           }
         }
       } catch (e) {
-        console.error("解析原始内容失败:", e);
         // 创建一个简单的恢复按钮
         document.body.innerHTML = `
           <div class="tabboost-error">
@@ -495,7 +465,6 @@ export function removeSplitViewDOM() {
       `;
     }
   } catch (error) {
-    console.error("移除分屏DOM结构失败:", error);
     // 如果所有恢复尝试都失败，提供一个刷新选项
     try {
       document.body.innerHTML = `
@@ -505,12 +474,6 @@ export function removeSplitViewDOM() {
         </div>
       `;
     } catch (e) {
-      // 如果连错误提示都无法显示，最后尝试alert
-      try {
-        alert("页面恢复失败，请刷新浏览器");
-      } catch (finalError) {
-        // 实在没办法了，什么都不做
-      }
     }
   }
 }
@@ -520,7 +483,6 @@ export function updateRightViewDOM(url) {
   try {
     // 防止在复杂网站上执行出错，添加额外的安全检查
     if (!document || !document.body) {
-      console.error("无法访问文档或文档主体");
       return;
     }
 
@@ -530,7 +492,6 @@ export function updateRightViewDOM(url) {
     
     // 如果找不到iframe，可能是DOM结构有问题
     if (!rightIframe) {
-      console.error("找不到右侧iframe元素");
       return;
     }
     
@@ -544,8 +505,6 @@ export function updateRightViewDOM(url) {
     const handleLoadFailure = (reason) => {
       if (hasHandledFailure) return; // 防止重复处理
       hasHandledFailure = true;
-      
-      console.log(`右侧iframe加载失败: ${reason}`);
       
       // 显示错误容器
       if (rightErrorContainer) {
@@ -567,10 +526,6 @@ export function updateRightViewDOM(url) {
       storageCache.get(['autoAddToIgnoreList']).then((result) => {
         if (result.autoAddToIgnoreList) {
           try {
-            // 解析URL获取域名
-            const urlObj = new URL(url);
-            const hostname = urlObj.hostname;
-            
             // 添加到忽略列表
             storageCache.get(['iframeIgnoreList']).then((result) => {
               let ignoreList = result.iframeIgnoreList || [];
@@ -581,13 +536,12 @@ export function updateRightViewDOM(url) {
               }
               
               // 检查域名是否已在列表中
+              const hostname = url.split('/').pop().split('.').slice(-2).join('.');
               if (!ignoreList.includes(hostname)) {
                 ignoreList.push(hostname);
                 
                 // 保存更新后的列表
                 storageCache.set({ iframeIgnoreList: ignoreList }).then(() => {
-                  console.log(`已自动将 ${hostname} 添加到忽略列表`);
-                  
                   // 显示通知
                   if (rightErrorContainer) {
                     const autoAddNotice = document.createElement('div');
@@ -599,7 +553,6 @@ export function updateRightViewDOM(url) {
               }
             });
           } catch (error) {
-            console.error("自动添加到忽略列表失败:", error);
           }
         }
       });
@@ -637,10 +590,6 @@ export function updateRightViewDOM(url) {
           }
         } catch (e) {
           // 可能是跨域限制导致无法访问iframe内容
-          console.warn("处理右侧iframe加载事件失败:", e);
-          
-          // 如果是跨域错误，我们假设加载成功了
-          // 因为跨域限制只是阻止我们访问内容，但iframe可能已经正确加载
           if (rightErrorContainer) {
             rightErrorContainer.style.display = 'none';
           }
@@ -649,9 +598,7 @@ export function updateRightViewDOM(url) {
       
       // 设置iframe源
       rightIframe.src = url;
-      console.log("已更新右侧iframe源:", url);
     } catch (e) {
-      console.error("设置iframe src失败:", e);
       handleLoadFailure('设置iframe源失败');
       
       // 尝试通过location来加载
@@ -660,7 +607,6 @@ export function updateRightViewDOM(url) {
           rightIframe.contentWindow.location.href = url;
         }
       } catch (navError) {
-        console.error("导航到URL失败:", navError);
       }
     }
     
@@ -677,7 +623,6 @@ export function updateRightViewDOM(url) {
           addToIgnoreButton.dataset.url = url;
         }
       } catch (e) {
-        console.warn("更新错误提示按钮失败:", e);
       }
     }
     
@@ -698,7 +643,6 @@ export function updateRightViewDOM(url) {
               handleLoadFailure('网站拒绝连接');
             }
           } catch (e) {
-            // 忽略跨域错误
           }
         }
       }
@@ -731,12 +675,9 @@ export function updateRightViewDOM(url) {
           clearInterval(checkInterval);
         }
       } catch (e) {
-        // 忽略跨域错误
       }
     }, 1000);
   } catch (error) {
-    console.error("更新右侧视图内容失败:", error);
-    
     // 如果更新失败，尝试通过background发送消息在新标签页中打开
     try {
       chrome.runtime.sendMessage({
@@ -744,7 +685,6 @@ export function updateRightViewDOM(url) {
         url: url
       });
     } catch (msgError) {
-      console.error("发送消息失败:", msgError);
     }
   }
 } 

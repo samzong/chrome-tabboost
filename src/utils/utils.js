@@ -1,8 +1,6 @@
 // 获取当前标签页
 export async function getCurrentTab() {
-  let queryOptions = { active: true, currentWindow: true };
-  let [tab] = await chrome.tabs.query(queryOptions);
-  console.log("Query result:", tab); // 打印查询结果
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   return tab;
 }
 
