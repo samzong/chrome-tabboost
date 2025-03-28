@@ -56,8 +56,6 @@ async function updateUserConfigCache() {
         iframeIgnoreList: result.iframeIgnoreList || [],
         lastUpdated: now
       };
-      
-      console.log("iframe兼容性: 用户配置缓存已更新");
     }
   } catch (error) {
     console.error("iframe兼容性: 更新用户配置缓存失败:", error);
@@ -79,7 +77,6 @@ export async function canLoadInIframe(url, options = {}) {
     
     // 如果URL不安全，记录原因并返回false
     if (!validationResult.isValid) {
-      console.log(`iframe兼容性(${mode}): URL验证失败: ${validationResult.reason}`);
       return false;
     }
     
@@ -94,7 +91,6 @@ export async function canLoadInIframe(url, options = {}) {
       
       // 检查是否在默认限制列表中，使用匹配函数
       if (RESTRICTED_DOMAINS.some(domain => isDomainMatch(hostname, domain))) {
-        console.log(`iframe兼容性(${mode}): 匹配到限制域名规则: ${hostname}`);
         return false;
       }
       
@@ -113,16 +109,11 @@ export async function canLoadInIframe(url, options = {}) {
       
       // 检查域名是否在忽略列表中，使用匹配函数
       const isIgnored = userConfigCache.iframeIgnoreList.some(domain => isDomainMatch(hostname, domain));
-      if (isIgnored) {
-        console.log(`iframe兼容性(${mode}): 域名 ${hostname} 在忽略列表中`);
-      }
       return !isIgnored;
     } catch (e) {
-      console.warn(`iframe兼容性(${mode}): URL解析错误:`, e);
       return false; // URL无效，不尝试加载
     }
   } catch (error) {
-    console.error(`iframe兼容性(${mode}): 检查函数执行错误:`, error);
     return false; // 出错时不尝试加载
   }
 }

@@ -73,7 +73,6 @@ class StorageCache {
           this.setExpiration(key);
         });
         
-        console.log("chrome-tabboost: Storage cache initialized with keys:", Object.keys(this.cache));
         this.initialized = true;
         resolve();
       });
@@ -290,25 +289,16 @@ class StorageCache {
     this.writeQueue = {};
     
     // 执行写入操作
-    chrome.storage.sync.set(itemsToWrite, () => {
-      if (chrome.runtime.lastError) {
-        console.error("chrome-tabboost: 批量写入失败:", chrome.runtime.lastError);
-        
-        // 如果写入失败，尝试恢复写入队列
-        Object.keys(itemsToWrite).forEach(key => {
-          if (!(key in this.writeQueue)) {
-            this.writeQueue[key] = itemsToWrite[key];
-          }
-        });
-        
-        // 重新调度写入（带延迟）
-        setTimeout(() => {
-          this.scheduleWrite();
-        }, 5000); // 5秒后重试
-      } else {
-        console.log("chrome-tabboost: 批量写入成功，键数量:", Object.keys(itemsToWrite).length);
-      }
-    });
+    this._batchWrite(itemsToWrite);
+  }
+
+  async _batchWrite(itemsToWrite) {
+    try {
+      await chrome.storage.sync.set(itemsToWrite);
+    } catch (error) {
+      console.error("chrome-tabboost: 批量写入失败:", chrome.runtime.lastError);
+      throw error;
+    }
   }
 
   /**

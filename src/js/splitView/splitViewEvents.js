@@ -279,15 +279,12 @@ async function handleAddToIgnoreList(url) {
       
       // 保存更新后的列表
       await storageCache.set({ iframeIgnoreList: ignoreList });
-      console.log(`已将 ${hostname} 添加到忽略列表`);
       // 显示成功消息
       alert(`已将 ${hostname} 添加到忽略列表，下次将直接在新标签页中打开`);
     } else {
-      console.log(`${hostname} 已在忽略列表中`);
       alert(`${hostname} 已在忽略列表中`);
     }
   } catch (error) {
-    console.error("添加到忽略列表失败:", error);
     alert("添加到忽略列表失败");
     
     // 在新标签页中打开
@@ -340,13 +337,11 @@ export async function autoAddToIgnoreList(url) {
       
       // 保存更新后的列表
       await storageCache.set({ iframeIgnoreList: ignoreList });
-      console.log(`已自动将 ${hostname} 添加到忽略列表`);
       return true;
     }
     
     return false; // 已在列表中
   } catch (error) {
-    console.error("自动添加到忽略列表失败:", error);
     return false;
   }
 } 

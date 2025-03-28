@@ -43,7 +43,6 @@ export async function createSplitView() {
       });
       
       isSplitViewActive = true;
-      console.log("分屏模式已激活");
     } catch (e) {
       console.error("执行分屏视图脚本失败:", e);
       // 尝试重试一次
@@ -56,7 +55,6 @@ export async function createSplitView() {
           });
           
           isSplitViewActive = true;
-          console.log("分屏模式已通过重试激活");
         } catch (retryError) {
           console.error("重试执行分屏视图脚本失败:", retryError);
         }
@@ -86,7 +84,6 @@ export async function closeSplitView() {
       });
       
       isSplitViewActive = false;
-      console.log("分屏模式已关闭");
     } catch (e) {
       console.error("执行恢复页面脚本失败:", e);
       
@@ -94,7 +91,6 @@ export async function closeSplitView() {
       try {
         chrome.tabs.reload(currentTab.id);
         isSplitViewActive = false;
-        console.log("通过页面重载关闭分屏模式");
       } catch (reloadError) {
         console.error("重载页面失败:", reloadError);
       }
@@ -146,8 +142,7 @@ export function getSplitViewState() {
 
 // 初始化分屏视图模块
 export function initSplitViewModule() {
-  console.log("初始化分屏视图模块");
-  // 可以在这里执行任何需要在模块加载时进行的操作
+  // ... rest of the code ...
 }
 
 // 向外部导出的API接口
