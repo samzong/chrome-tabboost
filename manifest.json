@@ -56,7 +56,7 @@
     "duplicate-tab": {
       "suggested_key": {
         "default": "Ctrl+M",
-        "mac": "Ctrl+M"
+        "mac": "MacCtrl+M"
       },
       "description": "__MSG_duplicateTab__"
     },
@@ -66,16 +66,6 @@
         "mac": "Shift+Command+C"
       },
       "description": "__MSG_copyUrl__"
-    },
-    "toggle-split-view": {
-      "suggested_key": {
-        "default": "Alt+S",
-        "mac": "Shift+Command+S"
-      },
-      "description": "__MSG_toggleSplitView__"
-    },
-    "open-options": {
-      "description": "__MSG_openOptions__"
     }
   },
   "web_accessible_resources": [

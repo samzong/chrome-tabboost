@@ -90,8 +90,14 @@ async function executeAction(action, tab) {
 // 复制当前标签页URL
 async function copyTabUrl(tab) {
   try {
-    // 将URL复制到剪贴板
-    await navigator.clipboard.writeText(tab.url);
+    // Execute the copy operation in the context of the current tab
+    await chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      func: (url) => {
+        return navigator.clipboard.writeText(url);
+      },
+      args: [tab.url]
+    });
     showNotification(getMessage("urlCopied") || "网址复制成功！");
   } catch (error) {
     console.error("Failed to copy URL: ", error);
@@ -108,7 +114,7 @@ function duplicateTab(tab) {
 function showNotification(message) {
   chrome.notifications.create({
     type: 'basic',
-    iconUrl: 'src/assets/icons/icon128.png',
+    iconUrl: 'assets/icons/icon128.png',
     title: 'TabBoost',
     message: message
   });
