@@ -1,3 +1,11 @@
+## 2.3.0 (2025-03-30)
+
+* fix: package.json ([79ea3c4](https://github.com/samzong/chrome-tabboost/commit/79ea3c4))
+* fix(options): option can not saving.= (#20) ([1031323](https://github.com/samzong/chrome-tabboost/commit/1031323)), closes [#20](https://github.com/samzong/chrome-tabboost/issues/20)
+* Modify shortcuts (#19) ([a1785fe](https://github.com/samzong/chrome-tabboost/commit/a1785fe)), closes [#19](https://github.com/samzong/chrome-tabboost/issues/19)
+
+
+
 ## 2.2.0 (2025-03-25)
 
 * feat: add a good release management with Semantic Versioning ([6b6f082](https://github.com/samzong/chrome-tabboost/commit/6b6f082)), closes [#5](https://github.com/samzong/chrome-tabboost/issues/5)
