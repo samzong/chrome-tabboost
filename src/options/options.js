@@ -122,7 +122,8 @@ function setupEventListeners() {
     });
   }
   
-  // 其他事件监听器...
+  // 为保存按钮添加点击事件监听器
+  saveButton.addEventListener('click', saveSettings);
 }
 
 // 更新大小预览
@@ -370,3 +371,36 @@ newDomainInput.addEventListener('keypress', (event) => {
     addDomain();
   }
 });
+
+// 保存设置
+function saveSettings() {
+  // 收集所有需要保存的设置
+  const settings = {
+    defaultAction: defaultActionInput.value,
+    splitViewEnabled: splitViewEnabledCheckbox.checked,
+    iframeIgnoreEnabled: iframeIgnoreEnabledCheckbox.checked,
+    autoAddToIgnoreList: autoAddToIgnoreListCheckbox.checked
+  };
+  
+  // 保存弹窗大小相关设置（如果存在）
+  if (popupSizePreset) {
+    settings.popupSizePreset = popupSizePreset.value;
+    
+    // 如果选择了自定义尺寸，保存自定义尺寸值
+    if (popupSizePreset.value === 'custom' && customWidthSlider && customHeightSlider) {
+      settings.customWidth = parseInt(customWidthSlider.value, 10);
+      settings.customHeight = parseInt(customHeightSlider.value, 10);
+    }
+  }
+  
+  // 使用存储缓存保存设置
+  storageCache.set(settings).then(() => {
+    console.log('设置保存成功');
+    // 显示保存成功的通知
+    showNotification(getMessage("settingsSaved") || '设置已保存');
+  }).catch(err => {
+    console.error('保存设置失败:', err);
+    // 显示保存失败的通知
+    showNotification(getMessage("settingsSaveFailed") || '保存设置失败');
+  });
+}

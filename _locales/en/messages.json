@@ -356,5 +356,13 @@
   "popupSizeHint": {
     "message": "Popup size can be adjusted in extension options",
     "description": "Hint that popup size can be adjusted in options"
+  },
+  "settingsSaved": {
+    "message": "Settings saved",
+    "description": "Message shown when settings are saved successfully"
+  },
+  "settingsSaveFailed": {
+    "message": "Failed to save settings",
+    "description": "Message shown when settings failed to save"
   }
 } 

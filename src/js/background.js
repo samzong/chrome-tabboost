@@ -77,7 +77,15 @@ async function executeAction(action, tab) {
       duplicateTab(tab);
       break;
     case 'toggle-split-view':
-      toggleSplitView(tab);
+      // 检查分屏功能是否启用
+      const { splitViewEnabled } = await storageCache.get({ splitViewEnabled: true }); // 默认启用
+      if (splitViewEnabled) {
+        toggleSplitView(tab);
+      } else {
+        console.log("Split view is disabled via action click due to settings.");
+        // 可选：通知用户或什么都不做
+        // showNotification(getMessage("splitViewDisabledMessage") || "分屏模式已在设置中禁用。");
+      }
       break;
     case 'open-options':
       chrome.runtime.openOptionsPage();
@@ -133,11 +141,21 @@ chrome.commands.onCommand.addListener(async (command) => {
       copyTabUrl(currentTab);
     }
   } else if (command === "toggle-split-view") {
-    const currentTab = await getCachedCurrentTab();
-    if (currentTab) {
-      toggleSplitView(currentTab);
+    // 首先检查分屏功能是否启用
+    const { splitViewEnabled } = await storageCache.get({ splitViewEnabled: true }); // 默认启用
+
+    if (splitViewEnabled) {
+      const currentTab = await getCachedCurrentTab();
+      if (currentTab) {
+        toggleSplitView(currentTab);
+      } else {
+        // 如果无法获取当前标签页，可能也无法切换分屏，但保留原逻辑以防万一
+        toggleSplitView(); 
+      }
     } else {
-      toggleSplitView();
+       console.log("Split view is disabled via command due to settings."); 
+       // 可选：通知用户分屏已禁用
+       // showNotification(getMessage("splitViewDisabledMessage") || "分屏模式已在设置中禁用。");
     }
   } else if (command === "open-options") {
     chrome.runtime.openOptionsPage();
