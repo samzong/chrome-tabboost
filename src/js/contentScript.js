@@ -402,7 +402,12 @@ async function createPopupDOM(url) {
         addTrackedEventListener(closeErrorButton, "click", () => {
           const errorMsg = document.getElementById('tabboost-popup-error');
           if (errorMsg) errorMsg.classList.remove("show");
-          closePopup();
+          // 移除关闭整个弹窗的调用，保留已加载的内容
+          // 确保iframe完全可见
+          const iframe = document.getElementById('tabboost-popup-iframe');
+          if (iframe) {
+            iframe.style.opacity = "1";
+          }
         });
       }
     };
