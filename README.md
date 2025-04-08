@@ -1,4 +1,18 @@
-# TabBoost - Chrome标签页增强扩展
+# TabBoost - Chrome 标签页增强扩展
+
+<p align="center">
+  <img src="src/assets/icons/icon128.png" alt="TabBoost Logo" width="200">
+</p>
+
+<p align="center">
+  <b>TabBoost 是一款提高浏览器标签页效率的 Chrome 扩展，灵感来源于 Arc Browser。</b>
+</p>
+
+<p align="center">
+  <img alt="Chrome Web Store Version" src="https://img.shields.io/chrome-web-store/v/pnpabkdhbbjmahfnhnfhpgfmhkkeoloe">
+  <img alt="Chrome Web Store Last Updated" src="https://img.shields.io/chrome-web-store/last-updated/pnpabkdhbbjmahfnhnfhpgfmhkkeoloe">
+  <img src="https://img.shields.io/badge/License-MIT-blue" alt="License">
+</p>
 
 TabBoost是一款提高浏览器标签页效率的Chrome扩展，它提供了一系列便捷功能，如链接预览、分屏浏览、标签页复制等，帮助您更高效地管理和使用Chrome标签页，灵感来源于 Arc Browser。
 
