@@ -364,5 +364,29 @@
   "settingsSaveFailed": {
     "message": "Failed to save settings",
     "description": "Message shown when settings failed to save"
+  },
+  "waitingRefreshWebsite": {
+    "message": "Waiting for webpage refresh",
+    "description": "Message shown when waiting for webpage to refresh"
+  },
+  "savePageConfirmation": {
+    "message": "Do you want to save this page?",
+    "description": "Confirmation message when user tries to save a page"
+  },
+  "confirm": {
+    "message": "Confirm",
+    "description": "Confirm button text"
+  },
+  "continueToSave": {
+    "message": "Continue to save",
+    "description": "Button text to proceed with saving the page"
+  },
+  "savePageInstructionMac": {
+    "message": "You can save this page via File → Save Page As... or press Command+S again within 3 seconds",
+    "description": "Instructions for Mac users on how to save the page after clicking continue"
+  },
+  "savePageInstructionOther": {
+    "message": "You can save this page via File → Save Page As... or press Ctrl+S again within 3 seconds",
+    "description": "Instructions for non-Mac users on how to save the page after clicking continue"
   }
 } 

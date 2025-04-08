@@ -17,6 +17,185 @@ const initStorageCache = async () => {
 
 initStorageCache();
 
+// 添加一个标志变量，控制是否拦截Command+S
+let shouldInterceptSave = true;
+
+// 监听 Command+S / Ctrl+S 快捷键
+document.addEventListener('keydown', function saveKeyListener(event) {
+  // 检查是否是 Command+S (Mac) 或 Ctrl+S (Windows/Linux)
+  if ((event.metaKey || event.ctrlKey) && event.key === 's') {
+    if (shouldInterceptSave) {
+      // 阻止默认的保存行为
+      event.preventDefault();
+      
+      // 显示轻量级提示
+      showSaveNotification();
+      
+      return false;
+    }
+    // 如果标志为false，不拦截，让浏览器执行默认的保存行为
+  }
+}, true);
+
+// 显示保存轻量级通知
+function showSaveNotification() {
+  // 检查是否已存在通知
+  if (document.getElementById('tabboost-save-notification')) {
+    return;
+  }
+  
+  // 创建通知元素
+  const notification = document.createElement('div');
+  notification.id = 'tabboost-save-notification';
+  notification.className = 'tabboost-notification';
+  
+  // 添加内容
+  const message = document.createElement('span');
+  message.textContent = getMessage("savePageConfirmation") || '您确定要保存此页面吗？';
+  notification.appendChild(message);
+  
+  // 添加保存按钮
+  const saveButton = document.createElement('button');
+  saveButton.className = 'tabboost-notif-button';
+  saveButton.textContent = getMessage("continueToSave") || '保存';
+  saveButton.addEventListener('click', function() {
+    // 移除通知
+    if (notification.parentNode) {
+      notification.parentNode.removeChild(notification);
+    }
+    
+    // 设置标志，禁用拦截
+    shouldInterceptSave = false;
+    
+    // 创建一个新通知，提示用户如何保存
+    const saveInstructionNotification = document.createElement('div');
+    saveInstructionNotification.id = 'tabboost-save-instruction';
+    saveInstructionNotification.className = 'tabboost-notification';
+    
+    // 根据系统判断提示文本
+    const isMac = navigator.platform.includes('Mac');
+    let saveInstructionText = '';
+    if (isMac) {
+      saveInstructionText = getMessage("savePageInstructionMac") || '您可以通过菜单 File → Save Page As... 或3秒内再次按 Command+S 保存此页面';
+    } else {
+      saveInstructionText = getMessage("savePageInstructionOther") || '您可以通过菜单 文件 → 页面另存为... 或3秒内再次按 Ctrl+S 保存此页面';
+    }
+    
+    saveInstructionNotification.textContent = saveInstructionText;
+    saveInstructionNotification.style.cssText = `
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 10px 15px;
+      border-radius: 4px;
+      z-index: 999999;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 14px;
+      animation: fadeIn 0.2s ease-out;
+    `;
+    
+    document.body.appendChild(saveInstructionNotification);
+    
+    // 3秒后移除提示
+    setTimeout(() => {
+      if (saveInstructionNotification.parentNode) {
+        saveInstructionNotification.style.animation = 'fadeOut 0.3s ease-out forwards';
+        setTimeout(() => {
+          if (saveInstructionNotification.parentNode) {
+            saveInstructionNotification.parentNode.removeChild(saveInstructionNotification);
+          }
+        }, 300);
+      }
+    }, 3000);
+    
+    // 3秒后重新启用拦截，给用户足够时间进行保存操作
+    setTimeout(() => {
+      shouldInterceptSave = true;
+    }, 3000);
+  });
+  
+  notification.appendChild(saveButton);
+  
+  // 将通知添加到页面
+  document.body.appendChild(notification);
+  
+  // 为通知添加样式
+  notification.style.cssText = `
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 4px;
+    z-index: 999999;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: fadeIn 0.2s ease-out;
+    max-width: 300px;
+  `;
+  
+  saveButton.style.cssText = `
+    padding: 4px 10px;
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    white-space: nowrap;
+  `;
+  
+  // 添加样式到文档头
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    #tabboost-save-notification button:hover {
+      background-color: #2563eb;
+    }
+  `;
+  document.head.appendChild(style);
+  
+  // 检测暗黑模式
+  const isDarkMode = window.matchMedia && 
+                    window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  if (isDarkMode) {
+    notification.style.backgroundColor = 'rgba(31, 41, 55, 0.9)';
+  }
+  
+  // 设置自动消失定时器 (5秒后)
+  setTimeout(() => {
+    if (notification.parentNode) {
+      // 添加淡出动画
+      notification.style.animation = 'fadeOut 0.3s ease-out forwards';
+      style.textContent += `
+        @keyframes fadeOut {
+          from { opacity: 1; transform: translateY(0); }
+          to { opacity: 0; transform: translateY(10px); }
+        }
+      `;
+      
+      // 动画结束后删除元素
+      setTimeout(() => {
+        if (notification.parentNode) {
+          notification.parentNode.removeChild(notification);
+        }
+      }, 300);
+    }
+  }, 5000);
+}
+
 // 监听点击事件
 document.addEventListener(
   "click",
