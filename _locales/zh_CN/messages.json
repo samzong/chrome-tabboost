@@ -300,5 +300,29 @@
   "settingsSaveFailed": {
     "message": "保存设置失败",
     "description": "设置保存失败的提示消息"
+  },
+  "waitingRefreshWebsite": {
+    "message": "等待网页刷新中",
+    "description": "等待网页刷新时显示的消息"
+  },
+  "savePageConfirmation": {
+    "message": "您确定要保存此页面吗？",
+    "description": "用户尝试保存页面时的确认消息"
+  },
+  "confirm": {
+    "message": "确认",
+    "description": "确认按钮文本"
+  },
+  "continueToSave": {
+    "message": "继续保存",
+    "description": "继续保存页面的按钮文本"
+  },
+  "savePageInstructionMac": {
+    "message": "您可以通过菜单 File → Save Page As... 或3秒内再次按 Command+S 保存此页面",
+    "description": "Mac用户点击继续保存后的操作提示"
+  },
+  "savePageInstructionOther": {
+    "message": "您可以通过菜单 文件 → 页面另存为... 或3秒内再次按 Ctrl+S 保存此页面",
+    "description": "非Mac用户点击继续保存后的操作提示"
   }
 } 
