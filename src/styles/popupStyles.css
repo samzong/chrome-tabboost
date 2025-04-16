@@ -157,6 +157,14 @@
   background-repeat: no-repeat;
 }
 
+/* iframe 包装器样式 */
+#tabboost-iframe-wrapper {
+  position: relative; /* 成为 errorMsg 的定位基准 */
+  flex: 1; /* 填充剩余空间 */
+  display: flex; /* 使内部 iframe 可以撑满 */
+  overflow: hidden; /* 以防万一 */
+}
+
 /* iframe 样式 */
 #tabboost-popup-iframe {
   flex: 1;
@@ -198,70 +206,78 @@
   }
 }
 
-/* 错误消息样式 */
+/* 错误消息样式 - 实色背景，参考 Toolbar 按钮配色 */
 #tabboost-popup-error {
   position: absolute;
-  top: 50%;
+  top: 5px;
   left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 16px;
-  color: #dc2626;
+  transform: translateX(-50%);
+  max-width: 90%;
+  font-size: 12px;
+  color: #92400e; /* 深琥珀/棕色文字 (Light Mode) */
   text-align: center;
-  z-index: 7;
+  z-index: 1;
   display: none;
-  background-color: #fff;
-  padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  width: 80%;
-  max-width: 400px;
+  /* background-color: rgba(254, 249, 195, 0.95); */ /* 旧带透明度背景 */
+  background-color: #fffbeb; /* 固态浅黄色/米色背景 (Light Mode) */
+  padding: 5px 10px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin: 0;
+  /* border: 1px solid rgba(250, 204, 21, 0.4); */ /* 移除边框 */
+  border: none;
 }
 
 #tabboost-popup-error.show {
   display: block;
-  animation: error-appear 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: fade-in-error 0.3s ease-out;
 }
 
-@keyframes error-appear {
-  from {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
+@keyframes fade-in-error {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 #tabboost-popup-error p {
-  margin-bottom: 16px;
-  line-height: 1.5;
+  margin-bottom: 5px;
+  line-height: 1.3;
 }
 
+/* 通用按钮样式调整 */
 #tabboost-popup-error button {
-  margin: 8px;
-  padding: 8px 16px;
-  font-size: 14px;
+  margin: 2px 4px;
+  padding: 3px 8px;
+  font-size: 11px;
   cursor: pointer;
-  background-color: #fff;
-  color: #3b82f6;
-  border: 1px solid #3b82f6;
-  border-radius: 6px;
-  transition: all 0.2s ease;
+  border-radius: 3px;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  border: 1px solid transparent; /* 默认无边框，方便统一样式 */
 }
 
-#tabboost-popup-error button:hover {
-  background-color: #3b82f6;
-  color: #fff;
+/* 次要/关闭按钮样式 (参考 Toolbar Close Button) */
+#tabboost-popup-error #tabboost-add-to-ignore,
+#tabboost-popup-error #tabboost-close-error {
+  background-color: #f5f5f5; /* 浅灰色背景 (Light Mode) */
+  color: #666; /* 灰色文字 (Light Mode) */
+  border-color: #e0e0e0; /* 灰色边框 (Light Mode) */
 }
 
-#tabboost-open-newtab {
-  background-color: #3b82f6 !important;
-  color: #fff !important;
+#tabboost-popup-error #tabboost-add-to-ignore:hover,
+#tabboost-popup-error #tabboost-close-error:hover {
+  background-color: #eeeeee; /* Hover 背景 (Light Mode) */
+  border-color: #d1d1d1; /* Hover 边框 (Light Mode) */
 }
 
-#tabboost-open-newtab:hover {
-  background-color: #2563eb !important;
+/* "Open in new tab" 按钮样式 (参考 Toolbar New Tab Button) */
+#tabboost-popup-error #tabboost-open-newtab {
+  background-color: rgba(59, 130, 246, 0.1); /* 淡蓝色背景 (Light Mode) */
+  color: #2563eb; /* 蓝色文字 (Light Mode) */
+  border-color: rgba(59, 130, 246, 0.2); /* 淡蓝色边框 (Light Mode) */
+}
+
+#tabboost-popup-error #tabboost-open-newtab:hover {
+  background-color: rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.4);
 }
 
 /* 响应式设计 */
@@ -344,28 +360,43 @@
   }
   
   #tabboost-popup-error {
-    background-color: #1f2937;
-    color: #f87171;
+    /* background-color: rgba(120, 53, 15, 0.6); */ /* 旧暗模式背景 */
+    background-color: #2a1a04; /* 深琥珀色固态背景 (Dark Mode) */
+    /* color: #fef08a; */ /* 旧暗模式文字 */
+    color: #fde047; /* 亮黄色文字 (Dark Mode) */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    /* border-color: rgba(234, 179, 8, 0.4); */ /* 移除边框 */
+    border: none;
   }
   
-  #tabboost-popup-error button {
-    background-color: #1f2937;
-    color: #60a5fa;
-    border-color: #60a5fa;
+  /* 次要/关闭按钮样式 (Dark Mode) */
+  #tabboost-popup-error #tabboost-add-to-ignore,
+  #tabboost-popup-error #tabboost-close-error {
+    /* background-color: rgba(234, 179, 8, 0.15); */ /* 旧按钮背景 */
+    background-color: rgba(75, 85, 99, 0.8); /* 深灰色背景 (Dark Mode) */
+    /* color: #fef08a; */ /* 旧按钮文字 */
+    color: #d1d5db; /* 浅灰色文字 (Dark Mode) */
+    /* border-color: rgba(234, 179, 8, 0.4); */ /* 旧按钮边框 */
+    border-color: rgba(107, 114, 128, 0.5); /* 深灰色边框 (Dark Mode) */
   }
   
-  #tabboost-popup-error button:hover {
-    background-color: #60a5fa;
-    color: #1f2937;
+  #tabboost-popup-error #tabboost-add-to-ignore:hover,
+  #tabboost-popup-error #tabboost-close-error:hover {
+    /* background-color: rgba(234, 179, 8, 0.25); */ /* 旧 Hover 背景 */
+    background-color: rgba(107, 114, 128, 1); /* Hover 背景 (Dark Mode) */
+    border-color: rgba(156, 163, 175, 0.6); /* Hover 边框 (Dark Mode) */
   }
   
-  #tabboost-open-newtab {
-    background-color: #60a5fa !important;
-    color: #1f2937 !important;
+  /* "Open in new tab" 按钮样式 (Dark Mode) */
+  #tabboost-popup-error #tabboost-open-newtab {
+    background-color: rgba(96, 165, 250, 0.15);
+    color: #93c5fd;
+    border-color: rgba(96, 165, 250, 0.3);
   }
   
-  #tabboost-open-newtab:hover {
-    background-color: #3b82f6 !important;
+  #tabboost-popup-error #tabboost-open-newtab:hover {
+    background-color: rgba(96, 165, 250, 0.25);
+    border-color: rgba(96, 165, 250, 0.5);
   }
 }
 
