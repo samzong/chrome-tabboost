@@ -103,18 +103,39 @@
           <li><code>webpack.config.js</code>: 配置 Webpack 如何打包和处理项目资源。</li>
         </ul>
         <h2 id="安装方法"><a aria-hidden="true" tabindex="-1" href="#安装方法" class="anchor"><span class="icon icon-link"></span></a>安装方法</h2>
+        <h3 id="正式版推荐"><a aria-hidden="true" tabindex="-1" href="#正式版推荐" class="anchor"><span class="icon icon-link"></span></a>正式版（推荐）</h3>
+        <p>从 Chrome 网上应用店安装稳定、经过审核的正式版本：</p>
+        <p><a href="https://chromewebstore.google.com/detail/tabboost/pnpabkdhbbjmahfnhnfhpgfmhkkeoloe"><img src="https://img.shields.io/chrome-web-store/v/pnpabkdhbbjmahfnhnfhpgfmhkkeoloe" alt="Chrome Web Store"></a></p>
         <ol>
-          <li>从Chrome网上应用店安装：<a href="https://chromewebstore.google.com/detail/tabboost/pnpabkdhbbjmahfnhnfhpgfmhkkeoloe">TabBoost</a></li>
-          <li>或者使用开发者模式加载：
+          <li>访问 <a href="https://chromewebstore.google.com/detail/tabboost/pnpabkdhbbjmahfnhnfhpgfmhkkeoloe">Chrome Web Store - TabBoost</a></li>
+          <li>点击"添加至 Chrome"按钮</li>
+          <li>在弹出的对话框中确认安装</li>
+        </ol>
+        <h3 id="开发版"><a aria-hidden="true" tabindex="-1" href="#开发版" class="anchor"><span class="icon icon-link"></span></a>开发版</h3>
+        <p>如果您想尝试最新功能或不想通过 Chrome Web Store 安装，可以使用以下方法：</p>
+        <ol>
+          <li>
+            <p><strong>从 GitHub Release 下载：</strong></p>
             <ul>
-              <li>下载并解压本项目代码</li>
-              <li>在Chrome浏览器地址栏输入 <code>chrome://extensions/</code></li>
+              <li>访问 <a href="https://github.com/samzong/chrome-tabboost/releases">GitHub Releases</a> 页面</li>
+              <li>下载最新版本的 <code>chrome-tabboost-v*.crx</code> 文件</li>
+              <li>将文件拖放到 Chrome 的扩展页面（<code>chrome://extensions/</code>）</li>
+            </ul>
+          </li>
+          <li>
+            <p><strong>使用开发者模式加载解压版：</strong></p>
+            <ul>
+              <li>从 GitHub Release 下载 <code>chrome-tabboost-v*.zip</code> 文件并解压</li>
+              <li>在 Chrome 浏览器地址栏输入 <code>chrome://extensions/</code></li>
               <li>开启右上角的"开发者模式"</li>
               <li>点击"加载已解压的扩展程序"按钮</li>
-              <li>选择本项目根目录</li>
+              <li>选择解压后的目录</li>
             </ul>
           </li>
         </ol>
+        <blockquote>
+          <p><strong>注意：</strong> 使用非 Chrome Web Store 的方式安装可能会收到警告提示，这是正常的，因为 Chrome 默认只信任来自商店的扩展。</p>
+        </blockquote>
         <h2 id="使用方法"><a aria-hidden="true" tabindex="-1" href="#使用方法" class="anchor"><span class="icon icon-link"></span></a>使用方法</h2>
         <h3 id="主要功能"><a aria-hidden="true" tabindex="-1" href="#主要功能" class="anchor"><span class="icon icon-link"></span></a>主要功能</h3>
         <ul>
@@ -165,6 +186,66 @@
           <li>内部实现严格的URL验证机制，防止XSS等攻击。</li>
           <li>智能检测网站是否允许在 iframe 中加载（通过 <code>X-Frame-Options</code> 或 CSP）。对于不允许的网站，提供在新标签页打开或添加到忽略列表的选项，以确保功能可用性。</li>
         </ul>
+        <h2 id="自动发布"><a aria-hidden="true" tabindex="-1" href="#自动发布" class="anchor"><span class="icon icon-link"></span></a>自动发布</h2>
+        <p>项目配置了多个 GitHub Actions 工作流程，支持完整的自动化测试和发布流程：</p>
+        <h3 id="pr-自动测试"><a aria-hidden="true" tabindex="-1" href="#pr-自动测试" class="anchor"><span class="icon icon-link"></span></a>PR 自动测试</h3>
+        <p>当创建或更新 Pull Request 时，系统会自动：</p>
+        <ul>
+          <li>运行所有测试用例</li>
+          <li>验证构建是否成功</li>
+          <li>在 PR 中添加测试结果评论</li>
+        </ul>
+        <p>这确保了所有合并到主分支的代码都经过了充分测试。</p>
+        <h3 id="开发版构建"><a aria-hidden="true" tabindex="-1" href="#开发版构建" class="anchor"><span class="icon icon-link"></span></a>开发版构建</h3>
+        <p>当新的提交合并到 main 分支时，系统会自动：</p>
+        <ul>
+          <li>基于当前版本号和提交哈希生成开发版本号（例如：<code>2.3.0-dev.a1b2c3d</code>）</li>
+          <li>构建扩展并打包为 .crx 和 .zip 文件</li>
+          <li>创建标记为"prerelease"的 GitHub Release</li>
+          <li>便于团队成员和测试人员快速获取最新开发版本</li>
+        </ul>
+        <h3 id="正式版发布"><a aria-hidden="true" tabindex="-1" href="#正式版发布" class="anchor"><span class="icon icon-link"></span></a>正式版发布</h3>
+        <p>当创建新的 Git 标签（格式为 <code>v*</code>，例如 <code>v1.0.0</code>）时，会自动触发以下流程：</p>
+        <ul>
+          <li>执行测试与验证</li>
+          <li>构建 .crx 文件和 .zip 文件</li>
+          <li>创建 GitHub Release 并上传构建文件</li>
+          <li>用户可直接从 GitHub Release 页面下载最新版本</li>
+        </ul>
+        <pre class="language-bash"><code class="language-bash code-highlight"><span class="code-line line-number" line="1"><span class="token comment"># 创建并推送标签</span>
+</span><span class="code-line line-number" line="2"><span class="token function">git</span> tag v1.0.0
+</span><span class="code-line line-number" line="3"><span class="token function">git</span> push origin v1.0.0
+</span></code><input type="hidden" value="# 创建并推送标签
+git tag v1.0.0
+git push origin v1.0.0
+"><div onclick="copied(this)" class="copied"><svg class="octicon-copy" aria-hidden="true" viewBox="0 0 16 16" fill="currentColor" height="12" width="12"><path fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path><path fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path></svg><svg class="octicon-check" aria-hidden="true" viewBox="0 0 16 16" fill="currentColor" height="12" width="12"><path fill-rule="evenodd" d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"></path></svg></div></pre>
+        <h3 id="版本管理"><a aria-hidden="true" tabindex="-1" href="#版本管理" class="anchor"><span class="icon icon-link"></span></a>版本管理</h3>
+        <p>也可以通过 GitHub Actions 界面手动触发工作流，此方式更适合版本管理：</p>
+        <ul>
+          <li>选择版本类型（patch/minor/major 等）</li>
+          <li>自动更新版本号、生成更新日志</li>
+          <li>创建 Git 标签并推送</li>
+          <li>构建文件并发布到 GitHub Release</li>
+        </ul>
+        <h3 id="chrome-web-store-发布"><a aria-hidden="true" tabindex="-1" href="#chrome-web-store-发布" class="anchor"><span class="icon icon-link"></span></a>Chrome Web Store 发布</h3>
+        <p>正式版发布到 Chrome Web Store 需要手动操作：</p>
+        <ol>
+          <li>从 GitHub Release 下载 <code>.zip</code> 文件</li>
+          <li>登录 <a href="https://chrome.google.com/webstore/devconsole/">Chrome Developer Dashboard</a></li>
+          <li>上传新版本的 <code>.zip</code> 文件</li>
+          <li>完成商店审核流程</li>
+        </ol>
+        <h3 id="设置-github-secret"><a aria-hidden="true" tabindex="-1" href="#设置-github-secret" class="anchor"><span class="icon icon-link"></span></a>设置 GitHub Secret</h3>
+        <p>为了使自动构建功能正常工作，需要在 GitHub 仓库中设置以下 Secret：</p>
+        <ul>
+          <li><code>CRX_PRIVATE_KEY</code>: Chrome 扩展的私钥内容（key.pem 文件内容）</li>
+        </ul>
+        <p>设置步骤：</p>
+        <ol>
+          <li>进入仓库的 Settings > Secrets and variables > Actions</li>
+          <li>点击 "New repository secret"</li>
+          <li>添加名为 <code>CRX_PRIVATE_KEY</code> 的 secret，值为 key.pem 文件内容</li>
+        </ol>
         <h2 id="开发"><a aria-hidden="true" tabindex="-1" href="#开发" class="anchor"><span class="icon icon-link"></span></a>开发</h2>
         <h3 id="本地开发"><a aria-hidden="true" tabindex="-1" href="#本地开发" class="anchor"><span class="icon icon-link"></span></a>本地开发</h3>
         <pre class="language-bash"><code class="language-bash code-highlight"><span class="code-line line-number" line="1"><span class="token comment"># 克隆仓库</span>
