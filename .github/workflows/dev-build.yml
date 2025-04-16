@@ -64,11 +64,6 @@ jobs:
       - name: Create ZIP file
         run: npm run zip
       
-      - name: Rename build artifacts
-        run: |
-          mv chrome-tabboost-v*.crx chrome-tabboost-v${{ env.DEV_VERSION }}.crx
-          mv builds/chrome-tabboost-v*.zip builds/chrome-tabboost-v${{ env.DEV_VERSION }}.zip
-      
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
