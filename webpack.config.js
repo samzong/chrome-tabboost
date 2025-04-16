@@ -5,6 +5,8 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 module.exports = {
   // Set mode to development by default or use NODE_ENV
   mode: process.env.NODE_ENV || 'development',
+  // Add devtool setting
+  devtool: 'cheap-module-source-map', // Recommended for development to avoid 'eval'
   // Entry point of the application; adjust this path if necessary
   entry: {
     popup: './src/popup/popup.js',
