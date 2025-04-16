@@ -1,3 +1,17 @@
+## <small>2.3.1 (2025-04-16)</small>
+
+* chore(dev-build.yml): remove redundant artifact renaming step ([559134a](https://github.com/samzong/chrome-tabboost/commit/559134a))
+* fix(dev-build.yml): fix version error (#28) ([afdb9cf](https://github.com/samzong/chrome-tabboost/commit/afdb9cf)), closes [#28](https://github.com/samzong/chrome-tabboost/issues/28)
+* ci(workflow): dev-build and pr-test (#27) ([1c82b49](https://github.com/samzong/chrome-tabboost/commit/1c82b49)), closes [#27](https://github.com/samzong/chrome-tabboost/issues/27)
+* perf(contentscript.js): simplified the handling of link click events (#26) ([e887e91](https://github.com/samzong/chrome-tabboost/commit/e887e91)), closes [#26](https://github.com/samzong/chrome-tabboost/issues/26)
+* feat: upgrade logo (#25) ([745e29c](https://github.com/samzong/chrome-tabboost/commit/745e29c)), closes [#25](https://github.com/samzong/chrome-tabboost/issues/25)
+* feat(contentscript.js): upgrade popup window close action (#22) ([1411f0b](https://github.com/samzong/chrome-tabboost/commit/1411f0b)), closes [#22](https://github.com/samzong/chrome-tabboost/issues/22)
+* feat(page-save-confirmation): add page save confirmation feature (#24) ([2f90870](https://github.com/samzong/chrome-tabboost/commit/2f90870)), closes [#24](https://github.com/samzong/chrome-tabboost/issues/24) [#23](https://github.com/samzong/chrome-tabboost/issues/23)
+* Update README.md ([7e3083f](https://github.com/samzong/chrome-tabboost/commit/7e3083f))
+* docs(readme.md): upgrade README.md (#21) ([52a92e5](https://github.com/samzong/chrome-tabboost/commit/52a92e5)), closes [#21](https://github.com/samzong/chrome-tabboost/issues/21)
+
+
+
 ## 2.3.0 (2025-03-30)
 
 * fix: package.json ([79ea3c4](https://github.com/samzong/chrome-tabboost/commit/79ea3c4))
