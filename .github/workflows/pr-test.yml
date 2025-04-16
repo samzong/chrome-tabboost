@@ -1,0 +1,52 @@
+name: PR Test
+
+on:
+  pull_request:
+    branches: [ main ]
+    types: [ opened, synchronize, reopened ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'yarn'
+      
+      - name: Install dependencies
+        run: yarn install
+      
+      - name: Run tests
+        run: npm test
+      
+      - name: Build extension
+        run: npm run build
+      
+      - name: Validate build
+        run: npm run validate
+      
+      - name: Comment on PR
+        uses: actions/github-script@v6
+        if: always()
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { issue: { number: issue_number }, repo: { owner, repo } } = context;
+            const testStatus = '${{ job.status }}' === 'success' ? '✅ Tests passed' : '❌ Tests failed';
+            
+            github.rest.issues.createComment({
+              issue_number,
+              owner,
+              repo,
+              body: `## Build Status: ${testStatus}
+              
+              This PR has been automatically tested by GitHub Actions.
+              
+              - Job run: [View Details](${process.env.GITHUB_SERVER_URL}/${owner}/${repo}/actions/runs/${process.env.GITHUB_RUN_ID})
+              `
+            }); 

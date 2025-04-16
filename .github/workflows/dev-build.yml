@@ -1,0 +1,92 @@
+name: Dev Build
+
+on:
+  push:
+    branches: [ main ]
+    # Don't trigger if it's just a tag push
+    paths-ignore:
+      - 'CHANGELOG.md'
+
+jobs:
+  build-dev:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'yarn'
+      
+      - name: Install dependencies
+        run: yarn install
+      
+      - name: Run tests
+        run: npm test
+      
+      - name: Generate dev version
+        id: dev_version
+        run: |
+          # Get package.json version
+          BASE_VERSION=$(node -p "require('./package.json').version")
+          # Get short commit hash
+          COMMIT_HASH=$(git rev-parse --short HEAD)
+          # Generate dev version number (base version + commit hash)
+          DEV_VERSION="${BASE_VERSION}-dev.${COMMIT_HASH}"
+          echo "DEV_VERSION=${DEV_VERSION}" >> $GITHUB_ENV
+          
+          # Update manifest.json with dev version
+          jq --arg version "$DEV_VERSION" '.version = $version' manifest.json > manifest.json.tmp
+          mv manifest.json.tmp manifest.json
+      
+      - name: Create private key file from Secret
+        run: |
+          echo "${{ secrets.CRX_PRIVATE_KEY }}" > key.pem
+          chmod 600 key.pem
+      
+      - name: Build extension
+        run: npm run build
+      
+      - name: Validate build
+        run: npm run validate
+      
+      - name: Package as .crx
+        run: npm run package
+      
+      - name: Create ZIP file
+        run: npm run zip
+      
+      - name: Rename build artifacts
+        run: |
+          mv chrome-tabboost-v*.crx chrome-tabboost-v${{ env.DEV_VERSION }}.crx
+          mv builds/chrome-tabboost-v*.zip builds/chrome-tabboost-v${{ env.DEV_VERSION }}.zip
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Dev Build ${{ env.DEV_VERSION }}
+          tag_name: dev-${{ env.DEV_VERSION }}
+          prerelease: true
+          generate_release_notes: true
+          files: |
+            chrome-tabboost-v${{ env.DEV_VERSION }}.crx
+            builds/chrome-tabboost-v${{ env.DEV_VERSION }}.zip
+          body: |
+            # Development Build
+
+            This is an automatically generated development build from the latest commit on the main branch.
+            
+            **Commit:** ${{ github.sha }}
+            **Build Date:** $(date -u +'%Y-%m-%d %H:%M:%S UTC')
+            
+            This build is for testing purposes only and may contain unstable features.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Delete private key file
+        if: always()
+        run: rm -f key.pem 

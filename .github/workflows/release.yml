@@ -1,9 +1,13 @@
-name: 版本发布流程
+name: Release Workflow
+
 on:
+  push:
+    tags:
+      - 'v*'
   workflow_dispatch:
     inputs:
       version_type:
-        description: '版本类型'
+        description: 'Version type'
         type: choice
         options:
         - patch
@@ -14,74 +18,66 @@ on:
         - premajor
         required: true
         default: 'patch'
-      publish_target:
-        description: '发布目标'
-        type: choice
-        options:
-        - none
-        - trusted-testers
-        - public
-        required: true
-        default: 'trusted-testers'
 
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - name: 检出代码
+      - name: Checkout code
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
       
-      - name: 设置 Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
-          cache: 'npm'
+          node-version: '18'
+          cache: 'yarn'
       
-      - name: 安装依赖
-        run: npm ci
+      - name: Install dependencies
+        run: yarn install
       
-      - name: 执行测试
+      - name: Run tests
         run: npm test
       
-      - name: 更新版本号
-        id: version
+      # Only update version when manually triggered
+      - name: Update version number
+        if: github.event_name == 'workflow_dispatch'
+        id: version_update
         run: |
           npm run version:${{ github.event.inputs.version_type }}
           VERSION=$(node -p "require('./package.json').version")
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
-          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "CREATED_TAG=true" >> $GITHUB_ENV
+          
+      # Extract version from tag when triggered by tag push
+      - name: Extract version from tag
+        if: github.event_name == 'push'
+        id: get_version
+        run: |
+          TAG=${GITHUB_REF#refs/tags/}
+          VERSION=${TAG#v}
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          echo "CREATED_TAG=false" >> $GITHUB_ENV
       
-      - name: 执行构建
+      - name: Create private key file from Secret
+        run: |
+          echo "${{ secrets.CRX_PRIVATE_KEY }}" > key.pem
+          chmod 600 key.pem
+      
+      - name: Build extension
         run: npm run build
       
-      - name: 运行验证
+      - name: Validate build
         run: npm run validate
       
-      - name: 创建 ZIP 文件
+      - name: Package as .crx
+        run: npm run package
+      
+      - name: Create ZIP file
         run: npm run zip
       
-      - name: 发布到受信任测试者
-        if: github.event.inputs.publish_target == 'trusted-testers' || github.event.inputs.publish_target == 'public'
-        env:
-          EXTENSION_ID: ${{ secrets.EXTENSION_ID }}
-          CLIENT_ID: ${{ secrets.CLIENT_ID }}
-          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
-          PUBLISH_TARGET: trusted-testers
-        run: npm run publish:test
-      
-      - name: 发布到公共渠道
-        if: github.event.inputs.publish_target == 'public'
-        env:
-          EXTENSION_ID: ${{ secrets.EXTENSION_ID }}
-          CLIENT_ID: ${{ secrets.CLIENT_ID }}
-          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
-        run: npm run publish
-      
-      - name: 创建 GitHub 发布版本
+      - name: Create GitHub Release
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
@@ -89,11 +85,18 @@ jobs:
           tag_name: v${{ env.VERSION }}
           generate_release_notes: true
           files: |
+            chrome-tabboost-v${{ env.VERSION }}.crx
             builds/chrome-tabboost-v${{ env.VERSION }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: 推送标签
+      # Only push tag when creating a new version manually
+      - name: Push tag and changes
+        if: env.CREATED_TAG == 'true'
         run: |
           git push origin v${{ env.VERSION }}
-          git push 
+          git push
+      
+      - name: Delete private key file
+        if: always()
+        run: rm -f key.pem 
