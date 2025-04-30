@@ -37,10 +37,10 @@ export function validateUrl(url) {
   
   try {
     if (!url || typeof url !== 'string') {
-      result.reason = getMessage('urlValidationErrorEmpty');
+      result.reason = getMessage('urlValidationErrorEmpty'); 
       return result;
     }
-    
+
     const decodedUrl = (() => {
       try {
         return decodeURIComponent(url);

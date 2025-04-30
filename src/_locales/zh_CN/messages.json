@@ -1,58 +1,58 @@
 {
   "appName": {
     "message": "TabBoost",
-    "description": "扩展的名称"
+    "description": "The name of the extension"
   },
   "appDesc": {
-    "message": "TabBoost 是一个帮助您更高效地管理标签页的Chrome扩展。",
-    "description": "扩展的描述"
+    "message": "TabBoost 是一个 Chrome 扩展，帮助你更高效地管理标签页。",
+    "description": "The description of the extension"
   },
   "duplicateTab": {
     "message": "复制当前标签页",
-    "description": "复制当前标签页的操作"
+    "description": "Action to duplicate the current tab"
   },
   "copyUrl": {
-    "message": "复制网址",
-    "description": "复制当前网址的操作"
+    "message": "复制 URL",
+    "description": "Action to copy the current URL"
   },
   "toggleSplitView": {
     "message": "切换分屏模式",
-    "description": "切换分屏模式的操作"
+    "description": "Action to toggle split view mode"
   },
   "openOptions": {
-    "message": "打开选项页",
-    "description": "打开选项页的操作"
+    "message": "打开选项",
+    "description": "Action to open options page"
   },
   "popupSizePreset": {
-    "message": "弹出窗口尺寸预设",
-    "description": "弹出窗口尺寸预设设置"
+    "message": "弹窗大小预设",
+    "description": "Setting for popup size preset"
   },
   "customWidth": {
     "message": "自定义宽度",
-    "description": "自定义宽度设置"
+    "description": "Setting for custom width"
   },
   "customHeight": {
     "message": "自定义高度",
-    "description": "自定义高度设置"
+    "description": "Setting for custom height"
   },
   "defaultAction": {
     "message": "默认操作",
-    "description": "默认操作设置"
+    "description": "Setting for default action"
   },
   "splitViewEnabled": {
-    "message": "启用分屏模式",
-    "description": "启用分屏模式设置"
+    "message": "分屏模式已启用",
+    "description": "Setting for split view enabled"
   },
   "iframeIgnoreEnabled": {
-    "message": "启用iframe忽略",
-    "description": "启用iframe忽略设置"
+    "message": "Iframe 忽略已启用",
+    "description": "Setting for iframe ignore enabled"
   },
   "iframeIgnoreList": {
-    "message": "iframe忽略列表",
-    "description": "iframe忽略列表设置"
+    "message": "Iframe 忽略列表",
+    "description": "Setting for iframe ignore list"
   },
   "autoAddToIgnoreList": {
-    "message": "已自动将 $hostname$ 添加到忽略列表，下次将直接在新标签页中打开",
+    "message": "$hostname$ 已自动添加到忽略列表。下次将直接在新标签页中打开",
     "description": "Message shown when a website is automatically added to ignore list",
     "placeholders": {
       "hostname": {
@@ -61,81 +61,77 @@
       }
     }
   },
-  "autoAddToIgnoreListOption": {
-    "message": "自动将无法加载的网站添加到忽略列表",
-    "description": "Option to automatically add websites that fail to load to the ignore list"
-  },
   "save": {
     "message": "保存",
-    "description": "保存按钮文本"
+    "description": "Save button text"
   },
   "cancel": {
     "message": "取消",
-    "description": "取消按钮文本"
+    "description": "Cancel button text"
   },
   "reset": {
     "message": "重置",
-    "description": "重置按钮文本"
+    "description": "Reset button text"
   },
   "urlCopied": {
-    "message": "网址复制成功！",
-    "description": "网址复制成功的通知"
+    "message": "URL 复制成功！",
+    "description": "Notification when URL is copied"
   },
   "urlCopyFailed": {
-    "message": "网址复制失败！",
-    "description": "网址复制失败的通知"
+    "message": "URL 复制失败！",
+    "description": "Notification when URL copy fails"
   },
   "loading": {
     "message": "加载中...",
-    "description": "加载中文本"
+    "description": "Loading text"
   },
   "loadingPage": {
-    "message": "加载页面",
-    "description": "加载页面文本"
+    "message": "加载页面中...",
+    "description": "Loading page text"
   },
   "loadTimeout": {
     "message": "加载超时",
-    "description": "加载超时文本"
+    "description": "Loading timeout text"
   },
   "cannotLoadInPopup": {
     "message": "无法在弹窗中加载此网站。",
-    "description": "无法在弹窗中加载网站时的消息"
+    "description": "Message when site cannot be loaded in popup"
   },
   "openInNewTab": {
     "message": "在新标签页中打开",
-    "description": "在新标签页中打开按钮"
+    "description": "Button to open in new tab"
   },
   "addToIgnoreList": {
     "message": "添加到忽略列表",
-    "description": "添加到忽略列表按钮"
+    "description": "Button to add to ignore list"
   },
   "close": {
     "message": "关闭",
-    "description": "关闭按钮文本"
+    "description": "Close button text"
   },
   "popupSizeSettings": {
     "message": "弹窗大小设置",
-    "description": "弹窗大小设置标题"
+    "description": "Title for popup size settings"
   },
   "adjustPopupSize": {
     "message": "调整弹窗大小以获得最佳浏览体验",
-    "description": "弹窗大小设置描述"
+    "description": "Description for popup size settings"
   },
   "defaultSize": {
     "message": "默认 (80%)",
-    "description": "默认尺寸选项"
+    "description": "Default size option"
   },
   "largeSize": {
-    "message": "大号 (90%)",
-    "description": "大号尺寸选项"
+    "message": "大 (90%)",
+    "description": "Large size option"
   },
   "customSize": {
     "message": "自定义",
-    "description": "自定义尺寸选项"
+    "description": "Custom size option"
   },
   "customWidthLabel": {
     "message": "自定义宽度: $WIDTH$%",
-    "description": "自定义宽度标签",
+    "description": "Label for custom width slider",
     "placeholders": {
       "WIDTH": {
         "content": "$1",
@@ -145,7 +141,7 @@
   },
   "customHeightLabel": {
     "message": "自定义高度: $HEIGHT$%",
-    "description": "自定义高度标签",
+    "description": "Label for custom height slider",
     "placeholders": {
       "HEIGHT": {
         "content": "$1",
@@ -155,126 +151,190 @@
   },
   "sizePreview": {
     "message": "大小预览",
-    "description": "大小预览标题"
+    "description": "Size preview title"
   },
   "previewDescription": {
     "message": "灰色区域表示可点击的空白区域",
-    "description": "预览描述"
+    "description": "Preview description"
   },
   "iframeCompatibility": {
-    "message": "iframe兼容性",
-    "description": "iframe兼容性设置标签"
+    "message": "Iframe 兼容性",
+    "description": "Title for iframe compatibility settings"
   },
   "closeSplitView": {
-    "message": "关闭分屏",
-    "description": "关闭分屏按钮"
+    "message": "关闭分屏模式",
+    "description": "Button to close split view"
   },
   "closeLeftView": {
-    "message": "关闭左侧内容",
-    "description": "关闭分屏左侧视图按钮"
+    "message": "关闭左侧视图",
+    "description": "Button to close left view in split view"
   },
   "closeRightView": {
-    "message": "关闭右侧内容",
-    "description": "关闭分屏右侧视图按钮"
+    "message": "关闭右侧视图",
+    "description": "Button to close right view in split view"
   },
   "cannotLoadInSplitView": {
-    "message": "无法在分屏中加载此内容",
-    "description": "无法在分屏中加载内容的错误信息"
+    "message": "无法在分屏模式中加载此内容",
+    "description": "Error message when content cannot be loaded in split view"
   },
   "websiteNotAllowed": {
-    "message": "此网站可能不允许在iframe中嵌入显示",
-    "description": "解释为什么内容无法在分屏中加载的消息"
+    "message": "此网站可能不允许在 iframe 中嵌套",
+    "description": "Message explaining why content cannot be loaded in split view"
   },
   "splitViewFailure": {
-    "message": "分屏视图加载失败，正在新标签页中打开...",
-    "description": "分屏视图加载失败时的通知"
+    "message": "分屏模式加载失败，将在新标签页中打开...",
+    "description": "Notification when split view fails to load"
   },
   "generalSettings": {
     "message": "通用设置",
-    "description": "通用设置标签"
+    "description": "Title for general settings tab"
   },
   "browsingMode": {
     "message": "浏览模式",
-    "description": "浏览模式部分标题"
+    "description": "Title for browsing mode section"
   },
   "splitViewSettings": {
     "message": "分屏模式设置",
-    "description": "分屏模式设置标题"
+    "description": "Title for split view settings section"
   },
   "configureExtension": {
-    "message": "配置扩展的基本行为",
-    "description": "通用设置描述"
+    "message": "配置扩展行为",
+    "description": "Description for general settings"
   },
   "configureSplitView": {
-    "message": "配置分屏模式的行为和外观",
-    "description": "分屏模式设置描述"
+    "message": "配置分屏模式行为和外观",
+    "description": "Description for split view settings"
   },
   "splitViewUsage": {
-    "message": "分屏模式使用说明:",
-    "description": "分屏模式使用说明标题"
+    "message": "分屏模式使用:",
+    "description": "Title for split view usage instructions"
   },
   "splitViewInstructions": {
-    "message": "在分屏模式下，按住 Command+Shift 并点击链接，会在右侧打开",
-    "description": "分屏模式使用说明"
+    "message": "在分屏模式下，按住 Command+Shift 并点击链接以在新标签页中打开它们",
+    "description": "Instructions for using split view"
   },
   "configureExtensionBehavior": {
-    "message": "配置扩展的基本行为",
-    "description": "通用设置描述"
+    "message": "配置扩展基本行为",
+    "description": "Description for general settings section"
   },
   "viewModeSettings": {
-    "message": "浏览模式",
-    "description": "浏览模式设置标签"
+    "message": "浏览模式设置",
+    "description": "Title for view mode settings tab"
   },
   "splitViewDescription": {
-    "message": "配置分屏模式的行为和外观",
+    "message": "配置分屏模式行为和外观",
     "description": "Description for split view settings"
   },
   "splitViewUsageInstructions": {
     "message": "分屏模式使用说明:",
-    "description": "分屏模式使用说明标题"
+    "description": "Title for split view usage instructions"
   },
   "splitViewUsageDetail": {
-    "message": "在分屏模式下，按住 Command+Shift 并点击链接，会在右侧打开",
-    "description": "分屏模式使用说明详情"
+    "message": "在分屏模式下，按住 Command+Shift 并点击链接以在新标签页中打开它们",
+    "description": "Instructions for using split view mode"
+  },
+  "adjustPopupSize": {
+    "message": "调整弹窗大小以获得最佳浏览体验",
+    "description": "Description for popup size settings"
+  },
+  "popupSizePreset": {
+    "message": "弹窗大小预设",
+    "description": "Label for popup size preset dropdown"
+  },
+  "defaultSize": {
+    "message": "默认 (80%)",
+    "description": "Default size option"
+  },
+  "largeSize": {
+    "message": "大 (90%)",
+    "description": "Large size option"
+  },
+  "customSize": {
+    "message": "自定义",
+    "description": "Custom size option"
+  },
+  "customWidthLabel": {
+    "message": "自定义宽度: $WIDTH$%",
+    "description": "Label for custom width slider",
+    "placeholders": {
+      "WIDTH": {
+        "content": "$1",
+        "example": "80"
+      }
+    }
+  },
+  "customHeightLabel": {
+    "message": "自定义高度: $HEIGHT$%",
+    "description": "Label for custom height slider",
+    "placeholders": {
+      "HEIGHT": {
+        "content": "$1",
+        "example": "80"
+      }
+    }
+  },
+  "sizePreview": {
+    "message": "大小预览",
+    "description": "Title for size preview section"
+  },
+  "previewDescription": {
+    "message": "灰色区域表示可点击的空白区域",
+    "description": "Description for size preview"
+  },
+  "iframeCompatibility": {
+    "message": "iframe 兼容性设置",
+    "description": "Title for iframe compatibility settings tab"
   },
   "iframeCompatibilityDescription": {
     "message": "配置网站在弹窗和分屏模式中的加载方式",
-    "description": "iframe兼容性设置描述"
+    "description": "Description for iframe compatibility settings"
+  },
+  "iframeIgnoreEnabled": {
+    "message": "启用网站忽略列表功能",
+    "description": "Label for enabling iframe ignore list"
   },
   "iframeIgnoreEnabledDescription": {
-    "message": "当启用此功能时，列表中的网站将不会使用弹窗或分屏模式，而是直接在新标签页中打开。",
-    "description": "启用网站忽略列表功能描述"
+    "message": "启用后，列表中的网站将直接在新标签页中打开，而不是使用弹出窗口或分屏视图。",
+    "description": "Description for iframe ignore list enable option"
+  },
+  "iframeIgnoreList": {
+    "message": "忽略列表",
+    "description": "Label for iframe ignore list"
   },
   "noIgnoredWebsites": {
-    "message": "暂无忽略的网站",
-    "description": "当忽略列表为空时显示的文本"
+    "message": "没有忽略的网站",
+    "description": "Text shown when the ignore list is empty"
   },
   "domainFormatGuide": {
-    "message": "域名格式说明：",
-    "description": "域名格式说明标题"
+    "message": "域名格式指南：",
+    "description": "Title for domain format guide"
   },
   "exactMatchExample": {
-    "message": "example.com - 仅匹配 example.com（精确匹配）",
-    "description": "精确匹配域名示例"
+    "message": "example.com - matches only example.com (exact match)",
+    "description": "Example of exact match domain format"
   },
   "wildcardMatchExample": {
-    "message": "*.example.com - 匹配 example.com 所有子域名",
-    "description": "通配符匹配域名示例"
+    "message": "*.example.com - matches all subdomains of example.com",
+    "description": "Example of wildcard domain format"
   },
   "enterDomainPlaceholder": {
     "message": "输入要忽略的域名，例如：example.com 或 *.example.com",
-    "description": "输入域名的占位文本"
+    "description": "Placeholder for new domain input"
+  },
+  "addToIgnoreList": {
+    "message": "添加",
+    "description": "Button text to add domain to ignore list"
   },
   "systemReservedDomains": {
-    "message": "系统保留域名（无法删除）",
+    "message": "系统保留域名 (无法删除)",
     "description": "Title for system reserved domains section"
   },
   "exactMatch": {
-    "message": "精确",
+    "message": "精确匹配",
     "description": "Badge text for exact match type"
   },
   "wildcardMatch": {
-    "message": "通配符",
+    "message": "通配符匹配",
     "description": "Badge text for wildcard match type"
   },
   "systemBadge": {
@@ -282,47 +342,333 @@
     "description": "Badge text for system domains"
   },
   "extensionFooter": {
-    "message": "TabBoost v2.0 - 让您的浏览体验更高效",
-    "description": "扩展页脚文本"
+    "message": "TabBoost v2.0 - 让您的浏览体验更加高效",
+    "description": "Footer text in options page"
   },
   "popupFooter": {
     "message": "TabBoost v2.0",
-    "description": "弹出窗口页脚文本"
+    "description": "Footer text in popup"
+  },
+  "autoAddToIgnoreListOption": {
+    "message": "自动将无法加载的网站添加到忽略列表",
+    "description": "Option to automatically add websites that fail to load to the ignore list"
   },
   "popupSizeHint": {
-    "message": "在扩展选项中可调整弹窗大小",
-    "description": "提示用户可以在选项中调整弹窗大小"
+    "message": "弹窗大小可以在扩展选项中调整",
+    "description": "Hint that popup size can be adjusted in options"
   },
   "settingsSaved": {
     "message": "设置已保存",
-    "description": "设置保存成功的提示消息"
+    "description": "Message shown when settings are saved successfully"
   },
   "settingsSaveFailed": {
-    "message": "保存设置失败",
-    "description": "设置保存失败的提示消息"
+    "message": "设置保存失败",
+    "description": "Message shown when settings failed to save"
   },
   "waitingRefreshWebsite": {
-    "message": "等待网页刷新中",
-    "description": "等待网页刷新时显示的消息"
+    "message": "等待网页刷新",
+    "description": "Message shown when waiting for webpage to refresh"
   },
   "savePageConfirmation": {
-    "message": "您确定要保存此页面吗？",
-    "description": "用户尝试保存页面时的确认消息"
+    "message": "是否要保存此页面？",
+    "description": "Confirmation message when user tries to save a page"
   },
   "confirm": {
     "message": "确认",
-    "description": "确认按钮文本"
+    "description": "Confirm button text"
   },
   "continueToSave": {
     "message": "继续保存",
-    "description": "继续保存页面的按钮文本"
+    "description": "Button text to proceed with saving the page"
   },
   "savePageInstructionMac": {
-    "message": "您可以通过菜单 File → Save Page As... 或3秒内再次按 Command+S 保存此页面",
-    "description": "Mac用户点击继续保存后的操作提示"
+    "message": "您可以通过 File → Save Page As... 或按 Command+S 再次在 3 秒内保存此页面",
+    "description": "Instructions for Mac users on how to save the page after clicking continue"
   },
   "savePageInstructionOther": {
-    "message": "您可以通过菜单 文件 → 页面另存为... 或3秒内再次按 Ctrl+S 保存此页面",
-    "description": "非Mac用户点击继续保存后的操作提示"
+    "message": "您可以通过 File → Save Page As... 或按 Ctrl+S 再次在 3 秒内保存此页面",
+    "description": "Instructions for non-Mac users on how to save the page after clicking continue"
+  },
+  "closeLeftViewTitle": {
+    "message": "关闭左侧内容并保留右侧",
+    "description": "Title for close left view button in split view"
+  },
+  "closeRightViewTitle": {
+    "message": "关闭右侧内容",
+    "description": "Title for close right view button in split view"
+  },
+  "failedToInitSplitView": {
+    "message": "分屏模式初始化失败，请刷新页面",
+    "description": "Error message when split view initialization fails"
+  },
+  "failedToRestoreOriginal": {
+    "message": "无法恢复原始页面，请刷新浏览器",
+    "description": "Error message when restoring original page fails"
+  },
+  "cannotFindOriginalContent": {
+    "message": "无法找到原始页面内容，请刷新浏览器",
+    "description": "Error message when original page content cannot be found"
+  },
+  "refreshPage": {
+    "message": "刷新页面",
+    "description": "Button text to refresh the page"
+  },
+  "failedToAddToIgnoreList": {
+    "message": "添加到忽略列表失败",
+    "description": "Error message when adding to ignore list fails"
+  },
+  "addedToIgnoreList": {
+    "message": "$hostname$ 已添加到忽略列表，下次将直接在新标签页中打开",
+    "description": "Message shown when a website is added to ignore list",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "alreadyInIgnoreList": {
+    "message": "$hostname$ 已存在于忽略列表中",
+    "description": "Message shown when a website is already in ignore list",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "autoAddedToIgnoreList": {
+    "message": "$hostname$ 已自动添加到忽略列表，下次将直接在新标签页中打开",
+    "description": "Message shown when a website is automatically added to ignore list",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "enterValidDomain": {
+    "message": "请输入有效的域名",
+    "description": "Error message when user tries to add an empty domain"
+  },
+  "invalidWildcardFormat": {
+    "message": "无效的通配符域名格式，正确格式：*.example.com",
+    "description": "Error message when user enters an invalid wildcard domain format"
+  },
+  "domainInSystemReserved": {
+    "message": "$domain$ 已包含在系统保留域名中，无需再次添加",
+    "description": "Message shown when user tries to add a domain that is already in system reserved domains",
+    "placeholders": {
+      "domain": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "addedToIgnoreListAlert": {
+    "message": "$hostname$ 已添加到忽略列表，下次将直接在新标签页中打开",
+    "description": "Alert shown when a hostname is successfully added to the ignore list.",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "alreadyInIgnoreListAlert": {
+    "message": "$hostname$ 已存在于忽略列表中",
+    "description": "Alert shown when trying to add a hostname that is already in the ignore list.",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "addToIgnoreListFailedAlert": {
+    "message": "添加到忽略列表失败",
+    "description": "Alert shown when adding a hostname to the ignore list fails."
+  },
+  "contentTooLarge": {
+    "message": "内容太大，无法保存以恢复",
+    "description": "Message shown in restored content when original page was too large to save."
+  },
+  "failedToInitSplitView": {
+    "message": "分屏模式初始化失败，请刷新页面",
+    "description": "Error message shown when split view DOM fails to initialize."
+  },
+  "failedToRestoreOriginal": {
+    "message": "无法恢复原始页面，请刷新浏览器",
+    "description": "Error message shown when restoring original page content fails."
+  },
+  "refreshPage": {
+    "message": "刷新页面",
+    "description": "Button text to refresh the page after an error."
+  },
+  "cannotFindOriginalContent": {
+    "message": "无法找到原始页面内容，请刷新浏览器",
+    "description": "Error message shown when original page content cannot be found for restoration."
+  },
+  "restoreError": {
+    "message": "无法恢复标签页内容",
+    "description": "Error message when restoring tab content fails"
+  },
+  "splitViewErrorIframeEvent": {
+    "message": "Iframe 错误事件",
+    "description": "Error reason when the iframe emits a generic error event"
+  },
+  "splitViewErrorCannotAccessContent": {
+    "message": "无法访问 iframe 内容",
+    "description": "Error reason when script cannot access the content of the iframe (likely cross-origin)"
+  },
+  "splitViewErrorRefusedConnect": {
+    "message": "网站拒绝连接.",
+    "description": "Error reason when the website in the iframe explicitly refuses the connection"
+  },
+  "splitViewErrorFailedSetSource": {
+    "message": "设置 iframe 源失败",
+    "description": "Error reason when setting the iframe src attribute fails"
+  },
+  "splitViewErrorLoadTimeout": {
+    "message": "加载超时",
+    "description": "Error reason when the iframe content fails to load within the timeout period"
+  },
+  "splitViewErrorDetectedRefused": {
+    "message": "检测到连接拒绝错误",
+    "description": "Error reason when connection refusal is detected by inspecting iframe content"
+  },
+  "searchPlaceholder": {
+    "message": "搜索标签页...",
+    "description": "Placeholder text for the search input in the popup"
+  },
+  "urlValidationErrorEmpty": {
+    "message": "URL 为空或格式不正确",
+    "description": "Validation error reason when the URL is empty or not a string"
+  },
+  "urlValidationErrorDecoding": {
+    "message": "URL解码失败，格式不正确",
+    "description": "Validation error reason when URL decoding fails"
+  },
+  "urlValidationErrorDangerousPattern": {
+    "message": "URL包含危险模式，可能是XSS攻击",
+    "description": "Validation error reason when the URL matches a dangerous pattern"
+  },
+  "urlValidationErrorNormalization": {
+    "message": "无法规范化URL，可能是恶意URL",
+    "description": "Validation error reason when URL normalization fails"
+  },
+  "urlValidationErrorInvalidFormat": {
+    "message": "无效的URL格式",
+    "description": "Validation error reason when the URL format is invalid (e.g., cannot be parsed by new URL())"
+  },
+  "urlValidationErrorUnsupportedProtocol": {
+    "message": "不支持的URL协议：$PROTOCOL$",
+    "description": "Validation error reason when the URL protocol is not http or https",
+    "placeholders": {
+      "PROTOCOL": {
+        "content": "$1",
+        "example": "ftp:"
+      }
+    }
+  },
+  "urlValidationErrorDangerousProtocol": {
+    "message": "检测到危险的URL协议：$PROTOCOL$",
+    "description": "Validation error reason when the URL protocol is explicitly blacklisted",
+    "placeholders": {
+      "PROTOCOL": {
+        "content": "$1",
+        "example": "javascript:"
+      }
+    }
+  },
+  "urlValidationErrorDangerousPath": {
+    "message": "URL路径包含危险模式：$PATH$",
+    "description": "Validation error reason when the URL path/query/hash matches a dangerous pattern",
+    "placeholders": {
+      "PATH": {
+        "content": "$1",
+        "example": "/path?<script>alert(1)</script>"
+      }
+    }
+  },
+  "urlValidationErrorGeneric": {
+    "message": "URL验证期间发生错误：$ERROR$",
+    "description": "Generic validation error reason for unexpected errors",
+    "placeholders": {
+      "ERROR": {
+        "content": "$1",
+        "example": "Something went wrong"
+      }
+    }
+  },
+  "storageInitError": {
+    "message": "存储初始化错误：",
+    "description": "Error message logged when storage cache fails to initialize"
+  },
+  "urlCopyError": {
+    "message": "复制URL时出错：",
+    "description": "Error message logged when copying URL to clipboard fails"
+  },
+  "urlValidationFailed": {
+    "message": "URL验证失败：",
+    "description": "Error message logged when URL validation fails in background script"
+  },
+  "openedInNewTabSecurity": {
+    "message": "由于安全验证而在新标签页中打开：$REASON$",
+    "description": "Status message when a URL is opened in a new tab because it failed security validation",
+    "placeholders": {
+      "REASON": {
+        "content": "$1",
+        "example": "Invalid URL format"
+      }
+    }
+  },
+  "getCurrentTabError": {
+    "message": "获取当前标签页时出错",
+    "description": "Error message logged when fetching the current tab fails"
+  },
+  "rightSplitViewUpdated": {
+    "message": "右侧分屏视图已更新",
+    "description": "Status message indicating the right pane of the split view was updated"
+  },
+  "splitViewCreatedAndUpdated": {
+    "message": "分屏视图已创建并更新",
+    "description": "Status message indicating a new split view was created and its right pane updated"
+  },
+  "splitViewRequestError": {
+    "message": "分屏请求错误：",
+    "description": "Error message logged for general errors during split view request handling"
+  },
+  "splitViewCreationFailed": {
+    "message": "分屏创建失败，在新标签页中打开。",
+    "description": "Status message indicating split view creation failed and fallback to new tab occurred"
+  },
+  "splitViewRecoveryError": {
+    "message": "分屏恢复/清理错误：",
+    "description": "Error message logged when closing/cleaning up split view fails after another error"
+  },
+  "recoveryFailed": {
+    "message": "恢复失败，在新标签页中打开。",
+    "description": "Status message indicating recovery after an error failed, fallback to new tab occurred"
+  },
+  "splitViewDisabledLog": {
+    "message": "由于设置而禁用分屏视图",
+    "description": "Log message when user tries to toggle split view but it's disabled in settings"
+  },
+  "splitViewErrorFallback": {
+    "message": "分屏模式错误，在新标签页中打开",
+    "description": "Fallback message sent to content script when opening in split view fails catastrophically"
+  },
+  "splitViewClosedStatus": {
+    "message": "关闭分屏视图",
+    "description": "Status message sent to content script when split view is successfully closed"
+  },
+  "openedInNewTabStatus": {
+    "message": "在新标签页中打开",
+    "description": "Status message sent to content script when a URL is successfully opened in a new tab via message"
+  },
+  "optionsPageTitle": {
+    "message": "TabBoost 选项",
+    "description": "The title of the options page"
   }
-} 
+}
