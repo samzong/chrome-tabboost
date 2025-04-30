@@ -278,11 +278,11 @@
     "description": "Badge text indicating a system-reserved domain"
   },
   "extensionFooter": {
-    "message": "TabBoost V2.0-ブラウジングエクスペリエンスをより効率的にします",
+    "message": "TabBoost-ブラウジングエクスペリエンスをより効率的にします",
     "description": "Footer text in options page"
   },
   "popupFooter": {
-    "message": "Tabboost v2.0",
+    "message": "TabBoost",
     "description": "Footer text in popup"
   },
   "autoAddToIgnoreListOption": {

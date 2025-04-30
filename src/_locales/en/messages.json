@@ -342,11 +342,11 @@
     "description": "Badge text indicating a system-reserved domain"
   },
   "extensionFooter": {
-    "message": "TabBoost v2.0 - Make your browsing experience more efficient",
+    "message": "TabBoost - Make your browsing experience more efficient",
     "description": "Footer text in options page"
   },
   "popupFooter": {
-    "message": "TabBoost v2.0",
+    "message": "TabBoost",
     "description": "Footer text in popup"
   },
   "autoAddToIgnoreListOption": {

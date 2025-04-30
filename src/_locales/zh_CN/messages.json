@@ -342,11 +342,11 @@
     "description": "Badge text for system domains"
   },
   "extensionFooter": {
-    "message": "TabBoost v2.0 - 让您的浏览体验更加高效",
+    "message": "TabBoost - 让您的浏览体验更加高效",
     "description": "Footer text in options page"
   },
   "popupFooter": {
-    "message": "TabBoost v2.0",
+    "message": "TabBoost",
     "description": "Footer text in popup"
   },
   "autoAddToIgnoreListOption": {
