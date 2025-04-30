@@ -475,6 +475,62 @@
       }
     }
   },
+  "domainRemoved": {
+    "message": "域名 '$DOMAIN$' 已从忽略列表中成功删除。",
+    "description": "Notification shown after a domain is successfully removed.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "removeDomain": {
+    "message": "删除域名",
+    "description": "通用文本用于删除域名，可能用于确认或标题。"
+  },
+  "removeFromList": {
+    "message": "从列表中删除",
+    "description": "Tooltip 和可访问标签用于每个域名旁边的删除按钮。"
+  },
+  "domainAdded": {
+    "message": "域名 '$DOMAIN$' 已成功添加到忽略列表。",
+    "description": "成功通知当域名被添加到忽略列表时。",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "domainAddFailed": {
+    "message": "添加域名失败 '$DOMAIN$'. 请重试。",
+    "description": "Error notification when adding a domain fails.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "domainRemoveFailed": {
+    "message": "删除域名失败 '$DOMAIN$'. 请重试。",
+    "description": "Error notification when removing a domain fails.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "errorFetchingList": {
+    "message": "获取忽略列表失败。请重试。",
+    "description": "Error notification when fetching the list fails."
+  },
+  "errorCorruptedList": {
+    "message": "忽略列表数据似乎损坏。请检查存储或重置设置。",
+    "description": "Error notification when the ignore list data is not an array."
+  },
   "alreadyInIgnoreListAlert": {
     "message": "$hostname$ 已存在于忽略列表中",
     "description": "Alert shown when trying to add a hostname that is already in the ignore list.",

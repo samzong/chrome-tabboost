@@ -102,8 +102,8 @@
     "description": "Button to open in new tab"
   },
   "addToIgnoreList": {
-    "message": "Add to ignore list",
-    "description": "Button to add to ignore list"
+    "message": "Add to Ignore List",
+    "description": "Button text to add a domain to the ignore list"
   },
   "close": {
     "message": "Close",
@@ -319,27 +319,27 @@
   },
   "enterDomainPlaceholder": {
     "message": "Enter domain to ignore, e.g.: example.com or *.example.com",
-    "description": "Placeholder for new domain input"
+    "description": "Placeholder text for the domain input field"
   },
   "addToIgnoreList": {
-    "message": "Add",
-    "description": "Button text to add domain to ignore list"
+    "message": "Add to Ignore List",
+    "description": "Button text to add a domain to the ignore list"
   },
   "systemReservedDomains": {
     "message": "System Reserved Domains (cannot be removed)",
-    "description": "Title for system reserved domains section"
+    "description": "Title for the section showing system-reserved domains"
   },
   "exactMatch": {
     "message": "Exact",
-    "description": "Badge text for exact match type"
+    "description": "Badge text indicating an exact domain match"
   },
   "wildcardMatch": {
     "message": "Wildcard",
-    "description": "Badge text for wildcard match type"
+    "description": "Badge text indicating a wildcard domain match"
   },
   "systemBadge": {
     "message": "System",
-    "description": "Badge text for system domains"
+    "description": "Badge text indicating a system-reserved domain"
   },
   "extensionFooter": {
     "message": "TabBoost v2.0 - Make your browsing experience more efficient",
@@ -448,21 +448,21 @@
     }
   },
   "enterValidDomain": {
-    "message": "Please enter a valid domain",
-    "description": "Error message when user tries to add an empty domain"
+    "message": "Please enter a valid domain name.",
+    "description": "Error message when the domain input is empty or invalid"
   },
   "invalidWildcardFormat": {
-    "message": "Invalid wildcard domain format, correct format: *.example.com",
-    "description": "Error message when user enters an invalid wildcard domain format"
+    "message": "Invalid wildcard format. Must be like '*.example.com'.",
+    "description": "Error message for invalid wildcard domain format"
   },
   "domainInSystemReserved": {
-    "message": "$domain$ is already included in the system reserved domains, no need to add again",
-    "description": "Message shown when user tries to add a domain that is already in system reserved domains",
+    "message": "Domain '$DOMAIN$' or its parent is reserved by the system and cannot be added.",
+    "description": "Error message when trying to add a system-reserved domain",
     "placeholders": {
-      "domain": {
-        "content": "$1",
-        "example": "example.com"
-      }
+        "DOMAIN": {
+            "content": "$1",
+            "example": "google.com"
+        }
     }
   },
   "addedToIgnoreListAlert": {
@@ -670,5 +670,61 @@
   "optionsPageTitle": {
     "message": "TabBoost Options",
     "description": "The title of the options page"
+  },
+  "domainRemoved": {
+    "message": "Domain '$DOMAIN$' was successfully removed from the ignore list.",
+    "description": "Notification shown after a domain is successfully removed.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "removeDomain": {
+    "message": "Remove Domain",
+    "description": "Generic text for removing a domain, maybe used in confirmations or titles."
+  },
+  "removeFromList": {
+    "message": "Remove from list",
+    "description": "Tooltip and accessible label for the remove button next to each domain."
+  },
+  "domainAdded": {
+      "message": "Domain '$DOMAIN$' added successfully.",
+      "description": "Success notification when a domain is added.",
+      "placeholders": {
+          "DOMAIN": {
+              "content": "$1",
+              "example": "example.com"
+          }
+      }
+  },
+  "domainAddFailed": {
+      "message": "Failed to add domain '$DOMAIN$'. Please try again.",
+      "description": "Error notification when adding a domain fails.",
+      "placeholders": {
+          "DOMAIN": {
+              "content": "$1",
+              "example": "example.com"
+          }
+      }
+  },
+  "domainRemoveFailed": {
+      "message": "Failed to remove domain '$DOMAIN$'. Please try again.",
+      "description": "Error notification when removing a domain fails.",
+      "placeholders": {
+          "DOMAIN": {
+              "content": "$1",
+              "example": "example.com"
+          }
+      }
+  },
+  "errorFetchingList": {
+      "message": "Error fetching the ignore list. Please try again.",
+      "description": "Error notification when fetching the list fails."
+  },
+  "errorCorruptedList": {
+      "message": "Ignore list data seems corrupted. Please check storage or reset settings.",
+      "description": "Error notification when the ignore list data is not an array."
   }
 }

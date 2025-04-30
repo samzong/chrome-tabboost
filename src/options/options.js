@@ -29,27 +29,27 @@ function updateDynamicLabels() {
 }
 
 function updateCustomSizeLabels() {
-  const customWidthValue = document.getElementById("customWidthValue")?.textContent.replace("%", "");
-  const customHeightValue = document.getElementById('customHeightValue')?.textContent.replace("%", "");
+  const widthSliderValue = customWidthSlider ? customWidthSlider.value : '80';
+  const heightSliderValue = customHeightSlider ? customHeightSlider.value : '80';
 
   const customWidthLabel = document.getElementById('customWidthLabel');
   const customHeightLabel = document.getElementById('customHeightLabel');
 
   if (customWidthLabel) {
-    const widthMsg = getMessage("customWidthLabel", [customWidthValue]);
+    const widthMsg = getMessage("customWidthLabel", [widthSliderValue]);
     if (widthMsg) {
       customWidthLabel.textContent = widthMsg;
     } else {
-      customWidthLabel.textContent = getMessage("customWidthLabel", [customWidthValue]) || `Custom width: ${customWidthValue}%`;
+      customWidthLabel.textContent = `Custom width: ${widthSliderValue}%`;
     }
   }
 
   if (customHeightLabel) {
-    const heightMsg = getMessage("customHeightLabel", [customHeightValue]);
+    const heightMsg = getMessage("customHeightLabel", [heightSliderValue]);
     if (heightMsg) {
       customHeightLabel.textContent = heightMsg;
     } else {
-      customHeightLabel.textContent = getMessage("customHeightLabel", [customHeightValue]) || `Custom height: ${customHeightValue}%`;
+      customHeightLabel.textContent = `Custom height: ${heightSliderValue}%`;
     }
   }
 }
@@ -104,6 +104,42 @@ function setupEventListeners() {
     });
   }
 
+  if (popupSizePreset) {
+    popupSizePreset.addEventListener('change', function() {
+      const selectedPreset = this.value;
+      const customControls = document.querySelectorAll('.custom-size-controls');
+
+      if (selectedPreset === 'custom') {
+        customControls.forEach(control => control.style.display = 'block');
+        if (customWidthSlider && customWidthValue) {
+          customWidthValue.textContent = customWidthSlider.value + '%';
+        }
+        if (customHeightSlider && customHeightValue) {
+          customHeightValue.textContent = customHeightSlider.value + '%';
+        }
+        updateCustomSizeLabels();
+        updateSizePreview();
+      } else {
+        customControls.forEach(control => control.style.display = 'none');
+        let width, height;
+        if (selectedPreset === 'default') {
+          width = 80; // Default width
+          height = 80; // Default height
+        } else if (selectedPreset === 'large') {
+          width = 95; // Large width
+          height = 95; // Large height
+        }
+        // Update sliders and values (even if hidden)
+        if (customWidthSlider) customWidthSlider.value = width;
+        if (customHeightSlider) customHeightSlider.value = height;
+        if (customWidthValue) customWidthValue.textContent = width + '%';
+        if (customHeightValue) customHeightValue.textContent = height + '%';
+        updateCustomSizeLabels();
+        updateSizePreview(); // Update preview based on preset
+      }
+    });
+  }
+
   saveButton.addEventListener('click', saveSettings);
 }
 
@@ -141,7 +177,10 @@ function loadSettings() {
       "splitViewEnabled",
       "iframeIgnoreEnabled",
       "autoAddToIgnoreList",
-      "iframeIgnoreList"
+      "iframeIgnoreList",
+      "popupSizePreset",
+      "customWidth",
+      "customHeight"
     ]
   ).then((result) => {
     defaultActionInput.value = result.defaultAction || "copy-url";
@@ -150,6 +189,30 @@ function loadSettings() {
       : true;
     iframeIgnoreEnabledCheckbox.checked = result.iframeIgnoreEnabled || false;
     autoAddToIgnoreListCheckbox.checked = result.autoAddToIgnoreList || false;
+
+    const loadedPreset = result.popupSizePreset || "default";
+    const loadedWidth = result.customWidth || 80;
+    const loadedHeight = result.customHeight || 80;
+
+    if (popupSizePreset) {
+      popupSizePreset.value = loadedPreset;
+    }
+    if (customWidthSlider) {
+      customWidthSlider.value = loadedWidth;
+    }
+    if (customHeightSlider) {
+      customHeightSlider.value = loadedHeight;
+    }
+
+    const customControls = document.querySelectorAll('.custom-size-controls');
+    if (loadedPreset === 'custom') {
+      customControls.forEach(control => control.style.display = 'block');
+    } else {
+      customControls.forEach(control => control.style.display = 'none');
+    }
+
+    updateCustomSizeLabels();
+    updateSizePreview();
 
     renderIgnoreList(result.iframeIgnoreList || []);
   });
@@ -220,8 +283,17 @@ function renderIgnoreList(ignoreList) {
       const removeButton = document.createElement('button');
       removeButton.className = 'remove-domain-button';
       removeButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+      removeButton.title = getMessage("removeFromList") || "Remove from list";
+      removeButton.setAttribute('aria-label', getMessage("removeFromList") || "Remove from list");
       removeButton.addEventListener('click', () => {
         removeDomain(domain);
+      });
+      
+      removeButton.addEventListener('mouseover', () => {
+        removeButton.classList.add('hover');
+      });
+      removeButton.addEventListener('mouseout', () => {
+        removeButton.classList.remove('hover');
       });
 
       item.appendChild(domainText);
@@ -237,7 +309,7 @@ function addDomain() {
   const domain = newDomainInput.value.trim();
 
   if (!domain) {
-    alert(getMessage('enterValidDomain'));
+    showNotification(getMessage('enterValidDomain'), 'warning');
     return;
   }
 

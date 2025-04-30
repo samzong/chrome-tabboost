@@ -4,55 +4,55 @@
     "description": "The name of the extension"
   },
   "appDesc": {
-    "message": "TabBoost is a Chrome extension that helps you manage your tabs more efficiently.",
+    "message": "Tabboost เป็นส่วนขยายของโครเมี่ยมที่ช่วยให้คุณจัดการแท็บได้อย่างมีประสิทธิภาพมากขึ้น",
     "description": "The description of the extension"
   },
   "duplicateTab": {
-    "message": "Duplicate current tab",
+    "message": "แท็บปัจจุบันซ้ำ",
     "description": "Action to duplicate the current tab"
   },
   "copyUrl": {
-    "message": "Copy URL",
+    "message": "คัดลอก URL",
     "description": "Action to copy the current URL"
   },
   "toggleSplitView": {
-    "message": "Toggle split view",
+    "message": "สลับมุมมองแยก",
     "description": "Action to toggle split view mode"
   },
   "openOptions": {
-    "message": "Open options",
+    "message": "ตัวเลือกเปิด",
     "description": "Action to open options page"
   },
   "popupSizePreset": {
-    "message": "Popup size preset",
-    "description": "Setting for popup size preset"
+    "message": "ขนาดของป๊อปอัพที่ตั้งไว้ล่วงหน้า",
+    "description": "Label for popup size preset dropdown"
   },
   "customWidth": {
-    "message": "Custom width",
+    "message": "ความกว้างที่กำหนดเอง",
     "description": "Setting for custom width"
   },
   "customHeight": {
-    "message": "Custom height",
+    "message": "ความสูงที่กำหนดเอง",
     "description": "Setting for custom height"
   },
   "defaultAction": {
-    "message": "Default action",
+    "message": "การดำเนินการเริ่มต้น",
     "description": "Setting for default action"
   },
   "splitViewEnabled": {
-    "message": "Split view enabled",
+    "message": "เปิดใช้งานการแยกมุมมอง",
     "description": "Setting for split view enabled"
   },
   "iframeIgnoreEnabled": {
-    "message": "Iframe ignore enabled",
-    "description": "Setting for iframe ignore enabled"
+    "message": "เปิดใช้งานคุณสมบัติเว็บไซต์ละเว้นรายการ",
+    "description": "Label for enabling iframe ignore list"
   },
   "iframeIgnoreList": {
-    "message": "Iframe ignore list",
-    "description": "Setting for iframe ignore list"
+    "message": "ไม่สนใจรายการ",
+    "description": "Label for iframe ignore list"
   },
   "autoAddToIgnoreList": {
-    "message": "$hostname$ has been automatically added to the ignore list. Next time it will open in a new tab",
+    "message": "$hostname$ ได้รับการเพิ่มโดยอัตโนมัติในรายการที่ไม่สนใจครั้งต่อไปมันจะเปิดในแท็บใหม่",
     "description": "Message shown when a website is automatically added to ignore list",
     "placeholders": {
       "hostname": {
@@ -62,75 +62,75 @@
     }
   },
   "save": {
-    "message": "Save",
+    "message": "บันทึก",
     "description": "Save button text"
   },
   "cancel": {
-    "message": "Cancel",
+    "message": "ยกเลิก",
     "description": "Cancel button text"
   },
   "reset": {
-    "message": "Reset",
+    "message": "รีเซ็ต",
     "description": "Reset button text"
   },
   "urlCopied": {
-    "message": "URL copied successfully!",
+    "message": "URL คัดลอกสำเร็จ!",
     "description": "Notification when URL is copied"
   },
   "urlCopyFailed": {
-    "message": "Failed to copy URL!",
+    "message": "ไม่สามารถคัดลอก URL!",
     "description": "Notification when URL copy fails"
   },
   "loading": {
-    "message": "Loading...",
+    "message": "กำลังโหลด ...",
     "description": "Loading text"
   },
   "loadingPage": {
-    "message": "Loading page",
+    "message": "หน้าโหลด",
     "description": "Loading page text"
   },
   "loadTimeout": {
-    "message": "Loading timeout",
+    "message": "การโหลดหมดเวลา",
     "description": "Loading timeout text"
   },
   "cannotLoadInPopup": {
-    "message": "Cannot load this website in popup.",
+    "message": "ไม่สามารถโหลดเว็บไซต์นี้ในป๊อปอัปได้",
     "description": "Message when site cannot be loaded in popup"
   },
   "openInNewTab": {
-    "message": "Open in new tab",
+    "message": "เปิดในแท็บใหม่",
     "description": "Button to open in new tab"
   },
   "addToIgnoreList": {
-    "message": "Add to ignore list",
-    "description": "Button to add to ignore list"
+    "message": "เพิ่มลงในรายการที่ไม่สนใจ",
+    "description": "Button text to add a domain to the ignore list"
   },
   "close": {
-    "message": "Close",
+    "message": "ปิด",
     "description": "Close button text"
   },
   "popupSizeSettings": {
-    "message": "Popup Size Settings",
+    "message": "การตั้งค่าขนาดป๊อปอัป",
     "description": "Title for popup size settings"
   },
   "adjustPopupSize": {
-    "message": "Adjust popup size for optimal browsing experience",
+    "message": "ปรับขนาดป๊อปอัพเพื่อให้ได้ประสบการณ์การท่องเว็บที่ดีที่สุด",
     "description": "Description for popup size settings"
   },
   "defaultSize": {
-    "message": "Default (80%)",
+    "message": "ค่าเริ่มต้น (80%)",
     "description": "Default size option"
   },
   "largeSize": {
-    "message": "Large (90%)",
+    "message": "ใหญ่ (90%)",
     "description": "Large size option"
   },
   "customSize": {
-    "message": "Custom",
+    "message": "กำหนดเอง",
     "description": "Custom size option"
   },
   "customWidthLabel": {
-    "message": "Custom width: $WIDTH$%",
+    "message": "ความกว้างที่กำหนดเอง: $WIDTH$%",
     "description": "Label for custom width slider",
     "placeholders": {
       "WIDTH": {
@@ -140,7 +140,7 @@
     }
   },
   "customHeightLabel": {
-    "message": "Custom height: $HEIGHT$%",
+    "message": "ความสูงที่กำหนดเอง: $HEIGHT$%",
     "description": "Label for custom height slider",
     "placeholders": {
       "HEIGHT": {
@@ -150,275 +150,211 @@
     }
   },
   "sizePreview": {
-    "message": "Size Preview",
-    "description": "Size preview title"
-  },
-  "previewDescription": {
-    "message": "Gray area represents clickable empty space",
-    "description": "Preview description"
-  },
-  "iframeCompatibility": {
-    "message": "Iframe Compatibility",
-    "description": "Title for iframe compatibility settings"
-  },
-  "closeSplitView": {
-    "message": "Close split view",
-    "description": "Button to close split view"
-  },
-  "closeLeftView": {
-    "message": "Close left view",
-    "description": "Button to close left view in split view"
-  },
-  "closeRightView": {
-    "message": "Close right view",
-    "description": "Button to close right view in split view"
-  },
-  "cannotLoadInSplitView": {
-    "message": "Cannot load this content in split view",
-    "description": "Error message when content cannot be loaded in split view"
-  },
-  "websiteNotAllowed": {
-    "message": "This website may not allow embedding in an iframe",
-    "description": "Message explaining why content cannot be loaded in split view"
-  },
-  "splitViewFailure": {
-    "message": "Split view loading failed, opening in new tab...",
-    "description": "Notification when split view fails to load"
-  },
-  "generalSettings": {
-    "message": "General Settings",
-    "description": "Title for general settings tab"
-  },
-  "browsingMode": {
-    "message": "Browsing Mode",
-    "description": "Title for browsing mode section"
-  },
-  "splitViewSettings": {
-    "message": "Split View Settings",
-    "description": "Title for split view settings section"
-  },
-  "configureExtension": {
-    "message": "Configure extension behavior",
-    "description": "Description for general settings"
-  },
-  "configureSplitView": {
-    "message": "Configure split view behavior and appearance",
-    "description": "Description for split view settings"
-  },
-  "splitViewUsage": {
-    "message": "Split View Usage:",
-    "description": "Title for split view usage instructions"
-  },
-  "splitViewInstructions": {
-    "message": "In split view mode, hold Command+Shift and click links to open them on the right side",
-    "description": "Instructions for using split view"
-  },
-  "configureExtensionBehavior": {
-    "message": "Configure basic behavior of the extension",
-    "description": "Description for general settings section"
-  },
-  "viewModeSettings": {
-    "message": "View Mode Settings",
-    "description": "Title for view mode settings tab"
-  },
-  "splitViewDescription": {
-    "message": "Configure behavior and appearance of split view mode",
-    "description": "Description for split view settings"
-  },
-  "splitViewUsageInstructions": {
-    "message": "Split View Usage Instructions:",
-    "description": "Title for split view usage instructions"
-  },
-  "splitViewUsageDetail": {
-    "message": "In split view mode, hold Command+Shift and click a link to open it on the right side",
-    "description": "Instructions for using split view mode"
-  },
-  "adjustPopupSize": {
-    "message": "Adjust popup size to get the best browsing experience",
-    "description": "Description for popup size settings"
-  },
-  "popupSizePreset": {
-    "message": "Popup size preset",
-    "description": "Label for popup size preset dropdown"
-  },
-  "defaultSize": {
-    "message": "Default (80%)",
-    "description": "Default size option"
-  },
-  "largeSize": {
-    "message": "Large (90%)",
-    "description": "Large size option"
-  },
-  "customSize": {
-    "message": "Custom",
-    "description": "Custom size option"
-  },
-  "customWidthLabel": {
-    "message": "Custom width: $WIDTH$%",
-    "description": "Label for custom width slider",
-    "placeholders": {
-      "WIDTH": {
-        "content": "$1",
-        "example": "80"
-      }
-    }
-  },
-  "customHeightLabel": {
-    "message": "Custom height: $HEIGHT$%",
-    "description": "Label for custom height slider",
-    "placeholders": {
-      "HEIGHT": {
-        "content": "$1",
-        "example": "80"
-      }
-    }
-  },
-  "sizePreview": {
-    "message": "Size Preview",
+    "message": "ดูตัวอย่างขนาด",
     "description": "Title for size preview section"
   },
   "previewDescription": {
-    "message": "Gray area represents clickable empty space",
+    "message": "พื้นที่สีเทาแสดงถึงพื้นที่ว่างที่คลิกได้",
     "description": "Description for size preview"
   },
   "iframeCompatibility": {
-    "message": "iframe Compatibility Settings",
+    "message": "การตั้งค่าความเข้ากันได้ของ IFRAME",
     "description": "Title for iframe compatibility settings tab"
   },
+  "closeSplitView": {
+    "message": "ปิดมุมมองแยก",
+    "description": "Button to close split view"
+  },
+  "closeLeftView": {
+    "message": "ปิดมุมมองซ้าย",
+    "description": "Button to close left view in split view"
+  },
+  "closeRightView": {
+    "message": "ปิดมุมมองขวา",
+    "description": "Button to close right view in split view"
+  },
+  "cannotLoadInSplitView": {
+    "message": "ไม่สามารถโหลดเนื้อหานี้ในมุมมองแยก",
+    "description": "Error message when content cannot be loaded in split view"
+  },
+  "websiteNotAllowed": {
+    "message": "เว็บไซต์นี้อาจไม่อนุญาตให้ฝังอยู่ใน iframe",
+    "description": "Message explaining why content cannot be loaded in split view"
+  },
+  "splitViewFailure": {
+    "message": "การโหลดมุมมองแยกล้มเหลวเปิดในแท็บใหม่ ...",
+    "description": "Notification when split view fails to load"
+  },
+  "generalSettings": {
+    "message": "การตั้งค่าทั่วไป",
+    "description": "Title for general settings tab"
+  },
+  "browsingMode": {
+    "message": "โหมดเรียกดู",
+    "description": "Title for browsing mode section"
+  },
+  "splitViewSettings": {
+    "message": "การตั้งค่ามุมมองแบบแยก",
+    "description": "Title for split view settings section"
+  },
+  "configureExtension": {
+    "message": "กำหนดค่าพฤติกรรมการขยาย",
+    "description": "Description for general settings"
+  },
+  "configureSplitView": {
+    "message": "กำหนดค่าพฤติกรรมการแยกมุมมองและลักษณะที่ปรากฏ",
+    "description": "Description for split view settings"
+  },
+  "splitViewUsage": {
+    "message": "การใช้มุมมองแบบแยก:",
+    "description": "Title for split view usage instructions"
+  },
+  "splitViewInstructions": {
+    "message": "ในโหมดการแยกมุมมองกดปุ่ม+กะและคลิกลิงก์เพื่อเปิดทางด้านขวา",
+    "description": "Instructions for using split view"
+  },
+  "configureExtensionBehavior": {
+    "message": "กำหนดค่าพฤติกรรมพื้นฐานของส่วนขยาย",
+    "description": "Description for general settings section"
+  },
+  "viewModeSettings": {
+    "message": "การตั้งค่าโหมดดู",
+    "description": "Title for view mode settings tab"
+  },
+  "splitViewDescription": {
+    "message": "กำหนดค่าพฤติกรรมและลักษณะที่ปรากฏของโหมดการแยกมุมมอง",
+    "description": "Description for split view settings"
+  },
+  "splitViewUsageInstructions": {
+    "message": "คำแนะนำในการใช้มุมมองแบบแยกดู:",
+    "description": "Title for split view usage instructions"
+  },
+  "splitViewUsageDetail": {
+    "message": "ในโหมดการแยกมุมมองกด+กะและคลิกลิงก์เพื่อเปิดทางด้านขวา",
+    "description": "Instructions for using split view mode"
+  },
   "iframeCompatibilityDescription": {
-    "message": "Configure how websites are loaded in popups and split view",
+    "message": "กำหนดค่าวิธีการโหลดเว็บไซต์ในป๊อปอัปและมุมมองแยก",
     "description": "Description for iframe compatibility settings"
   },
-  "iframeIgnoreEnabled": {
-    "message": "Enable website ignore list feature",
-    "description": "Label for enabling iframe ignore list"
-  },
   "iframeIgnoreEnabledDescription": {
-    "message": "When enabled, websites in the list below will open directly in a new tab instead of using the popup or split view",
+    "message": "เมื่อเปิดใช้งานเว็บไซต์ในรายการด้านล่างจะเปิดโดยตรงในแท็บใหม่แทนที่จะใช้ Popup หรือ Split View",
     "description": "Description for iframe ignore list enable option"
   },
-  "iframeIgnoreList": {
-    "message": "Ignore List",
-    "description": "Label for iframe ignore list"
-  },
   "noIgnoredWebsites": {
-    "message": "No ignored websites yet",
+    "message": "ยังไม่มีเว็บไซต์ที่ถูกเพิกเฉย",
     "description": "Text shown when the ignore list is empty"
   },
   "domainFormatGuide": {
-    "message": "Domain Format Guide:",
+    "message": "คู่มือรูปแบบโดเมน:",
     "description": "Title for domain format guide"
   },
   "exactMatchExample": {
-    "message": "example.com - matches only example.com (exact match)",
+    "message": "Example.com - ตรงกับตัวอย่างเท่านั้น (การจับคู่ที่แน่นอน)",
     "description": "Example of exact match domain format"
   },
   "wildcardMatchExample": {
-    "message": "*.example.com - matches all subdomains of example.com",
+    "message": "*.example.com - ตรงกับโดเมนย่อยทั้งหมดของ example.com",
     "description": "Example of wildcard domain format"
   },
   "enterDomainPlaceholder": {
-    "message": "Enter domain to ignore, e.g.: example.com or *.example.com",
-    "description": "Placeholder for new domain input"
-  },
-  "addToIgnoreList": {
-    "message": "Add",
-    "description": "Button text to add domain to ignore list"
+    "message": "ป้อนโดเมนเพื่อละเว้นเช่น: example.com หรือ *.Example.com",
+    "description": "Placeholder text for the domain input field"
   },
   "systemReservedDomains": {
-    "message": "System Reserved Domains (cannot be removed)",
-    "description": "Title for system reserved domains section"
+    "message": "โดเมนที่สงวนระบบ (ไม่สามารถลบออกได้)",
+    "description": "Title for the section showing system-reserved domains"
   },
   "exactMatch": {
-    "message": "Exact",
-    "description": "Badge text for exact match type"
+    "message": "ที่แน่นอน",
+    "description": "Badge text indicating an exact domain match"
   },
   "wildcardMatch": {
-    "message": "Wildcard",
-    "description": "Badge text for wildcard match type"
+    "message": "ไพ่",
+    "description": "Badge text indicating a wildcard domain match"
   },
   "systemBadge": {
-    "message": "System",
-    "description": "Badge text for system domains"
+    "message": "ระบบ",
+    "description": "Badge text indicating a system-reserved domain"
   },
   "extensionFooter": {
-    "message": "TabBoost v2.0 - Make your browsing experience more efficient",
+    "message": "Tabboost - ทำให้ประสบการณ์การท่องเว็บของคุณมีประสิทธิภาพมากขึ้น",
     "description": "Footer text in options page"
   },
   "popupFooter": {
-    "message": "TabBoost v2.0",
+    "message": "Tabboost",
     "description": "Footer text in popup"
   },
   "autoAddToIgnoreListOption": {
-    "message": "Automatically add websites that fail to load to the ignore list",
+    "message": "เพิ่มเว็บไซต์ที่ไม่สามารถโหลดไปยังรายการที่ไม่สนใจได้โดยอัตโนมัติ",
     "description": "Option to automatically add websites that fail to load to the ignore list"
   },
   "popupSizeHint": {
-    "message": "Popup size can be adjusted in extension options",
+    "message": "ขนาดป๊อปอัปสามารถปรับได้ในตัวเลือกส่วนขยาย",
     "description": "Hint that popup size can be adjusted in options"
   },
   "settingsSaved": {
-    "message": "Settings saved",
+    "message": "บันทึกการตั้งค่า",
     "description": "Message shown when settings are saved successfully"
   },
   "settingsSaveFailed": {
-    "message": "Failed to save settings",
+    "message": "ไม่สามารถบันทึกการตั้งค่าได้",
     "description": "Message shown when settings failed to save"
   },
   "waitingRefreshWebsite": {
-    "message": "Waiting for webpage refresh",
+    "message": "กำลังรอการรีเฟรชหน้าเว็บ",
     "description": "Message shown when waiting for webpage to refresh"
   },
   "savePageConfirmation": {
-    "message": "Do you want to save this page?",
+    "message": "คุณต้องการบันทึกหน้านี้หรือไม่?",
     "description": "Confirmation message when user tries to save a page"
   },
   "confirm": {
-    "message": "Confirm",
+    "message": "ยืนยัน",
     "description": "Confirm button text"
   },
   "continueToSave": {
-    "message": "Continue to save",
+    "message": "บันทึกต่อไป",
     "description": "Button text to proceed with saving the page"
   },
   "savePageInstructionMac": {
-    "message": "You can save this page via File → Save Page As... or press Command+S again within 3 seconds",
+    "message": "คุณสามารถบันทึกหน้านี้ผ่านไฟล์→บันทึกหน้าเป็น ... หรือกดคำสั่ง+s อีกครั้งภายใน 3 วินาที",
     "description": "Instructions for Mac users on how to save the page after clicking continue"
   },
   "savePageInstructionOther": {
-    "message": "You can save this page via File → Save Page As... or press Ctrl+S again within 3 seconds",
+    "message": "คุณสามารถบันทึกหน้านี้ผ่านไฟล์→บันทึกหน้าเป็น ... หรือกด Ctrl+s อีกครั้งภายใน 3 วินาที",
     "description": "Instructions for non-Mac users on how to save the page after clicking continue"
   },
   "closeLeftViewTitle": {
-    "message": "Close left content and keep right",
+    "message": "ปิดเนื้อหาซ้ายและเก็บไว้ให้ถูกต้อง",
     "description": "Title for close left view button in split view"
   },
   "closeRightViewTitle": {
-    "message": "Close right content",
+    "message": "ปิดเนื้อหาขวา",
     "description": "Title for close right view button in split view"
   },
   "failedToInitSplitView": {
-    "message": "Failed to initialize split view, please refresh the page",
-    "description": "Error message when split view initialization fails"
+    "message": "ไม่สามารถเริ่มต้นมุมมองแยกได้โปรดรีเฟรชหน้า",
+    "description": "Error message shown when split view DOM fails to initialize."
   },
   "failedToRestoreOriginal": {
-    "message": "Failed to restore original page, please refresh the browser",
-    "description": "Error message when restoring original page fails"
+    "message": "ไม่สามารถกู้คืนหน้าดั้งเดิมได้โปรดรีเฟรชเบราว์เซอร์",
+    "description": "Error message shown when restoring original page content fails."
   },
   "cannotFindOriginalContent": {
-    "message": "Cannot find original page content, please refresh the browser",
-    "description": "Error message when original page content cannot be found"
+    "message": "ไม่พบเนื้อหาหน้าต้นฉบับโปรดรีเฟรชเบราว์เซอร์",
+    "description": "Error message shown when original page content cannot be found for restoration."
   },
   "refreshPage": {
-    "message": "Refresh page",
-    "description": "Button text to refresh the page"
+    "message": "รีเฟรชหน้า",
+    "description": "Button text to refresh the page after an error."
   },
   "failedToAddToIgnoreList": {
-    "message": "Failed to add to ignore list",
+    "message": "ไม่สามารถเพิ่มลงในรายการที่ไม่สนใจ",
     "description": "Error message when adding to ignore list fails"
   },
   "addedToIgnoreList": {
-    "message": "$hostname$ has been added to the ignore list, and it will be opened directly in a new tab next time.",
+    "message": "$hostname$ ถูกเพิ่มลงในรายการที่ไม่สนใจและจะเปิดโดยตรงในแท็บใหม่ในครั้งต่อไป",
     "description": "Message shown when a website is added to ignore list",
     "placeholders": {
       "hostname": {
@@ -428,7 +364,7 @@
     }
   },
   "alreadyInIgnoreList": {
-    "message": "$hostname$ is already in the ignore list.",
+    "message": "$hostname$ อยู่ในรายการที่ไม่สนใจ",
     "description": "Message shown when a website is already in ignore list",
     "placeholders": {
       "hostname": {
@@ -438,7 +374,7 @@
     }
   },
   "autoAddedToIgnoreList": {
-    "message": "$hostname$ has been automatically added to the ignore list, and it will be opened directly in a new tab next time.",
+    "message": "$hostname$ ได้รับการเพิ่มโดยอัตโนมัติในรายการที่ไม่สนใจและจะเปิดโดยตรงในแท็บใหม่ในครั้งต่อไป",
     "description": "Message shown when a website is automatically added to ignore list",
     "placeholders": {
       "hostname": {
@@ -448,25 +384,25 @@
     }
   },
   "enterValidDomain": {
-    "message": "Please enter a valid domain",
-    "description": "Error message when user tries to add an empty domain"
+    "message": "โปรดป้อนชื่อโดเมนที่ถูกต้อง",
+    "description": "Error message when the domain input is empty or invalid"
   },
   "invalidWildcardFormat": {
-    "message": "Invalid wildcard domain format, correct format: *.example.com",
-    "description": "Error message when user enters an invalid wildcard domain format"
+    "message": "รูปแบบไวด์การ์ดที่ไม่ถูกต้องต้องเป็นเหมือน '*.example.com'",
+    "description": "Error message for invalid wildcard domain format"
   },
   "domainInSystemReserved": {
-    "message": "$domain$ is already included in the system reserved domains, no need to add again",
-    "description": "Message shown when user tries to add a domain that is already in system reserved domains",
+    "message": "โดเมน '$ domain $' หรือผู้ปกครองถูกสงวนไว้โดยระบบและไม่สามารถเพิ่มได้",
+    "description": "Error message when trying to add a system-reserved domain",
     "placeholders": {
-      "domain": {
+      "DOMAIN": {
         "content": "$1",
-        "example": "example.com"
+        "example": "google.com"
       }
     }
   },
   "addedToIgnoreListAlert": {
-    "message": "$hostname$ has been added to the ignore list, and it will be opened directly in a new tab next time.",
+    "message": "$hostname$ ถูกเพิ่มลงในรายการที่ไม่สนใจและจะเปิดโดยตรงในแท็บใหม่ในครั้งต่อไป",
     "description": "Alert shown when a hostname is successfully added to the ignore list.",
     "placeholders": {
       "hostname": {
@@ -476,7 +412,7 @@
     }
   },
   "alreadyInIgnoreListAlert": {
-    "message": "$hostname$ is already in the ignore list.",
+    "message": "$hostname$ อยู่ในรายการที่ไม่สนใจ",
     "description": "Alert shown when trying to add a hostname that is already in the ignore list.",
     "placeholders": {
       "hostname": {
@@ -486,83 +422,67 @@
     }
   },
   "addToIgnoreListFailedAlert": {
-    "message": "Failed to add to ignore list.",
+    "message": "ไม่สามารถเพิ่มลงในรายการที่ไม่สนใจ",
     "description": "Alert shown when adding a hostname to the ignore list fails."
   },
   "contentTooLarge": {
-    "message": "Content is too large, cannot be saved for restoration.",
+    "message": "เนื้อหามีขนาดใหญ่เกินไปไม่สามารถบันทึกไว้สำหรับการฟื้นฟู",
     "description": "Message shown in restored content when original page was too large to save."
   },
-  "failedToInitSplitView": {
-    "message": "Failed to initialize split view, please refresh the page",
-    "description": "Error message shown when split view DOM fails to initialize."
-  },
-  "failedToRestoreOriginal": {
-    "message": "Failed to restore original page, please refresh the browser",
-    "description": "Error message shown when restoring original page content fails."
-  },
-  "refreshPage": {
-    "message": "Refresh page",
-    "description": "Button text to refresh the page after an error."
-  },
-  "cannotFindOriginalContent": {
-    "message": "Cannot find original page content, please refresh the browser",
-    "description": "Error message shown when original page content cannot be found for restoration."
-  },
   "restoreError": {
-    "message": "Could not restore tab content.",
+    "message": "ไม่สามารถกู้คืนเนื้อหาแท็บได้",
     "description": "Error message when restoring tab content fails"
   },
   "splitViewErrorIframeEvent": {
-    "message": "Iframe error event",
+    "message": "เหตุการณ์ข้อผิดพลาด iframe",
     "description": "Error reason when the iframe emits a generic error event"
   },
   "splitViewErrorCannotAccessContent": {
-    "message": "Cannot access iframe content",
+    "message": "ไม่สามารถเข้าถึงเนื้อหา iframe",
     "description": "Error reason when script cannot access the content of the iframe (likely cross-origin)"
   },
   "splitViewErrorRefusedConnect": {
-    "message": "Website refused to connect.",
+    "message": "เว็บไซต์ปฏิเสธที่จะเชื่อมต่อ",
     "description": "Error reason when the website in the iframe explicitly refuses the connection"
   },
   "splitViewErrorFailedSetSource": {
-    "message": "Failed to set iframe source",
+    "message": "ไม่สามารถตั้งค่าแหล่งที่มาของ iframe",
     "description": "Error reason when setting the iframe src attribute fails"
   },
   "splitViewErrorLoadTimeout": {
-    "message": "Load timeout",
+    "message": "โหลดหมดเวลา",
     "description": "Error reason when the iframe content fails to load within the timeout period"
   },
   "splitViewErrorDetectedRefused": {
-    "message": "Detected connection refused error",
+    "message": "ตรวจพบการเชื่อมต่อปฏิเสธข้อผิดพลาด",
     "description": "Error reason when connection refusal is detected by inspecting iframe content"
   },
   "searchPlaceholder": {
-    "message": "Search tabs...",
+    "message": "แท็บค้นหา ...",
     "description": "Placeholder text for the search input in the popup"
   },
   "urlValidationErrorEmpty": {
-    "message": "URL is empty or incorrect format",
+    "message": "URL เป็นรูปแบบที่ว่างเปล่าหรือไม่ถูกต้อง",
     "description": "Validation error reason when the URL is empty or not a string"
   },
   "urlValidationErrorDecoding": {
-    "message": "URL decoding failed, format is incorrect",
+    "message": "การถอดรหัส URL ล้มเหลวรูปแบบไม่ถูกต้อง",
     "description": "Validation error reason when URL decoding fails"
   },
   "urlValidationErrorDangerousPattern": {
-    "message": "URL contains dangerous patterns, possibly XSS attacks",
+    "message": "URL มีรูปแบบที่เป็นอันตรายอาจเป็นการโจมตี XSS",
     "description": "Validation error reason when the URL matches a dangerous pattern"
   },
   "urlValidationErrorNormalization": {
-    "message": "Failed to normalize URL, possibly malicious URL",
+    "message": "ล้มเหลวในการทำให้ URL เป็นปกติอาจเป็น URL ที่เป็นอันตราย",
     "description": "Validation error reason when URL normalization fails"
   },
   "urlValidationErrorInvalidFormat": {
-    "message": "Invalid URL format",
+    "message": "รูปแบบ URL ที่ไม่ถูกต้อง",
     "description": "Validation error reason when the URL format is invalid (e.g., cannot be parsed by new URL())"
   },
   "urlValidationErrorUnsupportedProtocol": {
-    "message": "Unsupported URL protocol: $PROTOCOL$",
+    "message": "โปรโตคอล URL ที่ไม่ได้รับการสนับสนุน: $PROTOCOL$",
     "description": "Validation error reason when the URL protocol is not http or https",
     "placeholders": {
       "PROTOCOL": {
@@ -572,7 +492,7 @@
     }
   },
   "urlValidationErrorDangerousProtocol": {
-    "message": "Detected dangerous URL protocol: $PROTOCOL$",
+    "message": "ตรวจพบโปรโตคอล URL ที่เป็นอันตราย: $PROTOCOL$",
     "description": "Validation error reason when the URL protocol is explicitly blacklisted",
     "placeholders": {
       "PROTOCOL": {
@@ -582,7 +502,7 @@
     }
   },
   "urlValidationErrorDangerousPath": {
-    "message": "URL path contains dangerous patterns: $PATH$",
+    "message": "เส้นทาง URL มีรูปแบบที่เป็นอันตราย: $PATH$",
     "description": "Validation error reason when the URL path/query/hash matches a dangerous pattern",
     "placeholders": {
       "PATH": {
@@ -592,7 +512,7 @@
     }
   },
   "urlValidationErrorGeneric": {
-    "message": "Error occurred during URL validation: $ERROR$",
+    "message": "เกิดข้อผิดพลาดระหว่างการตรวจสอบ URL: $ERROR$",
     "description": "Generic validation error reason for unexpected errors",
     "placeholders": {
       "ERROR": {
@@ -602,19 +522,19 @@
     }
   },
   "storageInitError": {
-    "message": "Storage initialization error:",
+    "message": "ข้อผิดพลาดการเริ่มต้นการจัดเก็บข้อมูล:",
     "description": "Error message logged when storage cache fails to initialize"
   },
   "urlCopyError": {
-    "message": "Error copying URL:",
+    "message": "ข้อผิดพลาดการคัดลอก URL:",
     "description": "Error message logged when copying URL to clipboard fails"
   },
   "urlValidationFailed": {
-    "message": "URL validation failed:",
+    "message": "การตรวจสอบ URL ล้มเหลว:",
     "description": "Error message logged when URL validation fails in background script"
   },
   "openedInNewTabSecurity": {
-    "message": "Opened in new tab due to security validation: $REASON$",
+    "message": "เปิดในแท็บใหม่เนื่องจากการตรวจสอบความปลอดภัย: $REASON$",
     "description": "Status message when a URL is opened in a new tab because it failed security validation",
     "placeholders": {
       "REASON": {
@@ -624,51 +544,107 @@
     }
   },
   "getCurrentTabError": {
-    "message": "Error getting current tab",
+    "message": "ข้อผิดพลาดรับแท็บปัจจุบัน",
     "description": "Error message logged when fetching the current tab fails"
   },
   "rightSplitViewUpdated": {
-    "message": "Right split view updated",
+    "message": "อัปเดตมุมมองแยกขวา",
     "description": "Status message indicating the right pane of the split view was updated"
   },
   "splitViewCreatedAndUpdated": {
-    "message": "Split view created and updated",
+    "message": "มุมมองแยกสร้างและอัปเดต",
     "description": "Status message indicating a new split view was created and its right pane updated"
   },
   "splitViewRequestError": {
-    "message": "Split view request error:",
+    "message": "แยกข้อผิดพลาดคำขอมุมมอง:",
     "description": "Error message logged for general errors during split view request handling"
   },
   "splitViewCreationFailed": {
-    "message": "Split view creation failed, opening in new tab.",
+    "message": "การสร้างมุมมองแบบแยกล้มเหลวเปิดในแท็บใหม่",
     "description": "Status message indicating split view creation failed and fallback to new tab occurred"
   },
   "splitViewRecoveryError": {
-    "message": "Split view recovery/cleanup error:",
+    "message": "แยกมุมมองการกู้คืน/การทำความสะอาดข้อผิดพลาด:",
     "description": "Error message logged when closing/cleaning up split view fails after another error"
   },
   "recoveryFailed": {
-    "message": "Recovery failed, opening in new tab.",
+    "message": "การกู้คืนล้มเหลวเปิดในแท็บใหม่",
     "description": "Status message indicating recovery after an error failed, fallback to new tab occurred"
   },
   "splitViewDisabledLog": {
-    "message": "Split view is disabled via action click due to settings.",
+    "message": "มุมมองแบบแยกถูกปิดใช้งานผ่านการดำเนินการคลิกเนื่องจากการตั้งค่า",
     "description": "Log message when user tries to toggle split view but it's disabled in settings"
   },
   "splitViewErrorFallback": {
-    "message": "Split view mode error, opened in new tab",
+    "message": "ข้อผิดพลาดโหมดมุมมองแยกเปิดในแท็บใหม่",
     "description": "Fallback message sent to content script when opening in split view fails catastrophically"
   },
   "splitViewClosedStatus": {
-    "message": "Split view closed",
+    "message": "ปิดมุมมองแบบแยก",
     "description": "Status message sent to content script when split view is successfully closed"
   },
   "openedInNewTabStatus": {
-    "message": "Opened in new tab",
+    "message": "เปิดในแท็บใหม่",
     "description": "Status message sent to content script when a URL is successfully opened in a new tab via message"
   },
   "optionsPageTitle": {
-    "message": "TabBoost Options",
+    "message": "ตัวเลือก tabboost",
     "description": "The title of the options page"
+  },
+  "domainRemoved": {
+    "message": "โดเมน '$domain$' ถูกลบออกจากรายการที่ไม่สนใจสำเร็จ",
+    "description": "Notification shown after a domain is successfully removed.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "removeDomain": {
+    "message": "ลบโดเมน",
+    "description": "Generic text for removing a domain, maybe used in confirmations or titles."
+  },
+  "removeFromList": {
+    "message": "ลบออกจากรายการ",
+    "description": "Tooltip and accessible label for the remove button next to each domain."
+  },
+  "domainAdded": {
+    "message": "โดเมน '$domain$' เพิ่มสำเร็จ",
+    "description": "Success notification when a domain is added.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "domainAddFailed": {
+    "message": "ไม่สามารถเพิ่มโดเมน '$domain$'โปรดลองอีกครั้ง",
+    "description": "Error notification when adding a domain fails.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "domainRemoveFailed": {
+    "message": "ไม่สามารถลบโดเมน '$domain$' โปรดลองอีกครั้ง",
+    "description": "Error notification when removing a domain fails.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "errorFetchingList": {
+    "message": "การดึงข้อผิดพลาดในรายการละเว้นโปรดลองอีกครั้ง",
+    "description": "Error notification when fetching the list fails."
+  },
+  "errorCorruptedList": {
+    "message": "ไม่สนใจข้อมูลรายการดูเหมือนจะเสียหายโปรดตรวจสอบการจัดเก็บหรือรีเซ็ตการตั้งค่า",
+    "description": "Error notification when the ignore list data is not an array."
   }
 }
