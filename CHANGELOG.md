@@ -1,3 +1,12 @@
+## <small>2.3.2 (2025-04-30)</small>
+
+* chore: clean code ([fc9ce7d](https://github.com/samzong/chrome-tabboost/commit/fc9ce7d))
+* chore(logo): update logo ([be2d633](https://github.com/samzong/chrome-tabboost/commit/be2d633))
+* feat(locales): add new translations for multiple languages ([ca0fdcc](https://github.com/samzong/chrome-tabboost/commit/ca0fdcc))
+* feat(options): enhance custom size settings and update labels based on user selection ([4abd98a](https://github.com/samzong/chrome-tabboost/commit/4abd98a))
+
+
+
 ## <small>2.3.1 (2025-04-16)</small>
 
 * chore(dev-build.yml): remove redundant artifact renaming step ([559134a](https://github.com/samzong/chrome-tabboost/commit/559134a))
