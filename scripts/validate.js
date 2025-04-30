@@ -9,12 +9,10 @@ const manifestPath = path.join(buildDir, 'manifest.json');
 
 async function validateExtension() {
   try {
-    // Check if build directory exists
     if (!fs.existsSync(buildDir)) {
       throw new Error('Build directory not found. Run npm run build first.');
     }
 
-    // Check manifest.json
     if (!fs.existsSync(manifestPath)) {
       throw new Error('manifest.json not found in build directory');
     }
@@ -22,12 +20,10 @@ async function validateExtension() {
     const manifest = require(manifestPath);
     const pkg = require('../package.json');
 
-    // Validate manifest version matches package.json
     if (manifest.version !== pkg.version) {
       throw new Error(`Version mismatch: manifest.json (${manifest.version}) != package.json (${pkg.version})`);
     }
 
-    // Validate required fields
     const requiredFields = ['name', 'version', 'manifest_version'];
     for (const field of requiredFields) {
       if (!manifest[field]) {
@@ -35,7 +31,6 @@ async function validateExtension() {
       }
     }
 
-    // Validate file sizes
     const maxSize = 5 * 1024 * 1024; // 5MB
     const files = getAllFiles(buildDir);
     for (const file of files) {
@@ -45,7 +40,6 @@ async function validateExtension() {
       }
     }
 
-    // Use web-ext to lint the extension
     console.log('Running web-ext validation...');
     try {
       await execAsync(`npx web-ext lint --source-dir ${buildDir}`);
@@ -55,7 +49,6 @@ async function validateExtension() {
       }
     }
 
-    // Additional checks for common issues
     validatePermissions(manifest);
     validateContentSecurity(manifest);
 
@@ -68,7 +61,6 @@ async function validateExtension() {
 }
 
 function validatePermissions(manifest) {
-  // Check for overly broad permissions
   const dangerousPermissions = ['<all_urls>', '*://*/*'];
   const permissions = manifest.permissions || [];
   const hostPermissions = manifest.host_permissions || [];
@@ -83,7 +75,6 @@ function validatePermissions(manifest) {
 }
 
 function validateContentSecurity(manifest) {
-  // Check CSP settings
   const csp = manifest.content_security_policy?.extension_pages || 
               manifest.content_security_policy;
 

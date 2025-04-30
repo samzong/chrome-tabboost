@@ -1,7 +1,5 @@
-// Chrome API 扩展模拟
 const { chrome } = require('jest-chrome');
 
-// 补充缺失的API
 if (!chrome.action) {
   chrome.action = {
     onClicked: {
@@ -19,12 +17,10 @@ if (!chrome.scripting) {
   };
 }
 
-// 确保Chrome存储API存在
 if (!chrome.storage) {
   chrome.storage = {
     sync: {
       get: jest.fn((keys, callback) => {
-        // 简单返回与请求的键匹配的对象
         if (typeof keys === 'string') {
           const result = {};
           result[keys] = 'test-value-' + keys;
@@ -61,7 +57,6 @@ if (!chrome.storage) {
   };
 }
 
-// 确保通用的事件API都存在
 ['onClicked', 'onCommand', 'onMessage'].forEach(eventName => {
   if (!chrome.action) chrome.action = {};
   if (!chrome.commands) chrome.commands = {};
@@ -85,7 +80,6 @@ if (!chrome.storage) {
   }
 });
 
-// 补充chrome.tabs API
 if (!chrome.tabs) {
   chrome.tabs = {
     duplicate: jest.fn().mockResolvedValue({ id: 456 }),
@@ -95,12 +89,10 @@ if (!chrome.tabs) {
   };
 }
 
-// 补充chrome.notifications API
 if (!chrome.notifications) {
   chrome.notifications = {
     create: jest.fn()
   };
 }
 
-// 导出增强后的chrome对象
 module.exports = { chrome }; 

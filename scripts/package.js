@@ -7,16 +7,13 @@ const crx = new ChromeExtension({
   privateKey: fs.readFileSync(path.join(__dirname, '../key.pem')),
 });
 
-// Build directory path
 const buildDir = path.join(__dirname, '../dist');
 const outputFile = path.join(__dirname, `../chrome-tabboost-v${pkg.version}.crx`);
 
 async function packageExtension() {
   try {
-    // Pack the extension
     const crxBuffer = await crx.load(buildDir).then(crx => crx.pack());
 
-    // Write the .crx file
     fs.writeFileSync(outputFile, crxBuffer);
     
     console.log(`Created ${outputFile}`);

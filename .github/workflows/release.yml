@@ -40,7 +40,6 @@ jobs:
       - name: Run tests
         run: npm test
       
-      # Only update version when manually triggered
       - name: Update version number
         if: github.event_name == 'workflow_dispatch'
         id: version_update
@@ -50,7 +49,6 @@ jobs:
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
           echo "CREATED_TAG=true" >> $GITHUB_ENV
           
-      # Extract version from tag when triggered by tag push
       - name: Extract version from tag
         if: github.event_name == 'push'
         id: get_version
@@ -90,7 +88,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
-      # Only push tag when creating a new version manually
       - name: Push tag and changes
         if: env.CREATED_TAG == 'true'
         run: |

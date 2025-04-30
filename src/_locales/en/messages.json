@@ -286,7 +286,7 @@
     "description": "Title for iframe compatibility settings tab"
   },
   "iframeCompatibilityDescription": {
-    "message": "Configure how websites load in popup and split view mode",
+    "message": "Configure how websites are loaded in popups and split view",
     "description": "Description for iframe compatibility settings"
   },
   "iframeIgnoreEnabled": {
@@ -294,16 +294,16 @@
     "description": "Label for enabling iframe ignore list"
   },
   "iframeIgnoreEnabledDescription": {
-    "message": "When enabled, websites on the list will not use popup or split view mode, but will open directly in a new tab.",
-    "description": "Description for iframe ignore list feature"
+    "message": "When enabled, websites in the list below will open directly in a new tab instead of using the popup or split view",
+    "description": "Description for iframe ignore list enable option"
   },
   "iframeIgnoreList": {
     "message": "Ignore List",
     "description": "Label for iframe ignore list"
   },
   "noIgnoredWebsites": {
-    "message": "No ignored websites",
-    "description": "Text shown when ignore list is empty"
+    "message": "No ignored websites yet",
+    "description": "Text shown when the ignore list is empty"
   },
   "domainFormatGuide": {
     "message": "Domain Format Guide:",
@@ -388,5 +388,287 @@
   "savePageInstructionOther": {
     "message": "You can save this page via File → Save Page As... or press Ctrl+S again within 3 seconds",
     "description": "Instructions for non-Mac users on how to save the page after clicking continue"
+  },
+  "closeLeftViewTitle": {
+    "message": "Close left content and keep right",
+    "description": "Title for close left view button in split view"
+  },
+  "closeRightViewTitle": {
+    "message": "Close right content",
+    "description": "Title for close right view button in split view"
+  },
+  "failedToInitSplitView": {
+    "message": "Failed to initialize split view, please refresh the page",
+    "description": "Error message when split view initialization fails"
+  },
+  "failedToRestoreOriginal": {
+    "message": "Failed to restore original page, please refresh the browser",
+    "description": "Error message when restoring original page fails"
+  },
+  "cannotFindOriginalContent": {
+    "message": "Cannot find original page content, please refresh the browser",
+    "description": "Error message when original page content cannot be found"
+  },
+  "refreshPage": {
+    "message": "Refresh page",
+    "description": "Button text to refresh the page"
+  },
+  "failedToAddToIgnoreList": {
+    "message": "Failed to add to ignore list",
+    "description": "Error message when adding to ignore list fails"
+  },
+  "addedToIgnoreList": {
+    "message": "$hostname$ has been added to the ignore list, and it will be opened directly in a new tab next time.",
+    "description": "Message shown when a website is added to ignore list",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "alreadyInIgnoreList": {
+    "message": "$hostname$ is already in the ignore list.",
+    "description": "Message shown when a website is already in ignore list",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "autoAddedToIgnoreList": {
+    "message": "$hostname$ has been automatically added to the ignore list, and it will be opened directly in a new tab next time.",
+    "description": "Message shown when a website is automatically added to ignore list",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "enterValidDomain": {
+    "message": "Please enter a valid domain",
+    "description": "Error message when user tries to add an empty domain"
+  },
+  "invalidWildcardFormat": {
+    "message": "Invalid wildcard domain format, correct format: *.example.com",
+    "description": "Error message when user enters an invalid wildcard domain format"
+  },
+  "domainInSystemReserved": {
+    "message": "$domain$ is already included in the system reserved domains, no need to add again",
+    "description": "Message shown when user tries to add a domain that is already in system reserved domains",
+    "placeholders": {
+      "domain": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "addedToIgnoreListAlert": {
+    "message": "$hostname$ has been added to the ignore list, and it will be opened directly in a new tab next time.",
+    "description": "Alert shown when a hostname is successfully added to the ignore list.",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "alreadyInIgnoreListAlert": {
+    "message": "$hostname$ is already in the ignore list.",
+    "description": "Alert shown when trying to add a hostname that is already in the ignore list.",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "addToIgnoreListFailedAlert": {
+    "message": "Failed to add to ignore list.",
+    "description": "Alert shown when adding a hostname to the ignore list fails."
+  },
+  "contentTooLarge": {
+    "message": "Content is too large, cannot be saved for restoration.",
+    "description": "Message shown in restored content when original page was too large to save."
+  },
+  "failedToInitSplitView": {
+    "message": "Failed to initialize split view, please refresh the page",
+    "description": "Error message shown when split view DOM fails to initialize."
+  },
+  "failedToRestoreOriginal": {
+    "message": "Failed to restore original page, please refresh the browser",
+    "description": "Error message shown when restoring original page content fails."
+  },
+  "refreshPage": {
+    "message": "Refresh page",
+    "description": "Button text to refresh the page after an error."
+  },
+  "cannotFindOriginalContent": {
+    "message": "Cannot find original page content, please refresh the browser",
+    "description": "Error message shown when original page content cannot be found for restoration."
+  },
+  "restoreError": {
+    "message": "Could not restore tab content.",
+    "description": "Error message when restoring tab content fails"
+  },
+  "splitViewErrorIframeEvent": {
+    "message": "Iframe error event",
+    "description": "Error reason when the iframe emits a generic error event"
+  },
+  "splitViewErrorCannotAccessContent": {
+    "message": "Cannot access iframe content",
+    "description": "Error reason when script cannot access the content of the iframe (likely cross-origin)"
+  },
+  "splitViewErrorRefusedConnect": {
+    "message": "Website refused to connect.",
+    "description": "Error reason when the website in the iframe explicitly refuses the connection"
+  },
+  "splitViewErrorFailedSetSource": {
+    "message": "Failed to set iframe source",
+    "description": "Error reason when setting the iframe src attribute fails"
+  },
+  "splitViewErrorLoadTimeout": {
+    "message": "Load timeout",
+    "description": "Error reason when the iframe content fails to load within the timeout period"
+  },
+  "splitViewErrorDetectedRefused": {
+    "message": "Detected connection refused error",
+    "description": "Error reason when connection refusal is detected by inspecting iframe content"
+  },
+  "searchPlaceholder": {
+    "message": "Search tabs...",
+    "description": "Placeholder text for the search input in the popup"
+  },
+  "urlValidationErrorEmpty": {
+    "message": "URL is empty or incorrect format",
+    "description": "Validation error reason when the URL is empty or not a string"
+  },
+  "urlValidationErrorDecoding": {
+    "message": "URL decoding failed, format is incorrect",
+    "description": "Validation error reason when URL decoding fails"
+  },
+  "urlValidationErrorDangerousPattern": {
+    "message": "URL contains dangerous patterns, possibly XSS attacks",
+    "description": "Validation error reason when the URL matches a dangerous pattern"
+  },
+  "urlValidationErrorNormalization": {
+    "message": "Failed to normalize URL, possibly malicious URL",
+    "description": "Validation error reason when URL normalization fails"
+  },
+  "urlValidationErrorInvalidFormat": {
+    "message": "Invalid URL format",
+    "description": "Validation error reason when the URL format is invalid (e.g., cannot be parsed by new URL())"
+  },
+  "urlValidationErrorUnsupportedProtocol": {
+    "message": "Unsupported URL protocol: $PROTOCOL$",
+    "description": "Validation error reason when the URL protocol is not http or https",
+    "placeholders": {
+      "PROTOCOL": {
+        "content": "$1",
+        "example": "ftp:"
+      }
+    }
+  },
+  "urlValidationErrorDangerousProtocol": {
+    "message": "Detected dangerous URL protocol: $PROTOCOL$",
+    "description": "Validation error reason when the URL protocol is explicitly blacklisted",
+    "placeholders": {
+      "PROTOCOL": {
+        "content": "$1",
+        "example": "javascript:"
+      }
+    }
+  },
+  "urlValidationErrorDangerousPath": {
+    "message": "URL path contains dangerous patterns: $PATH$",
+    "description": "Validation error reason when the URL path/query/hash matches a dangerous pattern",
+    "placeholders": {
+      "PATH": {
+        "content": "$1",
+        "example": "/path?<script>alert(1)</script>"
+      }
+    }
+  },
+  "urlValidationErrorGeneric": {
+    "message": "Error occurred during URL validation: $ERROR$",
+    "description": "Generic validation error reason for unexpected errors",
+    "placeholders": {
+      "ERROR": {
+        "content": "$1",
+        "example": "Something went wrong"
+      }
+    }
+  },
+  "storageInitError": {
+    "message": "Storage initialization error:",
+    "description": "Error message logged when storage cache fails to initialize"
+  },
+  "urlCopyError": {
+    "message": "Error copying URL:",
+    "description": "Error message logged when copying URL to clipboard fails"
+  },
+  "urlValidationFailed": {
+    "message": "URL validation failed:",
+    "description": "Error message logged when URL validation fails in background script"
+  },
+  "openedInNewTabSecurity": {
+    "message": "Opened in new tab due to security validation: $REASON$",
+    "description": "Status message when a URL is opened in a new tab because it failed security validation",
+    "placeholders": {
+      "REASON": {
+        "content": "$1",
+        "example": "Invalid URL format"
+      }
+    }
+  },
+  "getCurrentTabError": {
+    "message": "Error getting current tab",
+    "description": "Error message logged when fetching the current tab fails"
+  },
+  "rightSplitViewUpdated": {
+    "message": "Right split view updated",
+    "description": "Status message indicating the right pane of the split view was updated"
+  },
+  "splitViewCreatedAndUpdated": {
+    "message": "Split view created and updated",
+    "description": "Status message indicating a new split view was created and its right pane updated"
+  },
+  "splitViewRequestError": {
+    "message": "Split view request error:",
+    "description": "Error message logged for general errors during split view request handling"
+  },
+  "splitViewCreationFailed": {
+    "message": "Split view creation failed, opening in new tab.",
+    "description": "Status message indicating split view creation failed and fallback to new tab occurred"
+  },
+  "splitViewRecoveryError": {
+    "message": "Split view recovery/cleanup error:",
+    "description": "Error message logged when closing/cleaning up split view fails after another error"
+  },
+  "recoveryFailed": {
+    "message": "Recovery failed, opening in new tab.",
+    "description": "Status message indicating recovery after an error failed, fallback to new tab occurred"
+  },
+  "splitViewDisabledLog": {
+    "message": "Split view is disabled via action click due to settings.",
+    "description": "Log message when user tries to toggle split view but it's disabled in settings"
+  },
+  "splitViewErrorFallback": {
+    "message": "Split view mode error, opened in new tab",
+    "description": "Fallback message sent to content script when opening in split view fails catastrophically"
+  },
+  "splitViewClosedStatus": {
+    "message": "Split view closed",
+    "description": "Status message sent to content script when split view is successfully closed"
+  },
+  "openedInNewTabStatus": {
+    "message": "Opened in new tab",
+    "description": "Status message sent to content script when a URL is successfully opened in a new tab via message"
+  },
+  "optionsPageTitle": {
+    "message": "TabBoost Options",
+    "description": "The title of the options page"
   }
-} 
+}
