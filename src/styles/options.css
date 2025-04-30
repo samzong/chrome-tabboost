@@ -488,4 +488,75 @@ code {
 .match-type.wildcard {
   background-color: #e9f5fe;
   color: #3182ce;
+}
+
+/* 删除按钮样式 */
+.remove-domain-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 4px;
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  color: var(--muted-foreground);
+}
+
+.remove-domain-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.remove-domain-button:hover, .remove-domain-button.hover {
+  background-color: var(--danger);
+  color: white;
+  transform: scale(1.1);
+}
+
+.remove-domain-button:active {
+  transform: scale(0.95);
+}
+
+/* 使按钮在暗模式下更加明显 */
+@media (prefers-color-scheme: dark) {
+  .remove-domain-button {
+    color: var(--muted-foreground);
+  }
+  
+  .remove-domain-button:hover, .remove-domain-button.hover {
+    background-color: var(--danger);
+    color: white;
+  }
+}
+
+/* 提升列表项的交互性 */
+.ignore-item {
+  position: relative;
+  transition: background-color 0.2s ease;
+}
+
+.ignore-item:hover {
+  background-color: var(--muted);
+}
+
+/* 匹配类型徽章样式 */
+.match-type {
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.7rem;
+  margin-left: 8px;
+  text-transform: uppercase;
+}
+
+.match-type.exact {
+  background-color: #edf2f7;
+  color: #4a5568;
+}
+
+.match-type.wildcard {
+  background-color: #e9f5fe;
+  color: #3182ce;
 } 

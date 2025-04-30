@@ -1,0 +1,650 @@
+{
+  "appName": {
+    "message": "TABBOOST",
+    "description": "The name of the extension"
+  },
+  "appDesc": {
+    "message": "TabBoost es una extensión de Chrome que lo ayuda a administrar sus pestañas de manera más eficiente.",
+    "description": "The description of the extension"
+  },
+  "duplicateTab": {
+    "message": "Pestaña de corriente duplicada",
+    "description": "Action to duplicate the current tab"
+  },
+  "copyUrl": {
+    "message": "Copiar URL",
+    "description": "Action to copy the current URL"
+  },
+  "toggleSplitView": {
+    "message": "Vista dividida de al revés",
+    "description": "Action to toggle split view mode"
+  },
+  "openOptions": {
+    "message": "Opciones abiertas",
+    "description": "Action to open options page"
+  },
+  "popupSizePreset": {
+    "message": "Preset de tamaño emergente",
+    "description": "Label for popup size preset dropdown"
+  },
+  "customWidth": {
+    "message": "Ancho personalizado",
+    "description": "Setting for custom width"
+  },
+  "customHeight": {
+    "message": "Altura personalizada",
+    "description": "Setting for custom height"
+  },
+  "defaultAction": {
+    "message": "Acción predeterminada",
+    "description": "Setting for default action"
+  },
+  "splitViewEnabled": {
+    "message": "Vista dividida habilitada",
+    "description": "Setting for split view enabled"
+  },
+  "iframeIgnoreEnabled": {
+    "message": "Habilitar la función de lista de ignorar el sitio web",
+    "description": "Label for enabling iframe ignore list"
+  },
+  "iframeIgnoreList": {
+    "message": "Ignorar la lista",
+    "description": "Label for iframe ignore list"
+  },
+  "autoAddToIgnoreList": {
+    "message": "$hostname$ se ha agregado automáticamente a la lista Ignore.La próxima vez se abrirá en una nueva pestaña",
+    "description": "Message shown when a website is automatically added to ignore list",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "save": {
+    "message": "Ahorrar",
+    "description": "Save button text"
+  },
+  "cancel": {
+    "message": "Cancelar",
+    "description": "Cancel button text"
+  },
+  "reset": {
+    "message": "Reiniciar",
+    "description": "Reset button text"
+  },
+  "urlCopied": {
+    "message": "¡URL copió con éxito!",
+    "description": "Notification when URL is copied"
+  },
+  "urlCopyFailed": {
+    "message": "¡No se pudo copiar URL!",
+    "description": "Notification when URL copy fails"
+  },
+  "loading": {
+    "message": "Cargando...",
+    "description": "Loading text"
+  },
+  "loadingPage": {
+    "message": "Página de carga",
+    "description": "Loading page text"
+  },
+  "loadTimeout": {
+    "message": "Tiempo de espera de carga",
+    "description": "Loading timeout text"
+  },
+  "cannotLoadInPopup": {
+    "message": "No se puede cargar este sitio web en la ventana emergente.",
+    "description": "Message when site cannot be loaded in popup"
+  },
+  "openInNewTab": {
+    "message": "Abrir en una nueva pestaña",
+    "description": "Button to open in new tab"
+  },
+  "addToIgnoreList": {
+    "message": "Agregar para ignorar la lista",
+    "description": "Button text to add a domain to the ignore list"
+  },
+  "close": {
+    "message": "Cerca",
+    "description": "Close button text"
+  },
+  "popupSizeSettings": {
+    "message": "Configuración de tamaño emergente",
+    "description": "Title for popup size settings"
+  },
+  "adjustPopupSize": {
+    "message": "Ajuste el tamaño emergente para obtener la mejor experiencia de navegación",
+    "description": "Description for popup size settings"
+  },
+  "defaultSize": {
+    "message": "Predeterminado (80%)",
+    "description": "Default size option"
+  },
+  "largeSize": {
+    "message": "Grande (90%)",
+    "description": "Large size option"
+  },
+  "customSize": {
+    "message": "Costumbre",
+    "description": "Custom size option"
+  },
+  "customWidthLabel": {
+    "message": "Ancho personalizado: $WIDTH$",
+    "description": "Label for custom width slider",
+    "placeholders": {
+      "WIDTH": {
+        "content": "$1",
+        "example": "80"
+      }
+    }
+  },
+  "customHeightLabel": {
+    "message": "Altura personalizada: $HEIGHT$",
+    "description": "Label for custom height slider",
+    "placeholders": {
+      "HEIGHT": {
+        "content": "$1",
+        "example": "80"
+      }
+    }
+  },
+  "sizePreview": {
+    "message": "Vista previa de tamaño",
+    "description": "Title for size preview section"
+  },
+  "previewDescription": {
+    "message": "El área gris representa un espacio vacío en el que se puede hacer clic en",
+    "description": "Description for size preview"
+  },
+  "iframeCompatibility": {
+    "message": "Configuración de compatibilidad de iframe",
+    "description": "Title for iframe compatibility settings tab"
+  },
+  "closeSplitView": {
+    "message": "Vista dividida cerrada",
+    "description": "Button to close split view"
+  },
+  "closeLeftView": {
+    "message": "Cerrar la vista a la izquierda",
+    "description": "Button to close left view in split view"
+  },
+  "closeRightView": {
+    "message": "Cerrar la vista correcta",
+    "description": "Button to close right view in split view"
+  },
+  "cannotLoadInSplitView": {
+    "message": "No se puede cargar este contenido en la vista dividida",
+    "description": "Error message when content cannot be loaded in split view"
+  },
+  "websiteNotAllowed": {
+    "message": "Es posible que este sitio web no permita la incrustación en un iframe",
+    "description": "Message explaining why content cannot be loaded in split view"
+  },
+  "splitViewFailure": {
+    "message": "Fallado en la carga de la vista dividida, abriendo en la nueva pestaña ...",
+    "description": "Notification when split view fails to load"
+  },
+  "generalSettings": {
+    "message": "Configuración general",
+    "description": "Title for general settings tab"
+  },
+  "browsingMode": {
+    "message": "Modo de navegación",
+    "description": "Title for browsing mode section"
+  },
+  "splitViewSettings": {
+    "message": "Configuración de vista dividida",
+    "description": "Title for split view settings section"
+  },
+  "configureExtension": {
+    "message": "Configurar el comportamiento de extensión",
+    "description": "Description for general settings"
+  },
+  "configureSplitView": {
+    "message": "Configurar el comportamiento y la apariencia de la vista dividida",
+    "description": "Description for split view settings"
+  },
+  "splitViewUsage": {
+    "message": "Uso de la vista dividida:",
+    "description": "Title for split view usage instructions"
+  },
+  "splitViewInstructions": {
+    "message": "En el modo de vista dividida, mantenga presionada el comando+cambiar y haga clic en los enlaces para abrirlos en el lado derecho",
+    "description": "Instructions for using split view"
+  },
+  "configureExtensionBehavior": {
+    "message": "Configurar el comportamiento básico de la extensión",
+    "description": "Description for general settings section"
+  },
+  "viewModeSettings": {
+    "message": "Vista de configuración del modo",
+    "description": "Title for view mode settings tab"
+  },
+  "splitViewDescription": {
+    "message": "Configurar el comportamiento y la apariencia del modo de vista dividida",
+    "description": "Description for split view settings"
+  },
+  "splitViewUsageInstructions": {
+    "message": "Instrucciones de uso de la vista dividida:",
+    "description": "Title for split view usage instructions"
+  },
+  "splitViewUsageDetail": {
+    "message": "En el modo de vista dividida, mantiene presionada el comando+desplazamiento y haga clic en un enlace para abrirlo en el lado derecho",
+    "description": "Instructions for using split view mode"
+  },
+  "iframeCompatibilityDescription": {
+    "message": "Configurar cómo se cargan los sitios web en ventanas emergentes y una vista dividida",
+    "description": "Description for iframe compatibility settings"
+  },
+  "iframeIgnoreEnabledDescription": {
+    "message": "Cuando está habilitado, los sitios web en la lista a continuación se abrirán directamente en una nueva pestaña en lugar de usar la ventana emergente o la vista dividida",
+    "description": "Description for iframe ignore list enable option"
+  },
+  "noIgnoredWebsites": {
+    "message": "No hay sitios web ignorados todavía",
+    "description": "Text shown when the ignore list is empty"
+  },
+  "domainFormatGuide": {
+    "message": "Guía de formato de dominio:",
+    "description": "Title for domain format guide"
+  },
+  "exactMatchExample": {
+    "message": "Ejemplo.com - solo coincide Ejemplo.com (coincidencia exacta)",
+    "description": "Example of exact match domain format"
+  },
+  "wildcardMatchExample": {
+    "message": "*.example.com - coincide con todos los subdominios de ejemplo.com",
+    "description": "Example of wildcard domain format"
+  },
+  "enterDomainPlaceholder": {
+    "message": "Ingrese el dominio para ignorar, por ejemplo: ejemplo.com o *.example.com",
+    "description": "Placeholder text for the domain input field"
+  },
+  "systemReservedDomains": {
+    "message": "Dominios reservados del sistema (no se puede eliminar)",
+    "description": "Title for the section showing system-reserved domains"
+  },
+  "exactMatch": {
+    "message": "Exact",
+    "description": "Badge text indicating an exact domain match"
+  },
+  "wildcardMatch": {
+    "message": "Comodín",
+    "description": "Badge text indicating a wildcard domain match"
+  },
+  "systemBadge": {
+    "message": "Sistema",
+    "description": "Badge text indicating a system-reserved domain"
+  },
+  "extensionFooter": {
+    "message": "TabBoost - Haga que su experiencia de navegación sea más eficiente",
+    "description": "Footer text in options page"
+  },
+  "popupFooter": {
+    "message": "TabBoost",
+    "description": "Footer text in popup"
+  },
+  "autoAddToIgnoreListOption": {
+    "message": "Agregue automáticamente sitios web que no se cargan en la lista Ignorar",
+    "description": "Option to automatically add websites that fail to load to the ignore list"
+  },
+  "popupSizeHint": {
+    "message": "El tamaño emergente se puede ajustar en opciones de extensión",
+    "description": "Hint that popup size can be adjusted in options"
+  },
+  "settingsSaved": {
+    "message": "Configuración guardada",
+    "description": "Message shown when settings are saved successfully"
+  },
+  "settingsSaveFailed": {
+    "message": "No se pudo guardar la configuración",
+    "description": "Message shown when settings failed to save"
+  },
+  "waitingRefreshWebsite": {
+    "message": "Esperando la actualización de la página web",
+    "description": "Message shown when waiting for webpage to refresh"
+  },
+  "savePageConfirmation": {
+    "message": "¿Quieres guardar esta página?",
+    "description": "Confirmation message when user tries to save a page"
+  },
+  "confirm": {
+    "message": "Confirmar",
+    "description": "Confirm button text"
+  },
+  "continueToSave": {
+    "message": "Continuar salvando",
+    "description": "Button text to proceed with saving the page"
+  },
+  "savePageInstructionMac": {
+    "message": "Puede guardar esta página a través del archivo → Guardar página como ... o presione el comando+s nuevamente en 3 segundos",
+    "description": "Instructions for Mac users on how to save the page after clicking continue"
+  },
+  "savePageInstructionOther": {
+    "message": "Puede guardar esta página a través del archivo → Guardar página como ... o presione Ctrl+S nuevamente en 3 segundos",
+    "description": "Instructions for non-Mac users on how to save the page after clicking continue"
+  },
+  "closeLeftViewTitle": {
+    "message": "Cierre el contenido izquierdo y mantenga a la derecha",
+    "description": "Title for close left view button in split view"
+  },
+  "closeRightViewTitle": {
+    "message": "Cerrar contenido a la derecha",
+    "description": "Title for close right view button in split view"
+  },
+  "failedToInitSplitView": {
+    "message": "No se pudo inicializar la vista dividida, actualice la página",
+    "description": "Error message shown when split view DOM fails to initialize."
+  },
+  "failedToRestoreOriginal": {
+    "message": "No se pudo restaurar la página original, actualice el navegador",
+    "description": "Error message shown when restoring original page content fails."
+  },
+  "cannotFindOriginalContent": {
+    "message": "No se puede encontrar el contenido de la página original, actualice el navegador",
+    "description": "Error message shown when original page content cannot be found for restoration."
+  },
+  "refreshPage": {
+    "message": "Actualizar",
+    "description": "Button text to refresh the page after an error."
+  },
+  "failedToAddToIgnoreList": {
+    "message": "No se pudo agregar para ignorar la lista",
+    "description": "Error message when adding to ignore list fails"
+  },
+  "addedToIgnoreList": {
+    "message": "$hostname$ se ha agregado a la lista Ignore, y se abrirá directamente en una nueva pestaña la próxima vez.",
+    "description": "Message shown when a website is added to ignore list",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "alreadyInIgnoreList": {
+    "message": "$hostname$ ya está en la lista Ignore.",
+    "description": "Message shown when a website is already in ignore list",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "autoAddedToIgnoreList": {
+    "message": "$hostname$ se ha agregado automáticamente a la lista Ignore, y se abrirá directamente en una nueva pestaña la próxima vez.",
+    "description": "Message shown when a website is automatically added to ignore list",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "enterValidDomain": {
+    "message": "Ingrese un nombre de dominio válido.",
+    "description": "Error message when the domain input is empty or invalid"
+  },
+  "invalidWildcardFormat": {
+    "message": "Formato comodín no válido.Debe ser como '*.example.com'.",
+    "description": "Error message for invalid wildcard domain format"
+  },
+  "domainInSystemReserved": {
+    "message": "Dominio '$domain$' o su padre está reservado por el sistema y no se puede agregar.",
+    "description": "Error message when trying to add a system-reserved domain",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "google.com"
+      }
+    }
+  },
+  "addedToIgnoreListAlert": {
+    "message": "$hostname$ se ha agregado a la lista Ignore, y se abrirá directamente en una nueva pestaña la próxima vez.",
+    "description": "Alert shown when a hostname is successfully added to the ignore list.",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "alreadyInIgnoreListAlert": {
+    "message": "$hostname$ ya está en la lista Ignore.",
+    "description": "Alert shown when trying to add a hostname that is already in the ignore list.",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "addToIgnoreListFailedAlert": {
+    "message": "No se pudo agregar para ignorar la lista.",
+    "description": "Alert shown when adding a hostname to the ignore list fails."
+  },
+  "contentTooLarge": {
+    "message": "El contenido es demasiado grande, no se puede guardar para la restauración.",
+    "description": "Message shown in restored content when original page was too large to save."
+  },
+  "restoreError": {
+    "message": "No se pudo restaurar el contenido de la pestaña.",
+    "description": "Error message when restoring tab content fails"
+  },
+  "splitViewErrorIframeEvent": {
+    "message": "Evento de error de iframe",
+    "description": "Error reason when the iframe emits a generic error event"
+  },
+  "splitViewErrorCannotAccessContent": {
+    "message": "No se puede acceder al contenido de iframe",
+    "description": "Error reason when script cannot access the content of the iframe (likely cross-origin)"
+  },
+  "splitViewErrorRefusedConnect": {
+    "message": "El sitio web se negó a conectarse.",
+    "description": "Error reason when the website in the iframe explicitly refuses the connection"
+  },
+  "splitViewErrorFailedSetSource": {
+    "message": "No se pudo establecer la fuente de iframe",
+    "description": "Error reason when setting the iframe src attribute fails"
+  },
+  "splitViewErrorLoadTimeout": {
+    "message": "Tiempo de espera de carga",
+    "description": "Error reason when the iframe content fails to load within the timeout period"
+  },
+  "splitViewErrorDetectedRefused": {
+    "message": "Conexión detectada Error rechazado",
+    "description": "Error reason when connection refusal is detected by inspecting iframe content"
+  },
+  "searchPlaceholder": {
+    "message": "Pestañas de búsqueda ...",
+    "description": "Placeholder text for the search input in the popup"
+  },
+  "urlValidationErrorEmpty": {
+    "message": "URL es un formato vacío o incorrecto",
+    "description": "Validation error reason when the URL is empty or not a string"
+  },
+  "urlValidationErrorDecoding": {
+    "message": "Fallado de decodificación de URL, el formato es incorrecto",
+    "description": "Validation error reason when URL decoding fails"
+  },
+  "urlValidationErrorDangerousPattern": {
+    "message": "URL contiene patrones peligrosos, posiblemente ataques XSS",
+    "description": "Validation error reason when the URL matches a dangerous pattern"
+  },
+  "urlValidationErrorNormalization": {
+    "message": "No se pudo normalizar la URL, posiblemente URL maliciosa",
+    "description": "Validation error reason when URL normalization fails"
+  },
+  "urlValidationErrorInvalidFormat": {
+    "message": "Formato de URL no válido",
+    "description": "Validation error reason when the URL format is invalid (e.g., cannot be parsed by new URL())"
+  },
+  "urlValidationErrorUnsupportedProtocol": {
+    "message": "Protocolo de URL no compatible: $PROTOCOL$",
+    "description": "Validation error reason when the URL protocol is not http or https",
+    "placeholders": {
+      "PROTOCOL": {
+        "content": "$1",
+        "example": "ftp:"
+      }
+    }
+  },
+  "urlValidationErrorDangerousProtocol": {
+    "message": "Protocolo de URL peligroso detectado: $PROTOCOL$",
+    "description": "Validation error reason when the URL protocol is explicitly blacklisted",
+    "placeholders": {
+      "PROTOCOL": {
+        "content": "$1",
+        "example": "javascript:"
+      }
+    }
+  },
+  "urlValidationErrorDangerousPath": {
+    "message": "La ruta de la URL contiene patrones peligrosos: $PATH$",
+    "description": "Validation error reason when the URL path/query/hash matches a dangerous pattern",
+    "placeholders": {
+      "PATH": {
+        "content": "$1",
+        "example": "/path?<script>alert(1)</script>"
+      }
+    }
+  },
+  "urlValidationErrorGeneric": {
+    "message": "Se produjo un error durante la validación de la URL: $ERROR$",
+    "description": "Generic validation error reason for unexpected errors",
+    "placeholders": {
+      "ERROR": {
+        "content": "$1",
+        "example": "Something went wrong"
+      }
+    }
+  },
+  "storageInitError": {
+    "message": "Storage initialization error:",
+    "description": "Error message logged when storage cache fails to initialize"
+  },
+  "urlCopyError": {
+    "message": "Error de copia de URL:",
+    "description": "Error message logged when copying URL to clipboard fails"
+  },
+  "urlValidationFailed": {
+    "message": "Validación de URL falló:",
+    "description": "Error message logged when URL validation fails in background script"
+  },
+  "openedInNewTabSecurity": {
+    "message": "Abierto en una nueva pestaña debido a la validación de seguridad: $REASON$",
+    "description": "Status message when a URL is opened in a new tab because it failed security validation",
+    "placeholders": {
+      "REASON": {
+        "content": "$1",
+        "example": "Invalid URL format"
+      }
+    }
+  },
+  "getCurrentTabError": {
+    "message": "Error en la pestaña actual",
+    "description": "Error message logged when fetching the current tab fails"
+  },
+  "rightSplitViewUpdated": {
+    "message": "Vista dividida correcta actualizada",
+    "description": "Status message indicating the right pane of the split view was updated"
+  },
+  "splitViewCreatedAndUpdated": {
+    "message": "Vista dividida creada y actualizada",
+    "description": "Status message indicating a new split view was created and its right pane updated"
+  },
+  "splitViewRequestError": {
+    "message": "Error de solicitud de vista dividida:",
+    "description": "Error message logged for general errors during split view request handling"
+  },
+  "splitViewCreationFailed": {
+    "message": "La creación de la vista dividida falló, abriendo en la pestaña New.",
+    "description": "Status message indicating split view creation failed and fallback to new tab occurred"
+  },
+  "splitViewRecoveryError": {
+    "message": "Error de recuperación/limpieza de la vista dividida:",
+    "description": "Error message logged when closing/cleaning up split view fails after another error"
+  },
+  "recoveryFailed": {
+    "message": "La recuperación falló, abriendo en la nueva pestaña.",
+    "description": "Status message indicating recovery after an error failed, fallback to new tab occurred"
+  },
+  "splitViewDisabledLog": {
+    "message": "La vista dividida se deshabilita mediante acción, haga clic debido a la configuración.",
+    "description": "Log message when user tries to toggle split view but it's disabled in settings"
+  },
+  "splitViewErrorFallback": {
+    "message": "Error de modo de vista dividida, abierto en una pestaña nueva",
+    "description": "Fallback message sent to content script when opening in split view fails catastrophically"
+  },
+  "splitViewClosedStatus": {
+    "message": "Vista dividida cerrada",
+    "description": "Status message sent to content script when split view is successfully closed"
+  },
+  "openedInNewTabStatus": {
+    "message": "Abierto en la nueva pestaña",
+    "description": "Status message sent to content script when a URL is successfully opened in a new tab via message"
+  },
+  "optionsPageTitle": {
+    "message": "Opciones de TabBoost",
+    "description": "The title of the options page"
+  },
+  "domainRemoved": {
+    "message": "Domain '$ Domain $' se eliminó con éxito de la lista Ignore.",
+    "description": "Notification shown after a domain is successfully removed.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "removeDomain": {
+    "message": "Eliminar el dominio",
+    "description": "Generic text for removing a domain, maybe used in confirmations or titles."
+  },
+  "removeFromList": {
+    "message": "Eliminar de la lista",
+    "description": "Tooltip and accessible label for the remove button next to each domain."
+  },
+  "domainAdded": {
+    "message": "Dominio '$domain$' agregado con éxito.",
+    "description": "Success notification when a domain is added.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "domainAddFailed": {
+    "message": "No se pudo agregar dominio '$domain$'.Por favor intente de nuevo.",
+    "description": "Error notification when adding a domain fails.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "domainRemoveFailed": {
+    "message": "No se pudo eliminar el dominio '$domain$'.Por favor intente de nuevo.",
+    "description": "Error notification when removing a domain fails.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "errorFetchingList": {
+    "message": "Error al obtener la lista Ignore.Por favor intente de nuevo.",
+    "description": "Error notification when fetching the list fails."
+  },
+  "errorCorruptedList": {
+    "message": "Ignorar los datos de la lista parece dañado.Verifique la configuración de almacenamiento o restablecimiento.",
+    "description": "Error notification when the ignore list data is not an array."
+  }
+}

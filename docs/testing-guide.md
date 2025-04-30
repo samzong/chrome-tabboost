@@ -57,7 +57,6 @@ npm run test:ci
 单元测试应该专注于测试单个函数或模块的行为，不涉及外部依赖。例如：
 
 ```javascript
-// utils.test.js
 import { validateUrl } from '../../src/utils/utils';
 
 describe('validateUrl函数', () => {
@@ -80,7 +79,6 @@ describe('validateUrl函数', () => {
 集成测试应该测试多个组件或模块之间的交互：
 
 ```javascript
-// splitView.integration.test.js
 import splitViewCore from '../../src/js/splitView/splitViewCore';
 
 describe('分屏视图集成测试', () => {
@@ -98,7 +96,6 @@ describe('分屏视图集成测试', () => {
 ```javascript
 // 在测试文件中
 beforeEach(() => {
-  // 模拟chrome.storage.sync.get
   chrome.storage.sync.get.mockImplementation((keys, callback) => {
     const result = { key: 'value' };
     callback(result);
@@ -106,19 +103,16 @@ beforeEach(() => {
 });
 
 test('应该从存储中获取值', async () => {
-  // 测试使用chrome.storage的代码
 });
 ```
 
 常用的模拟模式：
 
 ```javascript
-// 模拟chrome.tabs.query
 chrome.tabs.query.mockImplementation((queryInfo, callback) => {
   callback([{ id: 123, url: 'https://example.com' }]);
 });
 
-// 模拟chrome.runtime.sendMessage
 chrome.runtime.sendMessage.mockImplementation((message, callback) => {
   callback({ success: true });
 });

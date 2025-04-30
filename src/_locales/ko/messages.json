@@ -1,0 +1,650 @@
+{
+  "appName": {
+    "message": "tabboost",
+    "description": "The name of the extension"
+  },
+  "appDesc": {
+    "message": "Tabboost 는 탭을보다 효율적으로 관리하는 데 도움이되는 크롬 확장자입니다.",
+    "description": "The description of the extension"
+  },
+  "duplicateTab": {
+    "message": "현재 탭을 복제합니다",
+    "description": "Action to duplicate the current tab"
+  },
+  "copyUrl": {
+    "message": "URL 복사",
+    "description": "Action to copy the current URL"
+  },
+  "toggleSplitView": {
+    "message": "스플릿 뷰 전환",
+    "description": "Action to toggle split view mode"
+  },
+  "openOptions": {
+    "message": "열린 옵션",
+    "description": "Action to open options page"
+  },
+  "popupSizePreset": {
+    "message": "팝업 크기 사전 설정",
+    "description": "Label for popup size preset dropdown"
+  },
+  "customWidth": {
+    "message": "사용자 정의 너비",
+    "description": "Setting for custom width"
+  },
+  "customHeight": {
+    "message": "맞춤 높이",
+    "description": "Setting for custom height"
+  },
+  "defaultAction": {
+    "message": "기본 조치",
+    "description": "Setting for default action"
+  },
+  "splitViewEnabled": {
+    "message": "분할보기가 활성화되었습니다",
+    "description": "Setting for split view enabled"
+  },
+  "iframeIgnoreEnabled": {
+    "message": "웹 사이트 활성화 목록 기능을 무시하십시오",
+    "description": "Label for enabling iframe ignore list"
+  },
+  "iframeIgnoreList": {
+    "message": "목록을 무시하십시오",
+    "description": "Label for iframe ignore list"
+  },
+  "autoAddToIgnoreList": {
+    "message": "$hostname$ 가 무시 목록에 자동으로 추가되었습니다.다음에 새 탭에서 열립니다",
+    "description": "Message shown when a website is automatically added to ignore list",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "save": {
+    "message": "구하다",
+    "description": "Save button text"
+  },
+  "cancel": {
+    "message": "취소",
+    "description": "Cancel button text"
+  },
+  "reset": {
+    "message": "다시 놓기",
+    "description": "Reset button text"
+  },
+  "urlCopied": {
+    "message": "URL이 성공적으로 복사되었습니다!",
+    "description": "Notification when URL is copied"
+  },
+  "urlCopyFailed": {
+    "message": "URL을 복사하지 못했습니다!",
+    "description": "Notification when URL copy fails"
+  },
+  "loading": {
+    "message": "로딩 ...",
+    "description": "Loading text"
+  },
+  "loadingPage": {
+    "message": "로드 페이지",
+    "description": "Loading page text"
+  },
+  "loadTimeout": {
+    "message": "로드 타임 아웃",
+    "description": "Loading timeout text"
+  },
+  "cannotLoadInPopup": {
+    "message": "이 웹 사이트를 팝업에로드 할 수 없습니다.",
+    "description": "Message when site cannot be loaded in popup"
+  },
+  "openInNewTab": {
+    "message": "새 탭에서 열립니다",
+    "description": "Button to open in new tab"
+  },
+  "addToIgnoreList": {
+    "message": "무시 목록에 추가하십시오",
+    "description": "Button text to add a domain to the ignore list"
+  },
+  "close": {
+    "message": "닫다",
+    "description": "Close button text"
+  },
+  "popupSizeSettings": {
+    "message": "팝업 크기 설정",
+    "description": "Title for popup size settings"
+  },
+  "adjustPopupSize": {
+    "message": "최고의 탐색 경험을 얻으려면 팝업 크기를 조정하십시오",
+    "description": "Description for popup size settings"
+  },
+  "defaultSize": {
+    "message": "기본값 (80%)",
+    "description": "Default size option"
+  },
+  "largeSize": {
+    "message": "큰 (90%)",
+    "description": "Large size option"
+  },
+  "customSize": {
+    "message": "관습",
+    "description": "Custom size option"
+  },
+  "customWidthLabel": {
+    "message": "사용자 정의 너비 : $ 너비 $%",
+    "description": "Label for custom width slider",
+    "placeholders": {
+      "WIDTH": {
+        "content": "$1",
+        "example": "80"
+      }
+    }
+  },
+  "customHeightLabel": {
+    "message": "맞춤 높이 : $ 높이 $%",
+    "description": "Label for custom height slider",
+    "placeholders": {
+      "HEIGHT": {
+        "content": "$1",
+        "example": "80"
+      }
+    }
+  },
+  "sizePreview": {
+    "message": "크기 미리보기",
+    "description": "Title for size preview section"
+  },
+  "previewDescription": {
+    "message": "회색 영역은 클릭 가능한 빈 공간을 나타냅니다",
+    "description": "Description for size preview"
+  },
+  "iframeCompatibility": {
+    "message": "iframe 호환성 설정",
+    "description": "Title for iframe compatibility settings tab"
+  },
+  "closeSplitView": {
+    "message": "분할보기를 닫습니다",
+    "description": "Button to close split view"
+  },
+  "closeLeftView": {
+    "message": "왼쪽보기를 닫습니다",
+    "description": "Button to close left view in split view"
+  },
+  "closeRightView": {
+    "message": "오른쪽보기를 닫습니다",
+    "description": "Button to close right view in split view"
+  },
+  "cannotLoadInSplitView": {
+    "message": "이 내용을 분할보기에서로드 할 수 없습니다",
+    "description": "Error message when content cannot be loaded in split view"
+  },
+  "websiteNotAllowed": {
+    "message": "이 웹 사이트는 iframe에 포함되지 않을 수 있습니다",
+    "description": "Message explaining why content cannot be loaded in split view"
+  },
+  "splitViewFailure": {
+    "message": "스플릿 뷰로드가 실패하고 새 탭에서 열립니다 ...",
+    "description": "Notification when split view fails to load"
+  },
+  "generalSettings": {
+    "message": "일반적인 설정",
+    "description": "Title for general settings tab"
+  },
+  "browsingMode": {
+    "message": "브라우징 모드",
+    "description": "Title for browsing mode section"
+  },
+  "splitViewSettings": {
+    "message": "분할보기 설정",
+    "description": "Title for split view settings section"
+  },
+  "configureExtension": {
+    "message": "확장 동작을 구성합니다",
+    "description": "Description for general settings"
+  },
+  "configureSplitView": {
+    "message": "분할보기 동작 및 모양을 구성하십시오",
+    "description": "Description for split view settings"
+  },
+  "splitViewUsage": {
+    "message": "분할보기 사용 :",
+    "description": "Title for split view usage instructions"
+  },
+  "splitViewInstructions": {
+    "message": "분할보기 모드에서는 명령+Shift를 누르고 링크를 클릭하여 오른쪽에서 열립니다.",
+    "description": "Instructions for using split view"
+  },
+  "configureExtensionBehavior": {
+    "message": "확장의 기본 동작을 구성하십시오",
+    "description": "Description for general settings section"
+  },
+  "viewModeSettings": {
+    "message": "모드 설정보기",
+    "description": "Title for view mode settings tab"
+  },
+  "splitViewDescription": {
+    "message": "분할보기 모드의 동작 및 모양을 구성하십시오",
+    "description": "Description for split view settings"
+  },
+  "splitViewUsageInstructions": {
+    "message": "사용 지침 분할 :",
+    "description": "Title for split view usage instructions"
+  },
+  "splitViewUsageDetail": {
+    "message": "분할보기 모드에서 명령+Shift를 누르고 링크를 클릭하여 오른쪽에서 열 수 있습니다.",
+    "description": "Instructions for using split view mode"
+  },
+  "iframeCompatibilityDescription": {
+    "message": "웹 사이트가 팝업 및 분할보기로로드되는 방법을 구성",
+    "description": "Description for iframe compatibility settings"
+  },
+  "iframeIgnoreEnabledDescription": {
+    "message": "활성화되면 아래 목록의 웹 사이트는 팝업 또는 분할보기를 사용하는 대신 새 탭에서 직접 열립니다.",
+    "description": "Description for iframe ignore list enable option"
+  },
+  "noIgnoredWebsites": {
+    "message": "아직 무시되지 않았습니다",
+    "description": "Text shown when the ignore list is empty"
+  },
+  "domainFormatGuide": {
+    "message": "도메인 형식 안내서 :",
+    "description": "Title for domain format guide"
+  },
+  "exactMatchExample": {
+    "message": "example.com- 만 일치 만 example.com (정확히 일치)",
+    "description": "Example of exact match domain format"
+  },
+  "wildcardMatchExample": {
+    "message": "*.example.com- example.com의 모든 하위 도메인과 일치합니다",
+    "description": "Example of wildcard domain format"
+  },
+  "enterDomainPlaceholder": {
+    "message": "예를 들어, example.com 또는 *.example.com을 무시하려면 도메인을 입력하십시오",
+    "description": "Placeholder text for the domain input field"
+  },
+  "systemReservedDomains": {
+    "message": "시스템 예약 도메인 (제거 할 수 없음)",
+    "description": "Title for the section showing system-reserved domains"
+  },
+  "exactMatch": {
+    "message": "정확한",
+    "description": "Badge text indicating an exact domain match"
+  },
+  "wildcardMatch": {
+    "message": "와일드 카드",
+    "description": "Badge text indicating a wildcard domain match"
+  },
+  "systemBadge": {
+    "message": "체계",
+    "description": "Badge text indicating a system-reserved domain"
+  },
+  "extensionFooter": {
+    "message": "Tabboost- 탐색 경험을보다 효율적으로 만듭니다",
+    "description": "Footer text in options page"
+  },
+  "popupFooter": {
+    "message": "Tabboost",
+    "description": "Footer text in popup"
+  },
+  "autoAddToIgnoreListOption": {
+    "message": "무시 목록에로드하지 못하는 웹 사이트 추가 자동 추가",
+    "description": "Option to automatically add websites that fail to load to the ignore list"
+  },
+  "popupSizeHint": {
+    "message": "팝업 크기는 확장 옵션에서 조정할 수 있습니다",
+    "description": "Hint that popup size can be adjusted in options"
+  },
+  "settingsSaved": {
+    "message": "설정이 저장되었습니다",
+    "description": "Message shown when settings are saved successfully"
+  },
+  "settingsSaveFailed": {
+    "message": "설정을 저장하지 못했습니다",
+    "description": "Message shown when settings failed to save"
+  },
+  "waitingRefreshWebsite": {
+    "message": "웹 페이지 새로 고침을 기다리고 있습니다",
+    "description": "Message shown when waiting for webpage to refresh"
+  },
+  "savePageConfirmation": {
+    "message": "이 페이지를 저장 하시겠습니까?",
+    "description": "Confirmation message when user tries to save a page"
+  },
+  "confirm": {
+    "message": "확인하다",
+    "description": "Confirm button text"
+  },
+  "continueToSave": {
+    "message": "계속 저장하십시오",
+    "description": "Button text to proceed with saving the page"
+  },
+  "savePageInstructionMac": {
+    "message": "파일 → 페이지 저장을 통해이 페이지를 저장하거나 3 초 이내에 명령+를 다시 누를 수 있습니다.",
+    "description": "Instructions for Mac users on how to save the page after clicking continue"
+  },
+  "savePageInstructionOther": {
+    "message": "파일 → 페이지 저장을 통해이 페이지를 저장하거나 3 초 이내에 Ctrl+를 다시 누를 수 있습니다.",
+    "description": "Instructions for non-Mac users on how to save the page after clicking continue"
+  },
+  "closeLeftViewTitle": {
+    "message": "왼쪽 콘텐츠를 닫고 올바르게 유지하십시오",
+    "description": "Title for close left view button in split view"
+  },
+  "closeRightViewTitle": {
+    "message": "오른쪽 콘텐츠를 닫습니다",
+    "description": "Title for close right view button in split view"
+  },
+  "failedToInitSplitView": {
+    "message": "분할보기를 초기화하지 못하고 페이지를 새로 고치십시오",
+    "description": "Error message shown when split view DOM fails to initialize."
+  },
+  "failedToRestoreOriginal": {
+    "message": "원래 페이지를 복원하지 못했습니다. 브라우저를 새로 고치십시오",
+    "description": "Error message shown when restoring original page content fails."
+  },
+  "cannotFindOriginalContent": {
+    "message": "오리지널 페이지 컨텐츠를 찾을 수 없으므로 브라우저를 새로 고치십시오",
+    "description": "Error message shown when original page content cannot be found for restoration."
+  },
+  "refreshPage": {
+    "message": "새로 고침 페이지",
+    "description": "Button text to refresh the page after an error."
+  },
+  "failedToAddToIgnoreList": {
+    "message": "무시 목록에 추가하지 못했습니다",
+    "description": "Error message when adding to ignore list fails"
+  },
+  "addedToIgnoreList": {
+    "message": "$hostname$ 가 무시 목록에 추가되었으며 다음에 새 탭에서 직접 열립니다.",
+    "description": "Message shown when a website is added to ignore list",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "alreadyInIgnoreList": {
+    "message": "$hostname$ 는 이미 무시 목록에 있습니다.",
+    "description": "Message shown when a website is already in ignore list",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "autoAddedToIgnoreList": {
+    "message": "$hostname$ 가 무시 목록에 자동으로 추가되었으며 다음에 새 탭에서 직접 열립니다.",
+    "description": "Message shown when a website is automatically added to ignore list",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "enterValidDomain": {
+    "message": "유효한 도메인 이름을 입력하십시오.",
+    "description": "Error message when the domain input is empty or invalid"
+  },
+  "invalidWildcardFormat": {
+    "message": "잘못된 와일드 카드 형식.'*.example.com'과 같아야합니다.",
+    "description": "Error message for invalid wildcard domain format"
+  },
+  "domainInSystemReserved": {
+    "message": "도메인 '$domain$' 또는 부모는 시스템에 의해 예약되어 있으며 추가 할 수 없습니다.",
+    "description": "Error message when trying to add a system-reserved domain",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "google.com"
+      }
+    }
+  },
+  "addedToIgnoreListAlert": {
+    "message": "$hostname$ 가 무시 목록에 추가되었으며 다음에 새 탭에서 직접 열립니다.",
+    "description": "Alert shown when a hostname is successfully added to the ignore list.",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "alreadyInIgnoreListAlert": {
+    "message": "$hostname$ 는 이미 무시 목록에 있습니다.",
+    "description": "Alert shown when trying to add a hostname that is already in the ignore list.",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "addToIgnoreListFailedAlert": {
+    "message": "무시 목록에 추가하지 못했습니다.",
+    "description": "Alert shown when adding a hostname to the ignore list fails."
+  },
+  "contentTooLarge": {
+    "message": "내용이 너무 크고 복원을 위해 저장할 수 없습니다.",
+    "description": "Message shown in restored content when original page was too large to save."
+  },
+  "restoreError": {
+    "message": "탭 컨텐츠를 복원 할 수 없습니다.",
+    "description": "Error message when restoring tab content fails"
+  },
+  "splitViewErrorIframeEvent": {
+    "message": "iframe 오류 이벤트",
+    "description": "Error reason when the iframe emits a generic error event"
+  },
+  "splitViewErrorCannotAccessContent": {
+    "message": "iframe 컨텐츠에 액세스 할 수 없습니다",
+    "description": "Error reason when script cannot access the content of the iframe (likely cross-origin)"
+  },
+  "splitViewErrorRefusedConnect": {
+    "message": "웹 사이트는 연결을 거부했습니다.",
+    "description": "Error reason when the website in the iframe explicitly refuses the connection"
+  },
+  "splitViewErrorFailedSetSource": {
+    "message": "iframe 소스를 설정하지 못했습니다",
+    "description": "Error reason when setting the iframe src attribute fails"
+  },
+  "splitViewErrorLoadTimeout": {
+    "message": "시간 초과로드",
+    "description": "Error reason when the iframe content fails to load within the timeout period"
+  },
+  "splitViewErrorDetectedRefused": {
+    "message": "감지 된 연결은 오류가 거부되었습니다",
+    "description": "Error reason when connection refusal is detected by inspecting iframe content"
+  },
+  "searchPlaceholder": {
+    "message": "검색 탭 ...",
+    "description": "Placeholder text for the search input in the popup"
+  },
+  "urlValidationErrorEmpty": {
+    "message": "URL은 비어 있거나 잘못된 형식입니다",
+    "description": "Validation error reason when the URL is empty or not a string"
+  },
+  "urlValidationErrorDecoding": {
+    "message": "URL 디코딩이 실패하면 형식이 잘못되었습니다",
+    "description": "Validation error reason when URL decoding fails"
+  },
+  "urlValidationErrorDangerousPattern": {
+    "message": "URL에는 위험한 패턴, XSS 공격이 포함되어 있습니다",
+    "description": "Validation error reason when the URL matches a dangerous pattern"
+  },
+  "urlValidationErrorNormalization": {
+    "message": "URL, 아마도 악의적 인 URL을 정규화하지 못했습니다",
+    "description": "Validation error reason when URL normalization fails"
+  },
+  "urlValidationErrorInvalidFormat": {
+    "message": "잘못된 URL 형식",
+    "description": "Validation error reason when the URL format is invalid (e.g., cannot be parsed by new URL())"
+  },
+  "urlValidationErrorUnsupportedProtocol": {
+    "message": "지원되지 않는 URL 프로토콜 : $PROTOCOL$",
+    "description": "Validation error reason when the URL protocol is not http or https",
+    "placeholders": {
+      "PROTOCOL": {
+        "content": "$1",
+        "example": "ftp:"
+      }
+    }
+  },
+  "urlValidationErrorDangerousProtocol": {
+    "message": "위험한 URL 프로토콜 감지 : $PROTOCOL$",
+    "description": "Validation error reason when the URL protocol is explicitly blacklisted",
+    "placeholders": {
+      "PROTOCOL": {
+        "content": "$1",
+        "example": "javascript:"
+      }
+    }
+  },
+  "urlValidationErrorDangerousPath": {
+    "message": "URL 경로에는 위험한 패턴이 포함되어 있습니다. $PATH$",
+    "description": "Validation error reason when the URL path/query/hash matches a dangerous pattern",
+    "placeholders": {
+      "PATH": {
+        "content": "$1",
+        "example": "/path?<script>alert(1)</script>"
+      }
+    }
+  },
+  "urlValidationErrorGeneric": {
+    "message": "URL 유효성 검증 중에 오류가 발생했습니다 : $ERROR$",
+    "description": "Generic validation error reason for unexpected errors",
+    "placeholders": {
+      "ERROR": {
+        "content": "$1",
+        "example": "Something went wrong"
+      }
+    }
+  },
+  "storageInitError": {
+    "message": "저장 초기화 오류 :",
+    "description": "Error message logged when storage cache fails to initialize"
+  },
+  "urlCopyError": {
+    "message": "오류 복사 URL :",
+    "description": "Error message logged when copying URL to clipboard fails"
+  },
+  "urlValidationFailed": {
+    "message": "URL 유효성 검사 실패 :",
+    "description": "Error message logged when URL validation fails in background script"
+  },
+  "openedInNewTabSecurity": {
+    "message": "보안 유효성 검증으로 인해 새 탭에서 열렸습니다. $REASON$",
+    "description": "Status message when a URL is opened in a new tab because it failed security validation",
+    "placeholders": {
+      "REASON": {
+        "content": "$1",
+        "example": "Invalid URL format"
+      }
+    }
+  },
+  "getCurrentTabError": {
+    "message": "현재 탭을 얻는 오류",
+    "description": "Error message logged when fetching the current tab fails"
+  },
+  "rightSplitViewUpdated": {
+    "message": "오른쪽 분할보기 업데이트",
+    "description": "Status message indicating the right pane of the split view was updated"
+  },
+  "splitViewCreatedAndUpdated": {
+    "message": "분할보기가 생성되고 업데이트되었습니다",
+    "description": "Status message indicating a new split view was created and its right pane updated"
+  },
+  "splitViewRequestError": {
+    "message": "분할 요청 오류 :",
+    "description": "Error message logged for general errors during split view request handling"
+  },
+  "splitViewCreationFailed": {
+    "message": "분할보기 생성이 실패하고 새 탭에서 열렸습니다.",
+    "description": "Status message indicating split view creation failed and fallback to new tab occurred"
+  },
+  "splitViewRecoveryError": {
+    "message": "분할 회복/정리 오류 분할 :",
+    "description": "Error message logged when closing/cleaning up split view fails after another error"
+  },
+  "recoveryFailed": {
+    "message": "복구가 실패하여 새 탭에서 열렸습니다.",
+    "description": "Status message indicating recovery after an error failed, fallback to new tab occurred"
+  },
+  "splitViewDisabledLog": {
+    "message": "스플릿 뷰는 설정으로 인해 작업 클릭을 통해 비활성화됩니다.",
+    "description": "Log message when user tries to toggle split view but it's disabled in settings"
+  },
+  "splitViewErrorFallback": {
+    "message": "분할보기 모드 오류, 새 탭에서 열렸습니다",
+    "description": "Fallback message sent to content script when opening in split view fails catastrophically"
+  },
+  "splitViewClosedStatus": {
+    "message": "분할보기가 닫혔습니다",
+    "description": "Status message sent to content script when split view is successfully closed"
+  },
+  "openedInNewTabStatus": {
+    "message": "새 탭에서 열렸습니다",
+    "description": "Status message sent to content script when a URL is successfully opened in a new tab via message"
+  },
+  "optionsPageTitle": {
+    "message": "tabboost 옵션",
+    "description": "The title of the options page"
+  },
+  "domainRemoved": {
+    "message": "도메인 '$domain$' 가 무시 목록에서 성공적으로 제거되었습니다.",
+    "description": "Notification shown after a domain is successfully removed.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "removeDomain": {
+    "message": "도메인을 제거하십시오",
+    "description": "Generic text for removing a domain, maybe used in confirmations or titles."
+  },
+  "removeFromList": {
+    "message": "목록에서 제거하십시오",
+    "description": "Tooltip and accessible label for the remove button next to each domain."
+  },
+  "domainAdded": {
+    "message": "도메인 '$domain$' 가 성공적으로 추가되었습니다.",
+    "description": "Success notification when a domain is added.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "domainAddFailed": {
+    "message": "도메인 '$domain$' 를 추가하지 못했습니다.다시 시도하십시오.",
+    "description": "Error notification when adding a domain fails.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "domainRemoveFailed": {
+    "message": "도메인 '$domain$' 를 제거하지 못했습니다.다시 시도하십시오.",
+    "description": "Error notification when removing a domain fails.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "errorFetchingList": {
+    "message": "오류가 무시 목록을 가져 오십시오.다시 시도하십시오.",
+    "description": "Error notification when fetching the list fails."
+  },
+  "errorCorruptedList": {
+    "message": "목록 데이터를 무시하면 손상된 것 같습니다.스토리지 또는 재설정 설정을 확인하십시오.",
+    "description": "Error notification when the ignore list data is not an array."
+  }
+}

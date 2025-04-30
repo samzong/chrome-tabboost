@@ -1,0 +1,650 @@
+{
+  "appName": {
+    "message": "TabBoost",
+    "description": "The name of the extension"
+  },
+  "appDesc": {
+    "message": "Tabboost は、タブをより効率的に管理するのに役立つ Chrome 拡張機能です。",
+    "description": "The description of the extension"
+  },
+  "duplicateTab": {
+    "message": "現在のタブを複製します",
+    "description": "Action to duplicate the current tab"
+  },
+  "copyUrl": {
+    "message": "URLをコピーします",
+    "description": "Action to copy the current URL"
+  },
+  "toggleSplitView": {
+    "message": "分割ビューを切り替えます",
+    "description": "Action to toggle split view mode"
+  },
+  "openOptions": {
+    "message": "オープンオプション",
+    "description": "Action to open options page"
+  },
+  "popupSizePreset": {
+    "message": "ポップアップサイズプリセット",
+    "description": "Label for popup size preset dropdown"
+  },
+  "customWidth": {
+    "message": "カスタム幅",
+    "description": "Setting for custom width"
+  },
+  "customHeight": {
+    "message": "カスタム高さ",
+    "description": "Setting for custom height"
+  },
+  "defaultAction": {
+    "message": "デフォルトのアクション",
+    "description": "Setting for default action"
+  },
+  "splitViewEnabled": {
+    "message": "分割ビューを有効にします",
+    "description": "Setting for split view enabled"
+  },
+  "iframeIgnoreEnabled": {
+    "message": "Webサイトを有効にしてくださいリスト機能を無視します",
+    "description": "Label for enabling iframe ignore list"
+  },
+  "iframeIgnoreList": {
+    "message": "リストを無視します",
+    "description": "Label for iframe ignore list"
+  },
+  "autoAddToIgnoreList": {
+    "message": "$ hostname $は、無視リストに自動的に追加されました。次回は新しいタブで開きます",
+    "description": "Message shown when a website is automatically added to ignore list",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "save": {
+    "message": "保存",
+    "description": "Save button text"
+  },
+  "cancel": {
+    "message": "キャンセル",
+    "description": "Cancel button text"
+  },
+  "reset": {
+    "message": "リセット",
+    "description": "Reset button text"
+  },
+  "urlCopied": {
+    "message": "URLは正常にコピーされました！",
+    "description": "Notification when URL is copied"
+  },
+  "urlCopyFailed": {
+    "message": "URLのコピーに失敗しました！",
+    "description": "Notification when URL copy fails"
+  },
+  "loading": {
+    "message": "読み込み...",
+    "description": "Loading text"
+  },
+  "loadingPage": {
+    "message": "読み込みページ",
+    "description": "Loading page text"
+  },
+  "loadTimeout": {
+    "message": "ロードタイムアウト",
+    "description": "Loading timeout text"
+  },
+  "cannotLoadInPopup": {
+    "message": "このウェブサイトをポップアップにロードすることはできません。",
+    "description": "Message when site cannot be loaded in popup"
+  },
+  "openInNewTab": {
+    "message": "新しいタブで開きます",
+    "description": "Button to open in new tab"
+  },
+  "addToIgnoreList": {
+    "message": "リストを無視して追加します",
+    "description": "Button text to add a domain to the ignore list"
+  },
+  "close": {
+    "message": "近い",
+    "description": "Close button text"
+  },
+  "popupSizeSettings": {
+    "message": "ポップアップサイズの設定",
+    "description": "Title for popup size settings"
+  },
+  "adjustPopupSize": {
+    "message": "ポップアップサイズを調整して、最高のブラウジングエクスペリエンスを取得します",
+    "description": "Description for popup size settings"
+  },
+  "defaultSize": {
+    "message": "デフォルト（80％）",
+    "description": "Default size option"
+  },
+  "largeSize": {
+    "message": "大きい（90％）",
+    "description": "Large size option"
+  },
+  "customSize": {
+    "message": "カスタム",
+    "description": "Custom size option"
+  },
+  "customWidthLabel": {
+    "message": "カスタム幅：$WIDTH$%",
+    "description": "Label for custom width slider",
+    "placeholders": {
+      "WIDTH": {
+        "content": "$1",
+        "example": "80"
+      }
+    }
+  },
+  "customHeightLabel": {
+    "message": "カスタム高さ：$HEIGHT$%",
+    "description": "Label for custom height slider",
+    "placeholders": {
+      "HEIGHT": {
+        "content": "$1",
+        "example": "80"
+      }
+    }
+  },
+  "sizePreview": {
+    "message": "サイズプレビュー",
+    "description": "Title for size preview section"
+  },
+  "previewDescription": {
+    "message": "灰色の領域は、クリック可能な空きスペースを表します",
+    "description": "Description for size preview"
+  },
+  "iframeCompatibility": {
+    "message": "iframe互換性設定",
+    "description": "Title for iframe compatibility settings tab"
+  },
+  "closeSplitView": {
+    "message": "スプリットビューを閉じます",
+    "description": "Button to close split view"
+  },
+  "closeLeftView": {
+    "message": "左のビューを閉じます",
+    "description": "Button to close left view in split view"
+  },
+  "closeRightView": {
+    "message": "右ビューを閉じます",
+    "description": "Button to close right view in split view"
+  },
+  "cannotLoadInSplitView": {
+    "message": "このコンテンツをスプリットビューにロードすることはできません",
+    "description": "Error message when content cannot be loaded in split view"
+  },
+  "websiteNotAllowed": {
+    "message": "このWebサイトは、iframeに埋め込むことを許可しない場合があります",
+    "description": "Message explaining why content cannot be loaded in split view"
+  },
+  "splitViewFailure": {
+    "message": "[新しいタブで開く]の読み込みが失敗しました...",
+    "description": "Notification when split view fails to load"
+  },
+  "generalSettings": {
+    "message": "一般的な設定",
+    "description": "Title for general settings tab"
+  },
+  "browsingMode": {
+    "message": "ブラウジングモード",
+    "description": "Title for browsing mode section"
+  },
+  "splitViewSettings": {
+    "message": "[設定]を分割します",
+    "description": "Title for split view settings section"
+  },
+  "configureExtension": {
+    "message": "拡張動作を構成します",
+    "description": "Description for general settings"
+  },
+  "configureSplitView": {
+    "message": "分割ビューの動作と外観を構成します",
+    "description": "Description for split view settings"
+  },
+  "splitViewUsage": {
+    "message": "スプリットビューの使用法：",
+    "description": "Title for split view usage instructions"
+  },
+  "splitViewInstructions": {
+    "message": "スプリットビューモードでは、コマンド+シフトを保持し、リンクをクリックして右側にそれらを開きます",
+    "description": "Instructions for using split view"
+  },
+  "configureExtensionBehavior": {
+    "message": "拡張機能の基本的な動作を構成します",
+    "description": "Description for general settings section"
+  },
+  "viewModeSettings": {
+    "message": "モードの設定を表示します",
+    "description": "Title for view mode settings tab"
+  },
+  "splitViewDescription": {
+    "message": "スプリットビューモードの動作と外観を構成します",
+    "description": "Description for split view settings"
+  },
+  "splitViewUsageInstructions": {
+    "message": "[使用]の使用手順を分割します：",
+    "description": "Title for split view usage instructions"
+  },
+  "splitViewUsageDetail": {
+    "message": "スプリットビューモードでは、コマンド+シフトを保持し、リンクをクリックして右側に開きます",
+    "description": "Instructions for using split view mode"
+  },
+  "iframeCompatibilityDescription": {
+    "message": "ウェブサイトのロードされたポップアップとスプリットビューを構成する",
+    "description": "Description for iframe compatibility settings"
+  },
+  "iframeIgnoreEnabledDescription": {
+    "message": "有効にすると、以下のリストのWebサイトは、ポップアップまたはスプリットビューを使用する代わりに、新しいタブに直接開きます",
+    "description": "Description for iframe ignore list enable option"
+  },
+  "noIgnoredWebsites": {
+    "message": "まだ無視されたウェブサイトはありません",
+    "description": "Text shown when the ignore list is empty"
+  },
+  "domainFormatGuide": {
+    "message": "ドメイン形式ガイド：",
+    "description": "Title for domain format guide"
+  },
+  "exactMatchExample": {
+    "message": "embles.com- example.comのみを一致させる（正確な一致）",
+    "description": "Example of exact match domain format"
+  },
+  "wildcardMatchExample": {
+    "message": "*.example.com- example.comのすべてのサブドメインを一致させます",
+    "description": "Example of wildcard domain format"
+  },
+  "enterDomainPlaceholder": {
+    "message": "無視するためにドメインを入力します",
+    "description": "Placeholder text for the domain input field"
+  },
+  "systemReservedDomains": {
+    "message": "System Reserved Domains (cannot be removed)",
+    "description": "Title for the section showing system-reserved domains"
+  },
+  "exactMatch": {
+    "message": "ちょうど",
+    "description": "Badge text indicating an exact domain match"
+  },
+  "wildcardMatch": {
+    "message": "ワイルドカード",
+    "description": "Badge text indicating a wildcard domain match"
+  },
+  "systemBadge": {
+    "message": "システム",
+    "description": "Badge text indicating a system-reserved domain"
+  },
+  "extensionFooter": {
+    "message": "TabBoost-ブラウジングエクスペリエンスをより効率的にします",
+    "description": "Footer text in options page"
+  },
+  "popupFooter": {
+    "message": "TabBoost",
+    "description": "Footer text in popup"
+  },
+  "autoAddToIgnoreListOption": {
+    "message": "無視リストにロードできないWebサイトを自動的に追加します",
+    "description": "Option to automatically add websites that fail to load to the ignore list"
+  },
+  "popupSizeHint": {
+    "message": "ポップアップサイズは、拡張オプションで調整できます",
+    "description": "Hint that popup size can be adjusted in options"
+  },
+  "settingsSaved": {
+    "message": "設定が保存されました",
+    "description": "Message shown when settings are saved successfully"
+  },
+  "settingsSaveFailed": {
+    "message": "設定を保存できませんでした",
+    "description": "Message shown when settings failed to save"
+  },
+  "waitingRefreshWebsite": {
+    "message": "Webページの更新を待っています",
+    "description": "Message shown when waiting for webpage to refresh"
+  },
+  "savePageConfirmation": {
+    "message": "このページを保存しますか？",
+    "description": "Confirmation message when user tries to save a page"
+  },
+  "confirm": {
+    "message": "確認する",
+    "description": "Confirm button text"
+  },
+  "continueToSave": {
+    "message": "保存し続けます",
+    "description": "Button text to proceed with saving the page"
+  },
+  "savePageInstructionMac": {
+    "message": "このページをファイルを介して保存することができます→ページを保存...または3秒以内にコマンド+sを再度押します",
+    "description": "Instructions for Mac users on how to save the page after clicking continue"
+  },
+  "savePageInstructionOther": {
+    "message": "このページをファイルで保存することができます→[ページを保存...または3秒以内にctrl+sを再び押します",
+    "description": "Instructions for non-Mac users on how to save the page after clicking continue"
+  },
+  "closeLeftViewTitle": {
+    "message": "左のコンテンツを閉じて右に保ちます",
+    "description": "Title for close left view button in split view"
+  },
+  "closeRightViewTitle": {
+    "message": "右のコンテンツを閉じます",
+    "description": "Title for close right view button in split view"
+  },
+  "failedToInitSplitView": {
+    "message": "スプリットビューの初期化に失敗しました。ページを更新してください",
+    "description": "Error message shown when split view DOM fails to initialize."
+  },
+  "failedToRestoreOriginal": {
+    "message": "元のページの復元に失敗しました。ブラウザを更新してください",
+    "description": "Error message shown when restoring original page content fails."
+  },
+  "cannotFindOriginalContent": {
+    "message": "元のページコンテンツが見つかりません。ブラウザを更新してください",
+    "description": "Error message shown when original page content cannot be found for restoration."
+  },
+  "refreshPage": {
+    "message": "更新ページ",
+    "description": "Button text to refresh the page after an error."
+  },
+  "failedToAddToIgnoreList": {
+    "message": "無視するリストに追加できませんでした",
+    "description": "Error message when adding to ignore list fails"
+  },
+  "addedToIgnoreList": {
+    "message": "$ hostname $がIngroreリストに追加されており、次回は新しいタブに直接開かれます。",
+    "description": "Message shown when a website is added to ignore list",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "alreadyInIgnoreList": {
+    "message": "$ hostname $はすでに無視リストにあります。",
+    "description": "Message shown when a website is already in ignore list",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "autoAddedToIgnoreList": {
+    "message": "$ hostname $は無視リストに自動的に追加されており、次回は新しいタブに直接開かれます。",
+    "description": "Message shown when a website is automatically added to ignore list",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "enterValidDomain": {
+    "message": "有効なドメイン名を入力してください。",
+    "description": "Error message when the domain input is empty or invalid"
+  },
+  "invalidWildcardFormat": {
+    "message": "無効なワイルドカード形式。「*.example.com」のようでなければなりません。",
+    "description": "Error message for invalid wildcard domain format"
+  },
+  "domainInSystemReserved": {
+    "message": "ドメイン '$domain$' またはその親はシステムによって予約されており、追加できません。",
+    "description": "Error message when trying to add a system-reserved domain",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "google.com"
+      }
+    }
+  },
+  "addedToIgnoreListAlert": {
+    "message": "$hostname$ がIngroreリストに追加されており、次回は新しいタブに直接開かれます。",
+    "description": "Alert shown when a hostname is successfully added to the ignore list.",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "alreadyInIgnoreListAlert": {
+    "message": "$hostname$ はすでに無視リストにあります。",
+    "description": "Alert shown when trying to add a hostname that is already in the ignore list.",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "addToIgnoreListFailedAlert": {
+    "message": "無視するリストに追加できませんでした。",
+    "description": "Alert shown when adding a hostname to the ignore list fails."
+  },
+  "contentTooLarge": {
+    "message": "コンテンツが大きすぎるため、復元のために保存することはできません。",
+    "description": "Message shown in restored content when original page was too large to save."
+  },
+  "restoreError": {
+    "message": "タブコンテンツを復元できませんでした。",
+    "description": "Error message when restoring tab content fails"
+  },
+  "splitViewErrorIframeEvent": {
+    "message": "iframe エラーイベント",
+    "description": "Error reason when the iframe emits a generic error event"
+  },
+  "splitViewErrorCannotAccessContent": {
+    "message": "IFRAME コンテンツにアクセスできません",
+    "description": "Error reason when script cannot access the content of the iframe (likely cross-origin)"
+  },
+  "splitViewErrorRefusedConnect": {
+    "message": "ウェブサイトは接続を拒否しました。",
+    "description": "Error reason when the website in the iframe explicitly refuses the connection"
+  },
+  "splitViewErrorFailedSetSource": {
+    "message": "iframe ソースの設定に失敗しました",
+    "description": "Error reason when setting the iframe src attribute fails"
+  },
+  "splitViewErrorLoadTimeout": {
+    "message": "ロードタイムアウト",
+    "description": "Error reason when the iframe content fails to load within the timeout period"
+  },
+  "splitViewErrorDetectedRefused": {
+    "message": "検出された接続はエラーを拒否しました",
+    "description": "Error reason when connection refusal is detected by inspecting iframe content"
+  },
+  "searchPlaceholder": {
+    "message": "タブを検索...",
+    "description": "Placeholder text for the search input in the popup"
+  },
+  "urlValidationErrorEmpty": {
+    "message": "URLは空または誤った形式です",
+    "description": "Validation error reason when the URL is empty or not a string"
+  },
+  "urlValidationErrorDecoding": {
+    "message": "URL デコードが失敗し、フォーマットが正しくありません",
+    "description": "Validation error reason when URL decoding fails"
+  },
+  "urlValidationErrorDangerousPattern": {
+    "message": "URL には、危険なパターン、場合によってはXSS攻撃が含まれています",
+    "description": "Validation error reason when the URL matches a dangerous pattern"
+  },
+  "urlValidationErrorNormalization": {
+    "message": "おそらく悪意のある URL、おそらくURLの正規化に失敗しました",
+    "description": "Validation error reason when URL normalization fails"
+  },
+  "urlValidationErrorInvalidFormat": {
+    "message": "無効なURL形式",
+    "description": "Validation error reason when the URL format is invalid (e.g., cannot be parsed by new URL())"
+  },
+  "urlValidationErrorUnsupportedProtocol": {
+    "message": "サポートされていないURLプロトコル：$PROTOCOL$",
+    "description": "Validation error reason when the URL protocol is not http or https",
+    "placeholders": {
+      "PROTOCOL": {
+        "content": "$1",
+        "example": "ftp:"
+      }
+    }
+  },
+  "urlValidationErrorDangerousProtocol": {
+    "message": "検出された危険なURLプロトコル：$PROTOCOL$",
+    "description": "Validation error reason when the URL protocol is explicitly blacklisted",
+    "placeholders": {
+      "PROTOCOL": {
+        "content": "$1",
+        "example": "javascript:"
+      }
+    }
+  },
+  "urlValidationErrorDangerousPath": {
+    "message": "URLパスには危険なパターンが含まれています：$PATH$",
+    "description": "Validation error reason when the URL path/query/hash matches a dangerous pattern",
+    "placeholders": {
+      "PATH": {
+        "content": "$1",
+        "example": "/path?<script>alert(1)</script>"
+      }
+    }
+  },
+  "urlValidationErrorGeneric": {
+    "message": "URL検証中にエラーが発生しました：$ERROR$",
+    "description": "Generic validation error reason for unexpected errors",
+    "placeholders": {
+      "ERROR": {
+        "content": "$1",
+        "example": "Something went wrong"
+      }
+    }
+  },
+  "storageInitError": {
+    "message": "ストレージ初期化エラー：",
+    "description": "Error message logged when storage cache fails to initialize"
+  },
+  "urlCopyError": {
+    "message": "エラーコピーURL：",
+    "description": "Error message logged when copying URL to clipboard fails"
+  },
+  "urlValidationFailed": {
+    "message": "URL検証に失敗しました：",
+    "description": "Error message logged when URL validation fails in background script"
+  },
+  "openedInNewTabSecurity": {
+    "message": "セキュリティ検証のために新しいタブで開かれました：$REASON$",
+    "description": "Status message when a URL is opened in a new tab because it failed security validation",
+    "placeholders": {
+      "REASON": {
+        "content": "$1",
+        "example": "Invalid URL format"
+      }
+    }
+  },
+  "getCurrentTabError": {
+    "message": "[現在のタブを取得してもエラー",
+    "description": "Error message logged when fetching the current tab fails"
+  },
+  "rightSplitViewUpdated": {
+    "message": "右分割ビューが更新されました",
+    "description": "Status message indicating the right pane of the split view was updated"
+  },
+  "splitViewCreatedAndUpdated": {
+    "message": "作成および更新された分割ビュー",
+    "description": "Status message indicating a new split view was created and its right pane updated"
+  },
+  "splitViewRequestError": {
+    "message": "[リクエストエラーを分割]：",
+    "description": "Error message logged for general errors during split view request handling"
+  },
+  "splitViewCreationFailed": {
+    "message": "[新しいタブで開く]の分割ビューの作成が失敗しました。",
+    "description": "Status message indicating split view creation failed and fallback to new tab occurred"
+  },
+  "splitViewRecoveryError": {
+    "message": "回復/クリーンアップエラーを分割：",
+    "description": "Error message logged when closing/cleaning up split view fails after another error"
+  },
+  "recoveryFailed": {
+    "message": "回復に失敗し、新しいタブで開きました。",
+    "description": "Status message indicating recovery after an error failed, fallback to new tab occurred"
+  },
+  "splitViewDisabledLog": {
+    "message": "設定のためにアクションクリックして分割ビューは無効になります。",
+    "description": "Log message when user tries to toggle split view but it's disabled in settings"
+  },
+  "splitViewErrorFallback": {
+    "message": "[新しいタブで開いた分割ビューモードエラー）",
+    "description": "Fallback message sent to content script when opening in split view fails catastrophically"
+  },
+  "splitViewClosedStatus": {
+    "message": "分割ビューは閉じています",
+    "description": "Status message sent to content script when split view is successfully closed"
+  },
+  "openedInNewTabStatus": {
+    "message": "新しいタブで開きます",
+    "description": "Status message sent to content script when a URL is successfully opened in a new tab via message"
+  },
+  "optionsPageTitle": {
+    "message": "Tabboostオプション",
+    "description": "The title of the options page"
+  },
+  "domainRemoved": {
+    "message": "Domain '$domain$' は、無視リストから正常に削除されました。",
+    "description": "Notification shown after a domain is successfully removed.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "removeDomain": {
+    "message": "ドメインを削除します",
+    "description": "Generic text for removing a domain, maybe used in confirmations or titles."
+  },
+  "removeFromList": {
+    "message": "リストから削除します",
+    "description": "Tooltip and accessible label for the remove button next to each domain."
+  },
+  "domainAdded": {
+    "message": "domain '$domain$' が正常に追加されました。",
+    "description": "Success notification when a domain is added.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "domainAddFailed": {
+    "message": "domain '$domain$'を追加できませんでした。もう一度やり直してください。",
+    "description": "Error notification when adding a domain fails.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "domainRemoveFailed": {
+    "message": "domain '$domain$'を削除できませんでした。もう一度やり直してください。",
+    "description": "Error notification when removing a domain fails.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "errorFetchingList": {
+    "message": "Ingroreリストを取得するエラー。もう一度やり直してください。",
+    "description": "Error notification when fetching the list fails."
+  },
+  "errorCorruptedList": {
+    "message": "リストデータを無視すると破損しているようです。ストレージまたはリセット設定を確認してください。",
+    "description": "Error notification when the ignore list data is not an array."
+  }
+}

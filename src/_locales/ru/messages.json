@@ -1,0 +1,650 @@
+{
+  "appName": {
+    "message": "Tabboost",
+    "description": "The name of the extension"
+  },
+  "appDesc": {
+    "message": "Tabboost - это расширение Chrome, которое помогает вам более эффективно управлять вашими вкладками.",
+    "description": "The description of the extension"
+  },
+  "duplicateTab": {
+    "message": "Дублировать вкладку «Текущий»",
+    "description": "Action to duplicate the current tab"
+  },
+  "copyUrl": {
+    "message": "Копия URL",
+    "description": "Action to copy the current URL"
+  },
+  "toggleSplitView": {
+    "message": "Переключить разделительный вид",
+    "description": "Action to toggle split view mode"
+  },
+  "openOptions": {
+    "message": "Открытые варианты",
+    "description": "Action to open options page"
+  },
+  "popupSizePreset": {
+    "message": "Размер всплывающего окна предустановка",
+    "description": "Label for popup size preset dropdown"
+  },
+  "customWidth": {
+    "message": "Пользовательская ширина",
+    "description": "Setting for custom width"
+  },
+  "customHeight": {
+    "message": "Пользовательская высота",
+    "description": "Setting for custom height"
+  },
+  "defaultAction": {
+    "message": "Действие по умолчанию",
+    "description": "Setting for default action"
+  },
+  "splitViewEnabled": {
+    "message": "Раздельный вид включен",
+    "description": "Setting for split view enabled"
+  },
+  "iframeIgnoreEnabled": {
+    "message": "Включить сайт игнорировать функцию списка",
+    "description": "Label for enabling iframe ignore list"
+  },
+  "iframeIgnoreList": {
+    "message": "Игнорировать список",
+    "description": "Label for iframe ignore list"
+  },
+  "autoAddToIgnoreList": {
+    "message": "$hostname$ было автоматически добавлено в список игнорирования.В следующий раз, когда он откроется в новой вкладке",
+    "description": "Message shown when a website is automatically added to ignore list",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "save": {
+    "message": "Сохранять",
+    "description": "Save button text"
+  },
+  "cancel": {
+    "message": "Отмена",
+    "description": "Cancel button text"
+  },
+  "reset": {
+    "message": "Перезагрузить",
+    "description": "Reset button text"
+  },
+  "urlCopied": {
+    "message": "URL успешно скопировал!",
+    "description": "Notification when URL is copied"
+  },
+  "urlCopyFailed": {
+    "message": "Не удалось скопировать URL!",
+    "description": "Notification when URL copy fails"
+  },
+  "loading": {
+    "message": "Загрузка ...",
+    "description": "Loading text"
+  },
+  "loadingPage": {
+    "message": "Загрузка страницы",
+    "description": "Loading page text"
+  },
+  "loadTimeout": {
+    "message": "Тайм -аут загрузки",
+    "description": "Loading timeout text"
+  },
+  "cannotLoadInPopup": {
+    "message": "Не могу загрузить этот сайт во всплывающем окне.",
+    "description": "Message when site cannot be loaded in popup"
+  },
+  "openInNewTab": {
+    "message": "Открыто в новой вкладке",
+    "description": "Button to open in new tab"
+  },
+  "addToIgnoreList": {
+    "message": "Добавить в список игнорировать",
+    "description": "Button text to add a domain to the ignore list"
+  },
+  "close": {
+    "message": "Закрывать",
+    "description": "Close button text"
+  },
+  "popupSizeSettings": {
+    "message": "Настройки размера всплывающего окна",
+    "description": "Title for popup size settings"
+  },
+  "adjustPopupSize": {
+    "message": "Настройте размер всплывателя, чтобы получить лучший опыт просмотра",
+    "description": "Description for popup size settings"
+  },
+  "defaultSize": {
+    "message": "По умолчанию (80%)",
+    "description": "Default size option"
+  },
+  "largeSize": {
+    "message": "Большой (90%)",
+    "description": "Large size option"
+  },
+  "customSize": {
+    "message": "Обычай",
+    "description": "Custom size option"
+  },
+  "customWidthLabel": {
+    "message": "Пользовательская ширина: $ ширина $%",
+    "description": "Label for custom width slider",
+    "placeholders": {
+      "WIDTH": {
+        "content": "$1",
+        "example": "80"
+      }
+    }
+  },
+  "customHeightLabel": {
+    "message": "Пользовательская высота: $ высота $%",
+    "description": "Label for custom height slider",
+    "placeholders": {
+      "HEIGHT": {
+        "content": "$1",
+        "example": "80"
+      }
+    }
+  },
+  "sizePreview": {
+    "message": "Предварительный просмотр размера",
+    "description": "Title for size preview section"
+  },
+  "previewDescription": {
+    "message": "Серая область представляет собой кликабельное пустое пространство",
+    "description": "Description for size preview"
+  },
+  "iframeCompatibility": {
+    "message": "Настройки совместимости IFRAME",
+    "description": "Title for iframe compatibility settings tab"
+  },
+  "closeSplitView": {
+    "message": "Закрыть разделительный вид",
+    "description": "Button to close split view"
+  },
+  "closeLeftView": {
+    "message": "Закрыть влево вид",
+    "description": "Button to close left view in split view"
+  },
+  "closeRightView": {
+    "message": "Закрыть правый вид",
+    "description": "Button to close right view in split view"
+  },
+  "cannotLoadInSplitView": {
+    "message": "Не может загрузить этот контент в разделительном представлении",
+    "description": "Error message when content cannot be loaded in split view"
+  },
+  "websiteNotAllowed": {
+    "message": "Этот веб -сайт может не допустить встраивания в iframe",
+    "description": "Message explaining why content cannot be loaded in split view"
+  },
+  "splitViewFailure": {
+    "message": "Раздельное представление о загрузке, открытие в новой вкладке ...",
+    "description": "Notification when split view fails to load"
+  },
+  "generalSettings": {
+    "message": "Общие настройки",
+    "description": "Title for general settings tab"
+  },
+  "browsingMode": {
+    "message": "Режим просмотра",
+    "description": "Title for browsing mode section"
+  },
+  "splitViewSettings": {
+    "message": "Настройки разделителя",
+    "description": "Title for split view settings section"
+  },
+  "configureExtension": {
+    "message": "Настройка поведения расширения",
+    "description": "Description for general settings"
+  },
+  "configureSplitView": {
+    "message": "Настройка поведения и внешнего вида разделенного представления",
+    "description": "Description for split view settings"
+  },
+  "splitViewUsage": {
+    "message": "Раздельное представление об использовании:",
+    "description": "Title for split view usage instructions"
+  },
+  "splitViewInstructions": {
+    "message": "В режиме разделенного просмотра удерживайте команду+shift и нажмите ссылки, чтобы открыть их на правой стороне",
+    "description": "Instructions for using split view"
+  },
+  "configureExtensionBehavior": {
+    "message": "Настройка базового поведения расширения",
+    "description": "Description for general settings section"
+  },
+  "viewModeSettings": {
+    "message": "Просмотр настройки режима",
+    "description": "Title for view mode settings tab"
+  },
+  "splitViewDescription": {
+    "message": "Настроить поведение и внешний вид режима разделенного просмотра",
+    "description": "Description for split view settings"
+  },
+  "splitViewUsageInstructions": {
+    "message": "Раздельное представление Инструкции по использованию:",
+    "description": "Title for split view usage instructions"
+  },
+  "splitViewUsageDetail": {
+    "message": "В режиме разделенного просмотра удерживайте команду+shift и нажмите на ссылку, чтобы открыть ее справа",
+    "description": "Instructions for using split view mode"
+  },
+  "iframeCompatibilityDescription": {
+    "message": "Настройка того, как загружаются веб -сайты во всплывающих окнах и разделительно",
+    "description": "Description for iframe compatibility settings"
+  },
+  "iframeIgnoreEnabledDescription": {
+    "message": "При включении веб -сайты в списке ниже откроются непосредственно на новой вкладке вместо использования всплывающего или разделенного представления",
+    "description": "Description for iframe ignore list enable option"
+  },
+  "noIgnoredWebsites": {
+    "message": "Еще не игнорируемые веб -сайты",
+    "description": "Text shown when the ignore list is empty"
+  },
+  "domainFormatGuide": {
+    "message": "Руководство по формату домена:",
+    "description": "Title for domain format guide"
+  },
+  "exactMatchExample": {
+    "message": "example.com - совпадает только с примером.com (точное совпадение)",
+    "description": "Example of exact match domain format"
+  },
+  "wildcardMatchExample": {
+    "message": "*.example.com - Сопоставление всех субдоменов примеров.com",
+    "description": "Example of wildcard domain format"
+  },
+  "enterDomainPlaceholder": {
+    "message": "Введите домен, чтобы игнорировать, например,: example.com или *.example.com",
+    "description": "Placeholder text for the domain input field"
+  },
+  "systemReservedDomains": {
+    "message": "Зарезервированные домены системы (не могут быть удалены)",
+    "description": "Title for the section showing system-reserved domains"
+  },
+  "exactMatch": {
+    "message": "Точный",
+    "description": "Badge text indicating an exact domain match"
+  },
+  "wildcardMatch": {
+    "message": "Подстановочный знак",
+    "description": "Badge text indicating a wildcard domain match"
+  },
+  "systemBadge": {
+    "message": "Система",
+    "description": "Badge text indicating a system-reserved domain"
+  },
+  "extensionFooter": {
+    "message": "Tabboost - Сделайте свой опыт просмотра более эффективным",
+    "description": "Footer text in options page"
+  },
+  "popupFooter": {
+    "message": "Tabboost",
+    "description": "Footer text in popup"
+  },
+  "autoAddToIgnoreListOption": {
+    "message": "Автоматически добавлять веб -сайты, которые не загружаются в список игнорирования",
+    "description": "Option to automatically add websites that fail to load to the ignore list"
+  },
+  "popupSizeHint": {
+    "message": "Размер всплывающего окна можно настроить в параметрах расширения",
+    "description": "Hint that popup size can be adjusted in options"
+  },
+  "settingsSaved": {
+    "message": "Настройки сохранились",
+    "description": "Message shown when settings are saved successfully"
+  },
+  "settingsSaveFailed": {
+    "message": "Не удалось сохранить настройки",
+    "description": "Message shown when settings failed to save"
+  },
+  "waitingRefreshWebsite": {
+    "message": "В ожидании обновления веб -страницы",
+    "description": "Message shown when waiting for webpage to refresh"
+  },
+  "savePageConfirmation": {
+    "message": "Вы хотите сохранить эту страницу?",
+    "description": "Confirmation message when user tries to save a page"
+  },
+  "confirm": {
+    "message": "Подтверждать",
+    "description": "Confirm button text"
+  },
+  "continueToSave": {
+    "message": "Продолжать сохранять",
+    "description": "Button text to proceed with saving the page"
+  },
+  "savePageInstructionMac": {
+    "message": "Вы можете сохранить эту страницу через файл → Сохранить страницу как ... или снова нажмите команды+s в течение 3 секунд",
+    "description": "Instructions for Mac users on how to save the page after clicking continue"
+  },
+  "savePageInstructionOther": {
+    "message": "Вы можете сохранить эту страницу через файл → Сохранить страницу как ... или нажмите Ctrl+S снова в течение 3 секунд",
+    "description": "Instructions for non-Mac users on how to save the page after clicking continue"
+  },
+  "closeLeftViewTitle": {
+    "message": "Закройте левый контент и держите вправо",
+    "description": "Title for close left view button in split view"
+  },
+  "closeRightViewTitle": {
+    "message": "Закрыть правое содержание",
+    "description": "Title for close right view button in split view"
+  },
+  "failedToInitSplitView": {
+    "message": "Не удалось инициализировать разделенное представление, пожалуйста, обновите страницу",
+    "description": "Error message shown when split view DOM fails to initialize."
+  },
+  "failedToRestoreOriginal": {
+    "message": "Не удалось восстановить оригинальную страницу, пожалуйста, обновить браузер",
+    "description": "Error message shown when restoring original page content fails."
+  },
+  "cannotFindOriginalContent": {
+    "message": "Не могу найти оригинальное содержание страницы, пожалуйста, обновите браузер",
+    "description": "Error message shown when original page content cannot be found for restoration."
+  },
+  "refreshPage": {
+    "message": "Обновить страницу",
+    "description": "Button text to refresh the page after an error."
+  },
+  "failedToAddToIgnoreList": {
+    "message": "Не удалось добавить в список игнорировать",
+    "description": "Error message when adding to ignore list fails"
+  },
+  "addedToIgnoreList": {
+    "message": "$hostname$ было добавлено в список игнорирования, и в следующий раз он будет открыт непосредственно на новой вкладке.",
+    "description": "Message shown when a website is added to ignore list",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "alreadyInIgnoreList": {
+    "message": "$ hostname $ уже в списке игнорирования.",
+    "description": "Message shown when a website is already in ignore list",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "autoAddedToIgnoreList": {
+    "message": "$ hostname $ было автоматически добавлено в список игнорирования, и в следующий раз он будет открыт непосредственно на новой вкладке.",
+    "description": "Message shown when a website is automatically added to ignore list",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "enterValidDomain": {
+    "message": "Пожалуйста, введите действительное доменное имя.",
+    "description": "Error message when the domain input is empty or invalid"
+  },
+  "invalidWildcardFormat": {
+    "message": "Неверный формат подстановочного знака.Должно быть, как '*.example.com'.",
+    "description": "Error message for invalid wildcard domain format"
+  },
+  "domainInSystemReserved": {
+    "message": "Домен '$ Domain $' или его родитель зарезервирован системой и не может быть добавлен.",
+    "description": "Error message when trying to add a system-reserved domain",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "google.com"
+      }
+    }
+  },
+  "addedToIgnoreListAlert": {
+    "message": "$hostname$ было добавлено в список игнорирования, и в следующий раз он будет открыт непосредственно на новой вкладке.",
+    "description": "Alert shown when a hostname is successfully added to the ignore list.",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "alreadyInIgnoreListAlert": {
+    "message": "$hostname$ уже в списке игнорирования.",
+    "description": "Alert shown when trying to add a hostname that is already in the ignore list.",
+    "placeholders": {
+      "hostname": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "addToIgnoreListFailedAlert": {
+    "message": "Не удалось добавить в список игнорировать.",
+    "description": "Alert shown when adding a hostname to the ignore list fails."
+  },
+  "contentTooLarge": {
+    "message": "Content is too large, cannot be saved for restoration.",
+    "description": "Message shown in restored content when original page was too large to save."
+  },
+  "restoreError": {
+    "message": "Could not restore tab content.",
+    "description": "Error message when restoring tab content fails"
+  },
+  "splitViewErrorIframeEvent": {
+    "message": "Событие ошибки iframe",
+    "description": "Error reason when the iframe emits a generic error event"
+  },
+  "splitViewErrorCannotAccessContent": {
+    "message": "Не может получить доступ к контенту iframe",
+    "description": "Error reason when script cannot access the content of the iframe (likely cross-origin)"
+  },
+  "splitViewErrorRefusedConnect": {
+    "message": "Веб -сайт отказался подключаться.",
+    "description": "Error reason when the website in the iframe explicitly refuses the connection"
+  },
+  "splitViewErrorFailedSetSource": {
+    "message": "Не удалось установить источник iframe",
+    "description": "Error reason when setting the iframe src attribute fails"
+  },
+  "splitViewErrorLoadTimeout": {
+    "message": "Тайм -аут загрузки",
+    "description": "Error reason when the iframe content fails to load within the timeout period"
+  },
+  "splitViewErrorDetectedRefused": {
+    "message": "Обнаруженное соединение отказалось от ошибки",
+    "description": "Error reason when connection refusal is detected by inspecting iframe content"
+  },
+  "searchPlaceholder": {
+    "message": "Поиск вкладок ...",
+    "description": "Placeholder text for the search input in the popup"
+  },
+  "urlValidationErrorEmpty": {
+    "message": "URL -адрес является пустым или неправильным форматом",
+    "description": "Validation error reason when the URL is empty or not a string"
+  },
+  "urlValidationErrorDecoding": {
+    "message": "URL декодирование не удалось, формат неверен",
+    "description": "Validation error reason when URL decoding fails"
+  },
+  "urlValidationErrorDangerousPattern": {
+    "message": "URL содержит опасные закономерности, возможно, атаки XSS",
+    "description": "Validation error reason when the URL matches a dangerous pattern"
+  },
+  "urlValidationErrorNormalization": {
+    "message": "Не удалось нормализовать URL, возможно, злонамеренный URL",
+    "description": "Validation error reason when URL normalization fails"
+  },
+  "urlValidationErrorInvalidFormat": {
+    "message": "Неверный формат URL",
+    "description": "Validation error reason when the URL format is invalid (e.g., cannot be parsed by new URL())"
+  },
+  "urlValidationErrorUnsupportedProtocol": {
+    "message": "Неподдерживаемый URL -протокол: $PROTOCOL$",
+    "description": "Validation error reason when the URL protocol is not http or https",
+    "placeholders": {
+      "PROTOCOL": {
+        "content": "$1",
+        "example": "ftp:"
+      }
+    }
+  },
+  "urlValidationErrorDangerousProtocol": {
+    "message": "Обнаруженный опасный протокол URL: $PROTOCOL$",
+    "description": "Validation error reason when the URL protocol is explicitly blacklisted",
+    "placeholders": {
+      "PROTOCOL": {
+        "content": "$1",
+        "example": "javascript:"
+      }
+    }
+  },
+  "urlValidationErrorDangerousPath": {
+    "message": "Путь URL содержит опасные закономерности: $PATH$",
+    "description": "Validation error reason when the URL path/query/hash matches a dangerous pattern",
+    "placeholders": {
+      "PATH": {
+        "content": "$1",
+        "example": "/path?<script>alert(1)</script>"
+      }
+    }
+  },
+  "urlValidationErrorGeneric": {
+    "message": "Ошибка произошла во время проверки URL: $ERROR$",
+    "description": "Generic validation error reason for unexpected errors",
+    "placeholders": {
+      "ERROR": {
+        "content": "$1",
+        "example": "Something went wrong"
+      }
+    }
+  },
+  "storageInitError": {
+    "message": "Ошибка инициализации хранилища:",
+    "description": "Error message logged when storage cache fails to initialize"
+  },
+  "urlCopyError": {
+    "message": "Ошибка копирования URL:",
+    "description": "Error message logged when copying URL to clipboard fails"
+  },
+  "urlValidationFailed": {
+    "message": "Проверка URL -адреса не удалась:",
+    "description": "Error message logged when URL validation fails in background script"
+  },
+  "openedInNewTabSecurity": {
+    "message": "Открыт в новой вкладке из -за проверки безопасности: $REASON$",
+    "description": "Status message when a URL is opened in a new tab because it failed security validation",
+    "placeholders": {
+      "REASON": {
+        "content": "$1",
+        "example": "Invalid URL format"
+      }
+    }
+  },
+  "getCurrentTabError": {
+    "message": "Ошибка получения текущей вкладки",
+    "description": "Error message logged when fetching the current tab fails"
+  },
+  "rightSplitViewUpdated": {
+    "message": "Правый разделенный просмотр обновлен",
+    "description": "Status message indicating the right pane of the split view was updated"
+  },
+  "splitViewCreatedAndUpdated": {
+    "message": "Разделенное представление создано и обновляется",
+    "description": "Status message indicating a new split view was created and its right pane updated"
+  },
+  "splitViewRequestError": {
+    "message": "Ошибка запроса с разделенным представлением:",
+    "description": "Error message logged for general errors during split view request handling"
+  },
+  "splitViewCreationFailed": {
+    "message": "Раздельное представление о создании не удалось, открыв в новой вкладке.",
+    "description": "Status message indicating split view creation failed and fallback to new tab occurred"
+  },
+  "splitViewRecoveryError": {
+    "message": "Ошибка восстановления/очистки с разделением просмотра:",
+    "description": "Error message logged when closing/cleaning up split view fails after another error"
+  },
+  "recoveryFailed": {
+    "message": "Восстановление не удалось, открыв в новой вкладке.",
+    "description": "Status message indicating recovery after an error failed, fallback to new tab occurred"
+  },
+  "splitViewDisabledLog": {
+    "message": "Разделенное представление отключено через действие. Нажмите из -за настроек.",
+    "description": "Log message when user tries to toggle split view but it's disabled in settings"
+  },
+  "splitViewErrorFallback": {
+    "message": "Ошибка режима разделения просмотра, открытая в новой вкладке",
+    "description": "Fallback message sent to content script when opening in split view fails catastrophically"
+  },
+  "splitViewClosedStatus": {
+    "message": "Расколотый вид закрыт",
+    "description": "Status message sent to content script when split view is successfully closed"
+  },
+  "openedInNewTabStatus": {
+    "message": "Открыт в новой вкладке",
+    "description": "Status message sent to content script when a URL is successfully opened in a new tab via message"
+  },
+  "optionsPageTitle": {
+    "message": "Параметры Tabboost",
+    "description": "The title of the options page"
+  },
+  "domainRemoved": {
+    "message": "Домен '$domain$' был успешно удален из списка игнорирования.",
+    "description": "Notification shown after a domain is successfully removed.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "removeDomain": {
+    "message": "Удалить домен",
+    "description": "Generic text for removing a domain, maybe used in confirmations or titles."
+  },
+  "removeFromList": {
+    "message": "Удалить из списка",
+    "description": "Tooltip and accessible label for the remove button next to each domain."
+  },
+  "domainAdded": {
+    "message": "Домен '$ domain $' успешно добавлен.",
+    "description": "Success notification when a domain is added.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "domainAddFailed": {
+    "message": "Не удалось добавить домен '$domain$'.Пожалуйста, попробуйте еще раз.",
+    "description": "Error notification when adding a domain fails.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "domainRemoveFailed": {
+    "message": "Не удалось удалить домен '$domain$'.Пожалуйста, попробуйте еще раз.",
+    "description": "Error notification when removing a domain fails.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "errorFetchingList": {
+    "message": "Ошибка извлечена список игнорирования.Пожалуйста, попробуйте еще раз.",
+    "description": "Error notification when fetching the list fails."
+  },
+  "errorCorruptedList": {
+    "message": "Игнорировать данные списка кажется поврежденным.Пожалуйста, проверьте настройки хранения или сброса.",
+    "description": "Error notification when the ignore list data is not an array."
+  }
+}

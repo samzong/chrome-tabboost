@@ -1,8 +1,18 @@
-// utils.test.js - 工具函数单元测试
 import { validateUrl } from '../../src/utils/utils';
-import { DANGEROUS_PROTOCOLS } from '../../src/config/constants';
 
-// 模拟constants.js中的常量
+jest.mock('../../src/utils/i18n.js', () => ({
+  getMessage: jest.fn((key) => {
+    const messages = {
+      'urlValidationErrorEmpty': 'URL cannot be empty and must be a string.',
+      'urlValidationErrorDangerousPattern': 'URL contains potentially dangerous patterns.',
+      'urlValidationErrorDangerousProtocol': 'URL protocol \'$1\' is not allowed for security reasons.',
+      'urlValidationErrorInvalidFormat': 'Invalid URL format.',
+      'urlValidationErrorUnsupportedProtocol': 'Protocol \'$1\' is not supported.'
+    };
+    return messages[key] || `Missing mocked i18n key: ${key}`;
+  }),
+}));
+
 jest.mock('../../src/config/constants.js', () => ({
   DANGEROUS_PROTOCOLS: ['javascript:', 'data:', 'vbscript:'],
   DANGEROUS_URL_PATTERNS: [
@@ -21,47 +31,47 @@ jest.mock('../../src/config/constants.js', () => ({
   ]
 }));
 
-describe('validateUrl函数', () => {
-  test('应该验证合法的HTTP URL', () => {
+describe('validateUrl', () => {
+  test('should validate valid HTTP URL', () => {
     const url = 'http://example.com';
     const result = validateUrl(url);
     expect(result.isValid).toBe(true);
     expect(result.sanitizedUrl).toBe(url);
   });
 
-  test('应该验证合法的HTTPS URL', () => {
+  test('should validate valid HTTPS URL', () => {
     const url = 'https://example.com/path?query=value#hash';
     const result = validateUrl(url);
     expect(result.isValid).toBe(true);
     expect(result.sanitizedUrl).toBe(url);
   });
 
-  test('应该拒绝空URL', () => {
+  test('should reject empty URL', () => {
     const result = validateUrl('');
     expect(result.isValid).toBe(false);
-    expect(result.reason).toContain('URL为空或格式不正确');
+    expect(result.reason).toContain('URL cannot be empty and must be a string.');
   });
 
-  test('应该拒绝非字符串URL', () => {
+  test('should reject non-string URL', () => {
     const result = validateUrl(null);
     expect(result.isValid).toBe(false);
-    expect(result.reason).toContain('URL为空或格式不正确');
+    expect(result.reason).toContain('URL cannot be empty and must be a string.');
   });
 
-  test('应该拒绝JavaScript协议URL', () => {
-    const url = 'javascript:alert(1)';
+  test('should reject JavaScript protocol URL', () => {
+    const url = 'javascript:alert("XSS")';
     const result = validateUrl(url);
     expect(result.isValid).toBe(false);
-    expect(result.reason).toContain('URL包含危险模式');
+    expect(result.reason).toContain('URL contains potentially dangerous patterns.');
   });
 
-  test('应该拒绝包含XSS攻击的URL', () => {
+  test('should reject URL with XSS attacks', () => {
     const url = 'https://example.com/?q=<script>alert(1)</script>';
     const result = validateUrl(url);
     expect(result.isValid).toBe(false);
   });
 
-  test('应该正确处理带有特殊字符的URL', () => {
+  test('should correctly handle URL with special characters', () => {
     const url = 'https://example.com/path with spaces?q=value&p=123';
     const result = validateUrl(url);
     expect(result.isValid).toBe(true);
