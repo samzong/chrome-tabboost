@@ -459,10 +459,10 @@
     "message": "Domain '$DOMAIN$' or its parent is reserved by the system and cannot be added.",
     "description": "Error message when trying to add a system-reserved domain",
     "placeholders": {
-        "DOMAIN": {
-            "content": "$1",
-            "example": "google.com"
-        }
+      "DOMAIN": {
+        "content": "$1",
+        "example": "google.com"
+      }
     }
   },
   "addedToIgnoreListAlert": {
@@ -690,41 +690,41 @@
     "description": "Tooltip and accessible label for the remove button next to each domain."
   },
   "domainAdded": {
-      "message": "Domain '$DOMAIN$' added successfully.",
-      "description": "Success notification when a domain is added.",
-      "placeholders": {
-          "DOMAIN": {
-              "content": "$1",
-              "example": "example.com"
-          }
+    "message": "Domain '$DOMAIN$' added successfully.",
+    "description": "Success notification when a domain is added.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "example.com"
       }
+    }
   },
   "domainAddFailed": {
-      "message": "Failed to add domain '$DOMAIN$'. Please try again.",
-      "description": "Error notification when adding a domain fails.",
-      "placeholders": {
-          "DOMAIN": {
-              "content": "$1",
-              "example": "example.com"
-          }
+    "message": "Failed to add domain '$DOMAIN$'. Please try again.",
+    "description": "Error notification when adding a domain fails.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "example.com"
       }
+    }
   },
   "domainRemoveFailed": {
-      "message": "Failed to remove domain '$DOMAIN$'. Please try again.",
-      "description": "Error notification when removing a domain fails.",
-      "placeholders": {
-          "DOMAIN": {
-              "content": "$1",
-              "example": "example.com"
-          }
+    "message": "Failed to remove domain '$DOMAIN$'. Please try again.",
+    "description": "Error notification when removing a domain fails.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "example.com"
       }
+    }
   },
   "errorFetchingList": {
-      "message": "Error fetching the ignore list. Please try again.",
-      "description": "Error notification when fetching the list fails."
+    "message": "Error fetching the ignore list. Please try again.",
+    "description": "Error notification when fetching the list fails."
   },
   "errorCorruptedList": {
-      "message": "Ignore list data seems corrupted. Please check storage or reset settings.",
-      "description": "Error notification when the ignore list data is not an array."
+    "message": "Ignore list data seems corrupted. Please check storage or reset settings.",
+    "description": "Error notification when the ignore list data is not an array."
   }
 }

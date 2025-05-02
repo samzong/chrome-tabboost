@@ -41,7 +41,8 @@ function showSaveNotification() {
   notification.className = "tabboost-notification";
 
   const message = document.createElement("span");
-  message.textContent = getMessage("savePageConfirmation") || "Are you sure you want to save this page?";
+  message.textContent =
+    getMessage("savePageConfirmation") || "Are you sure you want to save this page?";
   notification.appendChild(message);
 
   const saveButton = document.createElement("button");
@@ -201,7 +202,8 @@ document.addEventListener(
             const notification = document.createElement("div");
             notification.className = "tabboost-notification";
             notification.textContent =
-              getMessage("splitViewFailure") || "Split view loading failed, trying to open in new tab...";
+              getMessage("splitViewFailure") ||
+              "Split view loading failed, trying to open in new tab...";
             notification.style.cssText = `
             position: fixed;
             bottom: 20px;
@@ -392,7 +394,7 @@ function loadWithTimeout(iframe, url, timeout = 5000) {
 
     const cleanup = () => {
       clearTimeout(timeoutId);
-          iframe.onload = null;
+      iframe.onload = null;
       iframe.onerror = null;
       hasSettled = true;
     };
@@ -490,7 +492,8 @@ async function createPopupDOM(url) {
             const autoAddNotice = document.createElement("p");
             autoAddNotice.className = "tabboost-auto-add-notice";
             const autoAddMessage = getMessage("autoAddToIgnoreList", [hostname]);
-            autoAddNotice.textContent = autoAddMessage || `Automatically added ${hostname} to ignore list...`;
+            autoAddNotice.textContent =
+              autoAddMessage || `Automatically added ${hostname} to ignore list...`;
             if (errorMsg) errorMsg.appendChild(autoAddNotice);
           }
         } catch (err) {
@@ -578,17 +581,22 @@ async function createPopupDOM(url) {
               ignoreList.push(hostname);
               await storageCache.set({ iframeIgnoreList: ignoreList });
               console.log(`chrome-tabboost: Added ${hostname} to ignore list`);
-              alert(getMessage('addedToIgnoreList', hostname) || `Added ${hostname} to ignore list...`);
+              alert(
+                getMessage("addedToIgnoreList", hostname) || `Added ${hostname} to ignore list...`
+              );
               window.open(url, "_blank");
               closePopup();
             } else {
-              alert(getMessage('alreadyInIgnoreList', hostname) || `${hostname} is already in the ignore list`);
+              alert(
+                getMessage("alreadyInIgnoreList", hostname) ||
+                  `${hostname} is already in the ignore list`
+              );
               window.open(url, "_blank");
               closePopup();
             }
           } catch (error) {
             console.error("chrome-tabboost: Error adding to ignore list:", error);
-            alert(getMessage('failedToAddToIgnoreList') || "Failed to add to ignore list");
+            alert(getMessage("failedToAddToIgnoreList") || "Failed to add to ignore list");
           }
         });
       }
@@ -612,7 +620,9 @@ async function createPopupDOM(url) {
 
       if (loadResult.status === "blank") {
         console.log("chrome-tabboost: iframe loaded, but content is blank or inaccessible");
-        await handleLoadFailure(new Error(getMessage("cannotLoadInPopup") || "Content is blank or inaccessible"));
+        await handleLoadFailure(
+          new Error(getMessage("cannotLoadInPopup") || "Content is blank or inaccessible")
+        );
         return;
       } else if (loadResult.status === "cors") {
         console.log("chrome-tabboost: iframe loaded with CORS restrictions");
