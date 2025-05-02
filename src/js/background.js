@@ -9,6 +9,15 @@ import {
 import storageCache from "../utils/storage-cache.js";
 import { getMessage } from "../utils/i18n.js";
 
+// Add declarativeNetRequest debug listener
+if (chrome.declarativeNetRequest && chrome.declarativeNetRequest.onRuleMatchedDebug) {
+  chrome.declarativeNetRequest.onRuleMatchedDebug.addListener(
+    (info) => {
+      console.log("Rule matched for frame bypass:", info);
+    }
+  );
+}
+
 let currentTabCache = {
   tab: null,
   timestamp: 0,

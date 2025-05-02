@@ -130,6 +130,11 @@ module.exports = {
           to: "_locales",
           noErrorOnMissing: true,
         },
+        {
+          from: "rules",
+          to: "rules",
+          noErrorOnMissing: true,
+        },
       ],
     }),
   ],

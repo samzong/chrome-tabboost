@@ -97,10 +97,10 @@ export function initSplitViewDOM(leftUrl) {
       leftErrorContainer.className = "tabboost-iframe-error";
       leftErrorContainer.innerHTML = `
         <div class="tabboost-error-content">
-          <h3>${getMessage("cannotLoadInSplitView")}</h3>
-          <p>${getMessage("websiteNotAllowed")}</p>
-          <button class="tabboost-open-in-tab" data-url="${leftUrl}">${getMessage("openInNewTab")}</button>
-          <button class="tabboost-add-to-ignore" data-url="${leftUrl}">${getMessage("addToIgnoreList")}</button>
+          <h3>Loading Issues</h3>
+          <p>We're trying to bypass frame restrictions.</p>
+          <button class="tabboost-retry-load" data-url="${leftUrl}">Retry Loading</button>
+          <button class="tabboost-open-in-tab" data-url="${leftUrl}">Open in New Tab</button>
         </div>
       `;
       leftView.appendChild(leftErrorContainer);
@@ -114,19 +114,14 @@ export function initSplitViewDOM(leftUrl) {
       );
       leftIframe.src = leftUrl;
 
-      try {
-        leftIframe.addEventListener("load", () => {
-          try {
-            leftErrorContainer.style.display = "none";
-          } catch (e) {}
-        });
+      leftIframe.addEventListener("load", () => {
+        leftErrorContainer.style.display = "none";
+      });
 
-        leftIframe.addEventListener("error", () => {
-          try {
-            leftErrorContainer.style.display = "flex";
-          } catch (e) {}
-        });
-      } catch (e) {}
+      leftIframe.addEventListener("error", () => {
+        console.log("Left iframe failed to load:", leftUrl);
+        leftErrorContainer.style.display = "flex";
+      });
 
       leftView.appendChild(leftIframe);
 
@@ -146,10 +141,10 @@ export function initSplitViewDOM(leftUrl) {
       rightErrorContainer.className = "tabboost-iframe-error";
       rightErrorContainer.innerHTML = `
         <div class="tabboost-error-content">
-          <h3>${getMessage("cannotLoadInSplitView")}</h3>
-          <p>${getMessage("websiteNotAllowed")}</p>
-          <button class="tabboost-open-in-tab" data-url="">${getMessage("openInNewTab")}</button>
-          <button class="tabboost-add-to-ignore" data-url="">${getMessage("addToIgnoreList")}</button>
+          <h3>Loading Issues</h3>
+          <p>We're trying to bypass frame restrictions.</p>
+          <button class="tabboost-retry-load" data-url="">Retry Loading</button>
+          <button class="tabboost-open-in-tab" data-url="">Open in New Tab</button>
         </div>
       `;
       rightView.appendChild(rightErrorContainer);
@@ -163,27 +158,20 @@ export function initSplitViewDOM(leftUrl) {
       );
       rightIframe.src = "about:blank";
 
-      try {
-        rightIframe.addEventListener("load", () => {
-          try {
-            if (rightIframe.src !== "about:blank") {
-              rightErrorContainer.style.display = "none";
-            }
-          } catch (e) {}
-        });
+      rightIframe.addEventListener("load", () => {
+        if (rightIframe.src !== "about:blank") {
+          rightErrorContainer.style.display = "none";
+        }
+      });
 
-        rightIframe.addEventListener("error", () => {
-          try {
-            rightErrorContainer.style.display = "flex";
-            const openButton = rightErrorContainer.querySelector(
-              ".tabboost-open-in-tab"
-            );
-            if (openButton) {
-              openButton.dataset.url = rightIframe.src;
-            }
-          } catch (e) {}
-        });
-      } catch (e) {}
+      rightIframe.addEventListener("error", () => {
+        console.log("Right iframe failed to load:", rightIframe.src);
+        rightErrorContainer.style.display = "flex";
+        const openButton = rightErrorContainer.querySelector(".tabboost-open-in-tab");
+        if (openButton) {
+          openButton.dataset.url = rightIframe.src;
+        }
+      });
 
       rightIframe.onerror = () => {
         rightErrorContainer.style.display = "flex";
@@ -297,6 +285,20 @@ export function initSplitViewDOM(leftUrl) {
             rightView.style.display = "none";
             divider.style.display = "none";
           }
+        }
+        return;
+      }
+
+      const retryButton = target.closest(".tabboost-retry-load");
+      if (retryButton) {
+        const url = retryButton.dataset.url;
+        const iframe = document.getElementById(
+          url === leftUrl ? "tabboost-left-iframe" : "tabboost-right-iframe"
+        );
+        
+        if (iframe) {
+          console.log("Retrying iframe load:", url);
+          iframe.src = iframe.src;
         }
         return;
       }
