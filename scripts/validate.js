@@ -85,19 +85,47 @@ function validateContentSecurity(manifest) {
   }
 }
 
+/**
+ * Recursively gets all file paths within a directory.
+ * @param {string} dir - The directory path to scan.
+ * @returns {string[]} An array of full file paths.
+ * @throws {Error} If the directory cannot be read or a file/subdir cannot be accessed.
+ */
 function getAllFiles(dir) {
   const files = [];
-  const items = fs.readdirSync(dir);
-  
+  let items;
+  try {
+    items = fs.readdirSync(dir);
+  } catch (readError) {
+    console.error(`❌ Error reading directory ${dir}: ${readError.message}`);
+    throw readError; // Re-throw to halt the validation if a directory is unreadable
+  }
+
   for (const item of items) {
     const fullPath = path.join(dir, item);
-    if (fs.statSync(fullPath).isDirectory()) {
-      files.push(...getAllFiles(fullPath));
-    } else {
-      files.push(fullPath);
+    try {
+      const stat = fs.statSync(fullPath);
+      if (stat.isDirectory()) {
+        // Recursively get files from subdirectory
+        // Use try-catch here as well to handle errors from deeper levels
+        try {
+          files.push(...getAllFiles(fullPath));
+        } catch (subDirError) {
+          // Log the error from the subdirectory and continue if possible, or re-throw
+          console.error(`❌ Error processing subdirectory ${fullPath}: ${subDirError.message}`);
+          // Decide whether to continue or halt; re-throwing halts.
+          // throw subDirError;
+        }
+      } else {
+        files.push(fullPath);
+      }
+    } catch (statError) {
+      // Log error if unable to get stats for an item (e.g., permission denied)
+      console.warn(`⚠️ Warning: Could not stat item ${fullPath}: ${statError.message}`);
+      // Decide whether to skip this item or halt validation
     }
   }
-  
+
   return files;
 }
 

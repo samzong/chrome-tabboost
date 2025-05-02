@@ -11,7 +11,9 @@
   --border: #e5e7eb;
   --radius: 8px;
   --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+    Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -316,7 +318,7 @@ code {
   border-radius: 50%;
   background: var(--primary);
   cursor: pointer;
-  transition: background .15s ease-in-out;
+  transition: background 0.15s ease-in-out;
 }
 
 .range-slider::-webkit-slider-thumb:hover {
@@ -330,7 +332,7 @@ code {
   border-radius: 50%;
   background: var(--primary);
   cursor: pointer;
-  transition: background .15s ease-in-out;
+  transition: background 0.15s ease-in-out;
 }
 
 .range-slider::-moz-range-thumb:hover {
@@ -369,7 +371,9 @@ code {
   width: 80%;
   height: 80%;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: width 0.3s ease, height 0.3s ease;
+  transition:
+    width 0.3s ease,
+    height 0.3s ease;
 }
 
 .preview-description {
@@ -403,14 +407,17 @@ code {
 
 /* 自定义尺寸控件 */
 .custom-size-controls {
-  transition: opacity 0.3s, height 0.3s, margin 0.3s;
+  transition:
+    opacity 0.3s,
+    height 0.3s,
+    margin 0.3s;
 }
 
 @media (prefers-color-scheme: dark) {
   .size-preview-window {
     background-color: #2d3748;
   }
-  
+
   .size-preview-popup {
     background-color: var(--card-background);
   }
@@ -510,7 +517,8 @@ code {
   height: 18px;
 }
 
-.remove-domain-button:hover, .remove-domain-button.hover {
+.remove-domain-button:hover,
+.remove-domain-button.hover {
   background-color: var(--danger);
   color: white;
   transform: scale(1.1);
@@ -525,8 +533,9 @@ code {
   .remove-domain-button {
     color: var(--muted-foreground);
   }
-  
-  .remove-domain-button:hover, .remove-domain-button.hover {
+
+  .remove-domain-button:hover,
+  .remove-domain-button.hover {
     background-color: var(--danger);
     color: white;
   }
@@ -559,4 +568,4 @@ code {
 .match-type.wildcard {
   background-color: #e9f5fe;
   color: #3182ce;
-} 
+}

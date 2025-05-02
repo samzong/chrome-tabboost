@@ -13,7 +13,9 @@
   align-items: center;
   z-index: 10000;
   opacity: 0;
-  transition: opacity 0.3s ease, backdrop-filter 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    backdrop-filter 0.3s ease;
   backdrop-filter: blur(0);
 }
 
@@ -32,7 +34,10 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
   overflow: hidden;
   transform: scale(0.9);
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), width 0.3s ease, height 0.3s ease;
+  transition:
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    width 0.3s ease,
+    height 0.3s ease;
   display: flex;
   flex-direction: column;
   padding: 0;
@@ -148,7 +153,7 @@
 }
 
 .tabboost-newtab-button::before {
-  content: '';
+  content: "";
   display: inline-block;
   width: 14px;
   height: 14px;
@@ -191,7 +196,7 @@
 }
 
 #tabboost-popup-loader::before {
-  content: '';
+  content: "";
   width: 40px;
   height: 40px;
   border: 3px solid rgba(59, 130, 246, 0.2);
@@ -234,8 +239,12 @@
 }
 
 @keyframes fade-in-error {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 #tabboost-popup-error p {
@@ -250,7 +259,10 @@
   font-size: 11px;
   cursor: pointer;
   border-radius: 3px;
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
   border: 1px solid transparent; /* 默认无边框，方便统一样式 */
 }
 
@@ -310,55 +322,55 @@
     background-color: #1f2937;
     border-color: rgba(255, 255, 255, 0.1);
   }
-  
+
   #tabboost-popup-toolbar {
     background-color: #111827;
     border-bottom-color: #374151;
   }
-  
+
   #tabboost-popup-title {
     color: #e5e7eb;
   }
-  
+
   .tabboost-button:hover {
     background-color: rgba(255, 255, 255, 0.1);
   }
-  
+
   .tabboost-close-button {
     color: #9ca3af;
   }
-  
+
   .tabboost-close-button:hover {
     background-color: rgba(248, 113, 113, 0.2);
     color: #f87171;
   }
-  
+
   .tabboost-newtab-button {
     color: #60a5fa;
     background-color: rgba(96, 165, 250, 0.1);
   }
-  
+
   .tabboost-newtab-button:hover {
     background-color: rgba(96, 165, 250, 0.2);
   }
-  
+
   .tabboost-newtab-button::before {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2360a5fa'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14'%3E%3C/path%3E%3C/svg%3E");
   }
-  
+
   #tabboost-popup-iframe {
     background-color: #1f2937;
   }
-  
+
   #tabboost-popup-loader {
     color: #60a5fa;
   }
-  
+
   #tabboost-popup-loader::before {
     border-color: rgba(96, 165, 250, 0.2);
     border-top-color: #60a5fa;
   }
-  
+
   #tabboost-popup-error {
     /* background-color: rgba(120, 53, 15, 0.6); */ /* 旧暗模式背景 */
     background-color: #2a1a04; /* 深琥珀色固态背景 (Dark Mode) */
@@ -368,7 +380,7 @@
     /* border-color: rgba(234, 179, 8, 0.4); */ /* 移除边框 */
     border: none;
   }
-  
+
   /* 次要/关闭按钮样式 (Dark Mode) */
   #tabboost-popup-error #tabboost-add-to-ignore,
   #tabboost-popup-error #tabboost-close-error {
@@ -379,21 +391,21 @@
     /* border-color: rgba(234, 179, 8, 0.4); */ /* 旧按钮边框 */
     border-color: rgba(107, 114, 128, 0.5); /* 深灰色边框 (Dark Mode) */
   }
-  
+
   #tabboost-popup-error #tabboost-add-to-ignore:hover,
   #tabboost-popup-error #tabboost-close-error:hover {
     /* background-color: rgba(234, 179, 8, 0.25); */ /* 旧 Hover 背景 */
     background-color: rgba(107, 114, 128, 1); /* Hover 背景 (Dark Mode) */
     border-color: rgba(156, 163, 175, 0.6); /* Hover 边框 (Dark Mode) */
   }
-  
+
   /* "Open in new tab" 按钮样式 (Dark Mode) */
   #tabboost-popup-error #tabboost-open-newtab {
     background-color: rgba(96, 165, 250, 0.15);
     color: #93c5fd;
     border-color: rgba(96, 165, 250, 0.3);
   }
-  
+
   #tabboost-popup-error #tabboost-open-newtab:hover {
     background-color: rgba(96, 165, 250, 0.25);
     border-color: rgba(96, 165, 250, 0.5);

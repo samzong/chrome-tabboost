@@ -70,7 +70,9 @@ async function executeAction(action, tab) {
       duplicateTab(tab);
       break;
     case "toggle-split-view":
-      const { splitViewEnabled } = await storageCache.get({ splitViewEnabled: true });
+      const { splitViewEnabled } = await storageCache.get({
+        splitViewEnabled: true,
+      });
       if (splitViewEnabled) {
         toggleSplitView(tab);
       } else {
@@ -126,7 +128,9 @@ chrome.commands.onCommand.addListener(async (command) => {
       copyTabUrl(currentTab);
     }
   } else if (command === "toggle-split-view") {
-    const { splitViewEnabled } = await storageCache.get({ splitViewEnabled: true });
+    const { splitViewEnabled } = await storageCache.get({
+      splitViewEnabled: true,
+    });
 
     if (splitViewEnabled) {
       const currentTab = await getCachedCurrentTab();
@@ -224,7 +228,8 @@ async function handleSplitViewRequest(url) {
     try {
       const [isActive] = await chrome.scripting.executeScript({
         target: { tabId: currentTab.id },
-        func: () => document.getElementById("tabboost-split-view-container") !== null,
+        func: () =>
+          document.getElementById("tabboost-split-view-container") !== null,
       });
 
       if (isActive.result) {

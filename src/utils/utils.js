@@ -3,7 +3,7 @@ export async function getCurrentTab() {
   return tab;
 }
 
-import { getMessage } from './i18n.js';
+import { getMessage } from "./i18n.js";
 
 export function showNotification(message) {
   chrome.notifications.create(
@@ -21,7 +21,10 @@ export function showNotification(message) {
   );
 }
 
-import { DANGEROUS_PROTOCOLS, DANGEROUS_URL_PATTERNS } from "../config/constants.js";
+import {
+  DANGEROUS_PROTOCOLS,
+  DANGEROUS_URL_PATTERNS,
+} from "../config/constants.js";
 
 /**
  * Check if the URL is safe, prevent malicious URLs and XSS attacks
@@ -31,68 +34,63 @@ import { DANGEROUS_PROTOCOLS, DANGEROUS_URL_PATTERNS } from "../config/constants
 export function validateUrl(url) {
   const result = {
     isValid: false,
-    reason: '',
-    sanitizedUrl: ''
+    reason: "",
+    sanitizedUrl: "",
   };
-  
+
   try {
-    if (!url || typeof url !== 'string') {
-      result.reason = getMessage('urlValidationErrorEmpty'); 
-      return result;
+    if (!url || typeof url !== "string") {
+      return invalidateUrl(result, "urlValidationErrorEmpty");
     }
 
-    const decodedUrl = (() => {
-      try {
-        return decodeURIComponent(url);
-      } catch (e) {
-        result.reason = getMessage('urlValidationErrorDecoding');
-        return url;
-      }
-    })();
-    
-    if (DANGEROUS_URL_PATTERNS.some(pattern => pattern.test(decodedUrl))) {
-      result.reason = getMessage('urlValidationErrorDangerousPattern');
-      return result;
+    let decodedUrl;
+    try {
+      decodedUrl = decodeURIComponent(url);
+    } catch (e) {
+      return invalidateUrl(result, "urlValidationErrorDecoding");
     }
-    
+
+    if (DANGEROUS_URL_PATTERNS.some((pattern) => pattern.test(decodedUrl))) {
+      return invalidateUrl(result, "urlValidationErrorDangerousPattern");
+    }
+
     try {
       url = decodeURIComponent(encodeURIComponent(url));
     } catch (error) {
-      result.reason = getMessage('urlValidationErrorNormalization');
-      return result;
+      return invalidateUrl(result, "urlValidationErrorNormalization");
     }
-    
+
     let urlObj;
     try {
       urlObj = new URL(url);
     } catch (error) {
-      result.reason = getMessage('urlValidationErrorInvalidFormat');
-      return result;
+      return invalidateUrl(result, "urlValidationErrorInvalidFormat");
     }
-    
+
     const protocol = urlObj.protocol.toLowerCase();
-    
-    if (protocol !== 'http:' && protocol !== 'https:') {
-      result.reason = getMessage('urlValidationErrorUnsupportedProtocol', protocol);
-      return result;
+
+    if (protocol !== "http:" && protocol !== "https:") {
+      return invalidateUrl(result, "urlValidationErrorUnsupportedProtocol", protocol);
     }
-    
-    if (DANGEROUS_PROTOCOLS.some(p => url.toLowerCase().startsWith(p))) {
-      result.reason = getMessage('urlValidationErrorDangerousProtocol', protocol);
-      return result;
+
+    if (DANGEROUS_PROTOCOLS.some((p) => url.toLowerCase().startsWith(p))) {
+      return invalidateUrl(result, "urlValidationErrorDangerousProtocol", protocol);
     }
-    
+
     const fullPath = `${urlObj.pathname}${urlObj.search}${urlObj.hash}`;
-    if (DANGEROUS_URL_PATTERNS.some(pattern => pattern.test(fullPath))) {
-      result.reason = getMessage('urlValidationErrorDangerousPath', fullPath);
-      return result;
+    if (DANGEROUS_URL_PATTERNS.some((pattern) => pattern.test(fullPath))) {
+      return invalidateUrl(result, "urlValidationErrorDangerousPath", fullPath);
     }
-    
+
     result.isValid = true;
     result.sanitizedUrl = encodeURI(decodeURI(url));
     return result;
   } catch (error) {
-    result.reason = getMessage('urlValidationErrorGeneric', error.message);
-    return result;
+    return invalidateUrl(result, "urlValidationErrorGeneric", error.message);
   }
+}
+
+function invalidateUrl(result, errorMessageKey, ...substitutions) {
+  result.reason = getMessage(errorMessageKey, substitutions);
+  return result;
 }

@@ -6,11 +6,11 @@ export const {
   closeSplitView,
   toggleSplitView,
   updateRightView,
-  getSplitViewState
+  getSplitViewState,
 } = splitViewCore;
 
 export { canLoadInIframe };
 
 splitViewCore.initSplitViewModule();
 
-export default splitViewCore; 
+export default splitViewCore;

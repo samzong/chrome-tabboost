@@ -16,6 +16,22 @@ const CONFIG = {
 };
 
 /**
+ * Executes a Git command and logs the action.
+ * @param {string} command - The Git command to execute.
+ * @param {string} description - A description of the Git action for logging.
+ * @throws {Error} If the command fails.
+ */
+function runGitCommand(command, description) {
+  try {
+    execSync(command, { stdio: 'ignore' });
+    console.log(chalk.green(`✅ ${description}`));
+  } catch (error) {
+    console.error(chalk.red(`❌ Failed to ${description.toLowerCase()}: ${error.message}`));
+    throw error; // Re-throw to be caught by the main try-catch block
+  }
+}
+
+/**
  * Update version Tag
  * @param {string} type - version update type (patch/minor/major)
  */
@@ -50,26 +66,35 @@ async function updateVersion(type) {
     }
 
     try {
+      // Check if inside a Git repository before attempting Git operations
       execSync('git rev-parse --is-inside-work-tree', { stdio: 'ignore' });
-      
+
+      // Run changelog generation (assuming it modifies files)
       execSync('npm run changelog', { stdio: 'inherit' });
       console.log(chalk.green(`✅ Generated changelog`));
-      
-      execSync(`git add package.json manifest.json CHANGELOG.md`, { stdio: 'ignore' });
-      execSync(`git commit -m "chore(release): v${newVersion}"`, { stdio: 'ignore' });
-      console.log(chalk.green(`✅ Committed version changes to Git`));
-      
-      execSync(`git tag -a v${newVersion} -m "release: v${newVersion}"`, { stdio: 'ignore' });
-      console.log(chalk.green(`✅ Created tag v${newVersion}`));
-      
+
+      // Stage changed files
+      runGitCommand(`git add package.json manifest.json CHANGELOG.md`, "Staged version changes");
+
+      // Commit the changes
+      runGitCommand(`git commit -m "chore(release): v${newVersion}"`, `Committed version v${newVersion}`);
+
+      // Create a Git tag
+      runGitCommand(`git tag -a v${newVersion} -m "release: v${newVersion}"`, `Created tag v${newVersion}`);
+
       console.log(chalk.blue(`💡 Tag has been created, but not pushed. You can use the following commands to push:`));
       console.log(chalk.yellow(`  git push origin v${newVersion}`));
       console.log(chalk.yellow(`  git push`));
+
     } catch (error) {
+      // Handle specific error for not being in a git repo, otherwise log generic git error
       if (error.message.includes('not a git repository')) {
         console.log(chalk.yellow(`⚠️ Not in a Git repository, skipping Git operations`));
       } else {
-        console.error(chalk.yellow(`⚠️ Git operation failed: ${error.message}`));
+        // Errors from runGitCommand are already logged, so just indicate the overall failure
+        console.error(chalk.red(`❌ A Git operation failed. Please check the logs above.`));
+        // Depending on policy, you might want to exit here or let the script continue
+        // process.exit(1);
       }
     }
 

@@ -7,7 +7,10 @@ const initStorageCache = async () => {
   try {
     await storageCache.init();
   } catch (error) {
-    console.error("chrome-tabboost: Failed to initialize storage cache:", error);
+    console.error(
+      "chrome-tabboost: Failed to initialize storage cache:",
+      error
+    );
   }
 };
 
@@ -31,22 +34,79 @@ document.addEventListener(
   true
 );
 
+function createElementWithAttributes(tag, attributes = {}) {
+  const element = document.createElement(tag);
+  Object.entries(attributes).forEach(([key, value]) => {
+    if (key === "textContent" || key === "innerText") {
+      element[key] = value;
+    } else if (key === "innerHTML") {
+      element.innerHTML = value;
+    } else if (key === "style" && typeof value === "string") {
+      element.style.cssText = value;
+    } else if (key === "className") {
+      element.className = value;
+    } else {
+      element.setAttribute(key, value);
+    }
+  });
+  return element;
+}
+
+function appendChildren(parent, children) {
+  children.forEach(child => {
+    if (child) parent.appendChild(child);
+  });
+  return parent;
+}
+
+function createNotificationElement(id, className) {
+  return createElementWithAttributes("div", {
+    id,
+    className
+  });
+}
+
+function applyDefaultNotificationStyle(element) {
+  element.style.cssText = `
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 4px;
+    z-index: 999999;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    animation: fadeIn 0.2s ease-out;
+  `;
+}
+
+function createButton(text, className, attributes = {}) {
+  return createElementWithAttributes("button", {
+    textContent: text,
+    className,
+    ...attributes
+  });
+}
+
 function showSaveNotification() {
   if (document.getElementById("tabboost-save-notification")) {
     return;
   }
 
-  const notification = document.createElement("div");
-  notification.id = "tabboost-save-notification";
-  notification.className = "tabboost-notification";
+  const notification = createNotificationElement("tabboost-save-notification", "tabboost-notification");
 
-  const message = document.createElement("span");
-  message.textContent = getMessage("savePageConfirmation") || "Are you sure you want to save this page?";
-  notification.appendChild(message);
-
-  const saveButton = document.createElement("button");
-  saveButton.className = "tabboost-notif-button";
-  saveButton.textContent = getMessage("continueToSave") || "Save";
+  const message = createElementWithAttributes("span", {
+    textContent: getMessage("savePageConfirmation") || "Are you sure you want to save this page?"
+  });
+  
+  const saveButton = createButton(
+    getMessage("continueToSave") || "Save", 
+    "tabboost-notif-button"
+  );
+  
   saveButton.addEventListener("click", function () {
     if (notification.parentNode) {
       notification.parentNode.removeChild(notification);
@@ -54,46 +114,32 @@ function showSaveNotification() {
 
     shouldInterceptSave = false;
 
-    const saveInstructionNotification = document.createElement("div");
-    saveInstructionNotification.id = "tabboost-save-instruction";
-    saveInstructionNotification.className = "tabboost-notification";
+    const saveInstructionNotification = createNotificationElement(
+      "tabboost-save-instruction", 
+      "tabboost-notification"
+    );
 
     const isMac = navigator.platform.includes("Mac");
-    let saveInstructionText = "";
-    if (isMac) {
-      saveInstructionText =
-        getMessage("savePageInstructionMac") ||
-        "You can save this page by selecting File → Save Page As... or press Command+S again within 3 seconds";
-    } else {
-      saveInstructionText =
-        getMessage("savePageInstructionOther") ||
+    const saveInstructionText = isMac
+      ? getMessage("savePageInstructionMac") ||
+        "You can save this page by selecting File → Save Page As... or press Command+S again within 3 seconds"
+      : getMessage("savePageInstructionOther") ||
         "You can save this page by selecting File → Save Page As... or press Ctrl+S again within 3 seconds";
-    }
 
     saveInstructionNotification.textContent = saveInstructionText;
-    saveInstructionNotification.style.cssText = `
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: rgba(0, 0, 0, 0.8);
-      color: white;
-      padding: 10px 15px;
-      border-radius: 4px;
-      z-index: 999999;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-      font-family: system-ui, -apple-system, sans-serif;
-      font-size: 14px;
-      animation: fadeIn 0.2s ease-out;
-    `;
+    applyDefaultNotificationStyle(saveInstructionNotification);
 
     document.body.appendChild(saveInstructionNotification);
 
     setTimeout(() => {
       if (saveInstructionNotification.parentNode) {
-        saveInstructionNotification.style.animation = "fadeOut 0.3s ease-out forwards";
+        saveInstructionNotification.style.animation =
+          "fadeOut 0.3s ease-out forwards";
         setTimeout(() => {
           if (saveInstructionNotification.parentNode) {
-            saveInstructionNotification.parentNode.removeChild(saveInstructionNotification);
+            saveInstructionNotification.parentNode.removeChild(
+              saveInstructionNotification
+            );
           }
         }, 300);
       }
@@ -104,8 +150,7 @@ function showSaveNotification() {
     }, 3000);
   });
 
-  notification.appendChild(saveButton);
-
+  appendChildren(notification, [message, saveButton]);
   document.body.appendChild(notification);
 
   notification.style.cssText = `
@@ -150,7 +195,9 @@ function showSaveNotification() {
   `;
   document.head.appendChild(style);
 
-  const isDarkMode = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const isDarkMode =
+    window.matchMedia &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches;
 
   if (isDarkMode) {
     notification.style.backgroundColor = "rgba(31, 41, 55, 0.9)";
@@ -198,23 +245,11 @@ document.addEventListener(
         },
         function (response) {
           if (response && response.status === "error") {
-            const notification = document.createElement("div");
-            notification.className = "tabboost-notification";
+            const notification = createNotificationElement("", "tabboost-notification");
             notification.textContent =
-              getMessage("splitViewFailure") || "Split view loading failed, trying to open in new tab...";
-            notification.style.cssText = `
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 10px 15px;
-            border-radius: 4px;
-            z-index: 999999;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-            font-family: system-ui, -apple-system, sans-serif;
-            font-size: 14px;
-          `;
+              getMessage("splitViewFailure") ||
+              "Split view loading failed, trying to open in new tab...";
+            applyDefaultNotificationStyle(notification);
             document.body.appendChild(notification);
 
             setTimeout(() => {
@@ -245,7 +280,9 @@ async function createPopup(url) {
     const validationResult = validateUrl(url);
 
     if (!validationResult.isValid) {
-      console.error(`chrome-tabboost: URL security validation failed: ${validationResult.reason}`);
+      console.error(
+        `chrome-tabboost: URL security validation failed: ${validationResult.reason}`
+      );
       window.open(url, "_blank");
       return;
     }
@@ -255,7 +292,9 @@ async function createPopup(url) {
     const canLoad = await canLoadInIframe(url, { isPopup: true });
 
     if (!canLoad) {
-      console.log(`chrome-tabboost: URL ${url} cannot be loaded in popup, opening in new tab...`);
+      console.log(
+        `chrome-tabboost: URL ${url} cannot be loaded in popup, opening in new tab...`
+      );
       window.open(url, "_blank");
       return;
     }
@@ -289,16 +328,81 @@ async function getPreviewSettings() {
   }
 }
 
+function createToolbarElements() {
+  const loadingText = getMessage("loading") || "Loading...";
+  const openInNewTabText = getMessage("openInNewTab") || "Open in new tab";
+  const closeText = getMessage("close") || "Close";
+  const sizeHintText = getMessage("popupSizeHint") || "Adjust popup size in extension options";
+
+  const toolbar = createElementWithAttributes("div", { id: "tabboost-popup-toolbar" });
+  const titleSpan = createElementWithAttributes("span", { 
+    id: "tabboost-popup-title", 
+    textContent: loadingText 
+  });
+  const buttonsDiv = createElementWithAttributes("div", { id: "tabboost-popup-buttons" });
+
+  const newTabButton = createElementWithAttributes("button", {
+    className: "tabboost-button tabboost-newtab-button",
+    title: openInNewTabText,
+    "aria-label": openInNewTabText,
+    textContent: openInNewTabText
+  });
+
+  const sizeHintButton = createElementWithAttributes("button", {
+    className: "tabboost-button tabboost-size-hint",
+    title: sizeHintText,
+    "aria-label": sizeHintText,
+    innerHTML: `
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: block; margin: auto;">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+        <line x1="12" y1="17" x2="12.01" y2="17"/>
+      </svg>
+    `
+  });
+
+  const closeButton = createElementWithAttributes("button", {
+    className: "tabboost-button tabboost-close-button",
+    title: closeText,
+    "aria-label": closeText,
+    innerHTML: "&times;"
+  });
+
+  appendChildren(buttonsDiv, [newTabButton, sizeHintButton, closeButton]);
+  appendChildren(toolbar, [titleSpan, buttonsDiv]);
+
+  return { toolbar, titleSpan };
+}
+
+function createErrorMsgElement() {
+  const openInNewTabText = getMessage("openInNewTab") || "Open in new tab";
+  const closeText = getMessage("close") || "Close";
+  const cannotLoadText = getMessage("cannotLoadInPopup") || "Cannot load this website in popup.";
+  const addToIgnoreText = getMessage("addToIgnoreList") || "Add to ignore list";
+
+  return createElementWithAttributes("div", {
+    id: "tabboost-popup-error",
+    innerHTML: `
+      <p>${cannotLoadText}</p>
+      <button id="tabboost-open-newtab">${openInNewTabText}</button>
+      <button id="tabboost-add-to-ignore">${addToIgnoreText}</button>
+      <button id="tabboost-close-error">${closeText}</button>
+    `
+  });
+}
+
 function createPopupDOMElements(url, settings) {
   const fragment = document.createDocumentFragment();
 
-  const popupOverlay = document.createElement("div");
-  popupOverlay.id = "tabboost-popup-overlay";
-  popupOverlay.setAttribute("role", "dialog");
-  popupOverlay.setAttribute("aria-modal", "true");
+  const popupOverlay = createElementWithAttributes("div", {
+    id: "tabboost-popup-overlay",
+    role: "dialog",
+    "aria-modal": "true"
+  });
 
-  const popupContent = document.createElement("div");
-  popupContent.id = "tabboost-popup-content";
+  const popupContent = createElementWithAttributes("div", {
+    id: "tabboost-popup-content"
+  });
 
   if (settings.popupSizePreset === "large") {
     popupContent.classList.add("size-large");
@@ -308,79 +412,25 @@ function createPopupDOMElements(url, settings) {
     popupContent.style.height = `${settings.customHeight}%`;
   }
 
-  const loadingText = getMessage("loading") || "Loading...";
-  const openInNewTabText = getMessage("openInNewTab") || "Open in new tab";
-  const closeText = getMessage("close") || "Close";
-  const sizeHintText = getMessage("popupSizeHint") || "Adjust popup size in extension options";
+  const { toolbar, titleSpan } = createToolbarElements();
+  const errorMsg = createErrorMsgElement();
 
-  const toolbar = document.createElement("div");
-  toolbar.id = "tabboost-popup-toolbar";
-
-  const titleSpan = document.createElement("span");
-  titleSpan.id = "tabboost-popup-title";
-  titleSpan.textContent = loadingText;
-
-  const buttonsDiv = document.createElement("div");
-  buttonsDiv.id = "tabboost-popup-buttons";
-
-  const newTabButton = document.createElement("button");
-  newTabButton.className = "tabboost-button tabboost-newtab-button";
-  newTabButton.title = openInNewTabText;
-  newTabButton.setAttribute("aria-label", openInNewTabText);
-  newTabButton.textContent = openInNewTabText;
-
-  const sizeHintButton = document.createElement("button");
-  sizeHintButton.className = "tabboost-button tabboost-size-hint";
-  sizeHintButton.title = sizeHintText;
-  sizeHintButton.setAttribute("aria-label", sizeHintText);
-  sizeHintButton.innerHTML = `
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: block; margin: auto;">
-      <circle cx="12" cy="12" r="10"/>
-      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-      <line x1="12" y1="17" x2="12.01" y2="17"/>
-    </svg>
-  `;
-
-  const closeButton = document.createElement("button");
-  closeButton.className = "tabboost-button tabboost-close-button";
-  closeButton.title = closeText;
-  closeButton.setAttribute("aria-label", closeText);
-  closeButton.innerHTML = "&times;";
-
-  buttonsDiv.appendChild(newTabButton);
-  buttonsDiv.appendChild(sizeHintButton);
-  buttonsDiv.appendChild(closeButton);
-
-  toolbar.appendChild(titleSpan);
-  toolbar.appendChild(buttonsDiv);
-
-  const cannotLoadText = getMessage("cannotLoadInPopup") || "Cannot load this website in popup.";
-  const addToIgnoreText = getMessage("addToIgnoreList") || "Add to ignore list";
-  const errorMsg = document.createElement("div");
-  errorMsg.id = "tabboost-popup-error";
-  errorMsg.innerHTML = `
-    <p>${cannotLoadText}</p>
-    <button id="tabboost-open-newtab">${openInNewTabText}</button>
-    <button id="tabboost-add-to-ignore">${addToIgnoreText}</button>
-    <button id="tabboost-close-error">${closeText}</button>
-  `;
-
-  const iframe = document.createElement("iframe");
-  iframe.id = "tabboost-popup-iframe";
+  const iframe = createElementWithAttributes("iframe", {
+    id: "tabboost-popup-iframe"
+  });
+  
   if ("loading" in HTMLIFrameElement.prototype) {
     iframe.loading = "lazy";
   }
 
-  const iframeWrapper = document.createElement("div");
-  iframeWrapper.id = "tabboost-iframe-wrapper";
+  const iframeWrapper = createElementWithAttributes("div", {
+    id: "tabboost-iframe-wrapper"
+  });
 
-  iframeWrapper.appendChild(iframe);
-  iframeWrapper.appendChild(errorMsg);
-
-  popupContent.appendChild(toolbar);
-  popupContent.appendChild(iframeWrapper);
-  popupOverlay.appendChild(popupContent);
-  fragment.appendChild(popupOverlay);
+  appendChildren(iframeWrapper, [iframe, errorMsg]);
+  appendChildren(popupContent, [toolbar, iframeWrapper]);
+  appendChildren(popupOverlay, [popupContent]);
+  appendChildren(fragment, [popupOverlay]);
 
   return { fragment, popupOverlay, popupContent, iframe, errorMsg, titleSpan };
 }
@@ -392,7 +442,7 @@ function loadWithTimeout(iframe, url, timeout = 5000) {
 
     const cleanup = () => {
       clearTimeout(timeoutId);
-          iframe.onload = null;
+      iframe.onload = null;
       iframe.onerror = null;
       hasSettled = true;
     };
@@ -421,7 +471,9 @@ function loadWithTimeout(iframe, url, timeout = 5000) {
           resolve({ status: "success" });
         }
       } catch (corsError) {
-        console.log("chrome-tabboost: iframe onload triggered, but CORS prevents content access.");
+        console.log(
+          "chrome-tabboost: iframe onload triggered, but CORS prevents content access."
+        );
         cleanup();
         resolve({ status: "cors" });
       }
@@ -430,9 +482,25 @@ function loadWithTimeout(iframe, url, timeout = 5000) {
     iframe.onerror = () => {
       if (hasSettled) return;
       cleanup();
-      reject(new Error(getMessage("cannotLoadInPopup") || "iframe load error (onerror)"));
+      reject(
+        new Error(
+          getMessage("cannotLoadInPopup") || "iframe load error (onerror)"
+        )
+      );
     };
   });
+}
+
+function createAddToIgnoreNotice(hostname) {
+  const autoAddNotice = createElementWithAttributes("p", {
+    className: "tabboost-auto-add-notice"
+  });
+  
+  const autoAddMessage = getMessage("autoAddToIgnoreList", [hostname]);
+  autoAddNotice.textContent = 
+    autoAddMessage || `Automatically added ${hostname} to ignore list...`;
+  
+  return autoAddNotice;
 }
 
 async function createPopupDOM(url) {
@@ -444,10 +512,8 @@ async function createPopupDOM(url) {
     };
 
     const settings = await getPreviewSettings();
-    const { fragment, popupOverlay, iframe, errorMsg, titleSpan } = createPopupDOMElements(
-      url,
-      settings
-    );
+    const { fragment, popupOverlay, iframe, errorMsg, titleSpan } =
+      createPopupDOMElements(url, settings);
 
     let hasHandledFailure = false;
 
@@ -485,16 +551,18 @@ async function createPopupDOM(url) {
           if (!ignoreList.includes(hostname)) {
             ignoreList.push(hostname);
             await storageCache.set({ iframeIgnoreList: ignoreList });
-            console.log(`chrome-tabboost: Automatically added ${hostname} to ignore list`);
+            console.log(
+              `chrome-tabboost: Automatically added ${hostname} to ignore list`
+            );
 
-            const autoAddNotice = document.createElement("p");
-            autoAddNotice.className = "tabboost-auto-add-notice";
-            const autoAddMessage = getMessage("autoAddToIgnoreList", [hostname]);
-            autoAddNotice.textContent = autoAddMessage || `Automatically added ${hostname} to ignore list...`;
+            const autoAddNotice = createAddToIgnoreNotice(hostname);
             if (errorMsg) errorMsg.appendChild(autoAddNotice);
           }
         } catch (err) {
-          console.error("chrome-tabboost: Error auto-adding to ignore list:", err);
+          console.error(
+            "chrome-tabboost: Error auto-adding to ignore list:",
+            err
+          );
         }
       }
     };
@@ -537,7 +605,9 @@ async function createPopupDOM(url) {
     };
     addTrackedEventListener(document, "keydown", escListener);
     const addButtonListeners = () => {
-      const newTabButton = popupOverlay.querySelector(".tabboost-newtab-button");
+      const newTabButton = popupOverlay.querySelector(
+        ".tabboost-newtab-button"
+      );
       if (newTabButton) {
         addTrackedEventListener(newTabButton, "click", () => {
           window.open(url, "_blank");
@@ -553,7 +623,10 @@ async function createPopupDOM(url) {
       const sizeHintButton = popupOverlay.querySelector(".tabboost-size-hint");
       if (sizeHintButton) {
         addTrackedEventListener(sizeHintButton, "click", () => {
-          chrome.runtime.sendMessage({ action: "openOptionsPage", section: "popup-size" });
+          chrome.runtime.sendMessage({
+            action: "openOptionsPage",
+            section: "popup-size",
+          });
         });
       }
 
@@ -565,7 +638,9 @@ async function createPopupDOM(url) {
         });
       }
 
-      const addToIgnoreButton = errorMsg.querySelector("#tabboost-add-to-ignore");
+      const addToIgnoreButton = errorMsg.querySelector(
+        "#tabboost-add-to-ignore"
+      );
       if (addToIgnoreButton) {
         addTrackedEventListener(addToIgnoreButton, "click", async () => {
           try {
@@ -578,17 +653,29 @@ async function createPopupDOM(url) {
               ignoreList.push(hostname);
               await storageCache.set({ iframeIgnoreList: ignoreList });
               console.log(`chrome-tabboost: Added ${hostname} to ignore list`);
-              alert(getMessage('addedToIgnoreList', hostname) || `Added ${hostname} to ignore list...`);
+              alert(
+                getMessage("addedToIgnoreList", hostname) ||
+                  `Added ${hostname} to ignore list...`
+              );
               window.open(url, "_blank");
               closePopup();
             } else {
-              alert(getMessage('alreadyInIgnoreList', hostname) || `${hostname} is already in the ignore list`);
+              alert(
+                getMessage("alreadyInIgnoreList", hostname) ||
+                  `${hostname} is already in the ignore list`
+              );
               window.open(url, "_blank");
               closePopup();
             }
           } catch (error) {
-            console.error("chrome-tabboost: Error adding to ignore list:", error);
-            alert(getMessage('failedToAddToIgnoreList') || "Failed to add to ignore list");
+            console.error(
+              "chrome-tabboost: Error adding to ignore list:",
+              error
+            );
+            alert(
+              getMessage("failedToAddToIgnoreList") ||
+                "Failed to add to ignore list"
+            );
           }
         });
       }
@@ -611,8 +698,15 @@ async function createPopupDOM(url) {
       if (hasHandledFailure) return;
 
       if (loadResult.status === "blank") {
-        console.log("chrome-tabboost: iframe loaded, but content is blank or inaccessible");
-        await handleLoadFailure(new Error(getMessage("cannotLoadInPopup") || "Content is blank or inaccessible"));
+        console.log(
+          "chrome-tabboost: iframe loaded, but content is blank or inaccessible"
+        );
+        await handleLoadFailure(
+          new Error(
+            getMessage("cannotLoadInPopup") ||
+              "Content is blank or inaccessible"
+          )
+        );
         return;
       } else if (loadResult.status === "cors") {
         console.log("chrome-tabboost: iframe loaded with CORS restrictions");
@@ -625,13 +719,16 @@ async function createPopupDOM(url) {
         if (iframe.contentDocument && iframe.contentDocument.title) {
           const iframeTitle = iframe.contentDocument.title;
           if (titleSpan)
-            titleSpan.innerText = iframeTitle || getMessage("pageLoaded") || "Page loaded";
+            titleSpan.innerText =
+              iframeTitle || getMessage("pageLoaded") || "Page loaded";
         } else {
-          if (titleSpan) titleSpan.innerText = getMessage("pageLoaded") || "Page loaded";
+          if (titleSpan)
+            titleSpan.innerText = getMessage("pageLoaded") || "Page loaded";
         }
       } catch (e) {
         console.log("chrome-tabboost: CORS prevents title access after load.");
-        if (titleSpan) titleSpan.innerText = getMessage("pageLoaded") || "Page loaded";
+        if (titleSpan)
+          titleSpan.innerText = getMessage("pageLoaded") || "Page loaded";
       }
     } catch (error) {
       if (!hasHandledFailure) {

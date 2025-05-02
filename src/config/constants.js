@@ -27,4 +27,8 @@ export const DANGEROUS_URL_PATTERNS = [
   /%3C/i,
 ];
 
-export const RESTRICTED_DOMAINS = ["github.com", "facebook.com", "*.facebook.com"];
+export const RESTRICTED_DOMAINS = [
+  "github.com",
+  "facebook.com",
+  "*.facebook.com",
+];

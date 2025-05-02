@@ -30,6 +30,33 @@ const colors = {
   cyan: '\x1b[36m'
 };
 
+/**
+ * Formats the coverage percentage with color based on threshold.
+ * @param {number} value - The coverage percentage.
+ * @param {number} threshold - The minimum required percentage.
+ * @returns {string} Formatted and colored percentage string.
+ */
+function formatCoverage(value, threshold) {
+  const colorCode = value >= threshold ? colors.green : colors.red;
+  return `${colorCode}${value.toFixed(2)}${colors.reset}`;
+}
+
+/**
+ * Checks a specific coverage metric against its threshold.
+ * @param {string} metricName - The name of the metric (e.g., "Statements").
+ * @param {number} actualValue - The actual coverage percentage.
+ * @param {number} threshold - The required coverage threshold.
+ * @returns {boolean} True if the threshold is met, false otherwise.
+ */
+function checkCoverageThreshold(metricName, actualValue, threshold) {
+  console.log(`${metricName} coverage: ${formatCoverage(actualValue, threshold)}% (Threshold: ${threshold}%)`);
+  if (actualValue < threshold) {
+    console.log(`${colors.red}${metricName} coverage below threshold ${threshold}%${colors.reset}`);
+    return false;
+  }
+  return true;
+}
+
 console.log(`${colors.blue}====== Running TabBoost test suite ======${colors.reset}`);
 console.log(`${colors.cyan}Starting test run...${colors.reset}`);
 
@@ -44,48 +71,33 @@ try {
     const total = coverageReport.total;
     
     console.log(`\n${colors.blue}====== Coverage report ======${colors.reset}`);
-    console.log(`Statements coverage: ${formatCoverage(total.statements.pct, COVERAGE_THRESHOLD.statements)}%`);
-    console.log(`Branches coverage: ${formatCoverage(total.branches.pct, COVERAGE_THRESHOLD.branches)}%`);
-    console.log(`Functions coverage: ${formatCoverage(total.functions.pct, COVERAGE_THRESHOLD.functions)}%`);
-    console.log(`Lines coverage: ${formatCoverage(total.lines.pct, COVERAGE_THRESHOLD.lines)}%`);
-    
-    let thresholdsFailed = false;
-    if (total.statements.pct < COVERAGE_THRESHOLD.statements) {
-      console.log(`${colors.red}Statements coverage not met threshold ${COVERAGE_THRESHOLD.statements}%${colors.reset}`);
-      thresholdsFailed = true;
-    }
-    if (total.branches.pct < COVERAGE_THRESHOLD.branches) {
-      console.log(`${colors.red}Branches coverage not met threshold ${COVERAGE_THRESHOLD.branches}%${colors.reset}`);
-      thresholdsFailed = true;
-    }
-    if (total.functions.pct < COVERAGE_THRESHOLD.functions) {
-      console.log(`${colors.red}Functions coverage not met threshold ${COVERAGE_THRESHOLD.functions}%${colors.reset}`);
-      thresholdsFailed = true;
-    }
-    if (total.lines.pct < COVERAGE_THRESHOLD.lines) {
-      console.log(`${colors.red}Lines coverage not met threshold ${COVERAGE_THRESHOLD.lines}%${colors.reset}`);
-      thresholdsFailed = true;
-    }
-    
-    if (thresholdsFailed) {
-      console.log(`\n${colors.yellow}Warning: Coverage threshold not met, consider adding more tests${colors.reset}`);
+
+    let allThresholdsMet = true;
+    allThresholdsMet &= checkCoverageThreshold("Statements", total.statements.pct, COVERAGE_THRESHOLD.statements);
+    allThresholdsMet &= checkCoverageThreshold("Branches", total.branches.pct, COVERAGE_THRESHOLD.branches);
+    allThresholdsMet &= checkCoverageThreshold("Functions", total.functions.pct, COVERAGE_THRESHOLD.functions);
+    allThresholdsMet &= checkCoverageThreshold("Lines", total.lines.pct, COVERAGE_THRESHOLD.lines);
+
+    if (!allThresholdsMet) {
+      console.log(`\n${colors.yellow}Warning: One or more coverage thresholds not met.${colors.reset}`);
       if (process.env.CI === 'true') {
+        console.error(`${colors.red}Failing CI build due to low coverage.${colors.reset}`);
         process.exit(1);
       }
     } else {
-      console.log(`\n${colors.green}Coverage threshold met!${colors.reset}`);
+      console.log(`\n${colors.green}All coverage thresholds met!${colors.reset}`);
     }
   } else {
-    console.log(`${colors.yellow}Warning: Coverage report file not found${colors.reset}`);
+    console.log(`${colors.yellow}Warning: Coverage report file not found (${coveragePath})${colors.reset}`);
+    // Optionally fail the build if coverage report is missing in CI
+    if (process.env.CI === 'true') {
+        console.error(`${colors.red}Failing CI build because coverage report is missing.${colors.reset}`);
+        process.exit(1);
+    }
   }
   
   console.log(`\n${colors.green}Test completed successfully!${colors.reset}`);
 } catch (error) {
-  console.error(`\n${colors.red}Test failed: ${error.message}${colors.reset}`);
+  console.error(`\n${colors.red}Test run failed: ${error.message}${colors.reset}`);
   process.exit(1);
-}
-
-function formatCoverage(value, threshold) {
-  const colorCode = value >= threshold ? colors.green : colors.red;
-  return `${colorCode}${value.toFixed(2)}${colors.reset}`;
 } 
