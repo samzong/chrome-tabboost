@@ -4,7 +4,7 @@ const { exec } = require('child_process');
 const util = require('util');
 const execAsync = util.promisify(exec);
 
-const buildDir = path.join(__dirname, '../dist');
+const buildDir = path.join(__dirname, '../build');
 const manifestPath = path.join(buildDir, 'manifest.json');
 
 async function validateExtension() {
