@@ -11,29 +11,29 @@ class StorageCache {
     this.stableConfigExpiration = 12 * 60 * 60 * 1000;
     this.initialized = false;
     this.commonKeys = [
-      'iframeIgnoreEnabled',
-      'iframeIgnoreList',
-      'popupSizePreset',
-      'customWidth',
-      'customHeight',
-      'autoAddToIgnoreList',
-      'defaultAction',
-      'splitViewEnabled'
+      "iframeIgnoreEnabled",
+      "iframeIgnoreList",
+      "popupSizePreset",
+      "customWidth",
+      "customHeight",
+      "autoAddToIgnoreList",
+      "defaultAction",
+      "splitViewEnabled",
     ];
-    
+
     this.stableConfigKeys = [
-      'popupSizePreset',
-      'customWidth',
-      'customHeight',
-      'defaultAction',
-      'splitViewEnabled',
-      'iframeIgnoreEnabled',
+      "popupSizePreset",
+      "customWidth",
+      "customHeight",
+      "defaultAction",
+      "splitViewEnabled",
+      "iframeIgnoreEnabled",
     ];
-    
+
     this.batchReadCache = {};
     this.batchReadTimer = null;
     this.batchReadDelay = 50;
-    
+
     this.writeQueue = {};
     this.writeTimerId = null;
     this.writeDelay = 1000;
@@ -55,7 +55,7 @@ class StorageCache {
           this.cache[key] = result[key];
           this.setExpiration(key);
         });
-        
+
         this.initialized = true;
         resolve();
       });
@@ -92,57 +92,55 @@ class StorageCache {
     if (!this.initialized) {
       await this.init();
     }
-    
+
     let keyList = [];
     let defaults = {};
-    
-    if (typeof keys === 'string') {
+
+    if (typeof keys === "string") {
       keyList = [keys];
     } else if (Array.isArray(keys)) {
       keyList = keys;
-    } else if (typeof keys === 'object' && keys !== null) {
+    } else if (typeof keys === "object" && keys !== null) {
       keyList = Object.keys(keys);
       defaults = keys;
     }
 
-    const keysToFetch = keyList.filter(key => 
-      !(key in this.cache) || this.isExpired(key)
-    );
+    const keysToFetch = keyList.filter((key) => !(key in this.cache) || this.isExpired(key));
 
     if (keysToFetch.length === 0) {
       const result = {};
-      keyList.forEach(key => {
-        result[key] = (key in this.cache) ? this.cache[key] : defaults[key];
+      keyList.forEach((key) => {
+        result[key] = key in this.cache ? this.cache[key] : defaults[key];
       });
       return Promise.resolve(result);
     }
 
     return new Promise((resolve) => {
       const resolvers = {};
-      keysToFetch.forEach(key => {
+      keysToFetch.forEach((key) => {
         if (!this.batchReadCache[key]) {
           this.batchReadCache[key] = [];
         }
-        
+
         this.batchReadCache[key].push((value) => {
           resolvers[key] = value;
         });
       });
-      
+
       if (this.batchReadTimer) {
         clearTimeout(this.batchReadTimer);
       }
-      
+
       this.batchReadTimer = setTimeout(() => {
         this.executeBatchRead();
       }, this.batchReadDelay);
-      
+
       const checkComplete = () => {
-        const allResolved = keysToFetch.every(key => key in resolvers);
-        
+        const allResolved = keysToFetch.every((key) => key in resolvers);
+
         if (allResolved) {
           const result = {};
-          keyList.forEach(key => {
+          keyList.forEach((key) => {
             if (key in resolvers) {
               result[key] = resolvers[key];
             } else if (key in this.cache) {
@@ -151,46 +149,46 @@ class StorageCache {
               result[key] = defaults[key];
             }
           });
-          
+
           resolve(result);
         } else {
           setTimeout(checkComplete, 10);
         }
       };
-      
+
       checkComplete();
     });
   }
-  
+
   /**
    * Execute batch read operation
    */
   executeBatchRead() {
     const keysToFetch = Object.keys(this.batchReadCache);
-    
+
     if (keysToFetch.length === 0) {
       return;
     }
-    
-    const currentBatch = {...this.batchReadCache};
+
+    const currentBatch = { ...this.batchReadCache };
     this.batchReadCache = {};
     this.batchReadTimer = null;
-    
+
     chrome.storage.sync.get(keysToFetch, (items) => {
-      Object.keys(items).forEach(key => {
+      Object.keys(items).forEach((key) => {
         this.cache[key] = items[key];
         this.setExpiration(key);
-        
+
         if (currentBatch[key]) {
-          currentBatch[key].forEach(resolver => {
+          currentBatch[key].forEach((resolver) => {
             resolver(items[key]);
           });
         }
       });
-      
-      keysToFetch.forEach(key => {
+
+      keysToFetch.forEach((key) => {
         if (!(key in items) && currentBatch[key]) {
-          currentBatch[key].forEach(resolver => {
+          currentBatch[key].forEach((resolver) => {
             resolver(undefined);
           });
         }
@@ -204,18 +202,18 @@ class StorageCache {
    * @returns {Promise} Promise of completion
    */
   async set(items) {
-    Object.keys(items).forEach(key => {
+    Object.keys(items).forEach((key) => {
       this.cache[key] = items[key];
       this.setExpiration(key);
-      
+
       this.writeQueue[key] = items[key];
     });
-    
+
     this.scheduleWrite();
-    
+
     return Promise.resolve();
   }
-  
+
   /**
    * Schedule batch write operation
    */
@@ -223,12 +221,12 @@ class StorageCache {
     if (this.writeTimerId) {
       clearTimeout(this.writeTimerId);
     }
-    
+
     this.writeTimerId = setTimeout(() => {
       this.flushWrites();
     }, this.writeDelay);
   }
-  
+
   /**
    * Execute all pending write operations
    */
@@ -236,11 +234,11 @@ class StorageCache {
     if (Object.keys(this.writeQueue).length === 0) {
       return;
     }
-    
-    const itemsToWrite = {...this.writeQueue};
-    
+
+    const itemsToWrite = { ...this.writeQueue };
+
     this.writeQueue = {};
-    
+
     this._batchWrite(itemsToWrite);
   }
 
@@ -260,16 +258,16 @@ class StorageCache {
    */
   async remove(keys) {
     const keyList = Array.isArray(keys) ? keys : [keys];
-    
-    keyList.forEach(key => {
+
+    keyList.forEach((key) => {
       delete this.cache[key];
       delete this.expiration[key];
-      
+
       if (key in this.writeQueue) {
         delete this.writeQueue[key];
       }
     });
-    
+
     return new Promise((resolve) => {
       chrome.storage.sync.remove(keyList, () => {
         if (chrome.runtime.lastError) {
@@ -289,17 +287,17 @@ class StorageCache {
     this.expiration = {};
     this.writeQueue = {};
     this.batchReadCache = {};
-    
+
     if (this.writeTimerId) {
       clearTimeout(this.writeTimerId);
       this.writeTimerId = null;
     }
-    
+
     if (this.batchReadTimer) {
       clearTimeout(this.batchReadTimer);
       this.batchReadTimer = null;
     }
-    
+
     return new Promise((resolve) => {
       chrome.storage.sync.clear(() => {
         if (chrome.runtime.lastError) {
@@ -312,4 +310,4 @@ class StorageCache {
 }
 
 const storageCache = new StorageCache();
-export default storageCache; 
+export default storageCache;

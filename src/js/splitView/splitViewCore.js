@@ -4,7 +4,7 @@ import { canLoadInIframe } from "./splitViewURLValidator.js";
 import { initSplitViewDOM, removeSplitViewDOM, updateRightViewDOM } from "./splitViewDOM.js";
 import { setupSplitViewEvents, cleanupSplitViewEvents } from "./splitViewEvents.js";
 
-storageCache.init().catch(error => {
+storageCache.init().catch((error) => {
   console.error("splitView: Failed to initialize storage cache:", error);
 });
 
@@ -21,7 +21,7 @@ export async function createSplitView() {
 
     leftUrl = currentTab.url;
 
-    if (!leftUrl || leftUrl === 'about:blank') {
+    if (!leftUrl || leftUrl === "about:blank") {
       console.error("Invalid page URL");
       return;
     }
@@ -30,9 +30,9 @@ export async function createSplitView() {
       chrome.scripting.executeScript({
         target: { tabId: currentTab.id },
         function: initSplitViewDOM,
-        args: [leftUrl]
+        args: [leftUrl],
       });
-      
+
       isSplitViewActive = true;
     } catch (e) {
       console.error("Failed to execute split view script:", e);
@@ -41,9 +41,9 @@ export async function createSplitView() {
           chrome.scripting.executeScript({
             target: { tabId: currentTab.id },
             function: initSplitViewDOM,
-            args: [leftUrl]
+            args: [leftUrl],
           });
-          
+
           isSplitViewActive = true;
         } catch (retryError) {
           console.error("Failed to retry execute split view script:", retryError);
@@ -57,7 +57,7 @@ export async function createSplitView() {
 
 export async function closeSplitView() {
   if (!isSplitViewActive) return;
-  
+
   try {
     const currentTab = await getCurrentTab();
     if (!currentTab) {
@@ -68,13 +68,13 @@ export async function closeSplitView() {
     try {
       chrome.scripting.executeScript({
         target: { tabId: currentTab.id },
-        function: removeSplitViewDOM
+        function: removeSplitViewDOM,
       });
-      
+
       isSplitViewActive = false;
     } catch (e) {
       console.error("Failed to execute restore page script:", e);
-      
+
       try {
         chrome.tabs.reload(currentTab.id);
         isSplitViewActive = false;
@@ -97,7 +97,7 @@ export async function toggleSplitView() {
 
 export async function updateRightView(url) {
   if (!isSplitViewActive) return;
-  
+
   rightUrl = url;
   try {
     const currentTab = await getCurrentTab();
@@ -109,7 +109,7 @@ export async function updateRightView(url) {
     chrome.scripting.executeScript({
       target: { tabId: currentTab.id },
       function: updateRightViewDOM,
-      args: [url]
+      args: [url],
     });
   } catch (error) {
     console.error("Failed to update right view:", error);
@@ -120,12 +120,11 @@ export function getSplitViewState() {
   return {
     isActive: isSplitViewActive,
     leftUrl: leftUrl,
-    rightUrl: rightUrl
+    rightUrl: rightUrl,
   };
 }
 
-export function initSplitViewModule() {
-}
+export function initSplitViewModule() {}
 
 export default {
   createSplitView,
@@ -133,5 +132,5 @@ export default {
   toggleSplitView,
   updateRightView,
   getSplitViewState,
-  initSplitViewModule
-}; 
+  initSplitViewModule,
+};

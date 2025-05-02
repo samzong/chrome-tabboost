@@ -1,12 +1,15 @@
-
 import storageCache from "./storage-cache.js";
 import { validateUrl } from "./utils.js";
-import { DANGEROUS_PROTOCOLS, DANGEROUS_URL_PATTERNS, RESTRICTED_DOMAINS } from "../config/constants.js";
+import {
+  DANGEROUS_PROTOCOLS,
+  DANGEROUS_URL_PATTERNS,
+  RESTRICTED_DOMAINS,
+} from "../config/constants.js";
 
 let userConfigCache = {
   iframeIgnoreEnabled: false,
   iframeIgnoreList: [],
-  lastUpdated: 0
+  lastUpdated: 0,
 };
 
 const CONFIG_CACHE_TTL = 60 * 1000;
@@ -21,13 +24,11 @@ function isDomainMatch(hostname, rule) {
   hostname = hostname.toLowerCase();
   rule = rule.toLowerCase();
 
-  if (rule.startsWith('*.')) {
+  if (rule.startsWith("*.")) {
     const baseDomain = rule.substring(2);
-    
-    return hostname.endsWith('.' + baseDomain) && 
-           hostname.length > baseDomain.length + 1;
-  } 
-  else {
+
+    return hostname.endsWith("." + baseDomain) && hostname.length > baseDomain.length + 1;
+  } else {
     return hostname === rule;
   }
 }
@@ -38,13 +39,13 @@ async function updateUserConfigCache() {
     if (now - userConfigCache.lastUpdated > CONFIG_CACHE_TTL) {
       const result = await storageCache.get({
         iframeIgnoreEnabled: false,
-        iframeIgnoreList: []
+        iframeIgnoreList: [],
       });
-      
+
       userConfigCache = {
         iframeIgnoreEnabled: result.iframeIgnoreEnabled,
         iframeIgnoreList: result.iframeIgnoreList || [],
-        lastUpdated: now
+        lastUpdated: now,
       };
     }
   } catch (error) {
@@ -62,33 +63,39 @@ async function updateUserConfigCache() {
 export async function canLoadInIframe(url) {
   try {
     const validationResult = validateUrl(url);
-    
+
     if (!validationResult.isValid) {
       return false;
     }
-    
+
     url = validationResult.sanitizedUrl;
-    
+
     try {
       const urlObj = new URL(url);
-      
+
       const hostname = urlObj.hostname;
-      
-      if (RESTRICTED_DOMAINS.some(domain => isDomainMatch(hostname, domain))) {
+
+      if (RESTRICTED_DOMAINS.some((domain) => isDomainMatch(hostname, domain))) {
         return false;
       }
-      
+
       await updateUserConfigCache();
-      
+
       if (!userConfigCache.iframeIgnoreEnabled) {
         return true;
       }
-      
-      if (!userConfigCache.iframeIgnoreList || !Array.isArray(userConfigCache.iframeIgnoreList) || userConfigCache.iframeIgnoreList.length === 0) {
+
+      if (
+        !userConfigCache.iframeIgnoreList ||
+        !Array.isArray(userConfigCache.iframeIgnoreList) ||
+        userConfigCache.iframeIgnoreList.length === 0
+      ) {
         return true;
       }
-      
-      const isIgnored = userConfigCache.iframeIgnoreList.some(domain => isDomainMatch(hostname, domain));
+
+      const isIgnored = userConfigCache.iframeIgnoreList.some((domain) =>
+        isDomainMatch(hostname, domain)
+      );
       return !isIgnored;
     } catch (e) {
       return false;
@@ -98,4 +105,4 @@ export async function canLoadInIframe(url) {
   }
 }
 
-export { isDomainMatch }; 
+export { isDomainMatch };

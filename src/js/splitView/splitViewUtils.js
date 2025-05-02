@@ -1,4 +1,3 @@
-
 /**
  * Safely query DOM elements
  * Prevent errors due to specific elements not existing
@@ -15,7 +14,7 @@ export function safeQuerySelector(selector, context = document) {
   }
 }
 
-/** 
+/**
  * Safely query multiple DOM elements
  * @param {string} selector - CSS selector
  * @param {Element} [context=document] - Query context
@@ -107,7 +106,7 @@ export function safeParseURL(url) {
  */
 export function debounce(func, wait) {
   let timeout;
-  return function(...args) {
+  return function (...args) {
     const context = this;
     clearTimeout(timeout);
     timeout = setTimeout(() => func.apply(context, args), wait);
@@ -122,12 +121,12 @@ export function debounce(func, wait) {
  */
 export function throttle(func, limit) {
   let inThrottle;
-  return function(...args) {
+  return function (...args) {
     const context = this;
     if (!inThrottle) {
       func.apply(context, args);
       inThrottle = true;
-      setTimeout(() => inThrottle = false, limit);
+      setTimeout(() => (inThrottle = false), limit);
     }
   };
 }
@@ -158,14 +157,16 @@ export function detectIframeError(iframe) {
   try {
     const doc = safeGetIframeContent(iframe);
     if (!doc) return false;
-    
-    const content = doc.documentElement.innerHTML || '';
-    return content.includes('refused to connect') || 
-           content.includes('Refuse connection') ||
-           content.includes('ERR_CONNECTION_REFUSED') ||
-           content.includes('ERR_BLOCKED_BY_RESPONSE') ||
-           content.includes('ERR_CONTENT_SECURITY_POLICY');
+
+    const content = doc.documentElement.innerHTML || "";
+    return (
+      content.includes("refused to connect") ||
+      content.includes("Refuse connection") ||
+      content.includes("ERR_CONNECTION_REFUSED") ||
+      content.includes("ERR_BLOCKED_BY_RESPONSE") ||
+      content.includes("ERR_CONTENT_SECURITY_POLICY")
+    );
   } catch (e) {
     return false;
   }
-} 
+}
