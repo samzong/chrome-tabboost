@@ -1,6 +1,6 @@
 import { getCurrentTab } from "../../utils/utils.js";
 import storageCache from "../../utils/storage-cache.js";
-import { canLoadInIframe } from "./splitViewURLValidator.js";
+import { canLoadInIframe } from "../../utils/iframe-compatibility.js";
 import {
   initSplitViewDOM,
   removeSplitViewDOM,
@@ -12,7 +12,7 @@ import {
 } from "./splitViewEvents.js";
 
 storageCache.init().catch((error) => {
-  console.error("splitView: Failed to initialize storage cache:", error);
+  console.error("Failed to initialize storage cache:", error);
 });
 
 let isSplitViewActive = false;
@@ -20,21 +20,17 @@ let leftUrl = "";
 let rightUrl = "";
 
 export async function createSplitView() {
-  console.log("TabBoost: createSplitView called");
-
   try {
     const currentTab = await getCurrentTab();
     if (!currentTab) {
-      console.error("TabBoost: Failed to get current tab");
+      console.error("Failed to get current tab");
       return;
     }
-    console.log("TabBoost: Got current tab:", currentTab.id);
 
     leftUrl = currentTab.url;
-    console.log("TabBoost: Left URL set to:", leftUrl);
 
     if (!leftUrl || leftUrl === "about:blank") {
-      console.error("TabBoost: Invalid page URL");
+      console.error("Invalid page URL");
       return;
     }
 
@@ -45,29 +41,22 @@ export async function createSplitView() {
         func: () => {
           try {
             const container = document.getElementById("tabboost-split-view-container");
-            console.log("TabBoost: Checking for split view container in page");
-            console.log("TabBoost: Split view container exists:", !!container);
             return !!container;
           } catch (e) {
-            console.error("TabBoost: Error checking if split view container exists:", e);
+            console.error("Error checking if split view container exists:", e);
             return false;
           }
         }
       });
 
       if (checkResult && checkResult.result) {
-        console.log("TabBoost: Split view container already exists, will update it");
-
         // 如果已存在，确保它可见
         await chrome.scripting.executeScript({
           target: { tabId: currentTab.id },
           func: () => {
             try {
-              console.log("TabBoost: Checking if split view container exists:", !!document.getElementById("tabboost-split-view-container"));
-              
               const container = document.getElementById("tabboost-split-view-container");
               if (container) {
-                console.log("TabBoost: Making existing split view container visible");
                 container.style.display = "flex";
                 container.style.opacity = "1";
                 container.style.zIndex = "10000";
@@ -89,20 +78,17 @@ export async function createSplitView() {
               }
               return false;
             } catch (e) {
-              console.error("TabBoost: Error making split view container visible:", e);
+              console.error("Error making split view container visible:", e);
               return false;
             }
           }
         });
 
         isSplitViewActive = true;
-        console.log("TabBoost: Split view marked as active (existing container)");
         return;
       }
 
       // 如果不存在，直接创建简单的分屏视图，不使用动态函数执行
-      console.log("TabBoost: Creating simplified split view in tab:", currentTab.id);
-      
       const results = await chrome.scripting.executeScript({
         target: { tabId: currentTab.id },
         func: (url) => {
@@ -119,7 +105,6 @@ export async function createSplitView() {
             container.style.backgroundColor = "#fff";
             container.style.display = "flex";
             container.style.overflow = "hidden";
-            console.log("TabBoost: Created split view container");
             
             // 创建视图容器 - 直接占据100%高度，不再需要顶部控制栏
             const viewsContainer = document.createElement("div");
@@ -128,7 +113,6 @@ export async function createSplitView() {
             viewsContainer.style.width = "100%";
             viewsContainer.style.height = "100%";
             viewsContainer.style.position = "relative";
-            console.log("TabBoost: Created views container");
             
             // 创建左侧视图
             const leftView = document.createElement("div");
@@ -166,7 +150,7 @@ export async function createSplitView() {
                   try {
                     window.location.href = rightUrl;
                   } catch (e) {
-                    console.error("TabBoost: Error setting location to right URL:", e);
+                    console.error("Error setting location to right URL:", e);
                   }
                 }, 100);
               } else {
@@ -308,7 +292,6 @@ export async function createSplitView() {
               }
             });
             
-            console.log("TabBoost: Split view container successfully created");
             return true;
           } catch (e) {
             console.error("TabBoost: Error creating split view:", e);
@@ -318,11 +301,8 @@ export async function createSplitView() {
         args: [leftUrl]
       });
       
-      console.log("TabBoost: Script execution results:", results);
-      
       if (results && results[0] && results[0].result) {
         isSplitViewActive = true;
-        console.log("TabBoost: Split view marked as active (simplified version)");
       } else {
         console.error("TabBoost: Failed to create split view");
       }
@@ -469,7 +449,6 @@ export async function createSplitView() {
                 // 添加到页面
                 document.body.appendChild(container);
                 
-                console.log("TabBoost: Created minimal split view container");
                 return true;
               }
             } catch (e) {
@@ -481,7 +460,6 @@ export async function createSplitView() {
         });
         
         isSplitViewActive = true;
-        console.log("TabBoost: Split view marked as active (minimal version)");
       } catch (retryError) {
         console.error("TabBoost: Failed to create minimal split view:", retryError);
       }
@@ -533,17 +511,15 @@ export async function toggleSplitView() {
 
 export async function updateRightView(url) {
   if (!isSplitViewActive) {
-    console.log("TabBoost: Split view is not active, activating it first");
     await createSplitView();
   }
 
   rightUrl = url;
-  console.log("TabBoost: Updating right view with URL:", url);
   
   try {
     const currentTab = await getCurrentTab();
     if (!currentTab) {
-      console.error("TabBoost: Failed to get current tab for updateRightView");
+      console.error("Failed to get current tab for updateRightView");
       return;
     }
 
@@ -551,13 +527,11 @@ export async function updateRightView(url) {
     const results = await chrome.scripting.executeScript({
       target: { tabId: currentTab.id },
       func: (url) => {
-        console.log("TabBoost: updateRightViewDOM called with URL:", url);
-        
         try {
           // 获取右侧视图
           const rightView = document.getElementById("tabboost-split-right");
           if (!rightView) {
-            console.error("TabBoost: Right view not found");
+            console.error("Right view not found");
             return false;
           }
           
@@ -566,7 +540,6 @@ export async function updateRightView(url) {
           
           // 如果iframe不存在，创建一个新的
           if (!rightIframe) {
-            console.log("TabBoost: Right iframe not found, creating a new one");
             rightIframe = document.createElement("iframe");
             rightIframe.id = "tabboost-right-iframe";
             rightIframe.style.width = "100%";
@@ -577,7 +550,6 @@ export async function updateRightView(url) {
             rightIframe.setAttribute("allowfullscreen", "true");
             
             rightView.appendChild(rightIframe);
-            console.log("TabBoost: Added new right iframe to right view");
           }
           
           // 确保右侧视图可见
@@ -597,22 +569,20 @@ export async function updateRightView(url) {
           }
           
           // 设置iframe的src
-          console.log("TabBoost: Setting right iframe src to:", url);
           rightIframe.src = url;
           
           return true;
         } catch (error) {
-          console.error("TabBoost: Error in updateRightViewDOM:", error);
+          console.error("Error in updateRightViewDOM:", error);
           return false;
         }
       },
       args: [url]
     });
     
-    console.log("TabBoost: Update right view results:", results);
     return { status: 'Split view created and updated' };
   } catch (error) {
-    console.error("TabBoost: Failed to update right view:", error);
+    console.error("Failed to update right view:", error);
     
     // 如果失败，尝试简化方法
     try {

@@ -225,15 +225,6 @@ function showSaveNotification() {
 document.addEventListener(
   "click",
   async function (event) {
-    // 添加调试日志，帮助排查问题
-    console.log("TabBoost: Click event detected", {
-      button: event.button,
-      metaKey: event.metaKey,
-      ctrlKey: event.ctrlKey,
-      shiftKey: event.shiftKey,
-      target: event.target.tagName
-    });
-
     // 检查是否是左键点击
     if (event.button !== 0) {
       return;
@@ -246,8 +237,6 @@ document.addEventListener(
 
     // 检查是否按下了 Command/Ctrl+Shift 组合键
     if (event.shiftKey && (event.metaKey || event.ctrlKey)) {
-      console.log("TabBoost: Command/Ctrl+Shift+Click detected on link:", link.href);
-
       event.preventDefault();
       event.stopPropagation();
 
@@ -258,8 +247,6 @@ document.addEventListener(
           url: link.href,
         },
         function (response) {
-          console.log("TabBoost: Split view response:", response);
-
           if (response && response.status === "error") {
             const notification = createNotificationElement("", "tabboost-notification");
             notification.textContent =
@@ -285,8 +272,6 @@ document.addEventListener(
 
     // 处理普通的 Command/Ctrl+Click (不带Shift)
     if (event.metaKey || event.ctrlKey) {
-      console.log("TabBoost: Command/Ctrl+Click detected on link:", link.href);
-
       event.preventDefault();
       event.stopPropagation();
 
@@ -317,9 +302,6 @@ async function createPopup(url) {
     const canLoad = await canLoadInIframe(url, { isPopup: true });
 
     if (!canLoad) {
-      console.log(
-        `chrome-tabboost: URL ${url} cannot be loaded in popup, opening in new tab...`
-      );
       window.open(url, "_blank");
       return;
     }
@@ -337,8 +319,6 @@ async function getPreviewSettings() {
       popupSizePreset: "default",
       customWidth: 80,
       customHeight: 80,
-      autoAddToIgnoreList: false,
-      iframeIgnoreList: [],
     });
     return settings;
   } catch (error) {
@@ -347,8 +327,6 @@ async function getPreviewSettings() {
       popupSizePreset: "default",
       customWidth: 80,
       customHeight: 80,
-      autoAddToIgnoreList: false,
-      iframeIgnoreList: [],
     };
   }
 }
@@ -403,14 +381,12 @@ function createErrorMsgElement() {
   const openInNewTabText = getMessage("openInNewTab") || "Open in new tab";
   const closeText = getMessage("close") || "Close";
   const cannotLoadText = getMessage("cannotLoadInPopup") || "Cannot load this website in popup.";
-  const addToIgnoreText = getMessage("addToIgnoreList") || "Add to ignore list";
 
   return createElementWithAttributes("div", {
     id: "tabboost-popup-error",
     innerHTML: `
       <p>${cannotLoadText}</p>
       <button id="tabboost-open-newtab">${openInNewTabText}</button>
-      <button id="tabboost-add-to-ignore">${addToIgnoreText}</button>
       <button id="tabboost-close-error">${closeText}</button>
     `
   });
@@ -462,7 +438,7 @@ function createPopupDOMElements(url, settings) {
 
 function loadWithTimeout(iframe, url, timeout = 5000) {
   return new Promise((resolve, reject) => {
-    let timeoutId = null;
+    let timeoutId;
     let hasSettled = false;
 
     const cleanup = () => {
@@ -486,19 +462,27 @@ function loadWithTimeout(iframe, url, timeout = 5000) {
           !iframe.contentWindow.location ||
           iframe.contentWindow.location.href === "about:blank"
         ) {
-          console.log(
-            "chrome-tabboost: iframe onload triggered for blank or inaccessible content."
-          );
           cleanup();
           resolve({ status: "blank" });
         } else {
+          // 检查内容类型，确保只处理HTML内容
+          try {
+            const contentType = iframe.contentDocument.contentType;
+            if (contentType && !contentType.includes('text/html')) {
+              console.log(`TabBoost: 非HTML内容，排除处理: ${contentType}`);
+              cleanup();
+              resolve({ status: "non_html", contentType });
+              return;
+            }
+          } catch (typeError) {
+            // 如果无法获取contentType，可能是因为跨域限制，继续处理
+            console.log("TabBoost: 无法检查内容类型，继续处理");
+          }
+          
           cleanup();
           resolve({ status: "success" });
         }
       } catch (corsError) {
-        console.log(
-          "chrome-tabboost: iframe onload triggered, but CORS prevents content access."
-        );
         cleanup();
         resolve({ status: "cors" });
       }
@@ -514,18 +498,6 @@ function loadWithTimeout(iframe, url, timeout = 5000) {
       );
     };
   });
-}
-
-function createAddToIgnoreNotice(hostname) {
-  const autoAddNotice = createElementWithAttributes("p", {
-    className: "tabboost-auto-add-notice"
-  });
-
-  const autoAddMessage = getMessage("autoAddToIgnoreList", [hostname]);
-  autoAddNotice.textContent =
-    autoAddMessage || `Automatically added ${hostname} to ignore list...`;
-
-  return autoAddNotice;
 }
 
 async function createPopupDOM(url) {
@@ -566,30 +538,6 @@ async function createPopupDOM(url) {
       console.error("chrome-tabboost: Popup load failure:", error.message);
       if (errorMsg) errorMsg.classList.add("show");
       clearAllTimers();
-      if (settings.autoAddToIgnoreList) {
-        try {
-          const urlObj = new URL(url);
-          const hostname = urlObj.hostname;
-          let ignoreList = settings.iframeIgnoreList || [];
-          if (!Array.isArray(ignoreList)) ignoreList = [];
-
-          if (!ignoreList.includes(hostname)) {
-            ignoreList.push(hostname);
-            await storageCache.set({ iframeIgnoreList: ignoreList });
-            console.log(
-              `chrome-tabboost: Automatically added ${hostname} to ignore list`
-            );
-
-            const autoAddNotice = createAddToIgnoreNotice(hostname);
-            if (errorMsg) errorMsg.appendChild(autoAddNotice);
-          }
-        } catch (err) {
-          console.error(
-            "chrome-tabboost: Error auto-adding to ignore list:",
-            err
-          );
-        }
-      }
     };
 
     const closePopup = () => {
@@ -630,9 +578,10 @@ async function createPopupDOM(url) {
     };
     addTrackedEventListener(document, "keydown", escListener);
     const addButtonListeners = () => {
-      const newTabButton = popupOverlay.querySelector(
-        ".tabboost-newtab-button"
-      );
+      const newTabButton = popupOverlay.querySelector(".tabboost-newtab-button");
+      const closeButton = popupOverlay.querySelector(".tabboost-close-button");
+      const sizeHintButton = popupOverlay.querySelector(".tabboost-size-hint");
+
       if (newTabButton) {
         addTrackedEventListener(newTabButton, "click", () => {
           window.open(url, "_blank");
@@ -640,68 +589,21 @@ async function createPopupDOM(url) {
         });
       }
 
-      const closeButton = popupOverlay.querySelector(".tabboost-close-button");
       if (closeButton) {
         addTrackedEventListener(closeButton, "click", closePopup);
       }
 
-      const sizeHintButton = popupOverlay.querySelector(".tabboost-size-hint");
       if (sizeHintButton) {
         addTrackedEventListener(sizeHintButton, "click", () => {
-          chrome.runtime.sendMessage({
-            action: "openOptionsPage",
-            section: "popup-size",
-          });
+          chrome.runtime.sendMessage({ action: "openOptionsPage", section: "viewmode" });
         });
       }
 
-      const openNewTabButton = errorMsg.querySelector("#tabboost-open-newtab");
-      if (openNewTabButton) {
-        addTrackedEventListener(openNewTabButton, "click", () => {
+      const errorOpenTabButton = errorMsg.querySelector("#tabboost-open-newtab");
+      if (errorOpenTabButton) {
+        addTrackedEventListener(errorOpenTabButton, "click", () => {
           window.open(url, "_blank");
           closePopup();
-        });
-      }
-
-      const addToIgnoreButton = errorMsg.querySelector(
-        "#tabboost-add-to-ignore"
-      );
-      if (addToIgnoreButton) {
-        addTrackedEventListener(addToIgnoreButton, "click", async () => {
-          try {
-            const urlObj = new URL(url);
-            const hostname = urlObj.hostname;
-            let ignoreList = settings.iframeIgnoreList || [];
-            if (!Array.isArray(ignoreList)) ignoreList = [];
-
-            if (!ignoreList.includes(hostname)) {
-              ignoreList.push(hostname);
-              await storageCache.set({ iframeIgnoreList: ignoreList });
-              console.log(`chrome-tabboost: Added ${hostname} to ignore list`);
-              alert(
-                getMessage("addedToIgnoreList", hostname) ||
-                  `Added ${hostname} to ignore list...`
-              );
-              window.open(url, "_blank");
-              closePopup();
-            } else {
-              alert(
-                getMessage("alreadyInIgnoreList", hostname) ||
-                  `${hostname} is already in the ignore list`
-              );
-              window.open(url, "_blank");
-              closePopup();
-            }
-          } catch (error) {
-            console.error(
-              "chrome-tabboost: Error adding to ignore list:",
-              error
-            );
-            alert(
-              getMessage("failedToAddToIgnoreList") ||
-                "Failed to add to ignore list"
-            );
-          }
         });
       }
 
@@ -716,16 +618,12 @@ async function createPopupDOM(url) {
     addButtonListeners();
 
     try {
-      console.log("chrome-tabboost: Starting iframe load with timeout...");
       iframe.src = url;
       const loadResult = await loadWithTimeout(iframe, url, 6000);
 
       if (hasHandledFailure) return;
 
       if (loadResult.status === "blank") {
-        console.log(
-          "chrome-tabboost: iframe loaded, but content is blank or inaccessible"
-        );
         await handleLoadFailure(
           new Error(
             getMessage("cannotLoadInPopup") ||
@@ -733,11 +631,13 @@ async function createPopupDOM(url) {
           )
         );
         return;
-      } else if (loadResult.status === "cors") {
-        console.log("chrome-tabboost: iframe loaded with CORS restrictions");
-      } else {
-        console.log("chrome-tabboost: iframe load considered successful.");
-        clearAllTimers();
+      }
+
+      if (loadResult.status === "non_html") {
+        console.log(`TabBoost: 检测到非HTML内容 (${loadResult.contentType})，在新标签页中打开`);
+        window.open(url, "_blank");
+        closePopup();
+        return;
       }
 
       try {
@@ -751,7 +651,6 @@ async function createPopupDOM(url) {
             titleSpan.innerText = getMessage("pageLoaded") || "Page loaded";
         }
       } catch (e) {
-        console.log("chrome-tabboost: CORS prevents title access after load.");
         if (titleSpan)
           titleSpan.innerText = getMessage("pageLoaded") || "Page loaded";
       }

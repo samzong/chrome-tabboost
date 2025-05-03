@@ -1,7 +1,45 @@
 import { showNotification } from "../utils/utils.js";
 import storageCache from "../utils/storage-cache.js";
-import { RESTRICTED_DOMAINS } from "../js/splitView/splitViewURLValidator.js";
 import { localizePage, getMessage } from "../utils/i18n.js";
+
+// 添加页面内通知函数
+function showPageNotification(message, type = 'success') {
+  // 检查是否已存在通知元素
+  let notification = document.getElementById('page-notification');
+  
+  if (!notification) {
+    // 创建通知元素
+    notification = document.createElement('div');
+    notification.id = 'page-notification';
+    notification.className = `page-notification ${type}`;
+    document.body.appendChild(notification);
+  }
+  
+  notification.textContent = message;
+  notification.className = `page-notification ${type} show`;
+  
+  // 添加震动效果
+  notification.animate(
+    [
+      { transform: 'translateX(0)' },
+      { transform: 'translateX(-5px)' },
+      { transform: 'translateX(5px)' },
+      { transform: 'translateX(0)' }
+    ],
+    {
+      duration: 300,
+      iterations: 2
+    }
+  );
+  
+  // 5秒后自动隐藏
+  setTimeout(() => {
+    notification.className = notification.className.replace(' show', '');
+    setTimeout(() => {
+      notification.remove();
+    }, 300);
+  }, 5000);
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   localizePage();
@@ -60,16 +98,9 @@ function updateCustomSizeLabels() {
 
 const saveButton = document.getElementById("saveButton");
 const defaultActionInput = document.getElementById("defaultAction");
-const splitViewEnabledCheckbox = document.getElementById("splitViewEnabled");
-const iframeIgnoreEnabledCheckbox = document.getElementById(
-  "iframeIgnoreEnabled"
+const headerModificationEnabledCheckbox = document.getElementById(
+  "headerModificationEnabled"
 );
-const autoAddToIgnoreListCheckbox = document.getElementById(
-  "autoAddToIgnoreList"
-);
-const ignoreListContainer = document.getElementById("ignoreList");
-const newDomainInput = document.getElementById("newDomain");
-const addDomainButton = document.getElementById("addDomainButton");
 
 const popupSizePreset = document.getElementById("popupSizePreset");
 const customWidthSlider = document.getElementById("customWidthSlider");
@@ -93,6 +124,9 @@ function setupEventListeners() {
         content.classList.remove("active");
       });
       document.getElementById(`${tabId}-content`).classList.add("active");
+      
+      // 更新URL以保存当前标签状态
+      updateUrlWithActiveTab(tabId);
     });
   });
 
@@ -182,20 +216,17 @@ function loadSettings() {
   storageCache
     .get([
       "defaultAction",
-      "splitViewEnabled",
-      "iframeIgnoreEnabled",
-      "autoAddToIgnoreList",
-      "iframeIgnoreList",
+      "headerModificationEnabled",
       "popupSizePreset",
       "customWidth",
       "customHeight",
     ])
     .then((result) => {
-      defaultActionInput.value = result.defaultAction || "copy-url";
-      splitViewEnabledCheckbox.checked =
-        result.splitViewEnabled !== undefined ? result.splitViewEnabled : true;
-      iframeIgnoreEnabledCheckbox.checked = result.iframeIgnoreEnabled || false;
-      autoAddToIgnoreListCheckbox.checked = result.autoAddToIgnoreList || false;
+      defaultActionInput.value = result.defaultAction || "open-options";
+      
+      // 确保headerModificationEnabled默认为true（开启状态）
+      headerModificationEnabledCheckbox.checked = 
+        result.headerModificationEnabled !== undefined ? result.headerModificationEnabled : true;
 
       const loadedPreset = result.popupSizePreset || "default";
       const loadedWidth = result.customWidth || 80;
@@ -220,222 +251,30 @@ function loadSettings() {
 
       updateCustomSizeLabels();
       updateSizePreview();
-
-      renderIgnoreList(result.iframeIgnoreList || []);
     });
 }
-
-function renderIgnoreList(ignoreList) {
-  ignoreListContainer.innerHTML = "";
-
-  const systemDomains = RESTRICTED_DOMAINS;
-
-  const combinedList = [...new Set([...ignoreList, ...systemDomains])];
-
-  if (!combinedList.length) {
-    const emptyItem = document.createElement("div");
-    emptyItem.className = "ignore-item-empty";
-    emptyItem.textContent = getMessage("noIgnoredWebsites");
-    ignoreListContainer.appendChild(emptyItem);
-    return;
-  }
-
-  if (systemDomains.length > 0) {
-    const systemTitle = document.createElement("div");
-    systemTitle.className = "ignore-list-section-title";
-    systemTitle.textContent = getMessage("systemReservedDomains");
-    ignoreListContainer.appendChild(systemTitle);
-
-    systemDomains.forEach((domain) => {
-      const item = document.createElement("div");
-      item.className = "ignore-item system-domain";
-
-      const domainText = document.createElement("span");
-      domainText.textContent = domain;
-
-      const matchTypeBadge = document.createElement("span");
-      matchTypeBadge.className = domain.startsWith("*.")
-        ? "match-type wildcard"
-        : "match-type exact";
-      matchTypeBadge.textContent = domain.startsWith("*.")
-        ? getMessage("wildcardMatch")
-        : getMessage("exactMatch");
-
-      const systemBadge = document.createElement("span");
-      systemBadge.className = "system-badge";
-      systemBadge.textContent = getMessage("systemBadge");
-
-      item.appendChild(domainText);
-      item.appendChild(matchTypeBadge);
-      item.appendChild(systemBadge);
-
-      ignoreListContainer.appendChild(item);
-    });
-  }
-
-  const userDomains = ignoreList.filter(
-    (domain) => !systemDomains.includes(domain)
-  );
-
-  if (userDomains.length > 0) {
-    userDomains.forEach((domain) => {
-      const item = document.createElement("div");
-      item.className = "ignore-item";
-
-      const domainText = document.createElement("span");
-      domainText.textContent = domain;
-
-      const matchTypeBadge = document.createElement("span");
-      matchTypeBadge.className = domain.startsWith("*.")
-        ? "match-type wildcard"
-        : "match-type exact";
-      matchTypeBadge.textContent = domain.startsWith("*.")
-        ? getMessage("wildcardMatch")
-        : getMessage("exactMatch");
-
-      const removeButton = document.createElement("button");
-      removeButton.className = "remove-domain-button";
-      removeButton.innerHTML =
-        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
-      removeButton.title = getMessage("removeFromList") || "Remove from list";
-      removeButton.setAttribute(
-        "aria-label",
-        getMessage("removeFromList") || "Remove from list"
-      );
-      removeButton.addEventListener("click", () => {
-        removeDomain(domain);
-      });
-
-      removeButton.addEventListener("mouseover", () => {
-        removeButton.classList.add("hover");
-      });
-      removeButton.addEventListener("mouseout", () => {
-        removeButton.classList.remove("hover");
-      });
-
-      item.appendChild(domainText);
-      item.appendChild(matchTypeBadge);
-      item.appendChild(removeButton);
-
-      ignoreListContainer.appendChild(item);
-    });
-  }
-}
-
-function addDomain() {
-  const domain = newDomainInput.value.trim();
-
-  if (!domain) {
-    showNotification(getMessage("enterValidDomain"), "warning");
-    return;
-  }
-
-  if (domain.startsWith("*.") && domain.split(".").length < 3) {
-    alert(getMessage("invalidWildcardFormat"));
-    return;
-  }
-
-  if (
-    RESTRICTED_DOMAINS.some((restrictedDomain) => {
-      if (domain === restrictedDomain) return true;
-
-      if (domain.startsWith("*.") && !restrictedDomain.startsWith("*.")) {
-        const baseDomain = domain.substring(2);
-        return baseDomain === restrictedDomain;
-      }
-
-      if (!domain.startsWith("*.") && restrictedDomain.startsWith("*.")) {
-        const systemBaseDomain = restrictedDomain.substring(2);
-        return (
-          domain === systemBaseDomain || domain.endsWith("." + systemBaseDomain)
-        );
-      }
-
-      return false;
-    })
-  ) {
-    alert(getMessage("domainInSystemReserved", domain));
-    newDomainInput.value = "";
-    return;
-  }
-
-  storageCache.get(["iframeIgnoreList"]).then((result) => {
-    let ignoreList = result.iframeIgnoreList || [];
-
-    if (!Array.isArray(ignoreList)) {
-      ignoreList = [];
-    }
-
-    if (ignoreList.includes(domain)) {
-      alert(getMessage("alreadyInIgnoreList", domain));
-      return;
-    }
-
-    ignoreList.push(domain);
-
-    storageCache.set({ iframeIgnoreList: ignoreList }).then(() => {
-      console.log(`"${domain}" has been added to the ignore list`);
-      newDomainInput.value = "";
-      renderIgnoreList(ignoreList);
-    });
-  });
-}
-
-function removeDomain(domain) {
-  storageCache.get(["iframeIgnoreList"]).then((result) => {
-    let ignoreList = result.iframeIgnoreList || [];
-
-    if (!Array.isArray(ignoreList)) {
-      ignoreList = [];
-      return;
-    }
-
-    ignoreList = ignoreList.filter((item) => item !== domain);
-
-    storageCache.set({ iframeIgnoreList: ignoreList }).then(() => {
-      console.log(`"${domain}" has been removed from the ignore list`);
-      renderIgnoreList(ignoreList);
-    });
-  });
-}
-
-addDomainButton.addEventListener("click", addDomain);
-
-newDomainInput.addEventListener("keypress", (event) => {
-  if (event.key === "Enter") {
-    addDomain();
-  }
-});
 
 function saveSettings() {
   const settings = {
     defaultAction: defaultActionInput.value,
-    splitViewEnabled: splitViewEnabledCheckbox.checked,
-    iframeIgnoreEnabled: iframeIgnoreEnabledCheckbox.checked,
-    autoAddToIgnoreList: autoAddToIgnoreListCheckbox.checked,
+    headerModificationEnabled: headerModificationEnabledCheckbox.checked,
+    popupSizePreset: popupSizePreset ? popupSizePreset.value : "default",
+    customWidth: customWidthSlider ? parseInt(customWidthSlider.value) : 80,
+    customHeight: customHeightSlider ? parseInt(customHeightSlider.value) : 80,
   };
 
-  if (popupSizePreset) {
-    settings.popupSizePreset = popupSizePreset.value;
+  storageCache.set(settings, () => {
+    // 使用页面内通知，添加更明显的通知效果
+    showPageNotification(getMessage("settingsSaved") || "设置已保存");
+    
+    // 同时显示系统通知
+    showNotification(getMessage("settingsSaved") || "设置已保存");
+  });
+}
 
-    if (
-      popupSizePreset.value === "custom" &&
-      customWidthSlider &&
-      customHeightSlider
-    ) {
-      settings.customWidth = parseInt(customWidthSlider.value, 10);
-      settings.customHeight = parseInt(customHeightSlider.value, 10);
-    }
-  }
-
-  storageCache
-    .set(settings)
-    .then(() => {
-      console.log("Settings saved successfully");
-      showNotification(getMessage("settingsSaved"));
-    })
-    .catch((err) => {
-      console.error("Failed to save settings:", err);
-      showNotification(getMessage("settingsSaveFailed"));
-    });
+// 添加更新URL的函数
+function updateUrlWithActiveTab(tabId) {
+  const url = new URL(window.location.href);
+  url.searchParams.set('tab', tabId);
+  window.history.replaceState({}, '', url);
 }

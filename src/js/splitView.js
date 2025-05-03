@@ -1,5 +1,5 @@
 import splitViewCore from "./splitView/splitViewCore.js";
-import { canLoadInIframe } from "./splitView/splitViewURLValidator.js";
+import { canLoadInIframe } from "../utils/iframe-compatibility.js";
 
 export const {
   createSplitView,

@@ -6,6 +6,47 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src 'self'; form-action 'none'; base-uri 'none'; upgrade-insecure-requests;">
     <title data-i18n="optionsPageTitle">__MSG_optionsPageTitle__</title>
     <link rel="stylesheet" href="<%= cssPath %>">
+    <style>
+      /* 改进页面内通知样式 */
+      .page-notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 6px;
+        color: white;
+        font-weight: 500;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+        transform: translateX(120%);
+        transition: transform 0.3s ease;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        min-width: 200px;
+      }
+      
+      .page-notification::before {
+        content: "✓";
+        margin-right: 10px;
+        font-size: 18px;
+      }
+      
+      .page-notification.success {
+        background-color: #4CAF50;
+      }
+      
+      .page-notification.error {
+        background-color: #F44336;
+      }
+      
+      .page-notification.error::before {
+        content: "✗";
+      }
+      
+      .page-notification.show {
+        transform: translateX(0);
+      }
+    </style>
   </head>
   <body>
     <div class="header">
@@ -61,7 +102,6 @@
           <select id="defaultAction">
             <option value="copy-url" data-i18n="copyUrl"></option>
             <option value="duplicate-tab" data-i18n="duplicateTab"></option>
-            <option value="toggle-split-view" data-i18n="toggleSplitView"></option>
             <option value="open-options" data-i18n="openOptions"></option>
           </select>
         </div>
@@ -78,13 +118,6 @@
           <span data-i18n="splitViewSettings"></span>
         </h2>
         <p class="card-description" data-i18n="configureSplitView"></p>
-
-        <div class="form-group">
-          <div class="checkbox-wrapper">
-            <input type="checkbox" id="splitViewEnabled" />
-            <label for="splitViewEnabled" data-i18n="splitViewEnabled"></label>
-          </div>
-        </div>
 
         <div class="card-description">
           <strong data-i18n="splitViewUsageInstructions"></strong>
@@ -142,47 +175,19 @@
             <line x1="2" y1="12" x2="22" y2="12"></line>
             <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
           </svg>
-          <span data-i18n="iframeCompatibility"></span>
+          <span data-i18n="responseHeaderModification">CSP 和 iframe 兼容性设置</span>
         </h2>
-        <p class="card-description" data-i18n="iframeCompatibilityDescription"></p>
+        <p class="card-description" data-i18n="responseHeaderModificationDescription">修改网站响应头以解除内容安全策略(CSP)和iframe限制，使链接预览功能能够正常工作。</p>
 
         <div class="form-group">
           <div class="checkbox-wrapper">
-            <input type="checkbox" id="iframeIgnoreEnabled" />
-            <label for="iframeIgnoreEnabled" data-i18n="iframeIgnoreEnabled"></label>
+            <input type="checkbox" id="headerModificationEnabled" />
+            <label for="headerModificationEnabled" data-i18n="headerModificationEnabled">启用响应头修改（用于CSP和iframe兼容）</label>
           </div>
-          <p class="hint-text" data-i18n="iframeIgnoreEnabledDescription"></p>
-        </div>
-
-        <div class="form-group">
-          <div class="checkbox-wrapper">
-            <input type="checkbox" id="autoAddToIgnoreList" />
-            <label for="autoAddToIgnoreList" data-i18n="autoAddToIgnoreListOption"></label>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label data-i18n="iframeIgnoreList"></label>
-          <div class="ignore-list" id="ignoreList">
-            <div class="ignore-item-empty" data-i18n="noIgnoredWebsites"></div>
-          </div>
-
-          <div class="domain-format-guide">
-            <p><strong data-i18n="domainFormatGuide"></strong></p>
-            <ul id="wildCardExample">
-              <li data-i18n="exactMatchExample"></li>
-              <li data-i18n="wildcardMatchExample"></li>
-            </ul>
-          </div>
-
-          <div class="add-domain-container">
-            <input type="text" id="newDomain" data-i18n-placeholder="enterDomainPlaceholder" placeholder="Enter the domain to ignore: example.com or *.example.com" />
-            <button id="addDomainButton" class="button" data-i18n="addToIgnoreList">
-              <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-              </svg>
-            </button>
+          <p class="hint-text" data-i18n="headerModificationEnabledDescription">此功能默认启用，能让扩展修改网站响应头中的X-Frame-Options和Content-Security-Policy，以允许页面在iframe中正常加载。</p>
+          <div class="warning-box">
+            <div class="warning-icon">⚠️</div>
+            <div class="warning-text" data-i18n="headerModificationWarning">注意：禁用此功能可能导致某些网站的链接预览无法正常工作，因为这些网站可能禁止在iframe中显示。如果遇到预览无法加载的情况，请启用此选项。</div>
           </div>
         </div>
       </div>

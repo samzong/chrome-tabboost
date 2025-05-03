@@ -569,3 +569,25 @@ code {
   background-color: #e9f5fe;
   color: #3182ce;
 }
+
+.warning-box {
+  display: flex;
+  background-color: rgba(255, 215, 0, 0.2);
+  border: 1px solid #ffd700;
+  border-radius: 4px;
+  padding: 12px;
+  margin-top: 10px;
+  align-items: flex-start;
+}
+
+.warning-icon {
+  font-size: 18px;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+.warning-text {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+}
