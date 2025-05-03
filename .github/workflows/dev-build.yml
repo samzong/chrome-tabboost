@@ -43,3 +43,7 @@ jobs:
 
       - name: Create ZIP file
         run: npm run zip
+      
+      - name: Delete private key file
+        if: always()
+        run: rm -f key.pem
