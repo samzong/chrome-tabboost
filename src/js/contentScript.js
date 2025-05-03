@@ -101,12 +101,12 @@ function showSaveNotification() {
   const message = createElementWithAttributes("span", {
     textContent: getMessage("savePageConfirmation") || "Are you sure you want to save this page?"
   });
-  
+
   const saveButton = createButton(
-    getMessage("continueToSave") || "Save", 
+    getMessage("continueToSave") || "Save",
     "tabboost-notif-button"
   );
-  
+
   saveButton.addEventListener("click", function () {
     if (notification.parentNode) {
       notification.parentNode.removeChild(notification);
@@ -115,7 +115,7 @@ function showSaveNotification() {
     shouldInterceptSave = false;
 
     const saveInstructionNotification = createNotificationElement(
-      "tabboost-save-instruction", 
+      "tabboost-save-instruction",
       "tabboost-notification"
     );
 
@@ -225,7 +225,17 @@ function showSaveNotification() {
 document.addEventListener(
   "click",
   async function (event) {
-    if (event.button !== 0 || !(event.metaKey || event.ctrlKey)) {
+    // 添加调试日志，帮助排查问题
+    console.log("TabBoost: Click event detected", {
+      button: event.button,
+      metaKey: event.metaKey,
+      ctrlKey: event.ctrlKey,
+      shiftKey: event.shiftKey,
+      target: event.target.tagName
+    });
+
+    // 检查是否是左键点击
+    if (event.button !== 0) {
       return;
     }
 
@@ -234,16 +244,22 @@ document.addEventListener(
       return;
     }
 
-    event.preventDefault();
-    event.stopPropagation();
+    // 检查是否按下了 Command/Ctrl+Shift 组合键
+    if (event.shiftKey && (event.metaKey || event.ctrlKey)) {
+      console.log("TabBoost: Command/Ctrl+Shift+Click detected on link:", link.href);
 
-    if (event.shiftKey) {
+      event.preventDefault();
+      event.stopPropagation();
+
+      // 发送消息到后台脚本，请求在分屏视图中打开链接
       chrome.runtime.sendMessage(
         {
           action: "openInSplitView",
           url: link.href,
         },
         function (response) {
+          console.log("TabBoost: Split view response:", response);
+
           if (response && response.status === "error") {
             const notification = createNotificationElement("", "tabboost-notification");
             notification.textContent =
@@ -264,7 +280,16 @@ document.addEventListener(
           }
         }
       );
-    } else {
+      return;
+    }
+
+    // 处理普通的 Command/Ctrl+Click (不带Shift)
+    if (event.metaKey || event.ctrlKey) {
+      console.log("TabBoost: Command/Ctrl+Click detected on link:", link.href);
+
+      event.preventDefault();
+      event.stopPropagation();
+
       await createPopup(link.href);
     }
   },
@@ -335,9 +360,9 @@ function createToolbarElements() {
   const sizeHintText = getMessage("popupSizeHint") || "Adjust popup size in extension options";
 
   const toolbar = createElementWithAttributes("div", { id: "tabboost-popup-toolbar" });
-  const titleSpan = createElementWithAttributes("span", { 
-    id: "tabboost-popup-title", 
-    textContent: loadingText 
+  const titleSpan = createElementWithAttributes("span", {
+    id: "tabboost-popup-title",
+    textContent: loadingText
   });
   const buttonsDiv = createElementWithAttributes("div", { id: "tabboost-popup-buttons" });
 
@@ -418,7 +443,7 @@ function createPopupDOMElements(url, settings) {
   const iframe = createElementWithAttributes("iframe", {
     id: "tabboost-popup-iframe"
   });
-  
+
   if ("loading" in HTMLIFrameElement.prototype) {
     iframe.loading = "lazy";
   }
@@ -495,11 +520,11 @@ function createAddToIgnoreNotice(hostname) {
   const autoAddNotice = createElementWithAttributes("p", {
     className: "tabboost-auto-add-notice"
   });
-  
+
   const autoAddMessage = getMessage("autoAddToIgnoreList", [hostname]);
-  autoAddNotice.textContent = 
+  autoAddNotice.textContent =
     autoAddMessage || `Automatically added ${hostname} to ignore list...`;
-  
+
   return autoAddNotice;
 }
 

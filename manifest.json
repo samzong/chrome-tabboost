@@ -20,6 +20,11 @@
         "id": "popup_bypass_rules",
         "enabled": true,
         "path": "rules/popup_bypass.json"
+      },
+      {
+        "id": "csp_bypass_rules",
+        "enabled": true,
+        "path": "rules/csp_bypass.json"
       }
     ]
   },
@@ -67,6 +72,9 @@
         "mac": "Shift+Command+C"
       },
       "description": "__MSG_copyUrl__"
+    },
+    "toggle-split-view": {
+      "description": "__MSG_toggleSplitView__"
     }
   },
   "web_accessible_resources": [
