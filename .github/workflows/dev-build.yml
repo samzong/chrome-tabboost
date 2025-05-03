@@ -27,6 +27,11 @@ jobs:
       - name: Run tests
         run: npm run test
 
+      - name: Create private key file from Secret
+        run: |
+          echo "${{ secrets.CRX_PRIVATE_KEY }}" > key.pem
+          chmod 600 key.pem
+
       - name: Build extension
         run: npm run build
 

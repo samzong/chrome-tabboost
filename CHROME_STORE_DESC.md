@@ -12,12 +12,13 @@ Hold the Command key (Mac) or Ctrl key (Windows - configurable) while clicking a
 **📺 Split View Mode for Multitasking**
 Work smarter, not harder! TabBoost's unique Split View mode allows you to view two web pages side-by-side within a single tab. Perfect for comparing content, referencing information, or handling multiple related tasks without constant tab switching. Activate it easily via keyboard shortcut or the extension popup menu.
 
-**⚙️ Smart iframe Compatibility Handling**
-We know not all websites play nicely in popups or split views (due to their `X-Frame-Options` or CSP). TabBoost handles this intelligently:
+**⚡ Enhanced iframe Compatibility (NEW in v2.4.0)**
+We've completely revamped how TabBoost handles website previews with our advanced compatibility system:
 
-- **Automatic Detection:** It tries to load the site; if embedding is blocked, you'll be notified.
-- **Flexible Options:** Choose to open the link in a new tab or add the site to an "Ignore List".
-- **Configurable Ignore List:** Manage your Ignore List in the settings. Add specific domains or wildcards (`*.example.com`). Sites on this list will _always_ open in a new tab, bypassing the preview/split view for a seamless experience. You can even enable an option to automatically add problematic sites to this list.
+- **Seamless Previews:** Using Chrome's powerful declarativeNetRequest API, TabBoost now automatically modifies response headers to enable iframe loading for almost all websites.
+- **Smart Header Modification:** The extension intelligently manages Content Security Policy (CSP) and X-Frame-Options restrictions to maximize compatibility.
+- **User Control:** A simple toggle in settings lets you enable/disable this feature if needed, with detailed explanations of what it does.
+- **Configurable Ignore List:** For sites that still don't work, you can add them to an Ignore List to always open in a new tab instead.
 
 **✨ Instant Tab Duplication**
 Quickly duplicate your current tab with a simple keyboard shortcut (`Ctrl+M` by default, customizable in Chrome's settings). Ideal for comparison shopping, keeping reference pages open, or managing similar tasks.
@@ -36,7 +37,7 @@ Tailor TabBoost to your workflow:
 
 - **Choose Default Action:** Decide what the extension icon click does (copy URL, duplicate tab, toggle split view, etc.).
 - **Adjust Popup Size:** Select preset sizes or define custom width/height for the preview window, now with enhanced custom size settings and label updates based on user selection.
-- **Enable/Disable Features:** Toggle Split View or the entire iframe ignore functionality on/off.
+- **Enable/Disable Features:** Toggle Split View or header modification functionality on/off.
 - **Customize Shortcuts:** Change default keyboard shortcuts via `chrome://extensions/shortcuts`.
 
 **🌐 Multiple Language Support**
