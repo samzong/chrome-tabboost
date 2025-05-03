@@ -118,48 +118,15 @@ export async function createSplitView() {
             container.style.zIndex = "10000";
             container.style.backgroundColor = "#fff";
             container.style.display = "flex";
-            container.style.flexDirection = "column";
             container.style.overflow = "hidden";
             console.log("TabBoost: Created split view container");
             
-            // 创建控制栏
-            const controlBar = document.createElement("div");
-            controlBar.id = "tabboost-split-controls";
-            controlBar.style.width = "100%";
-            controlBar.style.height = "48px";
-            controlBar.style.display = "flex";
-            controlBar.style.justifyContent = "space-between";
-            controlBar.style.alignItems = "center";
-            controlBar.style.padding = "0 16px";
-            controlBar.style.backgroundColor = "#f8f9fa";
-            controlBar.style.borderBottom = "1px solid #eaeaea";
-            console.log("TabBoost: Created control bar");
-            
-            // 添加关闭按钮
-            const closeButton = document.createElement("button");
-            closeButton.id = "tabboost-split-close";
-            closeButton.innerText = "关闭分屏";
-            closeButton.dataset.action = "close-split-view";
-            closeButton.style.padding = "6px 12px";
-            closeButton.style.backgroundColor = "#f1f3f4";
-            closeButton.style.border = "none";
-            closeButton.style.borderRadius = "4px";
-            closeButton.style.cursor = "pointer";
-            console.log("TabBoost: Created close button");
-            
-            closeButton.addEventListener("click", () => {
-              chrome.runtime.sendMessage({ action: "closeSplitView" });
-            });
-            
-            controlBar.appendChild(closeButton);
-            container.appendChild(controlBar);
-            
-            // 创建视图容器
+            // 创建视图容器 - 直接占据100%高度，不再需要顶部控制栏
             const viewsContainer = document.createElement("div");
             viewsContainer.id = "tabboost-views-container";
             viewsContainer.style.display = "flex";
             viewsContainer.style.width = "100%";
-            viewsContainer.style.height = "calc(100% - 48px)";
+            viewsContainer.style.height = "100%";
             viewsContainer.style.position = "relative";
             console.log("TabBoost: Created views container");
             
@@ -174,15 +141,15 @@ export async function createSplitView() {
             // 左侧关闭按钮
             const leftCloseButton = document.createElement("button");
             leftCloseButton.className = "tabboost-view-close";
-            leftCloseButton.innerText = "×";
-            leftCloseButton.title = "关闭左侧视图";
-            leftCloseButton.dataset.action = "close-left-view";
+            leftCloseButton.dataset.action = "close-split-view";
             leftCloseButton.style.position = "absolute";
             leftCloseButton.style.top = "8px";
             leftCloseButton.style.right = "8px";
             leftCloseButton.style.zIndex = "10";
             leftCloseButton.style.width = "24px";
             leftCloseButton.style.height = "24px";
+            leftCloseButton.innerText = "×";
+            leftCloseButton.title = "关闭分屏视图";
             leftCloseButton.style.backgroundColor = "rgba(0,0,0,0.5)";
             leftCloseButton.style.color = "#fff";
             leftCloseButton.style.border = "none";
@@ -190,12 +157,17 @@ export async function createSplitView() {
             leftCloseButton.style.cursor = "pointer";
             
             leftCloseButton.addEventListener("click", () => {
+              // 关闭分屏，但保留右侧页面
               const rightIframe = document.getElementById("tabboost-right-iframe");
               if (rightIframe && rightIframe.src && rightIframe.src !== "about:blank") {
                 const rightUrl = rightIframe.src;
                 chrome.runtime.sendMessage({ action: "closeSplitView" });
                 setTimeout(() => {
-                  window.location.href = rightUrl;
+                  try {
+                    window.location.href = rightUrl;
+                  } catch (e) {
+                    console.error("TabBoost: Error setting location to right URL:", e);
+                  }
                 }, 100);
               } else {
                 chrome.runtime.sendMessage({ action: "closeSplitView" });
@@ -230,15 +202,15 @@ export async function createSplitView() {
             // 右侧关闭按钮
             const rightCloseButton = document.createElement("button");
             rightCloseButton.className = "tabboost-view-close";
-            rightCloseButton.innerText = "×";
-            rightCloseButton.title = "关闭右侧视图";
-            rightCloseButton.dataset.action = "close-right-view";
+            rightCloseButton.dataset.action = "close-split-view";
             rightCloseButton.style.position = "absolute";
             rightCloseButton.style.top = "8px";
             rightCloseButton.style.right = "8px";
             rightCloseButton.style.zIndex = "10";
             rightCloseButton.style.width = "24px";
             rightCloseButton.style.height = "24px";
+            rightCloseButton.innerText = "×";
+            rightCloseButton.title = "关闭分屏视图";
             rightCloseButton.style.backgroundColor = "rgba(0,0,0,0.5)";
             rightCloseButton.style.color = "#fff";
             rightCloseButton.style.border = "none";
@@ -246,17 +218,8 @@ export async function createSplitView() {
             rightCloseButton.style.cursor = "pointer";
             
             rightCloseButton.addEventListener("click", () => {
-              const rightIframe = document.getElementById("tabboost-right-iframe");
-              if (rightIframe) {
-                rightIframe.src = "about:blank";
-                const rightError = document.getElementById("tabboost-right-error");
-                if (rightError) {
-                  rightError.style.display = "none";
-                }
-                leftView.style.width = "100%";
-                rightView.style.display = "none";
-                divider.style.display = "none";
-              }
+              // 关闭分屏，保留左侧页面
+              chrome.runtime.sendMessage({ action: "closeSplitView" });
             });
             
             rightView.appendChild(rightCloseButton);
@@ -373,87 +336,142 @@ export async function createSplitView() {
           target: { tabId: currentTab.id },
           func: (url) => {
             try {
-              // 创建极简分屏视图
-              const container = document.createElement("div");
-              container.id = "tabboost-split-view-container";
-              container.style.position = "fixed";
-              container.style.top = "0";
-              container.style.left = "0";
-              container.style.width = "100%";
-              container.style.height = "100%";
-              container.style.zIndex = "10000";
-              container.style.backgroundColor = "#fff";
-              container.style.display = "flex";
-              container.style.flexDirection = "column";
-              
-              // 创建极简控制栏
-              const controlBar = document.createElement("div");
-              controlBar.style.height = "40px";
-              controlBar.style.background = "#f1f1f1";
-              controlBar.style.display = "flex";
-              controlBar.style.justifyContent = "flex-end";
-              controlBar.style.padding = "5px";
-              
-              // 添加关闭按钮
-              const closeBtn = document.createElement("button");
-              closeBtn.innerText = "关闭";
-              closeBtn.onclick = () => {
-                chrome.runtime.sendMessage({ action: "closeSplitView" });
-              };
-              
-              controlBar.appendChild(closeBtn);
-              
-              // 创建视图容器
-              const viewsContainer = document.createElement("div");
-              viewsContainer.style.display = "flex";
-              viewsContainer.style.flex = "1";
-              
-              // 创建左右视图
-              const leftView = document.createElement("div");
-              leftView.id = "tabboost-split-left";
-              leftView.style.width = "50%";
-              
-              const rightView = document.createElement("div");
-              rightView.id = "tabboost-split-right";
-              rightView.style.width = "50%";
-              
-              // 创建分隔线
-              const divider = document.createElement("div");
-              divider.style.width = "4px";
-              divider.style.background = "#ddd";
-              divider.style.cursor = "col-resize";
-              
-              // 创建iframe
-              const leftIframe = document.createElement("iframe");
-              leftIframe.id = "tabboost-left-iframe";
-              leftIframe.style.width = "100%";
-              leftIframe.style.height = "100%";
-              leftIframe.style.border = "none";
-              leftIframe.src = url;
-              
-              const rightIframe = document.createElement("iframe");
-              rightIframe.id = "tabboost-right-iframe";
-              rightIframe.style.width = "100%";
-              rightIframe.style.height = "100%";
-              rightIframe.style.border = "none";
-              rightIframe.src = "about:blank";
-              
-              // 组装DOM
-              leftView.appendChild(leftIframe);
-              rightView.appendChild(rightIframe);
-              
-              viewsContainer.appendChild(leftView);
-              viewsContainer.appendChild(divider);
-              viewsContainer.appendChild(rightView);
-              
-              container.appendChild(controlBar);
-              container.appendChild(viewsContainer);
-              
-              // 添加到页面
-              document.body.appendChild(container);
-              
-              console.log("TabBoost: Created minimal split view container");
-              return true;
+              // 创建基本结构（如果不存在）
+              if (!document.getElementById("tabboost-split-view-container")) {
+                const container = document.createElement("div");
+                container.id = "tabboost-split-view-container";
+                container.style.position = "fixed";
+                container.style.top = "0";
+                container.style.left = "0";
+                container.style.width = "100%";
+                container.style.height = "100%";
+                container.style.zIndex = "10000";
+                container.style.backgroundColor = "#fff";
+                container.style.display = "flex";
+                container.style.overflow = "hidden";
+                
+                // 创建视图容器 - 直接占据100%高度，不需要顶部控制栏
+                const viewsContainer = document.createElement("div");
+                viewsContainer.id = "tabboost-views-container";
+                viewsContainer.style.display = "flex";
+                viewsContainer.style.width = "100%";
+                viewsContainer.style.height = "100%";
+                
+                // 创建左右视图
+                const leftView = document.createElement("div");
+                leftView.id = "tabboost-split-left";
+                leftView.style.width = "50%";
+                leftView.style.height = "100%";
+                leftView.style.position = "relative";
+                
+                // 左侧关闭按钮
+                const leftCloseButton = document.createElement("button");
+                leftCloseButton.className = "tabboost-view-close";
+                leftCloseButton.dataset.action = "close-split-view";
+                leftCloseButton.style.position = "absolute";
+                leftCloseButton.style.top = "8px";
+                leftCloseButton.style.right = "8px";
+                leftCloseButton.style.zIndex = "10";
+                leftCloseButton.style.width = "24px";
+                leftCloseButton.style.height = "24px";
+                leftCloseButton.innerText = "×";
+                leftCloseButton.style.backgroundColor = "rgba(0,0,0,0.5)";
+                leftCloseButton.style.color = "#fff";
+                leftCloseButton.style.border = "none";
+                leftCloseButton.style.borderRadius = "50%";
+                leftCloseButton.style.cursor = "pointer";
+                
+                leftCloseButton.addEventListener("click", () => {
+                  // 关闭分屏，但保留右侧页面
+                  const rightIframe = document.getElementById("tabboost-right-iframe");
+                  if (rightIframe && rightIframe.src && rightIframe.src !== "about:blank") {
+                    const rightUrl = rightIframe.src;
+                    chrome.runtime.sendMessage({ action: "closeSplitView" });
+                    setTimeout(() => {
+                      try {
+                        window.location.href = rightUrl;
+                      } catch (e) {
+                        console.error("TabBoost: Error setting location to right URL:", e);
+                      }
+                    }, 100);
+                  } else {
+                    chrome.runtime.sendMessage({ action: "closeSplitView" });
+                  }
+                });
+                
+                leftView.appendChild(leftCloseButton);
+                
+                // 左侧iframe（当前页面）
+                const leftIframe = document.createElement("iframe");
+                leftIframe.id = "tabboost-left-iframe";
+                leftIframe.style.width = "100%";
+                leftIframe.style.height = "100%";
+                leftIframe.style.border = "none";
+                leftIframe.src = window.location.href;
+                
+                leftView.appendChild(leftIframe);
+                
+                const rightView = document.createElement("div");
+                rightView.id = "tabboost-split-right";
+                rightView.style.width = "50%";
+                rightView.style.height = "100%";
+                rightView.style.position = "relative";
+                
+                // 右侧关闭按钮
+                const rightCloseButton = document.createElement("button");
+                rightCloseButton.className = "tabboost-view-close";
+                rightCloseButton.dataset.action = "close-split-view";
+                rightCloseButton.style.position = "absolute";
+                rightCloseButton.style.top = "8px";
+                rightCloseButton.style.right = "8px";
+                rightCloseButton.style.zIndex = "10";
+                rightCloseButton.style.width = "24px";
+                rightCloseButton.style.height = "24px";
+                rightCloseButton.innerText = "×";
+                rightCloseButton.title = "关闭分屏视图";
+                rightCloseButton.style.backgroundColor = "rgba(0,0,0,0.5)";
+                rightCloseButton.style.color = "#fff";
+                rightCloseButton.style.border = "none";
+                rightCloseButton.style.borderRadius = "50%";
+                rightCloseButton.style.cursor = "pointer";
+                
+                rightCloseButton.addEventListener("click", () => {
+                  // 关闭分屏，保留左侧页面
+                  chrome.runtime.sendMessage({ action: "closeSplitView" });
+                });
+                
+                rightView.appendChild(rightCloseButton);
+                
+                // 右侧iframe（目标链接）
+                const rightIframe = document.createElement("iframe");
+                rightIframe.id = "tabboost-right-iframe";
+                rightIframe.style.width = "100%";
+                rightIframe.style.height = "100%";
+                rightIframe.style.border = "none";
+                rightIframe.src = url;
+                
+                rightView.appendChild(rightIframe);
+                
+                // 创建分隔线
+                const divider = document.createElement("div");
+                divider.id = "tabboost-split-divider";
+                divider.style.width = "4px";
+                divider.style.background = "#ddd";
+                divider.style.cursor = "col-resize";
+                
+                // 组装DOM
+                viewsContainer.appendChild(leftView);
+                viewsContainer.appendChild(divider);
+                viewsContainer.appendChild(rightView);
+                
+                container.appendChild(viewsContainer);
+                
+                // 添加到页面
+                document.body.appendChild(container);
+                
+                console.log("TabBoost: Created minimal split view container");
+                return true;
+              }
             } catch (e) {
               console.error("TabBoost: Error creating minimal split view:", e);
               return false;
@@ -543,7 +561,7 @@ export async function updateRightView(url) {
             return false;
           }
           
-          // 获取右侧iframe
+          // 获取或创建右侧iframe
           let rightIframe = document.getElementById("tabboost-right-iframe");
           
           // 如果iframe不存在，创建一个新的
@@ -555,9 +573,7 @@ export async function updateRightView(url) {
             rightIframe.style.height = "100%";
             rightIframe.style.border = "none";
             rightIframe.style.display = "block";
-            rightIframe.setAttribute("loading", "lazy");
             rightIframe.setAttribute("sandbox", "allow-same-origin allow-scripts allow-popups allow-forms");
-            rightIframe.setAttribute("data-tabboost-frame", "right");
             rightIframe.setAttribute("allowfullscreen", "true");
             
             rightView.appendChild(rightIframe);
@@ -567,6 +583,12 @@ export async function updateRightView(url) {
           // 确保右侧视图可见
           rightView.style.display = "block";
           rightView.style.width = "50%";
+          
+          // 确保左侧视图宽度正确
+          const leftView = document.getElementById("tabboost-split-left");
+          if (leftView) {
+            leftView.style.width = "50%";
+          }
           
           // 确保分隔线可见
           const divider = document.getElementById("tabboost-split-divider");
@@ -592,7 +614,7 @@ export async function updateRightView(url) {
   } catch (error) {
     console.error("TabBoost: Failed to update right view:", error);
     
-    // 如果失败，尝试另一种方法
+    // 如果失败，尝试简化方法
     try {
       const currentTab = await getCurrentTab();
       if (currentTab) {
@@ -600,26 +622,161 @@ export async function updateRightView(url) {
           target: { tabId: currentTab.id },
           func: (url) => {
             try {
-              // 直接获取或创建iframe
-              let iframe = document.getElementById("tabboost-right-iframe");
-              
-              if (!iframe) {
-                const rightView = document.getElementById("tabboost-split-right");
-                if (rightView) {
-                  iframe = document.createElement("iframe");
-                  iframe.id = "tabboost-right-iframe";
-                  iframe.style.width = "100%";
-                  iframe.style.height = "100%";
-                  iframe.style.border = "none";
-                  rightView.appendChild(iframe);
+              // 检查是否存在分屏容器
+              if (document.getElementById("tabboost-split-view-container")) {
+                // 如果容器存在，只更新右侧iframe
+                let rightIframe = document.getElementById("tabboost-right-iframe");
+                if (!rightIframe) {
+                  const rightView = document.getElementById("tabboost-split-right");
+                  if (rightView) {
+                    rightIframe = document.createElement("iframe");
+                    rightIframe.id = "tabboost-right-iframe";
+                    rightIframe.style.width = "100%";
+                    rightIframe.style.height = "100%";
+                    rightIframe.style.border = "none";
+                    rightView.appendChild(rightIframe);
+                  }
                 }
-              }
-              
-              if (iframe) {
-                iframe.src = url;
+                
+                if (rightIframe) {
+                  rightIframe.src = url;
+                }
+                return true;
+              } else {
+                // 如果容器不存在，创建完整的分屏视图
+                const container = document.createElement("div");
+                container.id = "tabboost-split-view-container";
+                container.style.position = "fixed";
+                container.style.top = "0";
+                container.style.left = "0";
+                container.style.width = "100%";
+                container.style.height = "100%";
+                container.style.zIndex = "10000";
+                container.style.backgroundColor = "#fff";
+                container.style.display = "flex";
+                container.style.overflow = "hidden";
+                
+                // 创建视图容器
+                const viewsContainer = document.createElement("div");
+                viewsContainer.id = "tabboost-views-container";
+                viewsContainer.style.display = "flex";
+                viewsContainer.style.width = "100%";
+                viewsContainer.style.height = "100%";
+                
+                // 创建左右视图
+                const leftView = document.createElement("div");
+                leftView.id = "tabboost-split-left";
+                leftView.style.width = "50%";
+                leftView.style.height = "100%";
+                leftView.style.position = "relative";
+                
+                // 左侧关闭按钮
+                const leftCloseButton = document.createElement("button");
+                leftCloseButton.className = "tabboost-view-close";
+                leftCloseButton.dataset.action = "close-split-view";
+                leftCloseButton.style.position = "absolute";
+                leftCloseButton.style.top = "8px";
+                leftCloseButton.style.right = "8px";
+                leftCloseButton.style.zIndex = "10";
+                leftCloseButton.style.width = "24px";
+                leftCloseButton.style.height = "24px";
+                leftCloseButton.innerText = "×";
+                leftCloseButton.title = "关闭分屏视图";
+                leftCloseButton.style.backgroundColor = "rgba(0,0,0,0.5)";
+                leftCloseButton.style.color = "#fff";
+                leftCloseButton.style.border = "none";
+                leftCloseButton.style.borderRadius = "50%";
+                leftCloseButton.style.cursor = "pointer";
+                
+                leftCloseButton.addEventListener("click", () => {
+                  // 关闭分屏，但保留右侧页面
+                  const rightIframe = document.getElementById("tabboost-right-iframe");
+                  if (rightIframe && rightIframe.src && rightIframe.src !== "about:blank") {
+                    const rightUrl = rightIframe.src;
+                    chrome.runtime.sendMessage({ action: "closeSplitView" });
+                    setTimeout(() => {
+                      try {
+                        window.location.href = rightUrl;
+                      } catch (e) {
+                        console.error("TabBoost: Error setting location to right URL:", e);
+                      }
+                    }, 100);
+                  } else {
+                    chrome.runtime.sendMessage({ action: "closeSplitView" });
+                  }
+                });
+                
+                leftView.appendChild(leftCloseButton);
+                
+                // 左侧iframe（当前页面）
+                const leftIframe = document.createElement("iframe");
+                leftIframe.id = "tabboost-left-iframe";
+                leftIframe.style.width = "100%";
+                leftIframe.style.height = "100%";
+                leftIframe.style.border = "none";
+                leftIframe.src = window.location.href;
+                
+                leftView.appendChild(leftIframe);
+                
+                const rightView = document.createElement("div");
+                rightView.id = "tabboost-split-right";
+                rightView.style.width = "50%";
+                rightView.style.height = "100%";
+                rightView.style.position = "relative";
+                
+                // 右侧关闭按钮
+                const rightCloseButton = document.createElement("button");
+                rightCloseButton.className = "tabboost-view-close";
+                rightCloseButton.dataset.action = "close-split-view";
+                rightCloseButton.style.position = "absolute";
+                rightCloseButton.style.top = "8px";
+                rightCloseButton.style.right = "8px";
+                rightCloseButton.style.zIndex = "10";
+                rightCloseButton.style.width = "24px";
+                rightCloseButton.style.height = "24px";
+                rightCloseButton.innerText = "×";
+                rightCloseButton.title = "关闭分屏视图";
+                rightCloseButton.style.backgroundColor = "rgba(0,0,0,0.5)";
+                rightCloseButton.style.color = "#fff";
+                rightCloseButton.style.border = "none";
+                rightCloseButton.style.borderRadius = "50%";
+                rightCloseButton.style.cursor = "pointer";
+                
+                rightCloseButton.addEventListener("click", () => {
+                  // 关闭分屏，保留左侧页面
+                  chrome.runtime.sendMessage({ action: "closeSplitView" });
+                });
+                
+                rightView.appendChild(rightCloseButton);
+                
+                // 右侧iframe（目标链接）
+                const rightIframe = document.createElement("iframe");
+                rightIframe.id = "tabboost-right-iframe";
+                rightIframe.style.width = "100%";
+                rightIframe.style.height = "100%";
+                rightIframe.style.border = "none";
+                rightIframe.src = url;
+                
+                rightView.appendChild(rightIframe);
+                
+                // 创建分隔线
+                const divider = document.createElement("div");
+                divider.id = "tabboost-split-divider";
+                divider.style.width = "4px";
+                divider.style.background = "#ddd";
+                divider.style.cursor = "col-resize";
+                
+                // 组装DOM
+                viewsContainer.appendChild(leftView);
+                viewsContainer.appendChild(divider);
+                viewsContainer.appendChild(rightView);
+                
+                container.appendChild(viewsContainer);
+                
+                // 添加到页面
+                document.body.appendChild(container);
                 return true;
               }
-              return false;
             } catch (e) {
               console.error("TabBoost: Error in simplified update:", e);
               return false;
