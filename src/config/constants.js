@@ -1,34 +1,25 @@
+/**
+ * TabBoost安全常量配置
+ */
+
+// 危险协议，不允许加载
 export const DANGEROUS_PROTOCOLS = [
   "javascript:",
   "data:",
   "vbscript:",
   "file:",
   "about:",
-  "blob:",
-  "ftp:",
+  "chrome:",
+  "chrome-extension:",
+  "view-source:",
 ];
 
-export const DANGEROUS_URL_PATTERNS = [
-  /<script>/i,
-  /javascript:/i,
-  /onerror=/i,
-  /onload=/i,
-  /onclick=/i,
-  /onmouseover=/i,
-  /eval\(/i,
-  /document\.cookie/i,
-  /document\.domain/i,
-  /document\.write/i,
-  /\balert\(/i,
-  /\bprompt\(/i,
-  /\bconfirm\(/i,
-  /fromCharCode/i,
-  /&#/i,
-  /%3C/i,
-];
+// 危险URL模式，不允许加载
+export const DANGEROUS_URL_PATTERNS = [];
 
-export const RESTRICTED_DOMAINS = [
-  "github.com",
-  "facebook.com",
-  "*.facebook.com",
+// 需要排除的文件扩展名
+export const EXCLUDED_EXTENSIONS = [
+  '.zip', '.exe', '.dmg', '.pdf', '.doc', '.xls', '.ppt',
+  '.mp3', '.mp4', '.avi', '.mov', '.jpg', '.jpeg', '.png', '.gif',
+  '.js', '.css', '.json', '.xml', '.csv', '.ttf', '.woff'
 ];

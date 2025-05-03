@@ -1,5 +1,5 @@
 import storageCache from "../../utils/storage-cache.js";
-import { getMessage } from "../../utils/i18n.js";
+import * as i18n from "../../utils/i18n.js";
 
 let isDragging = false;
 let startX = 0;
@@ -140,50 +140,8 @@ function stopDrag() {
 function handleSplitViewClick(event) {
   const target = event.target;
 
-  if (
-    target.closest('#tabboost-split-close, [data-action="close-split-view"]')
-  ) {
+  if (target.closest('#tabboost-split-close, [data-action="close-split-view"]')) {
     chrome.runtime.sendMessage({ action: "closeSplitView" });
-    return;
-  }
-
-  if (target.closest('.tabboost-view-close[data-action="close-left-view"]')) {
-    const rightIframe = document.getElementById("tabboost-right-iframe");
-
-    if (rightIframe && rightIframe.src && rightIframe.src !== "about:blank") {
-      const rightUrl = rightIframe.src;
-
-      chrome.runtime.sendMessage({ action: "closeSplitView" });
-
-      setTimeout(() => {
-        window.location.href = rightUrl;
-      }, 100);
-    } else {
-      chrome.runtime.sendMessage({ action: "closeSplitView" });
-    }
-    return;
-  }
-
-  if (target.closest('.tabboost-view-close[data-action="close-right-view"]')) {
-    const rightIframe = document.getElementById("tabboost-right-iframe");
-    if (rightIframe) {
-      rightIframe.src = "about:blank";
-
-      const rightError = document.getElementById("tabboost-right-error");
-      if (rightError) {
-        rightError.style.display = "none";
-      }
-
-      const leftView = document.getElementById("tabboost-split-left");
-      const rightView = document.getElementById("tabboost-split-right");
-      const divider = document.getElementById("tabboost-split-divider");
-
-      if (leftView && rightView && divider) {
-        leftView.style.width = "100%";
-        rightView.style.display = "none";
-        divider.style.display = "none";
-      }
-    }
     return;
   }
 
@@ -208,33 +166,31 @@ function handleSplitViewClick(event) {
 
 async function handleAddToIgnoreList(url) {
   try {
-    const urlObj = new URL(url);
-    const hostname = urlObj.hostname;
+    const parsedUrl = new URL(url);
+    const hostname = parsedUrl.hostname;
 
-    chrome.runtime.sendMessage({
-      action: "openInNewTab",
-      url: url,
-    });
+    const splitViewIgnoreList = (await storageCache.get("splitViewIgnoreList")) || [];
 
-    const result = await storageCache.get(["iframeIgnoreList"]);
-    let ignoreList = result.iframeIgnoreList || [];
+    if (!splitViewIgnoreList.includes(hostname)) {
+      splitViewIgnoreList.push(hostname);
+      await storageCache.set({ splitViewIgnoreList });
 
-    if (!Array.isArray(ignoreList)) {
-      ignoreList = [];
-    }
+      const toast = document.createElement("div");
+      toast.className = "tabboost-toast";
+      toast.textContent = i18n.getMessage("addedToIgnoreList", hostname);
+      document.body.appendChild(toast);
 
-    if (!ignoreList.includes(hostname)) {
-      ignoreList.push(hostname);
+      setTimeout(() => {
+        toast.classList.add("show");
+      }, 10);
 
-      await storageCache.set({ iframeIgnoreList: ignoreList });
-      alert(getMessage("addedToIgnoreListAlert", hostname));
-    } else {
-      alert(getMessage("alreadyInIgnoreListAlert", hostname));
+      setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
     }
   } catch (error) {
-    alert(getMessage("addToIgnoreListFailedAlert"));
-
-    window.open(url, "_blank");
+    console.error("Failed to add to ignore list:", error);
   }
 }
 
@@ -255,30 +211,30 @@ export function cleanupSplitViewEvents() {
 
 export async function autoAddToIgnoreList(url) {
   try {
-    const result = await storageCache.get(["autoAddToIgnoreList"]);
-    if (!result.autoAddToIgnoreList) {
-      return false;
+    const parsedUrl = new URL(url);
+    const hostname = parsedUrl.hostname;
+
+    const splitViewIgnoreList = (await storageCache.get("splitViewIgnoreList")) || [];
+
+    if (!splitViewIgnoreList.includes(hostname)) {
+      splitViewIgnoreList.push(hostname);
+      await storageCache.set({ splitViewIgnoreList });
+
+      const toast = document.createElement("div");
+      toast.className = "tabboost-toast";
+      toast.textContent = i18n.getMessage("autoAddedToIgnoreList", hostname);
+      document.body.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.add("show");
+      }, 10);
+
+      setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
     }
-
-    const urlObj = new URL(url);
-    const hostname = urlObj.hostname;
-
-    const listResult = await storageCache.get(["iframeIgnoreList"]);
-    let ignoreList = listResult.iframeIgnoreList || [];
-
-    if (!Array.isArray(ignoreList)) {
-      ignoreList = [];
-    }
-
-    if (!ignoreList.includes(hostname)) {
-      ignoreList.push(hostname);
-
-      await storageCache.set({ iframeIgnoreList: ignoreList });
-      return true;
-    }
-
-    return false;
   } catch (error) {
-    return false;
+    console.error("Failed to auto-add to ignore list:", error);
   }
 }

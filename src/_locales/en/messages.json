@@ -358,8 +358,8 @@
     "description": "Hint that popup size can be adjusted in options"
   },
   "settingsSaved": {
-    "message": "Settings saved",
-    "description": "Message shown when settings are saved successfully"
+    "message": "Settings saved successfully!",
+    "description": "Message shown when settings are saved"
   },
   "settingsSaveFailed": {
     "message": "Failed to save settings",
@@ -726,5 +726,25 @@
   "errorCorruptedList": {
     "message": "Ignore list data seems corrupted. Please check storage or reset settings.",
     "description": "Error notification when the ignore list data is not an array."
+  },
+  "responseHeaderModification": {
+    "message": "CSP & Iframe Compatibility Settings",
+    "description": "Title for response header modification settings"
+  },
+  "responseHeaderModificationDescription": {
+    "message": "Modify website response headers to bypass Content Security Policy (CSP) and iframe restrictions, allowing link preview functionality to work properly.",
+    "description": "Description for response header modification settings"
+  },
+  "headerModificationEnabled": {
+    "message": "Enable response header modification (for CSP & iframe compatibility)",
+    "description": "Checkbox label for header modification enabled"
+  },
+  "headerModificationEnabledDescription": {
+    "message": "This feature is enabled by default and allows the extension to modify X-Frame-Options and Content-Security-Policy headers to allow pages to load normally in iframes.",
+    "description": "Description for header modification enabled setting"
+  },
+  "headerModificationWarning": {
+    "message": "Note: Disabling this feature may cause link previews for some websites to fail, as these sites may prohibit being displayed in iframes. If you encounter previews that won't load, enable this option.",
+    "description": "Warning about disabling header modification"
   }
 }

@@ -10,9 +10,24 @@
     "commands",
     "notifications",
     "clipboardWrite",
-    "scripting"
+    "scripting",
+    "declarativeNetRequest"
   ],
   "host_permissions": ["<all_urls>"],
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "popup_bypass_rules",
+        "enabled": true,
+        "path": "rules/popup_bypass.json"
+      },
+      {
+        "id": "csp_bypass_rules",
+        "enabled": true,
+        "path": "rules/csp_bypass.json"
+      }
+    ]
+  },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
@@ -57,6 +72,9 @@
         "mac": "Shift+Command+C"
       },
       "description": "__MSG_copyUrl__"
+    },
+    "toggle-split-view": {
+      "description": "__MSG_toggleSplitView__"
     }
   },
   "web_accessible_resources": [

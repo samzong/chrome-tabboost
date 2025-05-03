@@ -358,8 +358,8 @@
     "description": "Hint that popup size can be adjusted in options"
   },
   "settingsSaved": {
-    "message": "设置已保存",
-    "description": "Message shown when settings are saved successfully"
+    "message": "设置已保存成功！",
+    "description": "Message shown when settings are saved"
   },
   "settingsSaveFailed": {
     "message": "设置保存失败",
@@ -726,5 +726,25 @@
   "optionsPageTitle": {
     "message": "TabBoost 选项",
     "description": "The title of the options page"
+  },
+  "responseHeaderModification": {
+    "message": "CSP 和 iframe 兼容性设置",
+    "description": "Title for response header modification settings"
+  },
+  "responseHeaderModificationDescription": {
+    "message": "修改网站响应头以解除内容安全策略(CSP)和iframe限制，使链接预览功能能够正常工作。",
+    "description": "Description for response header modification settings"
+  },
+  "headerModificationEnabled": {
+    "message": "启用响应头修改（用于CSP和iframe兼容）",
+    "description": "Checkbox label for header modification enabled"
+  },
+  "headerModificationEnabledDescription": {
+    "message": "此功能默认启用，能让扩展修改网站响应头中的X-Frame-Options和Content-Security-Policy，以允许页面在iframe中正常加载。",
+    "description": "Description for header modification enabled setting"
+  },
+  "headerModificationWarning": {
+    "message": "注意：禁用此功能可能导致某些网站的链接预览无法正常工作，因为这些网站可能禁止在iframe中显示。如果遇到预览无法加载的情况，请启用此选项。",
+    "description": "Warning about disabling header modification"
   }
 }

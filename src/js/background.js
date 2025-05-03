@@ -4,10 +4,10 @@ import {
   closeSplitView,
   toggleSplitView,
   updateRightView,
-  canLoadInIframe,
 } from "./splitView.js";
 import storageCache from "../utils/storage-cache.js";
 import { getMessage } from "../utils/i18n.js";
+import { canLoadInIframe } from "../utils/iframe-compatibility.js";
 
 let currentTabCache = {
   tab: null,
@@ -15,6 +15,31 @@ let currentTabCache = {
 };
 
 const TAB_CACHE_TTL = 1000;
+
+// 规则集ID
+const RULE_SETS = {
+  POPUP_BYPASS: "popup_bypass_rules",
+  CSP_BYPASS: "csp_bypass_rules"
+};
+
+/**
+ * 根据设置启用或禁用declarativeNetRequest规则
+ * @param {boolean} enabled - 是否启用规则
+ */
+async function updateHeaderModificationRules(enabled) {
+  try {
+    console.log(`TabBoost: ${enabled ? '启用' : '禁用'}头部修改规则`);
+    
+    await chrome.declarativeNetRequest.updateEnabledRulesets({
+      enableRulesetIds: enabled ? [RULE_SETS.POPUP_BYPASS, RULE_SETS.CSP_BYPASS] : [],
+      disableRulesetIds: enabled ? [] : [RULE_SETS.POPUP_BYPASS, RULE_SETS.CSP_BYPASS]
+    });
+    
+    console.log(`TabBoost: 规则状态已更新为${enabled ? '启用' : '禁用'}`);
+  } catch (error) {
+    console.error("TabBoost: 更新规则状态失败:", error);
+  }
+}
 
 async function getCachedCurrentTab() {
   const now = Date.now();
@@ -49,13 +74,29 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
   }
 });
 
-storageCache.init().catch((error) => {
+storageCache.init().then(async () => {
+  // 初始化规则状态
+  const { headerModificationEnabled } = await storageCache.get({
+    headerModificationEnabled: true
+  });
+  
+  await updateHeaderModificationRules(headerModificationEnabled);
+}).catch((error) => {
   console.error(getMessage("storageInitError"), error);
+});
+
+// 监听存储变化
+chrome.storage.onChanged.addListener((changes, areaName) => {
+  if (areaName === "sync" && changes.headerModificationEnabled) {
+    // 当headerModificationEnabled设置改变时更新规则
+    const newValue = changes.headerModificationEnabled.newValue;
+    updateHeaderModificationRules(newValue);
+  }
 });
 
 chrome.action.onClicked.addListener(async (tab) => {
   const { defaultAction } = await storageCache.get({
-    defaultAction: "copy-url",
+    defaultAction: "open-options",
   });
 
   executeAction(defaultAction, tab);
@@ -69,21 +110,11 @@ async function executeAction(action, tab) {
     case "duplicate-tab":
       duplicateTab(tab);
       break;
-    case "toggle-split-view":
-      const { splitViewEnabled } = await storageCache.get({
-        splitViewEnabled: true,
-      });
-      if (splitViewEnabled) {
-        toggleSplitView(tab);
-      } else {
-        console.log(getMessage("splitViewDisabledLog"));
-      }
-      break;
     case "open-options":
       chrome.runtime.openOptionsPage();
       break;
     default:
-      copyTabUrl(tab);
+      chrome.runtime.openOptionsPage();
   }
 }
 
@@ -127,19 +158,6 @@ chrome.commands.onCommand.addListener(async (command) => {
     if (currentTab) {
       copyTabUrl(currentTab);
     }
-  } else if (command === "toggle-split-view") {
-    const { splitViewEnabled } = await storageCache.get({
-      splitViewEnabled: true,
-    });
-
-    if (splitViewEnabled) {
-      const currentTab = await getCachedCurrentTab();
-      if (currentTab) {
-        toggleSplitView(currentTab);
-      } else {
-        toggleSplitView();
-      }
-    }
   } else if (command === "open-options") {
     chrome.runtime.openOptionsPage();
   }
@@ -161,9 +179,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 
   if (request.action === "openInSplitView" && request.url) {
+    // 处理分屏视图请求，不再检查splitViewEnabled
     handleSplitViewRequest(request.url)
-      .then((result) => sendResponse(result))
+      .then((result) => {
+        sendResponse(result);
+      })
       .catch((error) => {
+        console.error("Error handling split view request:", error);
         try {
           chrome.tabs.create({ url: request.url });
           sendResponse({
@@ -171,6 +193,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             message: getMessage("splitViewErrorFallback"),
           });
         } catch (e) {
+          console.error("Failed to open URL in new tab:", e);
           sendResponse({ status: "error", message: error.message });
         }
       });
@@ -198,70 +221,63 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 async function handleSplitViewRequest(url) {
   try {
+    // 验证URL
     const validationResult = validateUrl(url);
-
     if (!validationResult.isValid) {
-      console.error(getMessage("urlValidationFailed", validationResult.reason));
-      chrome.tabs.create({ url });
-      return {
-        status: "opened_in_new_tab_due_to_validation",
-        message: getMessage("openedInNewTabSecurity", validationResult.reason),
-      };
+      throw new Error(validationResult.reason || "Invalid URL");
     }
 
-    url = validationResult.sanitizedUrl;
-
+    // 检查URL是否可以在iframe中加载
     const canLoad = await canLoadInIframe(url);
     if (!canLoad) {
       chrome.tabs.create({ url });
       return {
         status: "opened_in_new_tab",
-        message: getMessage("cannotLoadInSplitView"),
+        message: getMessage("cantLoadInIframeMessage"),
       };
     }
 
-    const currentTab = await getCachedCurrentTab();
-    if (!currentTab) {
-      throw new Error(getMessage("getCurrentTabError"));
+    // 获取当前标签页
+    const currentTab = await getCurrentTab();
+    if (!currentTab || !currentTab.id) {
+      throw new Error("Failed to get current tab");
     }
 
-    try {
-      const [isActive] = await chrome.scripting.executeScript({
-        target: { tabId: currentTab.id },
-        func: () =>
-          document.getElementById("tabboost-split-view-container") !== null,
-      });
-
-      if (isActive.result) {
-        await updateRightView(url);
-        return { status: getMessage("rightSplitViewUpdated") };
-      } else {
-        await createSplitView();
-        await new Promise((resolve) => setTimeout(resolve, 300));
-        await updateRightView(url);
-        return { status: getMessage("splitViewCreatedAndUpdated") };
-      }
-    } catch (error) {
-      console.error(getMessage("splitViewRequestError"), error);
-
-      try {
-        await closeSplitView();
-        chrome.tabs.create({ url });
+    // 检查分屏视图是否已激活
+    const isActive = await chrome.scripting.executeScript({
+      target: { tabId: currentTab.id },
+      func: () => {
+        const container = document.getElementById("tabboost-split-view-container");
         return {
-          status: "opened_in_new_tab_after_error",
-          message: getMessage("splitViewCreationFailed"),
+          result: !!container && container.style.display !== "none",
         };
-      } catch (cleanupError) {
-        console.error(getMessage("splitViewRecoveryError"), cleanupError);
-        chrome.tabs.create({ url });
-        return {
-          status: "recovery_failed",
-          message: getMessage("recoveryFailed"),
-        };
-      }
+      },
+    });
+
+    if (isActive && isActive[0] && isActive[0].result) {
+      // 如果分屏视图已激活，更新右侧视图
+      await updateRightView(url);
+      return { status: "success", message: getMessage("splitViewUpdatedStatus") };
+    } else {
+      // 如果分屏视图未激活，创建新的分屏视图
+      await createSplitView();
+      // 等待分屏视图创建完成
+      setTimeout(async () => {
+        await updateRightView(url);
+      }, 300);
+      return { status: "success", message: getMessage("splitViewCreatedStatus") };
     }
   } catch (error) {
-    console.error(getMessage("splitViewRequestError"), error);
-    throw error;
+    // 如果出现任何错误，尝试关闭分屏视图并在新标签页中打开
+    try {
+      await closeSplitView();
+      chrome.tabs.create({ url });
+      return {
+        status: "opened_in_new_tab",
+        message: getMessage("splitViewErrorFallback"),
+      };
+    } catch (e) {
+      throw error;
+    }
   }
 }
