@@ -1,3 +1,14 @@
+## 2.4.0 (2025-05-03)
+
+* Chore/clean code, Add i18n (#30) ([898a973](https://github.com/samzong/chrome-tabboost/commit/898a973)), closes [#30](https://github.com/samzong/chrome-tabboost/issues/30)
+* feat/declarative net request (#31) ([27078e4](https://github.com/samzong/chrome-tabboost/commit/27078e4)), closes [#31](https://github.com/samzong/chrome-tabboost/issues/31)
+* fix(validate): update build directory path from 'dist' to 'build' ([9a4eacb](https://github.com/samzong/chrome-tabboost/commit/9a4eacb))
+* refactor(format): foarmat all the code with prettier ([d1914f3](https://github.com/samzong/chrome-tabboost/commit/d1914f3))
+* docs(chrome-ext-store): add Chrome Store description for TabBoost extension ([63565b0](https://github.com/samzong/chrome-tabboost/commit/63565b0))
+* docs(README): update README to English and enhance feature descriptions ([a28562e](https://github.com/samzong/chrome-tabboost/commit/a28562e))
+
+
+
 ## <small>2.3.2 (2025-04-30)</small>
 
 - chore: clean code ([fc9ce7d](https://github.com/samzong/chrome-tabboost/commit/fc9ce7d))
