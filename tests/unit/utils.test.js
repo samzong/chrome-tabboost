@@ -49,27 +49,27 @@ describe('validateUrl', () => {
   test('should reject empty URL', () => {
     const result = validateUrl('');
     expect(result.isValid).toBe(false);
-    expect(result.message).toBe('URL必须为非空字符串');
+    expect(result.message).toBe('URL must be a non-empty string');
   });
 
   test('should reject non-string URL', () => {
     const result = validateUrl(null);
     expect(result.isValid).toBe(false);
-    expect(result.message).toBe('URL必须为非空字符串');
+    expect(result.message).toBe('URL must be a non-empty string');
   });
 
   test('should reject JavaScript protocol URL', () => {
     const url = 'javascript:alert("XSS")';
     const result = validateUrl(url);
     expect(result.isValid).toBe(false);
-    expect(result.message).toBe('URL使用了不安全的协议');
+    expect(result.message).toBe('URL uses an unsafe protocol');
   });
 
   test('should reject URL with XSS attacks', () => {
     const url = 'https://example.com/?q=<script>alert(1)</script>';
     const result = validateUrl(url);
     expect(result.isValid).toBe(false);
-    expect(result.message).toBe('URL包含潜在危险模式');
+    expect(result.message).toBe('URL contains potential dangerous patterns');
   });
 
   test('should correctly handle URL with special characters', () => {

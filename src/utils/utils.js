@@ -5,22 +5,39 @@ export async function getCurrentTab() {
 
 import { getMessage } from "./i18n.js";
 
-export function showNotification(message) {
-  chrome.notifications.create(
-    {
-      type: "basic",
-      iconUrl: chrome.runtime.getURL("assets/icons/icon48.png"),
-      title: getMessage("appName") || "TabBoost",
-      message: message,
-      priority: 2,
-      requireInteraction: true
-    },
-    function (notificationId) {
-      setTimeout(() => {
-        chrome.notifications.clear(notificationId);
-      }, 3000);
-    }
-  );
+export async function showNotification(message) {
+  try {
+    return new Promise(resolve => {
+      chrome.storage.sync.get(["notificationsEnabled"], (result) => {
+        const notificationsEnabled = result.notificationsEnabled !== undefined ? 
+          result.notificationsEnabled : true;
+        
+        if (!notificationsEnabled) {
+          resolve();
+          return;
+        }
+        
+        chrome.notifications.create(
+          {
+            type: "basic",
+            iconUrl: chrome.runtime.getURL("assets/icons/icon48.png"),
+            title: getMessage("appName") || "TabBoost",
+            message: message,
+            priority: 2,
+            requireInteraction: true
+          },
+          function (notificationId) {
+            setTimeout(() => {
+              chrome.notifications.clear(notificationId);
+              resolve();
+            }, 3000);
+          }
+        );
+      });
+    });
+  } catch (error) {
+    console.error("Error displaying notification:", error);
+  }
 }
 
 import {
@@ -30,16 +47,16 @@ import {
 } from "../config/constants.js";
 
 /**
- * 验证URL是否安全有效
- * @param {string} url - 要检查的URL字符串
- * @returns {{isValid: boolean, sanitizedUrl: string, message: string}} 验证结果
+ * Verify if the URL is safe and valid
+ * @param {string} url
+ * @returns {{isValid: boolean, sanitizedUrl: string, message: string}}
  */
 export function validateUrl(url) {
   if (!url || typeof url !== "string") {
     return {
       isValid: false,
       sanitizedUrl: "",
-      message: "URL必须为非空字符串",
+      message: "URL must be a non-empty string",
     };
   }
 
@@ -49,26 +66,24 @@ export function validateUrl(url) {
     return {
       isValid: false,
       sanitizedUrl: "",
-      message: "URL不能为空",
+      message: "URL cannot be empty",
     };
   }
 
-  // 检查危险协议
   if (DANGEROUS_PROTOCOLS.some((protocol) => url.toLowerCase().startsWith(protocol))) {
     return {
       isValid: false,
       sanitizedUrl: "",
-      message: "URL使用了不安全的协议",
+      message: "URL uses an unsafe protocol",
     };
   }
 
-  // 确保URL以http或https开头
   if (!url.startsWith("http://") && !url.startsWith("https://")) {
     if (url.includes("://")) {
       return {
         isValid: false,
         sanitizedUrl: "",
-        message: "只允许HTTP和HTTPS协议",
+        message: "Only HTTP and HTTPS protocols are allowed",
       };
     }
     url = "https://" + url;
@@ -77,24 +92,22 @@ export function validateUrl(url) {
   try {
     const urlObj = new URL(url);
     
-    // 检查文件扩展名是否在排除列表中
     const pathname = urlObj.pathname.toLowerCase();
     if (EXCLUDED_EXTENSIONS.some(ext => pathname.endsWith(ext))) {
       return {
         isValid: false,
         sanitizedUrl: "",
-        message: "不支持此文件类型",
+        message: "This file type is not supported",
       };
     }
 
-    // 危险URL模式检查（如需添加）
     if (DANGEROUS_URL_PATTERNS.length > 0) {
       const fullUrl = urlObj.href.toLowerCase();
       if (DANGEROUS_URL_PATTERNS.some(pattern => fullUrl.includes(pattern))) {
         return {
           isValid: false,
           sanitizedUrl: "",
-          message: "URL包含潜在危险模式",
+          message: "URL contains potential dangerous patterns",
         };
       }
     }
@@ -102,13 +115,13 @@ export function validateUrl(url) {
     return {
       isValid: true,
       sanitizedUrl: urlObj.href,
-      message: "有效的URL",
+      message: "Valid URL",
     };
   } catch (error) {
     return {
       isValid: false,
       sanitizedUrl: "",
-      message: "无效的URL格式",
+      message: "Invalid URL format",
     };
   }
 }

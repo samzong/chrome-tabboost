@@ -98,12 +98,11 @@
         <p class="card-description" data-i18n="configureExtensionBehavior"></p>
 
         <div class="form-group">
-          <label for="defaultAction" data-i18n="defaultAction"></label>
-          <select id="defaultAction">
-            <option value="copy-url" data-i18n="copyUrl"></option>
-            <option value="duplicate-tab" data-i18n="duplicateTab"></option>
-            <option value="open-options" data-i18n="openOptions"></option>
-          </select>
+          <div class="checkbox-wrapper">
+            <input type="checkbox" id="notificationsEnabled" />
+            <label for="notificationsEnabled" data-i18n="notificationsEnabled">启用通知</label>
+          </div>
+          <p class="hint-text" data-i18n="notificationsEnabledDescription">启用后会在复制URL等操作后显示系统通知</p>
         </div>
       </div>
     </div>

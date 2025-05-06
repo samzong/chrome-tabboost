@@ -35,10 +35,6 @@
     "message": "自定义高度",
     "description": "Setting for custom height"
   },
-  "defaultAction": {
-    "message": "默认操作",
-    "description": "Setting for default action"
-  },
   "splitViewEnabled": {
     "message": "分屏模式已启用",
     "description": "Setting for split view enabled"
@@ -187,7 +183,7 @@
   },
   "generalSettings": {
     "message": "通用设置",
-    "description": "Title for general settings tab"
+    "description": "General settings section title"
   },
   "browsingMode": {
     "message": "浏览模式",
@@ -214,8 +210,8 @@
     "description": "Instructions for using split view"
   },
   "configureExtensionBehavior": {
-    "message": "配置扩展基本行为",
-    "description": "Description for general settings section"
+    "message": "配置扩展的基本行为",
+    "description": "Description for the general settings section"
   },
   "viewModeSettings": {
     "message": "浏览模式设置",
@@ -386,8 +382,8 @@
     "description": "Instructions for Mac users on how to save the page after clicking continue"
   },
   "savePageInstructionOther": {
-    "message": "您可以通过 File → Save Page As... 或按 Ctrl+S 再次在 3 秒内保存此页面",
-    "description": "Instructions for non-Mac users on how to save the page after clicking continue"
+    "message": "您可以通过选择 文件→另存为... 或在3秒内再次按下Ctrl+S来保存此页面",
+    "description": "Instructions for saving a page (non-Mac platforms)"
   },
   "closeLeftViewTitle": {
     "message": "关闭左侧内容并保留右侧",
@@ -746,5 +742,17 @@
   "headerModificationWarning": {
     "message": "注意：禁用此功能可能导致某些网站的链接预览无法正常工作，因为这些网站可能禁止在iframe中显示。如果遇到预览无法加载的情况，请启用此选项。",
     "description": "Warning about disabling header modification"
+  },
+  "notificationsEnabled": {
+    "message": "启用通知",
+    "description": "Label for the notifications enabled checkbox in settings"
+  },
+  "notificationsEnabledDescription": {
+    "message": "启用后将在复制URL等操作后显示系统通知",
+    "description": "Description text for the notifications enabled setting"
+  },
+  "saveSettings": {
+    "message": "保存设置",
+    "description": "Button text for saving settings"
   }
 }
