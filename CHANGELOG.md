@@ -1,3 +1,12 @@
+## <small>2.4.1 (2025-05-06)</small>
+
+* feat(notifications): add notification settings (#39) ([e9dc4e2](https://github.com/samzong/chrome-tabboost/commit/e9dc4e2)), closes [#39](https://github.com/samzong/chrome-tabboost/issues/39)
+* fix(popup): fix duplicat url twice, fefactor popup.js and move all operation logic to the background ([02fa0b8](https://github.com/samzong/chrome-tabboost/commit/02fa0b8)), closes [#38](https://github.com/samzong/chrome-tabboost/issues/38) [#33](https://github.com/samzong/chrome-tabboost/issues/33)
+* chore(dev-build): add step to delete private key file after build ([d3c60c9](https://github.com/samzong/chrome-tabboost/commit/d3c60c9))
+* docs: update Chrome Store description to reflect enhanced iframe compatibility ([1aa68a0](https://github.com/samzong/chrome-tabboost/commit/1aa68a0))
+
+
+
 ## 2.4.0 (2025-05-03)
 
 * Chore/clean code, Add i18n (#30) ([898a973](https://github.com/samzong/chrome-tabboost/commit/898a973)), closes [#30](https://github.com/samzong/chrome-tabboost/issues/30)

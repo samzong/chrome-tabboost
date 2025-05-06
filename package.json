@@ -1,6 +1,6 @@
 {
   "name": "chrome-tabboost",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "description": "A Chrome extension for tab management",
   "main": "src/js/background.js",
   "scripts": {
