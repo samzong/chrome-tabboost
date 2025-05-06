@@ -200,6 +200,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true;
   }
 
+  if (request.action === "showNotification" && request.message) {
+    showNotification(request.message);
+    return true;
+  }
+
   if (request.action === "duplicateCurrentTab") {
     getCurrentTab().then(tab => {
       if (tab) {

@@ -335,7 +335,7 @@ function createToolbarElements() {
   const loadingText = getMessage("loading") || "Loading...";
   const openInNewTabText = getMessage("openInNewTab") || "Open in new tab";
   const closeText = getMessage("close") || "Close";
-  const sizeHintText = getMessage("popupSizeHint") || "Adjust popup size in extension options";
+  const copyUrlText = getMessage("copyUrl") || "Copy URL";
 
   const toolbar = createElementWithAttributes("div", { id: "tabboost-popup-toolbar" });
   const titleSpan = createElementWithAttributes("span", {
@@ -344,6 +344,13 @@ function createToolbarElements() {
   });
   const buttonsDiv = createElementWithAttributes("div", { id: "tabboost-popup-buttons" });
 
+  const copyUrlButton = createElementWithAttributes("button", {
+    className: "tabboost-button tabboost-copyurl-button",
+    title: copyUrlText,
+    "aria-label": copyUrlText,
+    textContent: copyUrlText
+  });
+
   const newTabButton = createElementWithAttributes("button", {
     className: "tabboost-button tabboost-newtab-button",
     title: openInNewTabText,
@@ -351,18 +358,6 @@ function createToolbarElements() {
     textContent: openInNewTabText
   });
 
-  const sizeHintButton = createElementWithAttributes("button", {
-    className: "tabboost-button tabboost-size-hint",
-    title: sizeHintText,
-    "aria-label": sizeHintText,
-    innerHTML: `
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: block; margin: auto;">
-        <circle cx="12" cy="12" r="10"/>
-        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-        <line x1="12" y1="17" x2="12.01" y2="17"/>
-      </svg>
-    `
-  });
 
   const closeButton = createElementWithAttributes("button", {
     className: "tabboost-button tabboost-close-button",
@@ -371,7 +366,7 @@ function createToolbarElements() {
     innerHTML: "&times;"
   });
 
-  appendChildren(buttonsDiv, [newTabButton, sizeHintButton, closeButton]);
+  appendChildren(buttonsDiv, [copyUrlButton, newTabButton, closeButton]);
   appendChildren(toolbar, [titleSpan, buttonsDiv]);
 
   return { toolbar, titleSpan };
@@ -580,7 +575,7 @@ async function createPopupDOM(url) {
     const addButtonListeners = () => {
       const newTabButton = popupOverlay.querySelector(".tabboost-newtab-button");
       const closeButton = popupOverlay.querySelector(".tabboost-close-button");
-      const sizeHintButton = popupOverlay.querySelector(".tabboost-size-hint");
+      const copyUrlButton = popupOverlay.querySelector(".tabboost-copyurl-button");
 
       if (newTabButton) {
         addTrackedEventListener(newTabButton, "click", () => {
@@ -593,9 +588,22 @@ async function createPopupDOM(url) {
         addTrackedEventListener(closeButton, "click", closePopup);
       }
 
-      if (sizeHintButton) {
-        addTrackedEventListener(sizeHintButton, "click", () => {
-          chrome.runtime.sendMessage({ action: "openOptionsPage", section: "viewmode" });
+      if (copyUrlButton) {
+        addTrackedEventListener(copyUrlButton, "click", () => {
+          navigator.clipboard.writeText(url)
+            .then(() => {
+              chrome.runtime.sendMessage({ 
+                action: "showNotification", 
+                message: getMessage("urlCopied") || "URL copied successfully!"
+              });
+            })
+            .catch((error) => {
+              console.error("chrome-tabboost: Error copying URL:", error);
+              chrome.runtime.sendMessage({ 
+                action: "showNotification", 
+                message: getMessage("urlCopyFailed") || "Failed to copy URL!"
+              });
+            });
         });
       }
 
