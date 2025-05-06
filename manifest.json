@@ -84,6 +84,20 @@
     },
     "toggle-split-view": {
       "description": "__MSG_toggleSplitView__"
+    },
+    "toggle-mute-current-tab": {
+      "suggested_key": {
+        "default": "Alt+M",
+        "mac": "Alt+M"
+      },
+      "description": "__MSG_muteCurrentTab__"
+    },
+    "toggle-mute-all-audio-tabs": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+M",
+        "mac": "Command+Shift+M"
+      },
+      "description": "__MSG_muteAllAudioTabs__"
     }
   },
   "web_accessible_resources": [

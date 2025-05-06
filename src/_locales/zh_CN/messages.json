@@ -754,5 +754,41 @@
   "saveSettings": {
     "message": "保存设置",
     "description": "Button text for saving settings"
+  },
+  "muteCurrentTab": {
+    "message": "静音/取消静音当前标签页",
+    "description": "Action to toggle mute state of current tab"
+  },
+  "muteAllAudioTabs": {
+    "message": "静音/取消静音所有播放音频的标签页",
+    "description": "Action to toggle mute state of all tabs playing audio"
+  },
+  "muteTab": {
+    "message": "静音标签页",
+    "description": "Button text to mute a tab"
+  },
+  "unmuteTab": {
+    "message": "取消静音标签页",
+    "description": "Button text to unmute a tab"
+  },
+  "tabMuted": {
+    "message": "标签页已静音",
+    "description": "Notification when tab is muted"
+  },
+  "tabUnmuted": {
+    "message": "标签页已取消静音",
+    "description": "Notification when tab is unmuted"
+  },
+  "allTabsMuted": {
+    "message": "所有播放音频的标签页已静音",
+    "description": "Notification when all audio tabs are muted"
+  },
+  "allTabsUnmuted": {
+    "message": "所有播放音频的标签页已取消静音",
+    "description": "Notification when all audio tabs are unmuted"
+  },
+  "noAudioTabs": {
+    "message": "未找到播放音频的标签页",
+    "description": "Message when no tabs playing audio are found"
   }
 }

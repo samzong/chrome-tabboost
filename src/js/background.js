@@ -8,6 +8,7 @@ import {
 import storageCache from "../utils/storage-cache.js";
 import { getMessage } from "../utils/i18n.js";
 import { canLoadInIframe } from "../utils/iframe-compatibility.js";
+import { toggleMuteCurrentTab, toggleMuteAllAudioTabs } from "../utils/tab-audio.js";
 
 let currentTabCache = {
   tab: null,
@@ -139,7 +140,7 @@ function duplicateTab(tab) {
   try {
     isDuplicatingTab = true;
     
-    chrome.tabs.duplicate(tab.id, (duplicatedTab) => {      
+    chrome.tabs.duplicate(tab.id, () => {      
       setTimeout(() => {
         isDuplicatingTab = false;
       }, 500);
@@ -163,6 +164,24 @@ chrome.commands.onCommand.addListener(async (command) => {
     }
   } else if (command === "open-options") {
     chrome.runtime.openOptionsPage();
+  } else if (command === "toggle-mute-current-tab") {
+    const result = await toggleMuteCurrentTab();
+    if (result.success) {
+      showNotification(
+        getMessage(result.muted ? "tabMuted" : "tabUnmuted")
+      );
+    }
+  } else if (command === "toggle-mute-all-audio-tabs") {
+    const result = await toggleMuteAllAudioTabs();
+    if (result.success) {
+      if (result.count === 0) {
+        showNotification(getMessage("noAudioTabs"));
+      } else {
+        showNotification(
+          getMessage(result.muted ? "allTabsMuted" : "allTabsUnmuted")
+        );
+      }
+    }
   }
 });
 
@@ -198,6 +217,38 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             console.error("Failed to copy URL");
           }
         });
+      }
+    });
+    return true;
+  }
+
+  if (request.action === "toggleMuteCurrentTab") {
+    toggleMuteCurrentTab().then(result => {
+      if (result.success) {
+        showNotification(
+          getMessage(result.muted ? "tabMuted" : "tabUnmuted")
+        );
+        sendResponse({ success: true, muted: result.muted });
+      } else {
+        sendResponse({ success: false });
+      }
+    });
+    return true;
+  }
+  
+  if (request.action === "toggleMuteAllAudioTabs") {
+    toggleMuteAllAudioTabs().then(result => {
+      if (result.success) {
+        if (result.count === 0) {
+          showNotification(getMessage("noAudioTabs"));
+        } else {
+          showNotification(
+            getMessage(result.muted ? "allTabsMuted" : "allTabsUnmuted")
+          );
+        }
+        sendResponse({ success: true, muted: result.muted, count: result.count });
+      } else {
+        sendResponse({ success: false });
       }
     });
     return true;

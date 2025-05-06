@@ -754,5 +754,41 @@
   "saveSettings": {
     "message": "Save Settings",
     "description": "Button text for saving settings"
+  },
+  "muteCurrentTab": {
+    "message": "Mute/Unmute current tab",
+    "description": "Action to toggle mute state of current tab"
+  },
+  "muteAllAudioTabs": {
+    "message": "Mute/Unmute all audio tabs",
+    "description": "Action to toggle mute state of all tabs playing audio"
+  },
+  "muteTab": {
+    "message": "Mute tab",
+    "description": "Button text to mute a tab"
+  },
+  "unmuteTab": {
+    "message": "Unmute tab",
+    "description": "Button text to unmute a tab"
+  },
+  "tabMuted": {
+    "message": "Tab muted successfully",
+    "description": "Notification when tab is muted"
+  },
+  "tabUnmuted": {
+    "message": "Tab unmuted successfully",
+    "description": "Notification when tab is unmuted"
+  },
+  "allTabsMuted": {
+    "message": "All audio tabs muted",
+    "description": "Notification when all audio tabs are muted"
+  },
+  "allTabsUnmuted": {
+    "message": "All audio tabs unmuted",
+    "description": "Notification when all audio tabs are unmuted"
+  },
+  "noAudioTabs": {
+    "message": "No tabs playing audio found",
+    "description": "Message when no tabs playing audio are found"
   }
 }
