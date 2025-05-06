@@ -306,7 +306,7 @@
     "description": "Message shown when waiting for webpage to refresh"
   },
   "savePageConfirmation": {
-    "message": "Do you want to save this page?",
+    "message": "Enregistrer cette page?",
     "description": "Confirmation message when user tries to save a page"
   },
   "confirm": {
@@ -314,7 +314,7 @@
     "description": "Confirm button text"
   },
   "continueToSave": {
-    "message": "Continuer à économiser",
+    "message": "Continuer",
     "description": "Button text to proceed with saving the page"
   },
   "savePageInstructionMac": {

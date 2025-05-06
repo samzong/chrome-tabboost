@@ -1,4 +1,4 @@
-import { getCurrentTab, validateUrl } from "../utils/utils.js";
+import { getCurrentTab, validateUrl, showNotification } from "../utils/utils.js";
 import {
   createSplitView,
   closeSplitView,
@@ -24,21 +24,18 @@ const RULE_SETS = {
 };
 
 /**
- * 根据设置启用或禁用declarativeNetRequest规则
- * @param {boolean} enabled - 是否启用规则
+ * Enable or disable declarativeNetRequest rules according to the settings
+ * @param {boolean} enabled
  */
 async function updateHeaderModificationRules(enabled) {
   try {
-    console.log(`TabBoost: ${enabled ? '启用' : '禁用'}头部修改规则`);
-    
     await chrome.declarativeNetRequest.updateEnabledRulesets({
       enableRulesetIds: enabled ? [RULE_SETS.POPUP_BYPASS, RULE_SETS.CSP_BYPASS] : [],
       disableRulesetIds: enabled ? [] : [RULE_SETS.POPUP_BYPASS, RULE_SETS.CSP_BYPASS]
     });
     
-    console.log(`TabBoost: 规则状态已更新为${enabled ? '启用' : '禁用'}`);
   } catch (error) {
-    console.error("TabBoost: 更新规则状态失败:", error);
+    console.error("TabBoost: Failed to update rule status:", error);
   }
 }
 
@@ -126,41 +123,31 @@ async function copyTabUrl(tab) {
       args: [tab.url],
     });
     showNotification(getMessage("urlCopied"));
+    return true;
   } catch (error) {
     console.error(getMessage("urlCopyError"), error);
     showNotification(getMessage("urlCopyFailed"));
+    return false;
   }
 }
 
 function duplicateTab(tab) {
   if (isDuplicatingTab) {
-    console.log("已有复制标签页操作正在进行，忽略此次请求");
     return;
   }
   
   try {
     isDuplicatingTab = true;
     
-    chrome.tabs.duplicate(tab.id, (duplicatedTab) => {
-      console.log("标签页复制成功:", duplicatedTab?.id);
-      
+    chrome.tabs.duplicate(tab.id, (duplicatedTab) => {      
       setTimeout(() => {
         isDuplicatingTab = false;
       }, 500);
     });
   } catch (error) {
-    console.error("复制标签页失败:", error);
+    console.error("Failed to copy tab:", error);
     isDuplicatingTab = false;
   }
-}
-
-function showNotification(message) {
-  chrome.notifications.create({
-    type: "basic",
-    iconUrl: "assets/icons/icon128.png",
-    title: getMessage("appName"),
-    message: message,
-  });
 }
 
 chrome.commands.onCommand.addListener(async (command) => {
@@ -206,18 +193,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "copyCurrentTabUrl") {
     getCurrentTab().then(tab => {
       if (tab && tab.url) {
-        try {
-          chrome.scripting.executeScript({
-            target: { tabId: tab.id },
-            func: (url) => {
-              return navigator.clipboard.writeText(url);
-            },
-            args: [tab.url],
-          });
-          console.log("URL copied successfully");
-        } catch (error) {
-          console.error("Failed to copy URL:", error);
-        }
+        copyTabUrl(tab).then(success => {
+          if (!success) {
+            console.error("Failed to copy URL");
+          }
+        });
       }
     });
     return true;

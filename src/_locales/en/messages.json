@@ -35,10 +35,6 @@
     "message": "Custom height",
     "description": "Setting for custom height"
   },
-  "defaultAction": {
-    "message": "Default action",
-    "description": "Setting for default action"
-  },
   "splitViewEnabled": {
     "message": "Split view enabled",
     "description": "Setting for split view enabled"
@@ -187,7 +183,7 @@
   },
   "generalSettings": {
     "message": "General Settings",
-    "description": "Title for general settings tab"
+    "description": "General settings section title"
   },
   "browsingMode": {
     "message": "Browsing Mode",
@@ -214,8 +210,8 @@
     "description": "Instructions for using split view"
   },
   "configureExtensionBehavior": {
-    "message": "Configure basic behavior of the extension",
-    "description": "Description for general settings section"
+    "message": "Configure general extension behavior",
+    "description": "Description for the general settings section"
   },
   "viewModeSettings": {
     "message": "View Mode Settings",
@@ -370,7 +366,7 @@
     "description": "Message shown when waiting for webpage to refresh"
   },
   "savePageConfirmation": {
-    "message": "Do you want to save this page?",
+    "message": "Save this page?",
     "description": "Confirmation message when user tries to save a page"
   },
   "confirm": {
@@ -378,7 +374,7 @@
     "description": "Confirm button text"
   },
   "continueToSave": {
-    "message": "Continue to save",
+    "message": "Continue",
     "description": "Button text to proceed with saving the page"
   },
   "savePageInstructionMac": {
@@ -386,8 +382,8 @@
     "description": "Instructions for Mac users on how to save the page after clicking continue"
   },
   "savePageInstructionOther": {
-    "message": "You can save this page via File → Save Page As... or press Ctrl+S again within 3 seconds",
-    "description": "Instructions for non-Mac users on how to save the page after clicking continue"
+    "message": "You can save this page by selecting File → Save Page As... or press Ctrl+S again within 3 seconds",
+    "description": "Instructions for saving a page (non-Mac platforms)"
   },
   "closeLeftViewTitle": {
     "message": "Close left content and keep right",
@@ -746,5 +742,17 @@
   "headerModificationWarning": {
     "message": "Note: Disabling this feature may cause link previews for some websites to fail, as these sites may prohibit being displayed in iframes. If you encounter previews that won't load, enable this option.",
     "description": "Warning about disabling header modification"
+  },
+  "notificationsEnabled": {
+    "message": "Enable Notifications",
+    "description": "Label for the notifications enabled checkbox in settings"
+  },
+  "notificationsEnabledDescription": {
+    "message": "When enabled, system notifications will be shown for actions like URL copying",
+    "description": "Description text for the notifications enabled setting"
+  },
+  "saveSettings": {
+    "message": "Save Settings",
+    "description": "Button text for saving settings"
   }
 }

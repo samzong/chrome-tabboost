@@ -1,14 +1,10 @@
-import { showNotification } from "../utils/utils.js";
 import storageCache from "../utils/storage-cache.js";
 import { localizePage, getMessage } from "../utils/i18n.js";
 
-// 添加页面内通知函数
 function showPageNotification(message, type = 'success') {
-  // 检查是否已存在通知元素
   let notification = document.getElementById('page-notification');
   
   if (!notification) {
-    // 创建通知元素
     notification = document.createElement('div');
     notification.id = 'page-notification';
     notification.className = `page-notification ${type}`;
@@ -18,7 +14,6 @@ function showPageNotification(message, type = 'success') {
   notification.textContent = message;
   notification.className = `page-notification ${type} show`;
   
-  // 添加震动效果
   notification.animate(
     [
       { transform: 'translateX(0)' },
@@ -32,13 +27,12 @@ function showPageNotification(message, type = 'success') {
     }
   );
   
-  // 5秒后自动隐藏
   setTimeout(() => {
     notification.className = notification.className.replace(' show', '');
     setTimeout(() => {
       notification.remove();
     }, 300);
-  }, 5000);
+  }, 3000);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -97,10 +91,10 @@ function updateCustomSizeLabels() {
 }
 
 const saveButton = document.getElementById("saveButton");
-const defaultActionInput = document.getElementById("defaultAction");
 const headerModificationEnabledCheckbox = document.getElementById(
   "headerModificationEnabled"
 );
+const notificationsEnabledCheckbox = document.getElementById("notificationsEnabled");
 
 const popupSizePreset = document.getElementById("popupSizePreset");
 const customWidthSlider = document.getElementById("customWidthSlider");
@@ -125,7 +119,6 @@ function setupEventListeners() {
       });
       document.getElementById(`${tabId}-content`).classList.add("active");
       
-      // 更新URL以保存当前标签状态
       updateUrlWithActiveTab(tabId);
     });
   });
@@ -165,19 +158,18 @@ function setupEventListeners() {
         customControls.forEach((control) => (control.style.display = "none"));
         let width, height;
         if (selectedPreset === "default") {
-          width = 80; // Default width
-          height = 80; // Default height
+          width = 80;
+          height = 80;
         } else if (selectedPreset === "large") {
-          width = 95; // Large width
-          height = 95; // Large height
+          width = 95; 
+          height = 95;
         }
-        // Update sliders and values (even if hidden)
         if (customWidthSlider) customWidthSlider.value = width;
         if (customHeightSlider) customHeightSlider.value = height;
         if (customWidthValue) customWidthValue.textContent = width + "%";
         if (customHeightValue) customHeightValue.textContent = height + "%";
         updateCustomSizeLabels();
-        updateSizePreview(); // Update preview based on preset
+        updateSizePreview();
       }
     });
   }
@@ -213,66 +205,81 @@ function initTabs() {
 }
 
 function loadSettings() {
-  storageCache
-    .get([
-      "defaultAction",
-      "headerModificationEnabled",
-      "popupSizePreset",
-      "customWidth",
-      "customHeight",
-    ])
-    .then((result) => {
-      defaultActionInput.value = result.defaultAction || "open-options";
-      
-      // 确保headerModificationEnabled默认为true（开启状态）
-      headerModificationEnabledCheckbox.checked = 
-        result.headerModificationEnabled !== undefined ? result.headerModificationEnabled : true;
+  const keys = [
+    "headerModificationEnabled",
+    "popupSizePreset",
+    "customWidth",
+    "customHeight",
+    "notificationsEnabled",
+  ];
 
-      const loadedPreset = result.popupSizePreset || "default";
-      const loadedWidth = result.customWidth || 80;
-      const loadedHeight = result.customHeight || 80;
+  chrome.storage.sync.get(keys, (result) => {
+    if (chrome.runtime.lastError) {
+      console.error("Failed to load settings:", chrome.runtime.lastError);
+      return;
+    }
+    
+    headerModificationEnabledCheckbox.checked = 
+      result.headerModificationEnabled !== undefined ? result.headerModificationEnabled : true;
 
-      if (popupSizePreset) {
-        popupSizePreset.value = loadedPreset;
-      }
-      if (customWidthSlider) {
-        customWidthSlider.value = loadedWidth;
-      }
-      if (customHeightSlider) {
-        customHeightSlider.value = loadedHeight;
-      }
+    notificationsEnabledCheckbox.checked = 
+      result.notificationsEnabled !== undefined ? result.notificationsEnabled : true;
 
-      const customControls = document.querySelectorAll(".custom-size-controls");
-      if (loadedPreset === "custom") {
-        customControls.forEach((control) => (control.style.display = "block"));
-      } else {
-        customControls.forEach((control) => (control.style.display = "none"));
-      }
+    const loadedPreset = result.popupSizePreset || "default";
+    const loadedWidth = result.customWidth || 80;
+    const loadedHeight = result.customHeight || 80;
 
-      updateCustomSizeLabels();
-      updateSizePreview();
+    if (popupSizePreset) {
+      popupSizePreset.value = loadedPreset;
+    }
+    if (customWidthSlider) {
+      customWidthSlider.value = loadedWidth;
+    }
+    if (customHeightSlider) {
+      customHeightSlider.value = loadedHeight;
+    }
+
+    const customControls = document.querySelectorAll(".custom-size-controls");
+    if (loadedPreset === "custom") {
+      customControls.forEach((control) => (control.style.display = "block"));
+    } else {
+      customControls.forEach((control) => (control.style.display = "none"));
+    }
+
+    updateCustomSizeLabels();
+    updateSizePreview();
+    
+    Object.keys(result).forEach(key => {
+      storageCache.cache[key] = result[key];
+      storageCache.setExpiration(key);
     });
+  });
 }
 
 function saveSettings() {
   const settings = {
-    defaultAction: defaultActionInput.value,
     headerModificationEnabled: headerModificationEnabledCheckbox.checked,
     popupSizePreset: popupSizePreset ? popupSizePreset.value : "default",
     customWidth: customWidthSlider ? parseInt(customWidthSlider.value) : 80,
     customHeight: customHeightSlider ? parseInt(customHeightSlider.value) : 80,
+    notificationsEnabled: notificationsEnabledCheckbox.checked,
   };
 
-  storageCache.set(settings, () => {
-    // 使用页面内通知，添加更明显的通知效果
-    showPageNotification(getMessage("settingsSaved") || "设置已保存");
-    
-    // 同时显示系统通知
-    showNotification(getMessage("settingsSaved") || "设置已保存");
+  chrome.storage.sync.set(settings, () => {
+    if (chrome.runtime.lastError) {
+      console.error("Failed to save settings:", chrome.runtime.lastError);
+      showPageNotification(getMessage("settingsSaveFailed") || "Failed to save", "error");
+    } else {
+      showPageNotification(getMessage("settingsSaved") || "Settings saved");
+      
+      Object.keys(settings).forEach(key => {
+        storageCache.cache[key] = settings[key];
+        storageCache.setExpiration(key);
+      });
+    }
   });
 }
 
-// 添加更新URL的函数
 function updateUrlWithActiveTab(tabId) {
   const url = new URL(window.location.href);
   url.searchParams.set('tab', tabId);
