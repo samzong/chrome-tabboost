@@ -69,6 +69,7 @@ body {
 .button {
   display: flex;
   align-items: center;
+  justify-content: center;
   width: 100%;
   padding: 10px 12px;
   margin-bottom: 8px;
@@ -125,13 +126,6 @@ body {
 
 .button-danger:hover {
   background-color: var(--danger-hover);
-}
-
-.icon {
-  width: 16px;
-  height: 16px;
-  margin-right: 8px;
-  flex-shrink: 0;
 }
 
 .footer {

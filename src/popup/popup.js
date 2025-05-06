@@ -1,5 +1,4 @@
-import { getCurrentTab, showNotification } from "../utils/utils.js";
-import { localizePage, getMessage } from "../utils/i18n.js";
+import { localizePage } from "../utils/i18n.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   localizePage();
@@ -8,29 +7,27 @@ document.addEventListener("DOMContentLoaded", () => {
   const copyUrlButton = document.getElementById("copyUrlButton");
   const openOptionsButton = document.getElementById("openOptionsButton");
 
-  duplicateTabButton.addEventListener("click", async () => {
-    let currentTab = await getCurrentTab();
-    if (currentTab) {
-      chrome.tabs.duplicate(currentTab.id);
-    }
+  duplicateTabButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    chrome.runtime.sendMessage({ action: "duplicateCurrentTab" });
     window.close();
   });
 
-  copyUrlButton.addEventListener("click", async () => {
-    let currentTab = await getCurrentTab();
-    if (currentTab) {
-      try {
-        await navigator.clipboard.writeText(currentTab.url);
-        showNotification(getMessage("urlCopied"));
-      } catch (err) {
-        console.error("Copy failed: ", err);
-        showNotification(getMessage("urlCopyFailed"));
-      }
-    }
+  copyUrlButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    chrome.runtime.sendMessage({ action: "copyCurrentTabUrl" });
     window.close();
   });
 
-  openOptionsButton.addEventListener("click", () => {
-    chrome.runtime.openOptionsPage();
+  openOptionsButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    chrome.runtime.sendMessage({ action: "openOptionsPage" });
+    window.close();
   });
 });
