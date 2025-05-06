@@ -1,3 +1,11 @@
+## <small>2.4.2 (2025-05-06)</small>
+
+* feat(audio-control): add mute/unmute functionality for current and all audio tabs (#40) ([f4813fb](https://github.com/samzong/chrome-tabboost/commit/f4813fb)), closes [#40](https://github.com/samzong/chrome-tabboost/issues/40)
+* feat(popup): add copy URL functionality and notification support in popup(#42) ([4319fdb](https://github.com/samzong/chrome-tabboost/commit/4319fdb)), closes [#42](https://github.com/samzong/chrome-tabboost/issues/42)
+* feat(popup): add shortcut display for buttons in popup interface (#41) ([547c21b](https://github.com/samzong/chrome-tabboost/commit/547c21b)), closes [#41](https://github.com/samzong/chrome-tabboost/issues/41)
+
+
+
 ## <small>2.4.1 (2025-05-06)</small>
 
 * feat(notifications): add notification settings (#39) ([e9dc4e2](https://github.com/samzong/chrome-tabboost/commit/e9dc4e2)), closes [#39](https://github.com/samzong/chrome-tabboost/issues/39)
