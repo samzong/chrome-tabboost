@@ -16,6 +16,8 @@
 
 TabBoost is a Chrome extension that enhances browser tab efficiency. It provides a series of convenient features such as link preview, split-screen browsing, and tab duplication, helping you manage and use Chrome tabs more efficiently, inspired by Arc Browser.
 
+<a href="https://www.producthunt.com/posts/tabboost?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-tabboost" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=962354&theme=light&t=1746628620421" alt="TabBoost - A&#0032;Chrome&#0032;extension&#0032;designed&#0032;to&#0032;improve&#0032;Tabs&#0032;efficiency&#0046; | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+
 ## Features
 
 - **🚀 Link Preview**: Preview links without leaving the current page. Hold down the `Command` key (Mac) or `Ctrl` key (Windows - configurable) and click a link to open it in a popup window on the current page.
