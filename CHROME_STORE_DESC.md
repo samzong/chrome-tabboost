@@ -32,6 +32,15 @@ Intercepts the `Command+S` (Mac) or `Ctrl+S` (Windows) save shortcut, displaying
 **🚫 Save Shortcut Override**
 Intercepts the native `Command/Ctrl+S` page save, replacing the disruptive dialog with a subtle bottom-right notification for a smoother user experience.
 
+**🔊 Audio Tab Control**
+Quickly mute or unmute the current tab or all audio tabs using keyboard shortcuts or the popup menu.
+
+**🆕 Popup Enhancements**
+The popup menu now supports one-click URL copy, notification feedback, and displays shortcut hints for each action button.
+
+**🔔 Notification Settings**
+Configure notification preferences in the options page for a more personalized experience.
+
 **🔧 Highly Customizable**
 Tailor TabBoost to your workflow:
 
