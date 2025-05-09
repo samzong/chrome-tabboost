@@ -147,26 +147,3 @@ export function safeGetIframeContent(iframe) {
     return null;
   }
 }
-
-/**
- * Detect if iframe has loaded an error page
- * @param {HTMLIFrameElement} iframe - iframe element
- * @returns {boolean} - Whether it is an error page
- */
-export function detectIframeError(iframe) {
-  try {
-    const doc = safeGetIframeContent(iframe);
-    if (!doc) return false;
-
-    const content = doc.documentElement.innerHTML || "";
-    return (
-      content.includes("refused to connect") ||
-      content.includes("Refuse connection") ||
-      content.includes("ERR_CONNECTION_REFUSED") ||
-      content.includes("ERR_BLOCKED_BY_RESPONSE") ||
-      content.includes("ERR_CONTENT_SECURITY_POLICY")
-    );
-  } catch (e) {
-    return false;
-  }
-}
