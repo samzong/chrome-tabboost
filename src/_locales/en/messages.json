@@ -413,16 +413,6 @@
     "message": "Failed to add to ignore list",
     "description": "Error message when adding to ignore list fails"
   },
-  "addedToIgnoreList": {
-    "message": "$hostname$ has been added to the ignore list, and it will be opened directly in a new tab next time.",
-    "description": "Message shown when a website is added to ignore list",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
   "alreadyInIgnoreList": {
     "message": "$hostname$ is already in the ignore list.",
     "description": "Message shown when a website is already in ignore list",
@@ -432,58 +422,6 @@
         "example": "example.com"
       }
     }
-  },
-  "autoAddedToIgnoreList": {
-    "message": "$hostname$ has been automatically added to the ignore list, and it will be opened directly in a new tab next time.",
-    "description": "Message shown when a website is automatically added to ignore list",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "enterValidDomain": {
-    "message": "Please enter a valid domain name.",
-    "description": "Error message when the domain input is empty or invalid"
-  },
-  "invalidWildcardFormat": {
-    "message": "Invalid wildcard format. Must be like '*.example.com'.",
-    "description": "Error message for invalid wildcard domain format"
-  },
-  "domainInSystemReserved": {
-    "message": "Domain '$DOMAIN$' or its parent is reserved by the system and cannot be added.",
-    "description": "Error message when trying to add a system-reserved domain",
-    "placeholders": {
-      "DOMAIN": {
-        "content": "$1",
-        "example": "google.com"
-      }
-    }
-  },
-  "addedToIgnoreListAlert": {
-    "message": "$hostname$ has been added to the ignore list, and it will be opened directly in a new tab next time.",
-    "description": "Alert shown when a hostname is successfully added to the ignore list.",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "alreadyInIgnoreListAlert": {
-    "message": "$hostname$ is already in the ignore list.",
-    "description": "Alert shown when trying to add a hostname that is already in the ignore list.",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "addToIgnoreListFailedAlert": {
-    "message": "Failed to add to ignore list.",
-    "description": "Alert shown when adding a hostname to the ignore list fails."
   },
   "contentTooLarge": {
     "message": "Content is too large, cannot be saved for restoration.",

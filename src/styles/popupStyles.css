@@ -256,14 +256,12 @@
 }
 
 /* 次要/关闭按钮样式 (参考 Toolbar Close Button) */
-#tabboost-popup-error #tabboost-add-to-ignore,
 #tabboost-popup-error #tabboost-close-error {
   background-color: #f5f5f5; /* 浅灰色背景 (Light Mode) */
   color: #666; /* 灰色文字 (Light Mode) */
   border-color: #e0e0e0; /* 灰色边框 (Light Mode) */
 }
 
-#tabboost-popup-error #tabboost-add-to-ignore:hover,
 #tabboost-popup-error #tabboost-close-error:hover {
   background-color: #eeeeee; /* Hover 背景 (Light Mode) */
   border-color: #d1d1d1; /* Hover 边框 (Light Mode) */
@@ -367,7 +365,6 @@
   }
 
   /* 次要/关闭按钮样式 (Dark Mode) */
-  #tabboost-popup-error #tabboost-add-to-ignore,
   #tabboost-popup-error #tabboost-close-error {
     /* background-color: rgba(234, 179, 8, 0.15); */ /* 旧按钮背景 */
     background-color: rgba(75, 85, 99, 0.8); /* 深灰色背景 (Dark Mode) */
@@ -377,7 +374,6 @@
     border-color: rgba(107, 114, 128, 0.5); /* 深灰色边框 (Dark Mode) */
   }
 
-  #tabboost-popup-error #tabboost-add-to-ignore:hover,
   #tabboost-popup-error #tabboost-close-error:hover {
     /* background-color: rgba(234, 179, 8, 0.25); */ /* 旧 Hover 背景 */
     background-color: rgba(107, 114, 128, 1); /* Hover 背景 (Dark Mode) */

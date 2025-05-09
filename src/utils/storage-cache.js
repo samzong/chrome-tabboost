@@ -11,12 +11,9 @@ class StorageCache {
     this.stableConfigExpiration = 12 * 60 * 60 * 1000;
     this.initialized = false;
     this.commonKeys = [
-      "iframeIgnoreEnabled",
-      "iframeIgnoreList",
       "popupSizePreset",
       "customWidth",
       "customHeight",
-      "autoAddToIgnoreList",
       "defaultAction",
       "splitViewEnabled",
     ];
@@ -27,7 +24,6 @@ class StorageCache {
       "customHeight",
       "defaultAction",
       "splitViewEnabled",
-      "iframeIgnoreEnabled",
     ];
 
     this.batchReadCache = {};

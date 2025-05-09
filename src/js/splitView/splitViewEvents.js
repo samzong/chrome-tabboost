@@ -153,45 +153,6 @@ function handleSplitViewClick(event) {
     }
     return;
   }
-
-  const addToIgnoreButton = target.closest(".tabboost-add-to-ignore");
-  if (addToIgnoreButton) {
-    const url = addToIgnoreButton.dataset.url;
-    if (url) {
-      handleAddToIgnoreList(url);
-    }
-    return;
-  }
-}
-
-async function handleAddToIgnoreList(url) {
-  try {
-    const parsedUrl = new URL(url);
-    const hostname = parsedUrl.hostname;
-
-    const splitViewIgnoreList = (await storageCache.get("splitViewIgnoreList")) || [];
-
-    if (!splitViewIgnoreList.includes(hostname)) {
-      splitViewIgnoreList.push(hostname);
-      await storageCache.set({ splitViewIgnoreList });
-
-      const toast = document.createElement("div");
-      toast.className = "tabboost-toast";
-      toast.textContent = i18n.getMessage("addedToIgnoreList", hostname);
-      document.body.appendChild(toast);
-
-      setTimeout(() => {
-        toast.classList.add("show");
-      }, 10);
-
-      setTimeout(() => {
-        toast.classList.remove("show");
-        setTimeout(() => toast.remove(), 300);
-      }, 3000);
-    }
-  } catch (error) {
-    console.error("Failed to add to ignore list:", error);
-  }
 }
 
 export function cleanupSplitViewEvents() {
@@ -207,34 +168,4 @@ export function cleanupSplitViewEvents() {
   document.removeEventListener("mouseup", stopDrag);
   document.removeEventListener("touchmove", onDragTouch);
   document.removeEventListener("touchend", stopDrag);
-}
-
-export async function autoAddToIgnoreList(url) {
-  try {
-    const parsedUrl = new URL(url);
-    const hostname = parsedUrl.hostname;
-
-    const splitViewIgnoreList = (await storageCache.get("splitViewIgnoreList")) || [];
-
-    if (!splitViewIgnoreList.includes(hostname)) {
-      splitViewIgnoreList.push(hostname);
-      await storageCache.set({ splitViewIgnoreList });
-
-      const toast = document.createElement("div");
-      toast.className = "tabboost-toast";
-      toast.textContent = i18n.getMessage("autoAddedToIgnoreList", hostname);
-      document.body.appendChild(toast);
-
-      setTimeout(() => {
-        toast.classList.add("show");
-      }, 10);
-
-      setTimeout(() => {
-        toast.classList.remove("show");
-        setTimeout(() => toast.remove(), 300);
-      }, 3000);
-    }
-  } catch (error) {
-    console.error("Failed to auto-add to ignore list:", error);
-  }
 }
