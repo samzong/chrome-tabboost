@@ -499,9 +499,9 @@ function loadWithTimeout(iframe, url, timeout = 5000) {
 async function createPopupDOM(url) {
   try {
     const eventListeners = [];
-    const addTrackedEventListener = (element, eventType, listener) => {
-      element.addEventListener(eventType, listener);
-      eventListeners.push({ element, eventType, listener });
+    const addTrackedEventListener = (element, eventType, listener, options) => {
+      element.addEventListener(eventType, listener, options);
+      eventListeners.push({ element, eventType, listener, options });
     };
 
     const settings = await getPreviewSettings();
@@ -541,10 +541,10 @@ async function createPopupDOM(url) {
         clearAllTimers();
         if (!popupOverlay) return;
         popupOverlay.classList.remove("show");
-        eventListeners.forEach(({ element, eventType, listener }) => {
+        eventListeners.forEach(({ element, eventType, listener, options }) => {
           try {
             if (element && typeof element.removeEventListener === "function") {
-              element.removeEventListener(eventType, listener);
+              element.removeEventListener(eventType, listener, options);
             }
           } catch (e) {
             /* Ignore */
@@ -570,9 +570,74 @@ async function createPopupDOM(url) {
     });
 
     const escListener = (event) => {
-      if (event.key === "Escape") closePopup();
+      if (event.key === "Escape") {
+        event.stopPropagation();
+        event.preventDefault();
+        closePopup();
+      }
     };
-    addTrackedEventListener(document, "keydown", escListener);
+
+    addTrackedEventListener(window, "keydown", escListener, { capture: true });
+
+    // Enhance ESC key handling within iframes
+    const handleIframeEsc = () => {
+      try {
+        iframe.addEventListener('load', () => {
+          try {
+            if (iframe.contentWindow && iframe.contentWindow.document) {
+              addTrackedEventListener(
+                iframe.contentWindow.document,
+                'keydown',
+                (event) => {
+                  if (event.key === 'Escape') {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    closePopup();
+                  }
+                },
+                { capture: true }
+              );
+            }
+          } catch (e) {
+            console.log("TabBoost: Unable to directly access iframe content, using alternative close method");
+            
+            try {
+              if (iframe.contentWindow) {
+                iframe.contentWindow.addEventListener('load', () => {
+                  try {
+                    const script = iframe.contentDocument.createElement('script');
+                    script.textContent = `
+                      document.addEventListener('keydown', function(event) {
+                        if (event.key === 'Escape') {
+                          event.preventDefault();
+                          event.stopPropagation();
+                          window.parent.postMessage({ action: 'closePopup' }, '*');
+                        }
+                      }, true);
+                    `;
+                    iframe.contentDocument.head.appendChild(script);
+                  } catch (err) {
+                  }
+                });
+              }
+            } catch (err) {
+            }
+          }
+        });
+
+        const messageListener = (event) => {
+          if (event.data && event.data.action === 'closePopup') {
+            closePopup();
+          }
+        };
+        addTrackedEventListener(window, 'message', messageListener);
+      } catch (error) {
+        console.error("TabBoost: Failed to add iframe Escape listener:", error);
+      }
+    };
+
+    handleIframeEsc();
+
     const addButtonListeners = () => {
       const newTabButton = popupOverlay.querySelector(".tabboost-newtab-button");
       const closeButton = popupOverlay.querySelector(".tabboost-close-button");
