@@ -48,20 +48,12 @@
         <h2 id="features"><a aria-hidden="true" tabindex="-1" href="#features" class="anchor"><span class="icon icon-link"></span></a>Features</h2>
         <ul>
           <li><strong>🚀 Link Preview</strong>: Preview links without leaving the current page. Hold down the <code>Command</code> key (Mac) or <code>Ctrl</code> key (Windows - configurable) and click a link to open it in a popup window on the current page.</li>
-          <li><strong>📺 Split Screen Mode</strong>: View two web pages side-by-side within a single tab. Triggered by <code>Shift + Command + Click</code> (Mac) or similar method (Windows) on a link, or activated via the extension menu. Ideal for comparing content or multitasking.</li>
+          <li><strong>📺 Split Screen Preview</strong>: View two web pages side-by-side within a single tab. Triggered by <code>Shift + Command + Click</code> (Mac) or similar method (Windows) on a link, or activated via the extension menu. Ideal for comparing content or multitasking.</li>
           <li><strong>🧠 Smart Compatibility Handling</strong>: Automatically detects websites that cannot be loaded in preview or split screen (due to <code>X-Frame-Options</code> or CSP restrictions) and provides options to "Open in New Tab" or add them to an "Ignore List". The ignore list can be managed in the settings.</li>
           <li><strong>💾 Web Page Save Confirmation</strong>: Intercepts the <code>Command+S</code> (Mac) or <code>Ctrl+S</code> (Windows) save shortcut, displaying a confirmation dialog to prevent accidentally saving the webpage instead of a file. After confirmation, there is a 3-second window to use the native save function.</li>
           <li><strong>✨ Tab Duplication</strong>: Quickly duplicate the current tab using the shortcut (<code>Ctrl+M</code> / <code>MacCtrl+M</code>).</li>
           <li><strong>🖱️ URL Copy</strong>: Copy the current page URL to the clipboard with a single click using the shortcut (<code>Alt+C</code> / <code>Shift+Command+C</code>).</li>
           <li><strong>🚫 Save Shortcut Override</strong>: Intercepts the native <code>Command/Ctrl+S</code> page save, replacing the disruptive dialog with a subtle bottom-right notification.</li>
-          <li><strong>🔧 Highly Customizable</strong>:
-            <ul>
-              <li>Configure the default action when clicking the extension icon.</li>
-              <li>Adjust the size of the preview popup window.</li>
-              <li>Enable/disable specific features (like split screen, ignore list).</li>
-              <li>Customize shortcuts in <code>chrome://extensions/shortcuts</code>.</li>
-            </ul>
-          </li>
           <li><strong>🔒 Enhanced Security</strong>: Strict Content Security Policy (CSP) and URL validation mechanisms ensure extension security.</li>
         </ul>
         <h2 id="installation"><a aria-hidden="true" tabindex="-1" href="#installation" class="anchor"><span class="icon icon-link"></span></a>Installation</h2>
@@ -73,48 +65,19 @@
           <li>Click the "Add to Chrome" button</li>
           <li>Confirm the installation in the popup dialog</li>
         </ol>
-        <h3 id="development"><a aria-hidden="true" tabindex="-1" href="#development" class="anchor"><span class="icon icon-link"></span></a>Development</h3>
-        <p>If you want to try the latest features or prefer not to install via the Chrome Web Store, use the following methods:</p>
-        <ol>
-          <li>
-            <p><strong>Download from GitHub Releases:</strong></p>
-            <ul>
-              <li>Visit the <a href="https://github.com/samzong/chrome-tabboost/releases">GitHub Releases</a> page</li>
-              <li>Download the latest version of the <code>chrome-tabboost-v*.crx</code> file</li>
-              <li>Drag and drop the file onto Chrome's extensions page (<code>chrome://extensions/</code>)</li>
-            </ul>
-          </li>
-          <li>
-            <p><strong>Load Unpacked Extension using Developer Mode:</strong></p>
-            <ul>
-              <li>Download the <code>chrome-tabboost-v*.zip</code> or <code>crx</code> file from GitHub Releases and unzip it</li>
-              <li>Enter <code>chrome://extensions/</code> in the Chrome address bar</li>
-              <li>Enable "Developer mode" in the top right corner</li>
-              <li>Click the "Load unpacked" button</li>
-              <li>Select the unzipped directory</li>
-            </ul>
-          </li>
-        </ol>
         <blockquote>
-          <p><strong>Note:</strong> Installing via non-Chrome Web Store methods may trigger warning prompts. This is normal, as Chrome defaults to trusting only extensions from the store.</p>
+          <p>In China Use <a href="https://www.crxsoso.com/Webstore/detail/pnpabkdhbbjmahfnhnfhpgfmhkkeoloe">Crxsoso</a> to install the extension.</p>
         </blockquote>
         <h2 id="usage"><a aria-hidden="true" tabindex="-1" href="#usage" class="anchor"><span class="icon icon-link"></span></a>Usage</h2>
-        <h3 id="main-features"><a aria-hidden="true" tabindex="-1" href="#main-features" class="anchor"><span class="icon icon-link"></span></a>Main Features</h3>
-        <ul>
-          <li><strong>Link Preview</strong>: Hold down <code>Command</code> (Mac) or <code>Ctrl</code> (Windows) and click any link.</li>
-          <li><strong>Split Screen Mode</strong>: Hold down <code>Shift + Command</code> (Mac) and click any link, or activate via the extension popup menu.</li>
-          <li><strong>Web Page Save Confirmation</strong>: Intercepts the native save page function when you press <code>Command+S</code> (Mac) or <code>Ctrl+S</code> (Windows).</li>
-          <li><strong>Save Shortcut Override</strong>: Intercepts the native <code>Command/Ctrl+S</code> page save, replacing the disruptive dialog with a subtle bottom-right notification.</li>
-        </ul>
         <h3 id="default-shortcuts"><a aria-hidden="true" tabindex="-1" href="#default-shortcuts" class="anchor"><span class="icon icon-link"></span></a>Default Shortcuts</h3>
         <ul>
           <li><code>Ctrl+M</code> (Mac: <code>MacCtrl+M</code>): Duplicate current tab</li>
           <li><code>Alt+C</code> (Mac: <code>Shift+Command+C</code>): Copy current webpage URL</li>
         </ul>
         <p><em>Note: All shortcuts can be customized on the Chrome Extension Shortcuts page (<code>chrome://extensions/shortcuts</code>).</em></p>
-        <h3 id="using-split-screen-mode"><a aria-hidden="true" tabindex="-1" href="#using-split-screen-mode" class="anchor"><span class="icon icon-link"></span></a>Using Split Screen Mode</h3>
+        <h3 id="using-split-screen-preview"><a aria-hidden="true" tabindex="-1" href="#using-split-screen-preview" class="anchor"><span class="icon icon-link"></span></a>Using Split Screen Preview</h3>
         <ol>
-          <li>Press the split screen mode shortcut on any webpage or enable it via the extension popup.</li>
+          <li>Press the split screen preview shortcut on any webpage or enable it via the extension popup.</li>
           <li>The left side displays the current page. The right side can load content by clicking links on the left page.</li>
           <li>Adjust the width ratio of the two views by dragging the middle separator line.</li>
         </ol>
@@ -129,54 +92,6 @@
           <li>Press the web page save confirmation shortcut on any webpage.</li>
           <li>The native save page dialog will be intercepted and a notification will be shown in the bottom right corner.</li>
           <li>Click the notification to use the native save page function.</li>
-        </ol>
-        <h2 id="development-1"><a aria-hidden="true" tabindex="-1" href="#development-1" class="anchor"><span class="icon icon-link"></span></a>Development</h2>
-        <h3 id="local-development"><a aria-hidden="true" tabindex="-1" href="#local-development" class="anchor"><span class="icon icon-link"></span></a>Local Development</h3>
-        <pre class="language-bash"><code class="language-bash code-highlight"><span class="code-line line-number" line="1"><span class="token comment"># Clone the repository</span>
-</span><span class="code-line line-number" line="2"><span class="token function">git</span> clone https://github.com/samzong/chrome-tabboost.git
-</span><span class="code-line line-number" line="3"><span class="token builtin class-name">cd</span> chrome-tabboost
-</span><span class="code-line line-number" line="4">
-</span><span class="code-line line-number" line="5"><span class="token comment"># Install dependencies</span>
-</span><span class="code-line line-number" line="6"><span class="token function">npm</span> <span class="token function">install</span>
-</span><span class="code-line line-number" line="7">
-</span><span class="code-line line-number" line="8"><span class="token comment"># Run the development server (with hot reloading)</span>
-</span><span class="code-line line-number" line="9"><span class="token function">npm</span> run dev
-</span><span class="code-line line-number" line="10">
-</span><span class="code-line line-number" line="11"><span class="token comment"># Or start the development mode build</span>
-</span><span class="code-line line-number" line="12"><span class="token comment"># npm run start</span>
-</span><span class="code-line line-number" line="13">
-</span><span class="code-line line-number" line="14"><span class="token comment"># Build the production version</span>
-</span><span class="code-line line-number" line="15"><span class="token function">npm</span> run build
-</span><span class="code-line line-number" line="16">
-</span><span class="code-line line-number" line="17"><span class="token comment"># Run tests</span>
-</span><span class="code-line line-number" line="18"><span class="token function">npm</span> run <span class="token builtin class-name">test</span>
-</span></code><input type="hidden" value="# Clone the repository
-git clone https://github.com/samzong/chrome-tabboost.git
-cd chrome-tabboost
-
-# Install dependencies
-npm install
-
-# Run the development server (with hot reloading)
-npm run dev
-
-# Or start the development mode build
-# npm run start
-
-# Build the production version
-npm run build
-
-# Run tests
-npm run test
-"><div onclick="copied(this)" class="copied"><svg class="octicon-copy" aria-hidden="true" viewBox="0 0 16 16" fill="currentColor" height="12" width="12"><path fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path><path fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path></svg><svg class="octicon-check" aria-hidden="true" viewBox="0 0 16 16" fill="currentColor" height="12" width="12"><path fill-rule="evenodd" d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"></path></svg></div></pre>
-        <h2 id="contribution-guide"><a aria-hidden="true" tabindex="-1" href="#contribution-guide" class="anchor"><span class="icon icon-link"></span></a>Contribution Guide</h2>
-        <p>Suggestions for improvements or code contributions to this project are welcome. Please participate through the following steps:</p>
-        <ol>
-          <li>Fork this repository</li>
-          <li>Create your feature branch (<code>git checkout -b feature/AmazingFeature</code>)</li>
-          <li>Commit your changes (<code>npm run commit</code> for standardized commits)</li>
-          <li>Push to the branch (<code>git push origin feature/AmazingFeature</code>)</li>
-          <li>Create a Pull Request</li>
         </ol>
         <h2 id="license"><a aria-hidden="true" tabindex="-1" href="#license" class="anchor"><span class="icon icon-link"></span></a>License</h2>
         <p>This project is licensed under the MIT License - see the <a href="LICENSE" src="LICENSE">LICENSE</a> file for details</p>
