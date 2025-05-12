@@ -1,3 +1,5 @@
+import * as i18n from "../../utils/i18n.js";
+
 export const UI_CONFIG = {
   container: {
     id: 'tabboost-split-view-container',
@@ -162,9 +164,9 @@ export const LAYOUT_CONFIG = {
     rightHeight: '50%'
   },
   ratioPresets: [
-    { left: 50, right: 50, top: 50, bottom: 50, label: "均分视图" },
-    { left: 70, right: 30, top: 70, bottom: 30, label: "左侧/上方更大" },
-    { left: 30, right: 70, top: 30, bottom: 70, label: "右侧/下方更大" }
+    { left: 50, right: 50, top: 50, bottom: 50, label: i18n.getMessage("splitViewEqualRatio") },
+    { left: 70, right: 30, top: 70, bottom: 30, label: i18n.getMessage("splitViewLeftLarger") },
+    { left: 30, right: 70, top: 30, bottom: 70, label: i18n.getMessage("splitViewRightLarger") }
   ]
 };
 

@@ -1,6 +1,7 @@
 import { UI_CONFIG, LAYOUT_CONFIG, SVG_CONFIG } from './splitViewConfig.js';
 import { createElement } from './splitViewDOMUtils.js';
 import { safeAddEventListener } from './splitViewUtils.js';
+import * as i18n from "../../utils/i18n.js";
 
 /**
  * 创建分割图标
@@ -102,7 +103,7 @@ export function createRatioMenu(settingsButton, viewSide) {
   horizontalIcon.innerHTML = SVG_CONFIG.horizontal;
 
   const horizontalLabel = createElement('span', UI_CONFIG.ratioMenu.label);
-  horizontalLabel.innerText = '左右分屏';
+  horizontalLabel.innerText = i18n.getMessage("splitViewHorizontal");
 
   horizontalOption.appendChild(horizontalIcon);
   horizontalOption.appendChild(horizontalLabel);
@@ -115,7 +116,7 @@ export function createRatioMenu(settingsButton, viewSide) {
   verticalIcon.innerHTML = SVG_CONFIG.vertical;
 
   const verticalLabel = createElement('span', UI_CONFIG.ratioMenu.label);
-  verticalLabel.innerText = '上下分屏';
+  verticalLabel.innerText = i18n.getMessage("splitViewVertical");
 
   verticalOption.appendChild(verticalIcon);
   verticalOption.appendChild(verticalLabel);

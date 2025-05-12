@@ -1,6 +1,7 @@
 import { getCurrentTab } from "../../utils/utils.js";
 import storageCache from "../../utils/storage-cache.js";
 import { canLoadInIframe } from "../../utils/iframe-compatibility.js";
+import * as i18n from "../../utils/i18n.js";
 import {
   initSplitViewDOM,
   removeSplitViewDOM,
@@ -95,9 +96,9 @@ export async function createSplitView() {
       
       const results = await chrome.scripting.executeScript({
         target: { tabId: currentTab.id },
-        func: (url) => {
+        func: (url, i18nMessages) => {
           try {
-            
+            // 创建基本分屏容器
             const container = document.createElement("div");
             container.id = "tabboost-split-view-container";
             container.style.position = "fixed";
@@ -110,18 +111,17 @@ export async function createSplitView() {
             container.style.display = "flex";
             container.style.overflow = "hidden";
             
-            
+            // 创建视图容器
             const viewsContainer = document.createElement("div");
             viewsContainer.id = "tabboost-views-container";
             viewsContainer.style.display = "flex";
             viewsContainer.style.width = "100%";
             viewsContainer.style.height = "100%";
             viewsContainer.style.position = "relative";
-            
             viewsContainer.style.flexDirection = "row";
             viewsContainer.setAttribute("data-split-direction", "horizontal");
             
-            
+            // 创建左侧视图
             const leftView = document.createElement("div");
             leftView.id = "tabboost-split-left";
             leftView.style.width = "50%";
@@ -129,7 +129,7 @@ export async function createSplitView() {
             leftView.style.overflow = "hidden";
             leftView.style.position = "relative";
             
-            
+            // 左侧关闭按钮
             const leftCloseButton = document.createElement("button");
             leftCloseButton.className = "tabboost-view-close";
             leftCloseButton.dataset.action = "close-split-view";
@@ -140,7 +140,7 @@ export async function createSplitView() {
             leftCloseButton.style.width = "24px";
             leftCloseButton.style.height = "24px";
             leftCloseButton.innerText = "×";
-            leftCloseButton.title = "关闭分屏视图";
+            leftCloseButton.title = i18nMessages.closeSplitView;
             leftCloseButton.style.backgroundColor = "rgba(0,0,0,0.5)";
             leftCloseButton.style.color = "#fff";
             leftCloseButton.style.border = "none";
@@ -176,7 +176,7 @@ export async function createSplitView() {
             leftSettingsButton.style.zIndex = "10";
             leftSettingsButton.style.width = "24px";
             leftSettingsButton.style.height = "24px";
-            leftSettingsButton.title = "设置分屏比例";
+            leftSettingsButton.title = i18nMessages.splitViewSettings;
             leftSettingsButton.style.backgroundColor = "rgba(0,0,0,0.5)";
             leftSettingsButton.style.border = "none";
             leftSettingsButton.style.borderRadius = "50%";
@@ -249,7 +249,7 @@ export async function createSplitView() {
             rightCloseButton.style.width = "24px";
             rightCloseButton.style.height = "24px";
             rightCloseButton.innerText = "×";
-            rightCloseButton.title = "关闭分屏视图";
+            rightCloseButton.title = i18nMessages.closeSplitView;
             rightCloseButton.style.backgroundColor = "rgba(0,0,0,0.5)";
             rightCloseButton.style.color = "#fff";
             rightCloseButton.style.border = "none";
@@ -272,7 +272,7 @@ export async function createSplitView() {
             rightSettingsButton.style.zIndex = "10";
             rightSettingsButton.style.width = "24px";
             rightSettingsButton.style.height = "24px";
-            rightSettingsButton.title = "设置分屏比例";
+            rightSettingsButton.title = i18nMessages.splitViewSettings;
             rightSettingsButton.style.backgroundColor = "rgba(0,0,0,0.5)";
             rightSettingsButton.style.border = "none";
             rightSettingsButton.style.borderRadius = "50%";
@@ -378,7 +378,7 @@ export async function createSplitView() {
               horizontalIcon.innerHTML = '<svg viewBox="0 0 20 20" width="20" height="20"><rect x="1" y="3" width="8" height="14" fill="#e0e0e0" rx="2"/><rect x="11" y="3" width="8" height="14" fill="#e0e0e0" rx="2"/></svg>';
 
               const horizontalLabel = document.createElement("span");
-              horizontalLabel.innerText = "左右分屏";
+              horizontalLabel.innerText = i18nMessages.splitViewHorizontal;
               horizontalLabel.style.fontSize = "13px";
               horizontalLabel.style.color = "#333333";
 
@@ -408,7 +408,7 @@ export async function createSplitView() {
               verticalIcon.innerHTML = '<svg viewBox="0 0 20 20" width="20" height="20"><rect x="1" y="1" width="18" height="8" fill="#e0e0e0" rx="2"/><rect x="1" y="11" width="18" height="8" fill="#e0e0e0" rx="2"/></svg>';
 
               const verticalLabel = document.createElement("span");
-              verticalLabel.innerText = "上下分屏";
+              verticalLabel.innerText = i18nMessages.splitViewVertical;
               verticalLabel.style.fontSize = "13px";
               verticalLabel.style.color = "#333333";
 
@@ -476,9 +476,9 @@ export async function createSplitView() {
 
               
               const ratios = [
-                { left: 50, right: 50, top: 50, bottom: 50, label: "均分视图" },
-                { left: 70, right: 30, top: 70, bottom: 30, label: "左侧/上方更大" },
-                { left: 30, right: 70, top: 30, bottom: 70, label: "右侧/下方更大" }
+                { left: 50, right: 50, top: 50, bottom: 50, label: i18nMessages.splitViewEqualRatio },
+                { left: 70, right: 30, top: 70, bottom: 30, label: i18nMessages.splitViewLeftLarger },
+                { left: 30, right: 70, top: 30, bottom: 70, label: i18nMessages.splitViewRightLarger }
               ];
 
               
@@ -728,7 +728,18 @@ export async function createSplitView() {
             return false;
           }
         },
-        args: [leftUrl]
+        args: [
+          leftUrl, 
+          {
+            closeSplitView: i18n.getMessage("closeSplitView"),
+            splitViewSettings: i18n.getMessage("splitViewSettings"),
+            splitViewEqualRatio: i18n.getMessage("splitViewEqualRatio"),
+            splitViewLeftLarger: i18n.getMessage("splitViewLeftLarger"),
+            splitViewRightLarger: i18n.getMessage("splitViewRightLarger"),
+            splitViewHorizontal: i18n.getMessage("splitViewHorizontal"),
+            splitViewVertical: i18n.getMessage("splitViewVertical")
+          }
+        ]
       });
       
       if (results && results[0] && results[0].result) {
@@ -786,7 +797,7 @@ export async function createSplitView() {
                 leftCloseButton.style.width = "24px";
                 leftCloseButton.style.height = "24px";
                 leftCloseButton.innerText = "×";
-                leftCloseButton.title = "关闭分屏视图";
+                leftCloseButton.title = i18n.getMessage("closeSplitView");
                 leftCloseButton.style.backgroundColor = "rgba(0,0,0,0.5)";
                 leftCloseButton.style.color = "#fff";
                 leftCloseButton.style.border = "none";
@@ -840,7 +851,7 @@ export async function createSplitView() {
                 rightCloseButton.style.width = "24px";
                 rightCloseButton.style.height = "24px";
                 rightCloseButton.innerText = "×";
-                rightCloseButton.title = "关闭分屏视图";
+                rightCloseButton.title = i18n.getMessage("closeSplitView");
                 rightCloseButton.style.backgroundColor = "rgba(0,0,0,0.5)";
                 rightCloseButton.style.color = "#fff";
                 rightCloseButton.style.border = "none";
