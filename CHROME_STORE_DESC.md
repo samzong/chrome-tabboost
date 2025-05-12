@@ -12,6 +12,10 @@ Hold the Command key (Mac) or Ctrl key (Windows - configurable) while clicking a
 **📺 Split View Mode for Multitasking**
 Work smarter, not harder! TabBoost's unique Split View mode allows you to view two web pages side-by-side within a single tab. Perfect for comparing content, referencing information, or handling multiple related tasks without constant tab switching. Activate it easily via keyboard shortcut or the extension popup menu.
 
+**📊 Enhanced Split View Options (NEW in v2.4.3)**
+- **Flexible Layout Options:** Choose between horizontal (top/bottom) layout for long content or vertical (left/right) layout for widescreen displays.
+- **Custom Split Ratios:** Select from equal split, left/top larger, or right/bottom larger presets to optimize your viewing experience based on content priority.
+
 **⚡ Enhanced iframe Compatibility (NEW in v2.4.0)**
 We've completely revamped how TabBoost handles website previews with our advanced compatibility system:
 
