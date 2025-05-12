@@ -752,5 +752,25 @@
   "popupShortcutHint": {
     "message": "You need to refresh the page for the new shortcut to take effect.",
     "description": "Hint for popup shortcut settings"
+  },
+  "splitViewEqualRatio": {
+    "message": "Equal Split",
+    "description": "Label for equal ratio split view option"
+  },
+  "splitViewLeftLarger": {
+    "message": "Left/Top Larger",
+    "description": "Label for left/top larger split view option"
+  },
+  "splitViewRightLarger": {
+    "message": "Right/Bottom Larger",
+    "description": "Label for right/bottom larger split view option"
+  },
+  "splitViewHorizontal": {
+    "message": "Horizontal Split",
+    "description": "Label for horizontal split view layout"
+  },
+  "splitViewVertical": {
+    "message": "Vertical Split",
+    "description": "Label for vertical split view layout"
   }
 }

@@ -682,5 +682,25 @@
   "popupShortcutHint": {
     "message": "更改快捷键后需刷新页面生效。",
     "description": "Hint for popup shortcut settings"
+  },
+  "splitViewEqualRatio": {
+    "message": "均分视图",
+    "description": "Label for equal ratio split view option"
+  },
+  "splitViewLeftLarger": {
+    "message": "左侧/上方更大",
+    "description": "Label for left/top larger split view option"
+  },
+  "splitViewRightLarger": {
+    "message": "右侧/下方更大",
+    "description": "Label for right/bottom larger split view option"
+  },
+  "splitViewHorizontal": {
+    "message": "左右分屏",
+    "description": "Label for horizontal split view layout"
+  },
+  "splitViewVertical": {
+    "message": "上下分屏",
+    "description": "Label for vertical split view layout"
   }
 }
