@@ -728,5 +728,29 @@
   "noAudioTabs": {
     "message": "No tabs playing audio found",
     "description": "Message when no tabs playing audio are found"
+  },
+  "popupShortcutSettings": {
+    "message": "Popup Shortcut Settings",
+    "description": "Title for popup shortcut settings section"
+  },
+  "popupShortcutDescription": {
+    "message": "Choose the shortcut combination for popup preview.",
+    "description": "Description for popup shortcut settings"
+  },
+  "popupShortcutLabel": {
+    "message": "Popup shortcut",
+    "description": "Label for popup shortcut select"
+  },
+  "popupShortcutDefault": {
+    "message": "Command/Ctrl(default)",
+    "description": "Option for default shortcut"
+  },
+  "popupShortcutShift": {
+    "message": "Shift(new)",
+    "description": "Option for shift shortcut"
+  },
+  "popupShortcutHint": {
+    "message": "You need to refresh the page for the new shortcut to take effect.",
+    "description": "Hint for popup shortcut settings"
   }
 }
