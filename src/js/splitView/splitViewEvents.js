@@ -8,22 +8,10 @@ let leftWidth = 50;
 
 export function setupSplitViewEvents() {
   document.addEventListener("click", handleSplitViewClick);
-
-  setupDividerDrag();
 }
 
 function setupDividerDrag() {
-  const divider = document.getElementById("tabboost-split-divider");
-  if (!divider) return;
-
-  divider.addEventListener("mousedown", startDrag);
-
-  document.addEventListener("mousemove", onDrag, { passive: true });
-  document.addEventListener("mouseup", stopDrag);
-
-  divider.addEventListener("touchstart", startDragTouch, { passive: true });
-  document.addEventListener("touchmove", onDragTouch, { passive: true });
-  document.addEventListener("touchend", stopDrag);
+  // 功能已移除
 }
 
 function startDrag(e) {
@@ -78,6 +66,7 @@ function updateSplitPosition(clientX, clientY) {
   const container = document.getElementById("tabboost-views-container");
   const leftView = document.getElementById("tabboost-split-left");
   const rightView = document.getElementById("tabboost-split-right");
+  const divider = document.getElementById("tabboost-split-divider");
 
   if (!container || !leftView || !rightView) return;
 
@@ -97,6 +86,15 @@ function updateSplitPosition(clientX, clientY) {
 
     leftView.style.width = "var(--left-width)";
     rightView.style.width = "var(--right-width)";
+    
+    // 更新分隔线位置 - 只需要移动位置，transform会自动居中
+    if (divider) {
+      divider.style.left = `${newLeftWidth}%`;
+      // 确保transform属性存在
+      if (!divider.style.transform || !divider.style.transform.includes('translateX')) {
+        divider.style.transform = 'translateX(-50%)';
+      }
+    }
   } else {
     const deltaY = clientY - startY;
     const containerHeight = container.offsetHeight;
@@ -111,6 +109,15 @@ function updateSplitPosition(clientX, clientY) {
 
     leftView.style.height = "var(--top-height)";
     rightView.style.height = "var(--bottom-height)";
+    
+    // 更新分隔线位置 - 只需要移动位置，transform会自动居中
+    if (divider) {
+      divider.style.top = `${newTopHeight}%`;
+      // 确保transform属性存在
+      if (!divider.style.transform || !divider.style.transform.includes('translateY')) {
+        divider.style.transform = 'translateY(-50%)';
+      }
+    }
   }
 }
 

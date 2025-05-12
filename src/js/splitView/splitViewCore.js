@@ -64,14 +64,12 @@ export async function createSplitView() {
                 // 确保左右视图都可见
                 const leftView = document.getElementById("tabboost-split-left");
                 const rightView = document.getElementById("tabboost-split-right");
-                const divider = document.getElementById("tabboost-split-divider");
 
-                if (leftView && rightView && divider) {
+                if (leftView && rightView) {
                   leftView.style.display = "block";
                   leftView.style.width = "50%";
                   rightView.style.display = "block";
                   rightView.style.width = "50%";
-                  divider.style.display = "block";
                 }
 
                 return true;
@@ -160,6 +158,54 @@ export async function createSplitView() {
             
             leftView.appendChild(leftCloseButton);
             
+            // 左侧设置按钮
+            const leftSettingsButton = document.createElement("button");
+            leftSettingsButton.className = "tabboost-view-settings";
+            leftSettingsButton.style.position = "absolute";
+            leftSettingsButton.style.top = "8px";
+            leftSettingsButton.style.right = "40px";
+            leftSettingsButton.style.zIndex = "10";
+            leftSettingsButton.style.width = "24px";
+            leftSettingsButton.style.height = "24px";
+            leftSettingsButton.title = "设置分屏比例";
+            leftSettingsButton.style.backgroundColor = "rgba(0,0,0,0.5)";
+            leftSettingsButton.style.border = "none";
+            leftSettingsButton.style.borderRadius = "50%";
+            leftSettingsButton.style.cursor = "pointer";
+            leftSettingsButton.style.display = "flex";
+            leftSettingsButton.style.alignItems = "center";
+            leftSettingsButton.style.justifyContent = "center";
+            leftSettingsButton.style.padding = "0";
+            leftSettingsButton.style.opacity = "0";
+            leftSettingsButton.style.transition = "opacity 0.2s";
+
+            // 创建分屏图标
+            const createSplitIcon = () => {
+              const icon = document.createElement("div");
+              icon.style.width = "16px";
+              icon.style.height = "12px";
+              icon.style.position = "relative";
+              icon.style.backgroundColor = "#ffffff";
+              icon.style.borderRadius = "2px";
+              icon.style.overflow = "hidden";
+
+              // 创建分隔线 - 固定在中间位置
+              const divider = document.createElement("div");
+              divider.style.position = "absolute";
+              divider.style.top = "0";
+              divider.style.left = "50%";
+              divider.style.width = "1px";
+              divider.style.height = "100%";
+              divider.style.backgroundColor = "#666666";
+              divider.style.transform = "translateX(-50%)";
+
+              icon.appendChild(divider);
+              return icon;
+            };
+
+            leftSettingsButton.appendChild(createSplitIcon());
+            leftView.appendChild(leftSettingsButton);
+            
             // 左侧iframe
             const leftIframe = document.createElement("iframe");
             leftIframe.id = "tabboost-left-iframe";
@@ -208,6 +254,30 @@ export async function createSplitView() {
             
             rightView.appendChild(rightCloseButton);
             
+            // 右侧设置按钮
+            const rightSettingsButton = document.createElement("button");
+            rightSettingsButton.className = "tabboost-view-settings";
+            rightSettingsButton.style.position = "absolute";
+            rightSettingsButton.style.top = "8px";
+            rightSettingsButton.style.right = "40px";
+            rightSettingsButton.style.zIndex = "10";
+            rightSettingsButton.style.width = "24px";
+            rightSettingsButton.style.height = "24px";
+            rightSettingsButton.title = "设置分屏比例";
+            rightSettingsButton.style.backgroundColor = "rgba(0,0,0,0.5)";
+            rightSettingsButton.style.border = "none";
+            rightSettingsButton.style.borderRadius = "50%";
+            rightSettingsButton.style.cursor = "pointer";
+            rightSettingsButton.style.display = "flex";
+            rightSettingsButton.style.alignItems = "center";
+            rightSettingsButton.style.justifyContent = "center";
+            rightSettingsButton.style.padding = "0";
+            rightSettingsButton.style.opacity = "0";
+            rightSettingsButton.style.transition = "opacity 0.2s";
+
+            rightSettingsButton.appendChild(createSplitIcon());
+            rightView.appendChild(rightSettingsButton);
+            
             // 右侧iframe
             const rightIframe = document.createElement("iframe");
             rightIframe.id = "tabboost-right-iframe";
@@ -223,18 +293,8 @@ export async function createSplitView() {
             
             rightView.appendChild(rightIframe);
             
-            // 创建分隔线
-            const divider = document.createElement("div");
-            divider.id = "tabboost-split-divider";
-            divider.style.width = "6px";
-            divider.style.height = "100%";
-            divider.style.backgroundColor = "#e0e0e0";
-            divider.style.cursor = "col-resize";
-            divider.style.position = "relative";
-            
             // 组装DOM
             viewsContainer.appendChild(leftView);
-            viewsContainer.appendChild(divider);
             viewsContainer.appendChild(rightView);
             container.appendChild(viewsContainer);
             
@@ -257,39 +317,168 @@ export async function createSplitView() {
             document.body.style.overflow = "hidden";
             document.body.appendChild(container);
             
-            // 添加基本的拖拽功能
-            let isDragging = false;
-            let startX = 0;
-            let leftWidth = 50;
-            
-            divider.addEventListener("mousedown", (e) => {
-              isDragging = true;
-              startX = e.clientX;
-              const computedStyle = window.getComputedStyle(leftView);
-              leftWidth = (parseFloat(computedStyle.width) / window.innerWidth) * 100;
-              document.body.style.userSelect = "none";
-              e.preventDefault();
-            });
-            
-            document.addEventListener("mousemove", (e) => {
-              if (!isDragging) return;
-              
-              const deltaX = e.clientX - startX;
-              const containerWidth = viewsContainer.offsetWidth;
-              const deltaPercent = (deltaX / containerWidth) * 100;
-              
-              let newLeftWidth = leftWidth + deltaPercent;
-              newLeftWidth = Math.max(20, Math.min(80, newLeftWidth));
-              
-              leftView.style.width = `${newLeftWidth}%`;
-              rightView.style.width = `${100 - newLeftWidth}%`;
-            });
-            
-            document.addEventListener("mouseup", () => {
-              if (isDragging) {
-                isDragging = false;
-                document.body.style.userSelect = "";
+            // 创建下拉菜单函数
+            const createRatioMenu = (settingsButton, viewSide) => {
+              const menu = document.createElement("div");
+              menu.className = "tabboost-ratio-menu";
+              menu.style.position = "absolute";
+              menu.style.top = "35px";
+              menu.style.right = viewSide === "left" ? "40px" : "40px";
+              menu.style.backgroundColor = "#ffffff";
+              menu.style.border = "1px solid rgba(0,0,0,0.1)";
+              menu.style.borderRadius = "6px";
+              menu.style.boxShadow = "0 2px 8px rgba(0,0,0,0.1)";
+              menu.style.zIndex = "100";
+              menu.style.display = "none";
+              menu.style.padding = "4px";
+              menu.style.minWidth = "120px";
+
+              // 比例选项数据
+              const ratios = [
+                { left: 50, right: 50, label: "均分视图" },
+                { left: 70, right: 30, label: "左侧更大" },
+                { left: 30, right: 70, label: "右侧更大" }
+              ];
+
+              ratios.forEach(ratio => {
+                const option = document.createElement("div");
+                option.style.padding = "8px 12px";
+                option.style.cursor = "pointer";
+                option.style.display = "flex";
+                option.style.alignItems = "center";
+                option.style.gap = "12px";
+                option.style.borderRadius = "4px";
+                option.style.transition = "background-color 0.2s";
+
+                // 创建比例示意图
+                const diagram = document.createElement("div");
+                diagram.style.width = "32px";
+                diagram.style.height = "20px";
+                diagram.style.position = "relative";
+                diagram.style.backgroundColor = "#f5f5f5";
+                diagram.style.borderRadius = "3px";
+                diagram.style.overflow = "hidden";
+
+                // 创建分隔线
+                const divider = document.createElement("div");
+                divider.style.position = "absolute";
+                divider.style.top = "0";
+                divider.style.left = `${ratio.left}%`;
+                divider.style.width = "1px";
+                divider.style.height = "100%";
+                divider.style.backgroundColor = "#666666";
+                divider.style.transform = "translateX(-50%)";
+
+                diagram.appendChild(divider);
+
+                // 添加文本标签
+                const label = document.createElement("span");
+                label.innerText = ratio.label;
+                label.style.fontSize = "13px";
+                label.style.color = "#333333";
+                label.style.fontWeight = "500";
+
+                option.appendChild(diagram);
+                option.appendChild(label);
+
+                // 悬停效果
+                option.addEventListener("mouseover", () => {
+                  option.style.backgroundColor = "#f5f5f5";
+                });
+                option.addEventListener("mouseout", () => {
+                  option.style.backgroundColor = "transparent";
+                });
+
+                // 点击事件
+                option.addEventListener("click", () => {
+                  const leftView = document.getElementById("tabboost-split-left");
+                  const rightView = document.getElementById("tabboost-split-right");
+
+                  leftView.style.width = `${ratio.left}%`;
+                  rightView.style.width = `${ratio.right}%`;
+
+                  try {
+                    localStorage.setItem("tabboostSplitRatio", JSON.stringify(ratio));
+                  } catch (e) {
+                    console.error("Error saving split ratio to localStorage:", e);
+                  }
+
+                  menu.style.display = "none";
+                });
+
+                menu.appendChild(option);
+              });
+
+              settingsButton.parentElement.appendChild(menu);
+
+              // 切换菜单显示/隐藏
+              settingsButton.addEventListener("click", () => {
+                const allMenus = document.querySelectorAll(".tabboost-ratio-menu");
+                allMenus.forEach(m => {
+                  if (m !== menu) m.style.display = "none";
+                });
+                menu.style.display = menu.style.display === "none" ? "block" : "none";
+              });
+
+              // 点击其他地方关闭菜单
+              document.addEventListener("click", (e) => {
+                if (!settingsButton.contains(e.target) && !menu.contains(e.target)) {
+                  menu.style.display = "none";
+                }
+              });
+            };
+
+            // 为左右设置按钮创建菜单
+            createRatioMenu(leftSettingsButton, "left");
+            createRatioMenu(rightSettingsButton, "right");
+
+            // 应用保存的比例
+            const applySavedRatio = () => {
+              try {
+                const savedRatio = localStorage.getItem("tabboostSplitRatio");
+                if (savedRatio) {
+                  const ratio = JSON.parse(savedRatio);
+                  const leftView = document.getElementById("tabboost-split-left");
+                  const rightView = document.getElementById("tabboost-split-right");
+
+                  leftView.style.width = `${ratio.left}%`;
+                  rightView.style.width = `${ratio.right}%`;
+                }
+              } catch (e) {
+                console.error("Error applying saved split ratio:", e);
               }
+            };
+
+            // 在页面加载完成后应用保存的比例
+            applySavedRatio();
+            
+            // 添加鼠标悬停显示/隐藏逻辑
+            leftView.addEventListener("mouseenter", () => {
+              const closeButton = leftView.querySelector(".tabboost-view-close");
+              const settingsButton = leftView.querySelector(".tabboost-view-settings");
+              if (closeButton) closeButton.style.opacity = "1";
+              if (settingsButton) settingsButton.style.opacity = "1";
+            });
+
+            leftView.addEventListener("mouseleave", () => {
+              const closeButton = leftView.querySelector(".tabboost-view-close");
+              const settingsButton = leftView.querySelector(".tabboost-view-settings");
+              if (closeButton) closeButton.style.opacity = "0";
+              if (settingsButton) settingsButton.style.opacity = "0";
+            });
+
+            rightView.addEventListener("mouseenter", () => {
+              const closeButton = rightView.querySelector(".tabboost-view-close");
+              const settingsButton = rightView.querySelector(".tabboost-view-settings");
+              if (closeButton) closeButton.style.opacity = "1";
+              if (settingsButton) settingsButton.style.opacity = "1";
+            });
+
+            rightView.addEventListener("mouseleave", () => {
+              const closeButton = rightView.querySelector(".tabboost-view-close");
+              const settingsButton = rightView.querySelector(".tabboost-view-settings");
+              if (closeButton) closeButton.style.opacity = "0";
+              if (settingsButton) settingsButton.style.opacity = "0";
             });
             
             return true;
@@ -355,6 +544,7 @@ export async function createSplitView() {
                 leftCloseButton.style.width = "24px";
                 leftCloseButton.style.height = "24px";
                 leftCloseButton.innerText = "×";
+                leftCloseButton.title = "关闭分屏视图";
                 leftCloseButton.style.backgroundColor = "rgba(0,0,0,0.5)";
                 leftCloseButton.style.color = "#fff";
                 leftCloseButton.style.border = "none";
@@ -432,16 +622,8 @@ export async function createSplitView() {
                 
                 rightView.appendChild(rightIframe);
                 
-                // 创建分隔线
-                const divider = document.createElement("div");
-                divider.id = "tabboost-split-divider";
-                divider.style.width = "4px";
-                divider.style.background = "#ddd";
-                divider.style.cursor = "col-resize";
-                
                 // 组装DOM
                 viewsContainer.appendChild(leftView);
-                viewsContainer.appendChild(divider);
                 viewsContainer.appendChild(rightView);
                 
                 container.appendChild(viewsContainer);
@@ -523,6 +705,25 @@ export async function updateRightView(url) {
       return;
     }
 
+    // 检查分屏视图是否存在，如果不存在则重新创建
+    const checkResult = await chrome.scripting.executeScript({
+      target: { tabId: currentTab.id },
+      func: () => {
+        try {
+          const container = document.getElementById("tabboost-split-view-container");
+          return !!container;
+        } catch (e) {
+          console.error("Error checking split view container:", e);
+          return false;
+        }
+      }
+    });
+
+    if (!checkResult || !checkResult[0].result) {
+      console.log("Split view container not found, recreating...");
+      await createSplitView();
+    }
+
     // 使用直接的内联函数而不是字符串执行
     const results = await chrome.scripting.executeScript({
       target: { tabId: currentTab.id },
@@ -560,12 +761,6 @@ export async function updateRightView(url) {
           const leftView = document.getElementById("tabboost-split-left");
           if (leftView) {
             leftView.style.width = "50%";
-          }
-          
-          // 确保分隔线可见
-          const divider = document.getElementById("tabboost-split-divider");
-          if (divider) {
-            divider.style.display = "block";
           }
           
           // 设置iframe的src
@@ -729,16 +924,8 @@ export async function updateRightView(url) {
                 
                 rightView.appendChild(rightIframe);
                 
-                // 创建分隔线
-                const divider = document.createElement("div");
-                divider.id = "tabboost-split-divider";
-                divider.style.width = "4px";
-                divider.style.background = "#ddd";
-                divider.style.cursor = "col-resize";
-                
                 // 组装DOM
                 viewsContainer.appendChild(leftView);
-                viewsContainer.appendChild(divider);
                 viewsContainer.appendChild(rightView);
                 
                 container.appendChild(viewsContainer);
