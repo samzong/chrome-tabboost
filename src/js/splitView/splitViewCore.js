@@ -10,32 +10,39 @@ import {
   setupSplitViewEvents,
   cleanupSplitViewEvents,
 } from "./splitViewEvents.js";
+import splitViewState from "./splitViewState.js";
 
-storageCache.init().catch((error) => {
-  console.error("Failed to initialize storage cache:", error);
+
+
+
+splitViewState.init().catch((error) => {
+  console.error("Failed to initialize split view state:", error);
 });
 
-let isSplitViewActive = false;
-let leftUrl = "";
-let rightUrl = "";
-
+/**
+ * 创建分屏视图
+ * @returns {Promise<boolean>} - 是否成功创建
+ */
 export async function createSplitView() {
   try {
     const currentTab = await getCurrentTab();
     if (!currentTab) {
       console.error("Failed to get current tab");
-      return;
+      return false;
     }
 
-    leftUrl = currentTab.url;
+    const leftUrl = currentTab.url;
 
     if (!leftUrl || leftUrl === "about:blank") {
       console.error("Invalid page URL");
-      return;
+      return false;
     }
+    
+    
+    splitViewState.activate(leftUrl);
 
     try {
-      // 首先检查是否已经存在分屏视图
+      
       const [checkResult] = await chrome.scripting.executeScript({
         target: { tabId: currentTab.id },
         func: () => {
@@ -50,7 +57,7 @@ export async function createSplitView() {
       });
 
       if (checkResult && checkResult.result) {
-        // 如果已存在，确保它可见
+        
         await chrome.scripting.executeScript({
           target: { tabId: currentTab.id },
           func: () => {
@@ -61,7 +68,7 @@ export async function createSplitView() {
                 container.style.opacity = "1";
                 container.style.zIndex = "10000";
 
-                // 确保左右视图都可见
+                
                 const leftView = document.getElementById("tabboost-split-left");
                 const rightView = document.getElementById("tabboost-split-right");
 
@@ -82,16 +89,15 @@ export async function createSplitView() {
           }
         });
 
-        isSplitViewActive = true;
-        return;
+        return true;
       }
 
-      // 如果不存在，直接创建简单的分屏视图，不使用动态函数执行
+      
       const results = await chrome.scripting.executeScript({
         target: { tabId: currentTab.id },
         func: (url) => {
           try {
-            // 创建基本分屏容器
+            
             const container = document.createElement("div");
             container.id = "tabboost-split-view-container";
             container.style.position = "fixed";
@@ -104,18 +110,18 @@ export async function createSplitView() {
             container.style.display = "flex";
             container.style.overflow = "hidden";
             
-            // 创建视图容器 - 直接占据100%高度，不再需要顶部控制栏
+            
             const viewsContainer = document.createElement("div");
             viewsContainer.id = "tabboost-views-container";
             viewsContainer.style.display = "flex";
             viewsContainer.style.width = "100%";
             viewsContainer.style.height = "100%";
             viewsContainer.style.position = "relative";
-            // 初始设置为水平布局
+            
             viewsContainer.style.flexDirection = "row";
             viewsContainer.setAttribute("data-split-direction", "horizontal");
             
-            // 创建左侧视图
+            
             const leftView = document.createElement("div");
             leftView.id = "tabboost-split-left";
             leftView.style.width = "50%";
@@ -123,7 +129,7 @@ export async function createSplitView() {
             leftView.style.overflow = "hidden";
             leftView.style.position = "relative";
             
-            // 左侧关闭按钮
+            
             const leftCloseButton = document.createElement("button");
             leftCloseButton.className = "tabboost-view-close";
             leftCloseButton.dataset.action = "close-split-view";
@@ -142,7 +148,7 @@ export async function createSplitView() {
             leftCloseButton.style.cursor = "pointer";
             
             leftCloseButton.addEventListener("click", () => {
-              // 关闭分屏，但保留右侧页面
+              
               const rightIframe = document.getElementById("tabboost-right-iframe");
               if (rightIframe && rightIframe.src && rightIframe.src !== "about:blank") {
                 const rightUrl = rightIframe.src;
@@ -161,7 +167,7 @@ export async function createSplitView() {
             
             leftView.appendChild(leftCloseButton);
             
-            // 左侧设置按钮
+            
             const leftSettingsButton = document.createElement("button");
             leftSettingsButton.className = "tabboost-view-settings";
             leftSettingsButton.style.position = "absolute";
@@ -182,7 +188,7 @@ export async function createSplitView() {
             leftSettingsButton.style.opacity = "0";
             leftSettingsButton.style.transition = "opacity 0.2s";
 
-            // 创建分屏图标
+            
             const createSplitIcon = () => {
               const icon = document.createElement("div");
               icon.style.width = "16px";
@@ -192,7 +198,7 @@ export async function createSplitView() {
               icon.style.borderRadius = "2px";
               icon.style.overflow = "hidden";
 
-              // 创建分隔线 - 固定在中间位置
+              
               const divider = document.createElement("div");
               divider.style.position = "absolute";
               divider.style.top = "0";
@@ -209,7 +215,7 @@ export async function createSplitView() {
             leftSettingsButton.appendChild(createSplitIcon());
             leftView.appendChild(leftSettingsButton);
             
-            // 左侧iframe
+            
             const leftIframe = document.createElement("iframe");
             leftIframe.id = "tabboost-left-iframe";
             leftIframe.style.width = "100%";
@@ -224,7 +230,7 @@ export async function createSplitView() {
             
             leftView.appendChild(leftIframe);
             
-            // 创建右侧视图
+            
             const rightView = document.createElement("div");
             rightView.id = "tabboost-split-right";
             rightView.style.width = "50%";
@@ -232,7 +238,7 @@ export async function createSplitView() {
             rightView.style.overflow = "hidden";
             rightView.style.position = "relative";
             
-            // 右侧关闭按钮
+            
             const rightCloseButton = document.createElement("button");
             rightCloseButton.className = "tabboost-view-close";
             rightCloseButton.dataset.action = "close-split-view";
@@ -251,13 +257,13 @@ export async function createSplitView() {
             rightCloseButton.style.cursor = "pointer";
             
             rightCloseButton.addEventListener("click", () => {
-              // 关闭分屏，保留左侧页面
+              
               chrome.runtime.sendMessage({ action: "closeSplitView" });
             });
             
             rightView.appendChild(rightCloseButton);
             
-            // 右侧设置按钮
+            
             const rightSettingsButton = document.createElement("button");
             rightSettingsButton.className = "tabboost-view-settings";
             rightSettingsButton.style.position = "absolute";
@@ -281,7 +287,7 @@ export async function createSplitView() {
             rightSettingsButton.appendChild(createSplitIcon());
             rightView.appendChild(rightSettingsButton);
             
-            // 右侧iframe
+            
             const rightIframe = document.createElement("iframe");
             rightIframe.id = "tabboost-right-iframe";
             rightIframe.style.width = "100%";
@@ -296,12 +302,12 @@ export async function createSplitView() {
             
             rightView.appendChild(rightIframe);
             
-            // 组装DOM
+            
             viewsContainer.appendChild(leftView);
             viewsContainer.appendChild(rightView);
             container.appendChild(viewsContainer);
             
-            // 保存原始内容
+            
             try {
               const originalContent = document.documentElement.outerHTML || "";
               document.body.setAttribute("data-tabboost-original-content", originalContent);
@@ -309,18 +315,18 @@ export async function createSplitView() {
               console.error("TabBoost: Error storing original content", e);
             }
             
-            // 隐藏页面其他元素
+            
             const existingElements = Array.from(document.body.children);
             existingElements.forEach(element => {
               element.dataset.originalDisplay = element.style.display;
               element.style.display = "none";
             });
             
-            // 添加到body
+            
             document.body.style.overflow = "hidden";
             document.body.appendChild(container);
             
-            // 创建下拉菜单函数
+            
             const createRatioMenu = (settingsButton, viewSide) => {
               const menu = document.createElement("div");
               menu.className = "tabboost-ratio-menu";
@@ -336,20 +342,20 @@ export async function createSplitView() {
               menu.style.padding = "6px 0";
               menu.style.minWidth = "160px";
 
-              // 检查当前布局方向
+              
               const getCurrentDirection = () => {
                 const viewsContainer = document.getElementById("tabboost-views-container");
                 return viewsContainer && viewsContainer.getAttribute("data-split-direction") === "vertical" 
                   ? "vertical" : "horizontal";
               };
 
-              // 添加布局切换选项
+              
               const layoutSection = document.createElement("div");
               layoutSection.style.borderBottom = "1px solid #f0f0f0";
               layoutSection.style.paddingBottom = "6px";
               layoutSection.style.marginBottom = "6px";
 
-              // 左右布局选项
+              
               const horizontalOption = document.createElement("div");
               horizontalOption.style.padding = "8px 12px";
               horizontalOption.style.cursor = "pointer";
@@ -379,7 +385,7 @@ export async function createSplitView() {
               horizontalOption.appendChild(horizontalIcon);
               horizontalOption.appendChild(horizontalLabel);
 
-              // 上下布局选项
+              
               const verticalOption = document.createElement("div");
               verticalOption.style.padding = "8px 12px";
               verticalOption.style.cursor = "pointer";
@@ -409,7 +415,7 @@ export async function createSplitView() {
               verticalOption.appendChild(verticalIcon);
               verticalOption.appendChild(verticalLabel);
 
-              // 添加悬停效果
+              
               horizontalOption.addEventListener("mouseover", () => {
                 horizontalOption.style.backgroundColor = "#f5f5f5";
               });
@@ -424,7 +430,7 @@ export async function createSplitView() {
                 verticalOption.style.backgroundColor = "transparent";
               });
 
-              // 为布局选项添加点击事件
+              
               const setLayout = (direction) => {
                 const leftView = document.getElementById("tabboost-split-left");
                 const rightView = document.getElementById("tabboost-split-right");
@@ -433,7 +439,7 @@ export async function createSplitView() {
                 if (!leftView || !rightView || !viewsContainer) return;
                 
                 if (direction === "vertical") {
-                  // 切换为上下布局
+                  
                   viewsContainer.style.flexDirection = "column";
                   leftView.style.width = "100%";
                   leftView.style.height = "50%";
@@ -441,7 +447,7 @@ export async function createSplitView() {
                   rightView.style.height = "50%";
                   viewsContainer.setAttribute("data-split-direction", "vertical");
                 } else {
-                  // 切换为左右布局
+                  
                   viewsContainer.style.flexDirection = "row";
                   leftView.style.width = "50%";
                   leftView.style.height = "100%";
@@ -450,7 +456,7 @@ export async function createSplitView() {
                   viewsContainer.setAttribute("data-split-direction", "horizontal");
                 }
                 
-                // 更新菜单中所有比例示意图
+                
                 setTimeout(() => updateRatioIcons(), 50);
               };
 
@@ -468,14 +474,14 @@ export async function createSplitView() {
               layoutSection.appendChild(verticalOption);
               menu.appendChild(layoutSection);
 
-              // 比例选项数据
+              
               const ratios = [
                 { left: 50, right: 50, top: 50, bottom: 50, label: "均分视图" },
                 { left: 70, right: 30, top: 70, bottom: 30, label: "左侧/上方更大" },
                 { left: 30, right: 70, top: 30, bottom: 70, label: "右侧/下方更大" }
               ];
 
-              // 创建比例选项
+              
               const ratioSection = document.createElement("div");
 
               ratios.forEach(ratio => {
@@ -489,7 +495,7 @@ export async function createSplitView() {
                 option.style.transition = "background-color 0.2s";
                 option.setAttribute("data-ratio", JSON.stringify(ratio));
 
-                // 创建比例示意图
+                
                 const diagram = document.createElement("div");
                 diagram.style.width = "20px";
                 diagram.style.height = "20px";
@@ -501,14 +507,14 @@ export async function createSplitView() {
                 diagram.style.borderRadius = "3px";
                 diagram.style.overflow = "hidden";
 
-                // 根据布局方向创建SVG示意图
+                
                 const createSvgForDiagram = (direction) => {
                   diagram.innerHTML = "";
                   
                   let svgContent = "";
                   
                   if (direction === "vertical") {
-                    // 上下布局的SVG
+                    
                     const topHeight = ratio.top;
                     const bottomHeight = ratio.bottom;
                     
@@ -517,7 +523,7 @@ export async function createSplitView() {
                       <rect x="1" y="${2 + topHeight/100 * 17}" width="18" height="${bottomHeight/100 * 17}" fill="#e0e0e0" rx="2"/>
                     </svg>`;
                   } else {
-                    // 左右布局的SVG
+                    
                     const leftWidth = ratio.left;
                     const rightWidth = ratio.right;
                     
@@ -530,13 +536,13 @@ export async function createSplitView() {
                   diagram.innerHTML = svgContent;
                 };
                 
-                // 初始创建SVG示意图
+                
                 createSvgForDiagram(getCurrentDirection());
                 
-                // 保存createSvgForDiagram函数以供以后使用
+                
                 diagram.updateDivider = createSvgForDiagram;
 
-                // 添加文本标签
+                
                 const label = document.createElement("span");
                 label.innerText = ratio.label;
                 label.style.fontSize = "13px";
@@ -546,7 +552,7 @@ export async function createSplitView() {
                 option.appendChild(diagram);
                 option.appendChild(label);
 
-                // 悬停效果
+                
                 option.addEventListener("mouseover", () => {
                   option.style.backgroundColor = "#f5f5f5";
                 });
@@ -554,7 +560,7 @@ export async function createSplitView() {
                   option.style.backgroundColor = "transparent";
                 });
 
-                // 点击事件 - 应用分屏比例
+                
                 option.addEventListener("click", () => {
                   const leftView = document.getElementById("tabboost-split-left");
                   const rightView = document.getElementById("tabboost-split-right");
@@ -565,11 +571,11 @@ export async function createSplitView() {
                   const isVertical = viewsContainer.getAttribute("data-split-direction") === "vertical";
                   
                   if (isVertical) {
-                    // 上下布局时调整高度
+                    
                     leftView.style.height = `${ratio.top}%`;
                     rightView.style.height = `${ratio.bottom}%`;
                   } else {
-                    // 左右布局时调整宽度
+                    
                     leftView.style.width = `${ratio.left}%`;
                     rightView.style.width = `${ratio.right}%`;
                   }
@@ -582,18 +588,18 @@ export async function createSplitView() {
 
               menu.appendChild(ratioSection);
 
-              // 保存创建的菜单和选项，以便稍后更新它们
+              
               menu.ratioOptions = ratioSection.children;
               settingsButton.parentElement.appendChild(menu);
 
-              // 切换菜单显示/隐藏
+              
               settingsButton.addEventListener("click", () => {
                 const allMenus = document.querySelectorAll(".tabboost-ratio-menu");
                 allMenus.forEach(m => {
                   if (m !== menu) m.style.display = "none";
                 });
                 
-                // 更新所有比例示意图
+                
                 if (menu.style.display === "none") {
                   const currentDirection = getCurrentDirection();
                   Array.from(menu.ratioOptions).forEach(option => {
@@ -607,7 +613,7 @@ export async function createSplitView() {
                 menu.style.display = menu.style.display === "none" ? "block" : "none";
               });
 
-              // 点击其他地方关闭菜单
+              
               document.addEventListener("click", (e) => {
                 if (!settingsButton.contains(e.target) && !menu.contains(e.target)) {
                   menu.style.display = "none";
@@ -617,11 +623,11 @@ export async function createSplitView() {
               return menu;
             };
 
-            // 为左右设置按钮创建菜单
+            
             createRatioMenu(leftSettingsButton, "left");
             createRatioMenu(rightSettingsButton, "right");
 
-            // 更新所有比例示意图
+            
             function updateRatioIcons() {
               const viewsContainer = document.getElementById("tabboost-views-container");
               if (!viewsContainer) return;
@@ -640,18 +646,18 @@ export async function createSplitView() {
               });
             }
 
-            // 添加布局变化的监听器
+            
             document.addEventListener("click", function(event) {
               if (event.target.closest("[data-layout]")) {
                 const layoutType = event.target.closest("[data-layout]").getAttribute("data-layout");
                 if (layoutType) {
-                  // 延迟执行以确保布局已经切换
+                  
                   setTimeout(() => updateRatioIcons(), 100);
                 }
               }
             });
 
-            // 应用保存的比例 - 由于不需要保存，我们将其修改为应用默认比例
+            
             const applyDefaultRatio = () => {
               try {
                 const leftView = document.getElementById("tabboost-split-left");
@@ -659,17 +665,17 @@ export async function createSplitView() {
                 const viewsContainer = document.getElementById("tabboost-views-container");
                 
                 if (leftView && rightView && viewsContainer) {
-                  // 设置默认为均分布局
+                  
                   const isVertical = viewsContainer.getAttribute("data-split-direction") === "vertical";
                   
                   if (isVertical) {
-                    // 上下均分
+                    
                     leftView.style.height = "50%";
                     leftView.style.width = "100%";
                     rightView.style.height = "50%";
                     rightView.style.width = "100%";
                   } else {
-                    // 左右均分
+                    
                     leftView.style.width = "50%";
                     leftView.style.height = "100%";
                     rightView.style.width = "50%";
@@ -681,10 +687,10 @@ export async function createSplitView() {
               }
             };
 
-            // 在页面加载完成后应用默认比例
+            
             applyDefaultRatio();
             
-            // 添加鼠标悬停显示/隐藏逻辑
+            
             leftView.addEventListener("mouseenter", () => {
               const closeButton = leftView.querySelector(".tabboost-view-close");
               const settingsButton = leftView.querySelector(".tabboost-view-settings");
@@ -713,7 +719,7 @@ export async function createSplitView() {
               if (settingsButton) settingsButton.style.opacity = "0";
             });
             
-            // 初始化视图容器时，添加默认布局方向标记
+            
             viewsContainer.setAttribute("data-split-direction", "horizontal");
             
             return true;
@@ -726,21 +732,22 @@ export async function createSplitView() {
       });
       
       if (results && results[0] && results[0].result) {
-        isSplitViewActive = true;
+        return true;
       } else {
         console.error("TabBoost: Failed to create split view");
+        return false;
       }
     } catch (e) {
       console.error("TabBoost: Failed to execute split view script:", e);
       console.log("TabBoost: Will retry with minimal approach");
 
-      // 使用极简方法创建
+      
       try {
         await chrome.scripting.executeScript({
           target: { tabId: currentTab.id },
           func: (url) => {
             try {
-              // 创建基本结构（如果不存在）
+              
               if (!document.getElementById("tabboost-split-view-container")) {
                 const container = document.createElement("div");
                 container.id = "tabboost-split-view-container";
@@ -754,21 +761,21 @@ export async function createSplitView() {
                 container.style.display = "flex";
                 container.style.overflow = "hidden";
                 
-                // 创建视图容器 - 直接占据100%高度，不需要顶部控制栏
+                
                 const viewsContainer = document.createElement("div");
                 viewsContainer.id = "tabboost-views-container";
                 viewsContainer.style.display = "flex";
                 viewsContainer.style.width = "100%";
                 viewsContainer.style.height = "100%";
                 
-                // 创建左右视图
+                
                 const leftView = document.createElement("div");
                 leftView.id = "tabboost-split-left";
                 leftView.style.width = "50%";
                 leftView.style.height = "100%";
                 leftView.style.position = "relative";
                 
-                // 左侧关闭按钮
+                
                 const leftCloseButton = document.createElement("button");
                 leftCloseButton.className = "tabboost-view-close";
                 leftCloseButton.dataset.action = "close-split-view";
@@ -787,7 +794,7 @@ export async function createSplitView() {
                 leftCloseButton.style.cursor = "pointer";
                 
                 leftCloseButton.addEventListener("click", () => {
-                  // 关闭分屏，但保留右侧页面
+                  
                   const rightIframe = document.getElementById("tabboost-right-iframe");
                   if (rightIframe && rightIframe.src && rightIframe.src !== "about:blank") {
                     const rightUrl = rightIframe.src;
@@ -806,7 +813,7 @@ export async function createSplitView() {
                 
                 leftView.appendChild(leftCloseButton);
                 
-                // 左侧iframe（当前页面）
+                
                 const leftIframe = document.createElement("iframe");
                 leftIframe.id = "tabboost-left-iframe";
                 leftIframe.style.width = "100%";
@@ -822,7 +829,7 @@ export async function createSplitView() {
                 rightView.style.height = "100%";
                 rightView.style.position = "relative";
                 
-                // 右侧关闭按钮
+                
                 const rightCloseButton = document.createElement("button");
                 rightCloseButton.className = "tabboost-view-close";
                 rightCloseButton.dataset.action = "close-split-view";
@@ -841,13 +848,13 @@ export async function createSplitView() {
                 rightCloseButton.style.cursor = "pointer";
                 
                 rightCloseButton.addEventListener("click", () => {
-                  // 关闭分屏，保留左侧页面
+                  
                   chrome.runtime.sendMessage({ action: "closeSplitView" });
                 });
                 
                 rightView.appendChild(rightCloseButton);
                 
-                // 右侧iframe（目标链接）
+                
                 const rightIframe = document.createElement("iframe");
                 rightIframe.id = "tabboost-right-iframe";
                 rightIframe.style.width = "100%";
@@ -857,13 +864,13 @@ export async function createSplitView() {
                 
                 rightView.appendChild(rightIframe);
                 
-                // 组装DOM
+                
                 viewsContainer.appendChild(leftView);
                 viewsContainer.appendChild(rightView);
                 
                 container.appendChild(viewsContainer);
                 
-                // 添加到页面
+                
                 document.body.appendChild(container);
                 
                 return true;
@@ -876,41 +883,58 @@ export async function createSplitView() {
           args: [leftUrl]
         });
         
-        isSplitViewActive = true;
+        return true;
       } catch (retryError) {
         console.error("TabBoost: Failed to create minimal split view:", retryError);
+        return false;
       }
     }
   } catch (error) {
     console.error("TabBoost: Failed to create split view:", error);
+    return false;
   }
 }
 
+/**
+ * 关闭分屏视图
+ * @returns {Promise<boolean>} - 是否成功关闭
+ */
 export async function closeSplitView() {
-  if (!isSplitViewActive) return;
+  if (!splitViewState.getState().isActive) return true;
 
   try {
     const currentTab = await getCurrentTab();
     if (!currentTab) {
       console.error("Failed to get current tab");
-      return;
+      return false;
     }
 
     try {
-      chrome.scripting.executeScript({
+      const result = await chrome.scripting.executeScript({
         target: { tabId: currentTab.id },
         function: removeSplitViewDOM,
       });
 
-      isSplitViewActive = false;
+      const success = result && result[0] && result[0].result;
+      if (success) {
+        splitViewState.deactivate();
+      } else {
+        
+        await chrome.tabs.reload(currentTab.id);
+        splitViewState.deactivate();
+      }
+      
+      return true;
     } catch (e) {
       console.error("Failed to execute restore page script:", e);
 
       try {
-        chrome.tabs.reload(currentTab.id);
-        isSplitViewActive = false;
+        await chrome.tabs.reload(currentTab.id);
+        splitViewState.deactivate();
+        return true;
       } catch (reloadError) {
         console.error("Failed to reload page:", reloadError);
+        return false;
       }
     }
   } catch (error) {
@@ -918,29 +942,43 @@ export async function closeSplitView() {
   }
 }
 
+/**
+ * 切换分屏视图状态
+ * @returns {Promise<boolean>} - 操作是否成功
+ */
 export async function toggleSplitView() {
-  if (isSplitViewActive) {
-    await closeSplitView();
+  if (splitViewState.getState().isActive) {
+    return await closeSplitView();
   } else {
-    await createSplitView();
+    return await createSplitView();
   }
 }
 
+/**
+ * 更新右侧视图
+ * @param {string} url - 右侧视图URL
+ * @returns {Promise<boolean>} - 是否成功更新
+ */
 export async function updateRightView(url) {
-  if (!isSplitViewActive) {
-    await createSplitView();
+  
+  if (!splitViewState.getState().isActive) {
+    const success = await createSplitView();
+    if (!success) {
+      return false;
+    }
   }
 
-  rightUrl = url;
+  
+  splitViewState.setRightUrl(url);
   
   try {
     const currentTab = await getCurrentTab();
     if (!currentTab) {
       console.error("Failed to get current tab for updateRightView");
-      return;
+      return false;
     }
 
-    // 检查分屏视图是否存在，如果不存在则重新创建
+    
     const checkResult = await chrome.scripting.executeScript({
       target: { tabId: currentTab.id },
       func: () => {
@@ -959,22 +997,22 @@ export async function updateRightView(url) {
       await createSplitView();
     }
 
-    // 使用直接的内联函数而不是字符串执行
+    
     const results = await chrome.scripting.executeScript({
       target: { tabId: currentTab.id },
       func: (url) => {
         try {
-          // 获取右侧视图
+          
           const rightView = document.getElementById("tabboost-split-right");
           if (!rightView) {
             console.error("Right view not found");
             return false;
           }
           
-          // 获取或创建右侧iframe
+          
           let rightIframe = document.getElementById("tabboost-right-iframe");
           
-          // 如果iframe不存在，创建一个新的
+          
           if (!rightIframe) {
             rightIframe = document.createElement("iframe");
             rightIframe.id = "tabboost-right-iframe";
@@ -988,30 +1026,30 @@ export async function updateRightView(url) {
             rightView.appendChild(rightIframe);
           }
           
-          // 确保右侧视图可见
+          
           rightView.style.display = "block";
           
-          // 检查当前布局方向
+          
           const viewsContainer = document.getElementById("tabboost-views-container");
           const isVertical = viewsContainer && viewsContainer.getAttribute("data-split-direction") === "vertical";
 
           if (isVertical) {
-            // 上下布局
+            
             rightView.style.width = "100%";
             rightView.style.height = "50%";
             
-            // 确保左侧视图高度正确
+            
             const leftView = document.getElementById("tabboost-split-left");
             if (leftView) {
               leftView.style.height = "50%";
               leftView.style.width = "100%";
             }
           } else {
-            // 左右布局（默认）
+            
             rightView.style.width = "50%";
             rightView.style.height = "100%";
             
-            // 确保左侧视图宽度正确
+            
             const leftView = document.getElementById("tabboost-split-left");
             if (leftView) {
               leftView.style.width = "50%";
@@ -1019,7 +1057,7 @@ export async function updateRightView(url) {
             }
           }
           
-          // 设置iframe的src
+          
           rightIframe.src = url;
           
           return true;
@@ -1031,188 +1069,35 @@ export async function updateRightView(url) {
       args: [url]
     });
     
-    return { status: 'Split view created and updated' };
+    return true;
   } catch (error) {
     console.error("Failed to update right view:", error);
     
-    // 如果失败，尝试简化方法
+    
     try {
-      const currentTab = await getCurrentTab();
-      if (currentTab) {
-        await chrome.scripting.executeScript({
-          target: { tabId: currentTab.id },
-          func: (url) => {
-            try {
-              // 检查是否存在分屏容器
-              if (document.getElementById("tabboost-split-view-container")) {
-                // 如果容器存在，只更新右侧iframe
-                let rightIframe = document.getElementById("tabboost-right-iframe");
-                if (!rightIframe) {
-                  const rightView = document.getElementById("tabboost-split-right");
-                  if (rightView) {
-                    rightIframe = document.createElement("iframe");
-                    rightIframe.id = "tabboost-right-iframe";
-                    rightIframe.style.width = "100%";
-                    rightIframe.style.height = "100%";
-                    rightIframe.style.border = "none";
-                    rightView.appendChild(rightIframe);
-                  }
-                }
-                
-                if (rightIframe) {
-                  rightIframe.src = url;
-                }
-                return true;
-              } else {
-                // 如果容器不存在，创建完整的分屏视图
-                const container = document.createElement("div");
-                container.id = "tabboost-split-view-container";
-                container.style.position = "fixed";
-                container.style.top = "0";
-                container.style.left = "0";
-                container.style.width = "100%";
-                container.style.height = "100%";
-                container.style.zIndex = "10000";
-                container.style.backgroundColor = "#fff";
-                container.style.display = "flex";
-                container.style.overflow = "hidden";
-                
-                // 创建视图容器
-                const viewsContainer = document.createElement("div");
-                viewsContainer.id = "tabboost-views-container";
-                viewsContainer.style.display = "flex";
-                viewsContainer.style.width = "100%";
-                viewsContainer.style.height = "100%";
-                
-                // 创建左右视图
-                const leftView = document.createElement("div");
-                leftView.id = "tabboost-split-left";
-                leftView.style.width = "50%";
-                leftView.style.height = "100%";
-                leftView.style.position = "relative";
-                
-                // 左侧关闭按钮
-                const leftCloseButton = document.createElement("button");
-                leftCloseButton.className = "tabboost-view-close";
-                leftCloseButton.dataset.action = "close-split-view";
-                leftCloseButton.style.position = "absolute";
-                leftCloseButton.style.top = "8px";
-                leftCloseButton.style.right = "8px";
-                leftCloseButton.style.zIndex = "10";
-                leftCloseButton.style.width = "24px";
-                leftCloseButton.style.height = "24px";
-                leftCloseButton.innerText = "×";
-                leftCloseButton.title = "关闭分屏视图";
-                leftCloseButton.style.backgroundColor = "rgba(0,0,0,0.5)";
-                leftCloseButton.style.color = "#fff";
-                leftCloseButton.style.border = "none";
-                leftCloseButton.style.borderRadius = "50%";
-                leftCloseButton.style.cursor = "pointer";
-                
-                leftCloseButton.addEventListener("click", () => {
-                  // 关闭分屏，但保留右侧页面
-                  const rightIframe = document.getElementById("tabboost-right-iframe");
-                  if (rightIframe && rightIframe.src && rightIframe.src !== "about:blank") {
-                    const rightUrl = rightIframe.src;
-                    chrome.runtime.sendMessage({ action: "closeSplitView" });
-                    setTimeout(() => {
-                      try {
-                        window.location.href = rightUrl;
-                      } catch (e) {
-                        console.error("TabBoost: Error setting location to right URL:", e);
-                      }
-                    }, 100);
-                  } else {
-                    chrome.runtime.sendMessage({ action: "closeSplitView" });
-                  }
-                });
-                
-                leftView.appendChild(leftCloseButton);
-                
-                // 左侧iframe（当前页面）
-                const leftIframe = document.createElement("iframe");
-                leftIframe.id = "tabboost-left-iframe";
-                leftIframe.style.width = "100%";
-                leftIframe.style.height = "100%";
-                leftIframe.style.border = "none";
-                leftIframe.src = window.location.href;
-                
-                leftView.appendChild(leftIframe);
-                
-                const rightView = document.createElement("div");
-                rightView.id = "tabboost-split-right";
-                rightView.style.width = "50%";
-                rightView.style.height = "100%";
-                rightView.style.position = "relative";
-                
-                // 右侧关闭按钮
-                const rightCloseButton = document.createElement("button");
-                rightCloseButton.className = "tabboost-view-close";
-                rightCloseButton.dataset.action = "close-split-view";
-                rightCloseButton.style.position = "absolute";
-                rightCloseButton.style.top = "8px";
-                rightCloseButton.style.right = "8px";
-                rightCloseButton.style.zIndex = "10";
-                rightCloseButton.style.width = "24px";
-                rightCloseButton.style.height = "24px";
-                rightCloseButton.innerText = "×";
-                rightCloseButton.title = "关闭分屏视图";
-                rightCloseButton.style.backgroundColor = "rgba(0,0,0,0.5)";
-                rightCloseButton.style.color = "#fff";
-                rightCloseButton.style.border = "none";
-                rightCloseButton.style.borderRadius = "50%";
-                rightCloseButton.style.cursor = "pointer";
-                
-                rightCloseButton.addEventListener("click", () => {
-                  // 关闭分屏，保留左侧页面
-                  chrome.runtime.sendMessage({ action: "closeSplitView" });
-                });
-                
-                rightView.appendChild(rightCloseButton);
-                
-                // 右侧iframe（目标链接）
-                const rightIframe = document.createElement("iframe");
-                rightIframe.id = "tabboost-right-iframe";
-                rightIframe.style.width = "100%";
-                rightIframe.style.height = "100%";
-                rightIframe.style.border = "none";
-                rightIframe.src = url;
-                
-                rightView.appendChild(rightIframe);
-                
-                // 组装DOM
-                viewsContainer.appendChild(leftView);
-                viewsContainer.appendChild(rightView);
-                
-                container.appendChild(viewsContainer);
-                
-                // 添加到页面
-                document.body.appendChild(container);
-                return true;
-              }
-            } catch (e) {
-              console.error("TabBoost: Error in simplified update:", e);
-              return false;
-            }
-          },
-          args: [url]
-        });
-      }
+      await chrome.tabs.create({ url });
+      return true;
     } catch (e) {
-      console.error("TabBoost: Failed to update with simplified method:", e);
+      console.error("Failed to open URL in new tab:", e);
+      return false;
     }
   }
 }
 
+/**
+ * 获取分屏视图状态
+ * @returns {Object} 分屏视图状态
+ */
 export function getSplitViewState() {
-  return {
-    isActive: isSplitViewActive,
-    leftUrl: leftUrl,
-    rightUrl: rightUrl,
-  };
+  return splitViewState.getState();
 }
 
-export function initSplitViewModule() {}
+/**
+ * 模块初始化
+ */
+export function initSplitViewModule() {
+  splitViewState.init();
+}
 
 export default {
   createSplitView,

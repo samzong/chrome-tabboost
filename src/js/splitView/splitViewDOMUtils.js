@@ -10,22 +10,22 @@ import { safeQuerySelector } from './splitViewUtils';
 export function createElement(tag, config = {}) {
   const element = document.createElement(tag);
   
-  // 设置ID
+  
   if (config.id) {
     element.id = config.id;
   }
   
-  // 设置类名
+  
   if (config.className) {
     element.className = config.className;
   }
   
-  // 应用样式
+  
   if (config.styles) {
     Object.assign(element.style, config.styles);
   }
   
-  // 设置属性
+  
   if (config.attributes) {
     Object.entries(config.attributes).forEach(([key, value]) => {
       element.setAttribute(key, value);

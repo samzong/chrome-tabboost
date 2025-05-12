@@ -11,7 +11,7 @@ export function setupSplitViewEvents() {
 }
 
 function setupDividerDrag() {
-  // 功能已移除
+  
 }
 
 function startDrag(e) {
@@ -87,10 +87,8 @@ function updateSplitPosition(clientX, clientY) {
     leftView.style.width = "var(--left-width)";
     rightView.style.width = "var(--right-width)";
     
-    // 更新分隔线位置 - 只需要移动位置，transform会自动居中
     if (divider) {
       divider.style.left = `${newLeftWidth}%`;
-      // 确保transform属性存在
       if (!divider.style.transform || !divider.style.transform.includes('translateX')) {
         divider.style.transform = 'translateX(-50%)';
       }
@@ -110,10 +108,8 @@ function updateSplitPosition(clientX, clientY) {
     leftView.style.height = "var(--top-height)";
     rightView.style.height = "var(--bottom-height)";
     
-    // 更新分隔线位置 - 只需要移动位置，transform会自动居中
     if (divider) {
       divider.style.top = `${newTopHeight}%`;
-      // 确保transform属性存在
       if (!divider.style.transform || !divider.style.transform.includes('translateY')) {
         divider.style.transform = 'translateY(-50%)';
       }

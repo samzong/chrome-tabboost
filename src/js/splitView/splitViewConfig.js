@@ -1,4 +1,3 @@
-// UI组件基础配置
 export const UI_CONFIG = {
   container: {
     id: 'tabboost-split-view-container',
@@ -78,10 +77,97 @@ export const UI_CONFIG = {
       borderRadius: '50%',
       cursor: 'pointer'
     }
+  },
+  settingsButton: {
+    className: 'tabboost-view-settings',
+    styles: {
+      position: 'absolute',
+      top: '8px',
+      right: '40px',
+      zIndex: '10',
+      width: '24px',
+      height: '24px',
+      backgroundColor: 'rgba(0,0,0,0.5)',
+      border: 'none',
+      borderRadius: '50%',
+      cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '0',
+      opacity: '0',
+      transition: 'opacity 0.2s'
+    }
+  },
+  ratioMenu: {
+    className: 'tabboost-ratio-menu',
+    styles: {
+      position: 'absolute',
+      top: '35px',
+      right: '40px',
+      backgroundColor: '#ffffff',
+      border: '1px solid rgba(0,0,0,0.1)',
+      borderRadius: '6px',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+      zIndex: '100',
+      display: 'none',
+      padding: '6px 0',
+      minWidth: '160px'
+    },
+    menuItem: {
+      styles: {
+        padding: '8px 12px',
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
+        borderRadius: '4px',
+        transition: 'background-color 0.2s'
+      }
+    },
+    iconContainer: {
+      styles: {
+        width: '20px',
+        height: '20px',
+        position: 'relative',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#f5f5f5',
+        borderRadius: '3px'
+      }
+    },
+    label: {
+      styles: {
+        fontSize: '13px',
+        color: '#333333'
+      }
+    }
   }
 };
 
-// 响应式配置
+export const LAYOUT_CONFIG = {
+  horizontal: {
+    flexDirection: 'row',
+    leftWidth: '50%',
+    leftHeight: '100%',
+    rightWidth: '50%',
+    rightHeight: '100%'
+  },
+  vertical: {
+    flexDirection: 'column',
+    leftWidth: '100%',
+    leftHeight: '50%',
+    rightWidth: '100%',
+    rightHeight: '50%'
+  },
+  ratioPresets: [
+    { left: 50, right: 50, top: 50, bottom: 50, label: "均分视图" },
+    { left: 70, right: 30, top: 70, bottom: 30, label: "左侧/上方更大" },
+    { left: 30, right: 70, top: 30, bottom: 70, label: "右侧/下方更大" }
+  ]
+};
+
 export const RESPONSIVE_CONFIG = {
   breakpoint: 768,
   styles: {
@@ -108,16 +194,27 @@ export const RESPONSIVE_CONFIG = {
   }
 };
 
-// 动画配置
 export const ANIMATION_CONFIG = {
   duration: 300,
   initialClass: 'tabboost-initially-hidden',
   visibleClass: 'tabboost-visible'
 };
 
-// 拖拽配置
 export const DRAG_CONFIG = {
   minWidth: 20,
   maxWidth: 80,
-  debounceTime: 16 // ~60fps
-}; 
+  debounceTime: 16 
+};
+
+export const SVG_CONFIG = {
+  horizontal: '<svg viewBox="0 0 20 20" width="20" height="20"><rect x="1" y="3" width="8" height="14" fill="#e0e0e0" rx="2"/><rect x="11" y="3" width="8" height="14" fill="#e0e0e0" rx="2"/></svg>',
+  vertical: '<svg viewBox="0 0 20 20" width="20" height="20"><rect x="1" y="1" width="18" height="8" fill="#e0e0e0" rx="2"/><rect x="1" y="11" width="18" height="8" fill="#e0e0e0" rx="2"/></svg>',
+  horizontalRatio: (leftWidth, rightWidth) => `<svg viewBox="0 0 20 20" width="20" height="20">
+    <rect x="1" y="3" width="${leftWidth/100 * 17}" height="14" fill="#e0e0e0" rx="2"/>
+    <rect x="${2 + leftWidth/100 * 17}" y="3" width="${rightWidth/100 * 17}" height="14" fill="#e0e0e0" rx="2"/>
+  </svg>`,
+  verticalRatio: (topHeight, bottomHeight) => `<svg viewBox="0 0 20 20" width="20" height="20">
+    <rect x="1" y="1" width="18" height="${topHeight/100 * 17}" fill="#e0e0e0" rx="2"/>
+    <rect x="1" y="${2 + topHeight/100 * 17}" width="18" height="${bottomHeight/100 * 17}" fill="#e0e0e0" rx="2"/>
+  </svg>`
+} 
