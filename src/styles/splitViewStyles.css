@@ -35,14 +35,19 @@
 /* 分屏内容容器 - 新增以优化结构 */
 #tabboost-views-container {
   display: flex;
+  flex-direction: row; /* 默认左右布局 */
   width: 100%;
   height: 100%; /* 移除顶部控制栏，视图容器占据全屏 */
   position: relative;
   /* 使用will-change提示浏览器做好准备处理变化 */
   will-change: contents;
-  /* 为整体容器增加内边距 */
-  padding: 12px;
+  /* 调整内边距，为分隔线留出足够空间 */
+  padding: 16px;
   box-sizing: border-box;
+  /* 添加布局转换动画 */
+  transition: flex-direction 0.3s ease;
+  /* 确保z-index正确，使伪元素能显示 */
+  z-index: 1;
 }
 
 @keyframes split-view-appear {
@@ -62,14 +67,16 @@
   height: 100%; /* 视图占据完整高度 */
   overflow: hidden;
   position: relative;
-  /* 移除边框，改用空白间距 */
-  margin-right: 6px;
+  /* 调整边距，使分隔线视觉效果更好 */
+  margin-right: 10px;
   border-radius: 8px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   /* 使用硬件加速，减少重绘 */
   transform: translateZ(0);
-  will-change: width;
+  will-change: width, height;
+  background-color: #fff;
+  z-index: 2;
 }
 
 /* 右侧视图样式 */
@@ -78,13 +85,16 @@
   height: 100%; /* 现在容器已经计算好高度 */
   overflow: hidden;
   position: relative;
-  margin-left: 6px;
+  /* 调整边距，使分隔线视觉效果更好 */
+  margin-left: 10px;
   border-radius: 8px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   /* 使用硬件加速，减少重绘 */
   transform: translateZ(0);
-  will-change: width;
+  will-change: width, height;
+  background-color: #fff;
+  z-index: 2;
 }
 
 /* 添加中间短线 */
@@ -478,4 +488,130 @@
 .tabboost-view-close:hover {
   background-color: rgba(239, 68, 68, 0.2);
   transform: scale(1.1);
+}
+
+/* 上下布局的样式调整 */
+#tabboost-views-container[data-split-direction="vertical"] #tabboost-split-left {
+  width: 100%;
+  height: 50%;
+  margin-right: 0;
+  margin-bottom: 10px;
+}
+
+#tabboost-views-container[data-split-direction="vertical"] #tabboost-split-right {
+  width: 100%;
+  height: 50%;
+  margin-left: 0;
+  margin-top: 10px;
+}
+
+/* 分隔空间美化 */
+#tabboost-views-container {
+  position: relative;
+}
+
+/* 左右分隔线装饰效果 */
+#tabboost-views-container[data-split-direction="horizontal"]::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 14px;
+  height: 44px;
+  background-color: #f0f0f0;
+  border-radius: 7px;
+  z-index: 8;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+#tabboost-views-container[data-split-direction="horizontal"]::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 2px;
+  height: 32px;
+  background-color: #a0a0a0;
+  border-radius: 1px;
+  z-index: 9;
+}
+
+/* 上下分隔线装饰效果 */
+#tabboost-views-container[data-split-direction="vertical"]::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 44px;
+  height: 14px;
+  background-color: #f0f0f0;
+  border-radius: 7px;
+  z-index: 8;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+#tabboost-views-container[data-split-direction="vertical"]::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 32px;
+  height: 2px;
+  background-color: #a0a0a0;
+  border-radius: 1px;
+  z-index: 9;
+}
+
+/* 悬停效果增强 */
+#tabboost-views-container:hover[data-split-direction="horizontal"]::after {
+  background-color: #e8e8e8;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+#tabboost-views-container:hover[data-split-direction="horizontal"]::before {
+  background-color: #808080;
+}
+
+#tabboost-views-container:hover[data-split-direction="vertical"]::after {
+  background-color: #e8e8e8;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+#tabboost-views-container:hover[data-split-direction="vertical"]::before {
+  background-color: #808080;
+}
+
+/* 深色模式下的分隔线样式 */
+@media (prefers-color-scheme: dark) {
+  #tabboost-split-left,
+  #tabboost-split-right {
+    background-color: #1f2937;
+  }
+  
+  #tabboost-views-container[data-split-direction="horizontal"]::after,
+  #tabboost-views-container[data-split-direction="vertical"]::after {
+    background-color: #374151;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  }
+  
+  #tabboost-views-container[data-split-direction="horizontal"]::before,
+  #tabboost-views-container[data-split-direction="vertical"]::before {
+    background-color: #6b7280;
+  }
+  
+  /* 深色模式下的悬停效果 */
+  #tabboost-views-container:hover[data-split-direction="horizontal"]::after,
+  #tabboost-views-container:hover[data-split-direction="vertical"]::after {
+    background-color: #4b5563;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+  }
+  
+  #tabboost-views-container:hover[data-split-direction="horizontal"]::before,
+  #tabboost-views-container:hover[data-split-direction="vertical"]::before {
+    background-color: #9ca3af;
+  }
 }

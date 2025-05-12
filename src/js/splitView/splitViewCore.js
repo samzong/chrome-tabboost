@@ -111,6 +111,9 @@ export async function createSplitView() {
             viewsContainer.style.width = "100%";
             viewsContainer.style.height = "100%";
             viewsContainer.style.position = "relative";
+            // 初始设置为水平布局
+            viewsContainer.style.flexDirection = "row";
+            viewsContainer.setAttribute("data-split-direction", "horizontal");
             
             // 创建左侧视图
             const leftView = document.createElement("div");
@@ -330,15 +333,150 @@ export async function createSplitView() {
               menu.style.boxShadow = "0 2px 8px rgba(0,0,0,0.1)";
               menu.style.zIndex = "100";
               menu.style.display = "none";
-              menu.style.padding = "4px";
-              menu.style.minWidth = "120px";
+              menu.style.padding = "6px 0";
+              menu.style.minWidth = "160px";
+
+              // 检查当前布局方向
+              const getCurrentDirection = () => {
+                const viewsContainer = document.getElementById("tabboost-views-container");
+                return viewsContainer && viewsContainer.getAttribute("data-split-direction") === "vertical" 
+                  ? "vertical" : "horizontal";
+              };
+
+              // 添加布局切换选项
+              const layoutSection = document.createElement("div");
+              layoutSection.style.borderBottom = "1px solid #f0f0f0";
+              layoutSection.style.paddingBottom = "6px";
+              layoutSection.style.marginBottom = "6px";
+
+              // 左右布局选项
+              const horizontalOption = document.createElement("div");
+              horizontalOption.style.padding = "8px 12px";
+              horizontalOption.style.cursor = "pointer";
+              horizontalOption.style.display = "flex";
+              horizontalOption.style.alignItems = "center";
+              horizontalOption.style.gap = "12px";
+              horizontalOption.style.borderRadius = "4px";
+              horizontalOption.style.transition = "background-color 0.2s";
+              horizontalOption.setAttribute("data-layout", "horizontal");
+
+              const horizontalIcon = document.createElement("div");
+              horizontalIcon.style.width = "20px";
+              horizontalIcon.style.height = "20px";
+              horizontalIcon.style.position = "relative";
+              horizontalIcon.style.display = "flex";
+              horizontalIcon.style.alignItems = "center";
+              horizontalIcon.style.justifyContent = "center";
+              horizontalIcon.style.backgroundColor = "#f5f5f5";
+              horizontalIcon.style.borderRadius = "3px";
+              horizontalIcon.innerHTML = '<svg viewBox="0 0 20 20" width="20" height="20"><rect x="1" y="3" width="8" height="14" fill="#e0e0e0" rx="2"/><rect x="11" y="3" width="8" height="14" fill="#e0e0e0" rx="2"/></svg>';
+
+              const horizontalLabel = document.createElement("span");
+              horizontalLabel.innerText = "左右分屏";
+              horizontalLabel.style.fontSize = "13px";
+              horizontalLabel.style.color = "#333333";
+
+              horizontalOption.appendChild(horizontalIcon);
+              horizontalOption.appendChild(horizontalLabel);
+
+              // 上下布局选项
+              const verticalOption = document.createElement("div");
+              verticalOption.style.padding = "8px 12px";
+              verticalOption.style.cursor = "pointer";
+              verticalOption.style.display = "flex";
+              verticalOption.style.alignItems = "center";
+              verticalOption.style.gap = "12px";
+              verticalOption.style.borderRadius = "4px";
+              verticalOption.style.transition = "background-color 0.2s";
+              verticalOption.setAttribute("data-layout", "vertical");
+
+              const verticalIcon = document.createElement("div");
+              verticalIcon.style.width = "20px";
+              verticalIcon.style.height = "20px";
+              verticalIcon.style.position = "relative";
+              verticalIcon.style.display = "flex";
+              verticalIcon.style.alignItems = "center";
+              verticalIcon.style.justifyContent = "center";
+              verticalIcon.style.backgroundColor = "#f5f5f5";
+              verticalIcon.style.borderRadius = "3px";
+              verticalIcon.innerHTML = '<svg viewBox="0 0 20 20" width="20" height="20"><rect x="1" y="1" width="18" height="8" fill="#e0e0e0" rx="2"/><rect x="1" y="11" width="18" height="8" fill="#e0e0e0" rx="2"/></svg>';
+
+              const verticalLabel = document.createElement("span");
+              verticalLabel.innerText = "上下分屏";
+              verticalLabel.style.fontSize = "13px";
+              verticalLabel.style.color = "#333333";
+
+              verticalOption.appendChild(verticalIcon);
+              verticalOption.appendChild(verticalLabel);
+
+              // 添加悬停效果
+              horizontalOption.addEventListener("mouseover", () => {
+                horizontalOption.style.backgroundColor = "#f5f5f5";
+              });
+              horizontalOption.addEventListener("mouseout", () => {
+                horizontalOption.style.backgroundColor = "transparent";
+              });
+
+              verticalOption.addEventListener("mouseover", () => {
+                verticalOption.style.backgroundColor = "#f5f5f5";
+              });
+              verticalOption.addEventListener("mouseout", () => {
+                verticalOption.style.backgroundColor = "transparent";
+              });
+
+              // 为布局选项添加点击事件
+              const setLayout = (direction) => {
+                const leftView = document.getElementById("tabboost-split-left");
+                const rightView = document.getElementById("tabboost-split-right");
+                const viewsContainer = document.getElementById("tabboost-views-container");
+                
+                if (!leftView || !rightView || !viewsContainer) return;
+                
+                if (direction === "vertical") {
+                  // 切换为上下布局
+                  viewsContainer.style.flexDirection = "column";
+                  leftView.style.width = "100%";
+                  leftView.style.height = "50%";
+                  rightView.style.width = "100%";
+                  rightView.style.height = "50%";
+                  viewsContainer.setAttribute("data-split-direction", "vertical");
+                } else {
+                  // 切换为左右布局
+                  viewsContainer.style.flexDirection = "row";
+                  leftView.style.width = "50%";
+                  leftView.style.height = "100%";
+                  rightView.style.width = "50%";
+                  rightView.style.height = "100%";
+                  viewsContainer.setAttribute("data-split-direction", "horizontal");
+                }
+                
+                // 更新菜单中所有比例示意图
+                setTimeout(() => updateRatioIcons(), 50);
+              };
+
+              horizontalOption.addEventListener("click", () => {
+                setLayout("horizontal");
+                menu.style.display = "none";
+              });
+
+              verticalOption.addEventListener("click", () => {
+                setLayout("vertical");
+                menu.style.display = "none";
+              });
+
+              layoutSection.appendChild(horizontalOption);
+              layoutSection.appendChild(verticalOption);
+              menu.appendChild(layoutSection);
 
               // 比例选项数据
               const ratios = [
-                { left: 50, right: 50, label: "均分视图" },
-                { left: 70, right: 30, label: "左侧更大" },
-                { left: 30, right: 70, label: "右侧更大" }
+                { left: 50, right: 50, top: 50, bottom: 50, label: "均分视图" },
+                { left: 70, right: 30, top: 70, bottom: 30, label: "左侧/上方更大" },
+                { left: 30, right: 70, top: 30, bottom: 70, label: "右侧/下方更大" }
               ];
+
+              // 创建比例选项
+              const ratioSection = document.createElement("div");
 
               ratios.forEach(ratio => {
                 const option = document.createElement("div");
@@ -349,27 +487,54 @@ export async function createSplitView() {
                 option.style.gap = "12px";
                 option.style.borderRadius = "4px";
                 option.style.transition = "background-color 0.2s";
+                option.setAttribute("data-ratio", JSON.stringify(ratio));
 
                 // 创建比例示意图
                 const diagram = document.createElement("div");
-                diagram.style.width = "32px";
+                diagram.style.width = "20px";
                 diagram.style.height = "20px";
                 diagram.style.position = "relative";
+                diagram.style.display = "flex";
+                diagram.style.alignItems = "center";
+                diagram.style.justifyContent = "center";
                 diagram.style.backgroundColor = "#f5f5f5";
                 diagram.style.borderRadius = "3px";
                 diagram.style.overflow = "hidden";
 
-                // 创建分隔线
-                const divider = document.createElement("div");
-                divider.style.position = "absolute";
-                divider.style.top = "0";
-                divider.style.left = `${ratio.left}%`;
-                divider.style.width = "1px";
-                divider.style.height = "100%";
-                divider.style.backgroundColor = "#666666";
-                divider.style.transform = "translateX(-50%)";
-
-                diagram.appendChild(divider);
+                // 根据布局方向创建SVG示意图
+                const createSvgForDiagram = (direction) => {
+                  diagram.innerHTML = "";
+                  
+                  let svgContent = "";
+                  
+                  if (direction === "vertical") {
+                    // 上下布局的SVG
+                    const topHeight = ratio.top;
+                    const bottomHeight = ratio.bottom;
+                    
+                    svgContent = `<svg viewBox="0 0 20 20" width="20" height="20">
+                      <rect x="1" y="1" width="18" height="${topHeight/100 * 17}" fill="#e0e0e0" rx="2"/>
+                      <rect x="1" y="${2 + topHeight/100 * 17}" width="18" height="${bottomHeight/100 * 17}" fill="#e0e0e0" rx="2"/>
+                    </svg>`;
+                  } else {
+                    // 左右布局的SVG
+                    const leftWidth = ratio.left;
+                    const rightWidth = ratio.right;
+                    
+                    svgContent = `<svg viewBox="0 0 20 20" width="20" height="20">
+                      <rect x="1" y="3" width="${leftWidth/100 * 17}" height="14" fill="#e0e0e0" rx="2"/>
+                      <rect x="${2 + leftWidth/100 * 17}" y="3" width="${rightWidth/100 * 17}" height="14" fill="#e0e0e0" rx="2"/>
+                    </svg>`;
+                  }
+                  
+                  diagram.innerHTML = svgContent;
+                };
+                
+                // 初始创建SVG示意图
+                createSvgForDiagram(getCurrentDirection());
+                
+                // 保存createSvgForDiagram函数以供以后使用
+                diagram.updateDivider = createSvgForDiagram;
 
                 // 添加文本标签
                 const label = document.createElement("span");
@@ -389,26 +554,36 @@ export async function createSplitView() {
                   option.style.backgroundColor = "transparent";
                 });
 
-                // 点击事件
+                // 点击事件 - 应用分屏比例
                 option.addEventListener("click", () => {
                   const leftView = document.getElementById("tabboost-split-left");
                   const rightView = document.getElementById("tabboost-split-right");
-
-                  leftView.style.width = `${ratio.left}%`;
-                  rightView.style.width = `${ratio.right}%`;
-
-                  try {
-                    localStorage.setItem("tabboostSplitRatio", JSON.stringify(ratio));
-                  } catch (e) {
-                    console.error("Error saving split ratio to localStorage:", e);
+                  const viewsContainer = document.getElementById("tabboost-views-container");
+                  
+                  if (!leftView || !rightView || !viewsContainer) return;
+                  
+                  const isVertical = viewsContainer.getAttribute("data-split-direction") === "vertical";
+                  
+                  if (isVertical) {
+                    // 上下布局时调整高度
+                    leftView.style.height = `${ratio.top}%`;
+                    rightView.style.height = `${ratio.bottom}%`;
+                  } else {
+                    // 左右布局时调整宽度
+                    leftView.style.width = `${ratio.left}%`;
+                    rightView.style.width = `${ratio.right}%`;
                   }
-
+                  
                   menu.style.display = "none";
                 });
 
-                menu.appendChild(option);
+                ratioSection.appendChild(option);
               });
 
+              menu.appendChild(ratioSection);
+
+              // 保存创建的菜单和选项，以便稍后更新它们
+              menu.ratioOptions = ratioSection.children;
               settingsButton.parentElement.appendChild(menu);
 
               // 切换菜单显示/隐藏
@@ -417,6 +592,18 @@ export async function createSplitView() {
                 allMenus.forEach(m => {
                   if (m !== menu) m.style.display = "none";
                 });
+                
+                // 更新所有比例示意图
+                if (menu.style.display === "none") {
+                  const currentDirection = getCurrentDirection();
+                  Array.from(menu.ratioOptions).forEach(option => {
+                    const diagram = option.firstChild;
+                    if (diagram && diagram.updateDivider) {
+                      diagram.updateDivider(currentDirection);
+                    }
+                  });
+                }
+                
                 menu.style.display = menu.style.display === "none" ? "block" : "none";
               });
 
@@ -426,31 +613,76 @@ export async function createSplitView() {
                   menu.style.display = "none";
                 }
               });
+
+              return menu;
             };
 
             // 为左右设置按钮创建菜单
             createRatioMenu(leftSettingsButton, "left");
             createRatioMenu(rightSettingsButton, "right");
 
-            // 应用保存的比例
-            const applySavedRatio = () => {
-              try {
-                const savedRatio = localStorage.getItem("tabboostSplitRatio");
-                if (savedRatio) {
-                  const ratio = JSON.parse(savedRatio);
-                  const leftView = document.getElementById("tabboost-split-left");
-                  const rightView = document.getElementById("tabboost-split-right");
+            // 更新所有比例示意图
+            function updateRatioIcons() {
+              const viewsContainer = document.getElementById("tabboost-views-container");
+              if (!viewsContainer) return;
+              
+              const direction = viewsContainer.getAttribute("data-split-direction") === "vertical" ? "vertical" : "horizontal";
+              
+              document.querySelectorAll(".tabboost-ratio-menu").forEach(menu => {
+                if (!menu.ratioOptions) return;
+                
+                Array.from(menu.ratioOptions).forEach(option => {
+                  const diagram = option.firstChild;
+                  if (diagram && diagram.updateDivider) {
+                    diagram.updateDivider(direction);
+                  }
+                });
+              });
+            }
 
-                  leftView.style.width = `${ratio.left}%`;
-                  rightView.style.width = `${ratio.right}%`;
+            // 添加布局变化的监听器
+            document.addEventListener("click", function(event) {
+              if (event.target.closest("[data-layout]")) {
+                const layoutType = event.target.closest("[data-layout]").getAttribute("data-layout");
+                if (layoutType) {
+                  // 延迟执行以确保布局已经切换
+                  setTimeout(() => updateRatioIcons(), 100);
+                }
+              }
+            });
+
+            // 应用保存的比例 - 由于不需要保存，我们将其修改为应用默认比例
+            const applyDefaultRatio = () => {
+              try {
+                const leftView = document.getElementById("tabboost-split-left");
+                const rightView = document.getElementById("tabboost-split-right");
+                const viewsContainer = document.getElementById("tabboost-views-container");
+                
+                if (leftView && rightView && viewsContainer) {
+                  // 设置默认为均分布局
+                  const isVertical = viewsContainer.getAttribute("data-split-direction") === "vertical";
+                  
+                  if (isVertical) {
+                    // 上下均分
+                    leftView.style.height = "50%";
+                    leftView.style.width = "100%";
+                    rightView.style.height = "50%";
+                    rightView.style.width = "100%";
+                  } else {
+                    // 左右均分
+                    leftView.style.width = "50%";
+                    leftView.style.height = "100%";
+                    rightView.style.width = "50%";
+                    rightView.style.height = "100%";
+                  }
                 }
               } catch (e) {
-                console.error("Error applying saved split ratio:", e);
+                console.error("Error applying default split ratio:", e);
               }
             };
 
-            // 在页面加载完成后应用保存的比例
-            applySavedRatio();
+            // 在页面加载完成后应用默认比例
+            applyDefaultRatio();
             
             // 添加鼠标悬停显示/隐藏逻辑
             leftView.addEventListener("mouseenter", () => {
@@ -480,6 +712,9 @@ export async function createSplitView() {
               if (closeButton) closeButton.style.opacity = "0";
               if (settingsButton) settingsButton.style.opacity = "0";
             });
+            
+            // 初始化视图容器时，添加默认布局方向标记
+            viewsContainer.setAttribute("data-split-direction", "horizontal");
             
             return true;
           } catch (e) {
@@ -755,12 +990,33 @@ export async function updateRightView(url) {
           
           // 确保右侧视图可见
           rightView.style.display = "block";
-          rightView.style.width = "50%";
           
-          // 确保左侧视图宽度正确
-          const leftView = document.getElementById("tabboost-split-left");
-          if (leftView) {
-            leftView.style.width = "50%";
+          // 检查当前布局方向
+          const viewsContainer = document.getElementById("tabboost-views-container");
+          const isVertical = viewsContainer && viewsContainer.getAttribute("data-split-direction") === "vertical";
+
+          if (isVertical) {
+            // 上下布局
+            rightView.style.width = "100%";
+            rightView.style.height = "50%";
+            
+            // 确保左侧视图高度正确
+            const leftView = document.getElementById("tabboost-split-left");
+            if (leftView) {
+              leftView.style.height = "50%";
+              leftView.style.width = "100%";
+            }
+          } else {
+            // 左右布局（默认）
+            rightView.style.width = "50%";
+            rightView.style.height = "100%";
+            
+            // 确保左侧视图宽度正确
+            const leftView = document.getElementById("tabboost-split-left");
+            if (leftView) {
+              leftView.style.width = "50%";
+              leftView.style.height = "100%";
+            }
           }
           
           // 设置iframe的src
