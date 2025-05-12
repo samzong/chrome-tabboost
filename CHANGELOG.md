@@ -1,3 +1,15 @@
+## <small>2.4.3 (2025-05-12)</small>
+
+* docs: add Product Hunt badge to README for better visibility ([51c481b](https://github.com/samzong/chrome-tabboost/commit/51c481b))
+* docs: update Chrome Store description ([35b67f7](https://github.com/samzong/chrome-tabboost/commit/35b67f7))
+* docs: update Chrome Store description to include new split view options and enhancements ([1d51bf8](https://github.com/samzong/chrome-tabboost/commit/1d51bf8))
+* feat/split view mode enhanced (#47) ([6971be0](https://github.com/samzong/chrome-tabboost/commit/6971be0)), closes [#47](https://github.com/samzong/chrome-tabboost/issues/47)
+* feat(popup): add popup shortcut settings and functionality for user customization (#46) ([d248c1e](https://github.com/samzong/chrome-tabboost/commit/d248c1e)), closes [#46](https://github.com/samzong/chrome-tabboost/issues/46)
+* feat(popup): enhance ESC key handling for popups and iframes ([7956f38](https://github.com/samzong/chrome-tabboost/commit/7956f38))
+* refactor: remove unused ignore list messages and related functions (#43) ([b9b42cc](https://github.com/samzong/chrome-tabboost/commit/b9b42cc)), closes [#43](https://github.com/samzong/chrome-tabboost/issues/43)
+
+
+
 ## <small>2.4.2 (2025-05-06)</small>
 
 * feat(audio-control): add mute/unmute functionality for current and all audio tabs (#40) ([f4813fb](https://github.com/samzong/chrome-tabboost/commit/f4813fb)), closes [#40](https://github.com/samzong/chrome-tabboost/issues/40)
