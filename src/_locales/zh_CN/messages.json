@@ -658,5 +658,29 @@
   "noAudioTabs": {
     "message": "未找到播放音频的标签页",
     "description": "Message when no tabs playing audio are found"
+  },
+  "popupShortcutSettings": {
+    "message": "弹窗快捷键设置",
+    "description": "Title for popup shortcut settings section"
+  },
+  "popupShortcutDescription": {
+    "message": "选择用于弹窗预览的快捷键组合。",
+    "description": "Description for popup shortcut settings"
+  },
+  "popupShortcutLabel": {
+    "message": "弹窗快捷键",
+    "description": "Label for popup shortcut select"
+  },
+  "popupShortcutDefault": {
+    "message": "Command/Ctrl（默认）",
+    "description": "Option for default shortcut"
+  },
+  "popupShortcutShift": {
+    "message": "Shift（新增）",
+    "description": "Option for shift shortcut"
+  },
+  "popupShortcutHint": {
+    "message": "更改快捷键后需刷新页面生效。",
+    "description": "Hint for popup shortcut settings"
   }
 }

@@ -17,6 +17,11 @@ const initStorageCache = async () => {
 initStorageCache();
 
 let shouldInterceptSave = true;
+let popupShortcutMode = "default";
+
+chrome.storage && chrome.storage.local.get({ popupShortcut: "default" }, (result) => {
+  popupShortcutMode = result.popupShortcut || "default";
+});
 
 document.addEventListener(
   "keydown",
@@ -225,7 +230,6 @@ function showSaveNotification() {
 document.addEventListener(
   "click",
   async function (event) {
-    // 检查是否是左键点击
     if (event.button !== 0) {
       return;
     }
@@ -235,12 +239,9 @@ document.addEventListener(
       return;
     }
 
-    // 检查是否按下了 Command/Ctrl+Shift 组合键
     if (event.shiftKey && (event.metaKey || event.ctrlKey)) {
       event.preventDefault();
       event.stopPropagation();
-
-      // 发送消息到后台脚本，请求在分屏视图中打开链接
       chrome.runtime.sendMessage(
         {
           action: "openInSplitView",
@@ -254,10 +255,8 @@ document.addEventListener(
               "Split view loading failed, trying to open in new tab...";
             applyDefaultNotificationStyle(notification);
             document.body.appendChild(notification);
-
             setTimeout(() => {
               window.open(link.href, "_blank");
-
               setTimeout(() => {
                 if (notification.parentNode) {
                   notification.parentNode.removeChild(notification);
@@ -270,12 +269,14 @@ document.addEventListener(
       return;
     }
 
-    // 处理普通的 Command/Ctrl+Click (不带Shift)
-    if (event.metaKey || event.ctrlKey) {
+    if (
+      (popupShortcutMode === "default" && (event.metaKey || event.ctrlKey) && !event.shiftKey) ||
+      (popupShortcutMode === "shift" && event.shiftKey && !event.metaKey && !event.ctrlKey)
+    ) {
       event.preventDefault();
       event.stopPropagation();
-
       await createPopup(link.href);
+      return;
     }
   },
   { passive: false }

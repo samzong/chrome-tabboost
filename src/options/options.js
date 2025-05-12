@@ -106,6 +106,8 @@ const sizePreviewBox = document.getElementById("sizePreviewBox");
 const tabs = document.querySelectorAll(".tab");
 const tabContents = document.querySelectorAll(".tab-content");
 
+const popupShortcutSelect = document.getElementById("popupShortcutSelect");
+
 function setupEventListeners() {
   tabs.forEach((tab) => {
     tab.addEventListener("click", () => {
@@ -171,6 +173,11 @@ function setupEventListeners() {
         updateCustomSizeLabels();
         updateSizePreview();
       }
+    });
+  }
+
+  if (popupShortcutSelect) {
+    popupShortcutSelect.addEventListener("change", function () {
     });
   }
 
@@ -253,6 +260,12 @@ function loadSettings() {
       storageCache.cache[key] = result[key];
       storageCache.setExpiration(key);
     });
+
+    chrome.storage.local.get({ popupShortcut: "default" }, (result) => {
+      if (popupShortcutSelect) {
+        popupShortcutSelect.value = result.popupShortcut || "default";
+      }
+    });
   });
 }
 
@@ -275,6 +288,11 @@ function saveSettings() {
       Object.keys(settings).forEach(key => {
         storageCache.cache[key] = settings[key];
         storageCache.setExpiration(key);
+      });
+
+      const popupShortcut = popupShortcutSelect ? popupShortcutSelect.value : "default";
+      chrome.storage.local.set({ popupShortcut }, () => {
+        showPageNotification(getMessage("settingsSaved"), "success");
       });
     }
   });
