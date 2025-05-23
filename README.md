@@ -9,9 +9,10 @@
 </p>
 
 <p align="center">
-  <img alt="Chrome Web Store Version" src="https://img.shields.io/chrome-web-store/v/pnpabkdhbbjmahfnhnfhpgfmhkkeoloe">
+   <a href="https://chromewebstore.google.com/detail/tabboost/pnpabkdhbbjmahfnhnfhpgfmhkkeoloe"><img alt="Chrome Web Store Version" src="https://img.shields.io/chrome-web-store/v/pnpabkdhbbjmahfnhnfhpgfmhkkeoloe"></a>
   <img alt="Chrome Web Store Last Updated" src="https://img.shields.io/chrome-web-store/last-updated/pnpabkdhbbjmahfnhnfhpgfmhkkeoloe">
   <img src="https://img.shields.io/badge/License-MIT-blue" alt="License">
+  <a href="https://deepwiki.com/samzong/chrome-tabboost"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
 </p>
 
 TabBoost is a Chrome extension that enhances browser tab efficiency. It provides a series of convenient features such as link preview, split-screen browsing, and tab duplication, helping you manage and use Chrome tabs more efficiently, inspired by Arc Browser.
