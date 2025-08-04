@@ -2,6 +2,7 @@ import { getCurrentTab } from "../../utils/utils.js";
 import storageCache from "../../utils/storage-cache.js";
 import { canLoadInIframe } from "../../utils/iframe-compatibility.js";
 import * as i18n from "../../utils/i18n.js";
+import { setupLazyLoading } from "../../utils/iframe-lazy-loader.js";
 import {
   initSplitViewDOM,
   removeSplitViewDOM,
@@ -224,7 +225,8 @@ export async function createSplitView() {
             leftIframe.setAttribute("loading", "lazy");
             leftIframe.setAttribute("data-tabboost-frame", "left");
             leftIframe.setAttribute("allowfullscreen", "true");
-            leftIframe.src = url;
+            // 使用懒加载优化左侧iframe性能
+            setupLazyLoading(leftIframe, url, { immediate: true });
 
             leftView.appendChild(leftIframe);
 
@@ -904,7 +906,8 @@ export async function createSplitView() {
                 rightIframe.style.width = "100%";
                 rightIframe.style.height = "100%";
                 rightIframe.style.border = "none";
-                rightIframe.src = url;
+                // 使用懒加载优化右侧iframe性能 (最小化版本)
+                setupLazyLoading(rightIframe, url, { immediate: false });
 
                 rightView.appendChild(rightIframe);
 
@@ -1093,7 +1096,8 @@ export async function updateRightView(url) {
             }
           }
 
-          rightIframe.src = url;
+          // 使用懒加载优化右侧iframe性能 (更新版本)
+          setupLazyLoading(rightIframe, url, { immediate: false });
 
           return true;
         } catch (error) {

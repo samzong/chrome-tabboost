@@ -12,6 +12,7 @@ import {
 } from "./splitViewDOMUtils.js";
 import { safeQuerySelector } from "./splitViewUtils.js";
 import * as i18n from "../../utils/i18n.js";
+import { setupLazyLoading } from "../../utils/iframe-lazy-loader.js";
 import {
   createSettingsButton,
   createRatioMenu,
@@ -314,7 +315,8 @@ export function updateRightViewDOM(url) {
       setupIframeEvents(rightIframe, errorContainer, url);
       rightView.appendChild(rightIframe);
     } else {
-      rightIframe.src = url;
+      // 使用懒加载优化右侧iframe更新性能
+      setupLazyLoading(rightIframe, url, { immediate: false });
       if (errorContainer) {
         updateErrorButtons(errorContainer, url);
       }

@@ -2,6 +2,10 @@ import storageCache from "../utils/storage-cache.js";
 import { validateUrl } from "../utils/utils.js";
 import { canLoadInIframe } from "../utils/iframe-compatibility.js";
 import { getMessage } from "../utils/i18n.js";
+import {
+  setupLazyLoading,
+  cleanupLazyLoading,
+} from "../utils/iframe-lazy-loader.js";
 
 const initStorageCache = async () => {
   try {
@@ -502,6 +506,12 @@ async function createPopupDOM(url) {
       try {
         clearAllTimers();
         if (!popupOverlay) return;
+
+        // 清理iframe懒加载
+        if (iframe) {
+          cleanupLazyLoading(iframe);
+        }
+
         popupOverlay.classList.remove("show");
         eventListeners.forEach(({ element, eventType, listener, options }) => {
           try {
@@ -662,7 +672,20 @@ async function createPopupDOM(url) {
     addButtonListeners();
 
     try {
-      iframe.src = url;
+      // 使用懒加载优化iframe加载性能
+      const shouldUseLazyLoading = document.visibilityState === "visible";
+      if (shouldUseLazyLoading) {
+        setupLazyLoading(iframe, url, { immediate: false });
+        // 对于popup，我们希望立即显示，所以等待一小段时间后强制加载
+        setTimeout(() => {
+          if (iframe.dataset.lazyStatus === "pending") {
+            iframe.src = url;
+          }
+        }, 100);
+      } else {
+        iframe.src = url;
+      }
+
       const loadResult = await loadWithTimeout(iframe, url, 6000);
 
       if (hasHandledFailure) return;
