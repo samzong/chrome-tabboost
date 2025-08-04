@@ -10,7 +10,7 @@ class StorageCache {
     this.frequentUpdateExpiration = 2 * 60 * 60 * 1000; // Optimized: increased to 2 hours for better cache hit rate
     this.stableConfigExpiration = 7 * 24 * 60 * 60 * 1000; // Optimized: increased to 7 days for stable configs
     this.initialized = false;
-    
+
     // Performance metrics for monitoring optimization effectiveness
     this.metrics = {
       cacheHits: 0,
@@ -18,7 +18,7 @@ class StorageCache {
       batchReads: 0,
       batchWrites: 0,
       avgReadDelay: 0,
-      avgWriteDelay: 0
+      avgWriteDelay: 0,
     };
     this.commonKeys = [
       "popupSizePreset",
@@ -128,7 +128,7 @@ class StorageCache {
       });
       return Promise.resolve(result);
     }
-    
+
     // Some keys need to be fetched - record cache misses
     this.metrics.cacheMisses += keysToFetch.length;
 
@@ -150,10 +150,11 @@ class StorageCache {
 
       // Smart batching: adjust delay based on batch size for optimal performance
       const currentBatchSize = Object.keys(this.batchReadCache).length;
-      const smartDelay = currentBatchSize >= this.readBatchThreshold 
-        ? this.maxBatchReadDelay 
-        : this.batchReadDelay;
-      
+      const smartDelay =
+        currentBatchSize >= this.readBatchThreshold
+          ? this.maxBatchReadDelay
+          : this.batchReadDelay;
+
       this.batchReadTimer = setTimeout(() => {
         this.executeBatchRead();
       }, smartDelay);
@@ -205,7 +206,7 @@ class StorageCache {
       // Update average read delay metric
       const readTime = performance.now() - startTime;
       this.metrics.avgReadDelay = (this.metrics.avgReadDelay + readTime) / 2;
-      
+
       Object.keys(items).forEach((key) => {
         this.cache[key] = items[key];
         this.setExpiration(key);
@@ -255,9 +256,10 @@ class StorageCache {
 
     // Smart write batching: use shorter delay for small batches, longer for large batches
     const currentQueueSize = Object.keys(this.writeQueue).length;
-    const smartWriteDelay = currentQueueSize >= this.writeBatchThreshold 
-      ? this.maxWriteDelay 
-      : this.writeDelay;
+    const smartWriteDelay =
+      currentQueueSize >= this.writeBatchThreshold
+        ? this.maxWriteDelay
+        : this.writeDelay;
 
     this.writeTimerId = setTimeout(() => {
       this.flushWrites();
@@ -285,11 +287,12 @@ class StorageCache {
   async _batchWrite(itemsToWrite, startTime) {
     try {
       await chrome.storage.sync.set(itemsToWrite);
-      
+
       // Update average write delay metric
       if (startTime) {
         const writeTime = performance.now() - startTime;
-        this.metrics.avgWriteDelay = (this.metrics.avgWriteDelay + writeTime) / 2;
+        this.metrics.avgWriteDelay =
+          (this.metrics.avgWriteDelay + writeTime) / 2;
       }
     } catch (error) {
       console.error(
@@ -369,15 +372,23 @@ class StorageCache {
    */
   getPerformanceMetrics() {
     const totalRequests = this.metrics.cacheHits + this.metrics.cacheMisses;
-    const cacheHitRate = totalRequests > 0 ? (this.metrics.cacheHits / totalRequests * 100).toFixed(2) : 0;
-    
+    const cacheHitRate =
+      totalRequests > 0
+        ? ((this.metrics.cacheHits / totalRequests) * 100).toFixed(2)
+        : 0;
+
     return {
       ...this.metrics,
       cacheHitRate: `${cacheHitRate}%`,
       totalRequests,
       avgReadDelayMs: this.metrics.avgReadDelay.toFixed(2),
       avgWriteDelayMs: this.metrics.avgWriteDelay.toFixed(2),
-      optimizationStatus: cacheHitRate > 70 ? 'Excellent' : cacheHitRate > 50 ? 'Good' : 'Needs Improvement'
+      optimizationStatus:
+        cacheHitRate > 70
+          ? "Excellent"
+          : cacheHitRate > 50
+            ? "Good"
+            : "Needs Improvement",
     };
   }
 
@@ -391,7 +402,7 @@ class StorageCache {
       batchReads: 0,
       batchWrites: 0,
       avgReadDelay: 0,
-      avgWriteDelay: 0
+      avgWriteDelay: 0,
     };
   }
 }

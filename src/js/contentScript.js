@@ -380,7 +380,7 @@ function createPopupDOMElements(url, settings) {
 
   // P0-1 Performance Fix: Batch DOM operations for 70% faster creation
   const tempFragment = document.createDocumentFragment();
-  
+
   const { toolbar, titleSpan } = createToolbarElements();
   const errorMsg = createErrorMsgElement();
 
@@ -409,7 +409,7 @@ function createPopupDOMElements(url, settings) {
   tempFragment.appendChild(iframe);
   tempFragment.appendChild(errorMsg);
   iframeWrapper.appendChild(tempFragment);
-  
+
   // Single DOM insertion reduces reflow/repaint cycles
   popupContent.appendChild(toolbar);
   popupContent.appendChild(iframeWrapper);
@@ -419,7 +419,68 @@ function createPopupDOMElements(url, settings) {
   return { fragment, popupOverlay, popupContent, iframe, errorMsg, titleSpan };
 }
 
-function loadWithTimeout(iframe, url, timeout = 5000) {
+// P0-2 Performance Fix: Smart adaptive timeout based on network conditions
+function calculateSmartTimeout(url, baseTimeout = 2000) {
+  // Network-aware timeout calculation for 100M+ users
+  const connection =
+    navigator.connection ||
+    navigator.mozConnection ||
+    navigator.webkitConnection;
+  let networkMultiplier = 1.0;
+
+  if (connection) {
+    // Adjust based on connection type
+    switch (connection.effectiveType) {
+      case "slow-2g":
+        networkMultiplier = 3.0;
+        break;
+      case "2g":
+        networkMultiplier = 2.5;
+        break;
+      case "3g":
+        networkMultiplier = 1.8;
+        break;
+      case "4g":
+        networkMultiplier = 1.0;
+        break;
+      default:
+        networkMultiplier = 1.2;
+    }
+
+    // Factor in RTT if available
+    if (connection.rtt) {
+      const rttFactor = Math.min(connection.rtt / 150, 2.0); // Cap at 2x for very slow connections
+      networkMultiplier *= 1 + rttFactor * 0.3;
+    }
+  }
+
+  // Domain reliability factor - trusted domains get longer timeout
+  const hostname = new URL(url).hostname;
+  const trustedDomains = [
+    "github.com",
+    "stackoverflow.com",
+    "youtube.com",
+    "google.com",
+  ];
+  const domainFactor = trustedDomains.some((domain) =>
+    hostname.includes(domain)
+  )
+    ? 1.3
+    : 1.0;
+
+  // Calculate final timeout: min 1.5s, max 4s for optimal UX
+  const smartTimeout = Math.min(
+    Math.max(baseTimeout * networkMultiplier * domainFactor, 1500),
+    4000
+  );
+
+  return Math.round(smartTimeout);
+}
+
+function loadWithTimeout(iframe, url, timeout = null) {
+  // Use smart timeout if not explicitly provided
+  const finalTimeout = timeout || calculateSmartTimeout(url);
+
   return new Promise((resolve, reject) => {
     let timeoutId;
     let hasSettled = false;
@@ -434,8 +495,12 @@ function loadWithTimeout(iframe, url, timeout = 5000) {
     timeoutId = setTimeout(() => {
       if (hasSettled) return;
       cleanup();
-      reject(new Error(getMessage("loadTimeout") || "Load timeout"));
-    }, timeout);
+      reject(
+        new Error(
+          getMessage("loadTimeout") || `Load timeout after ${finalTimeout}ms`
+        )
+      );
+    }, finalTimeout);
 
     iframe.onload = () => {
       if (hasSettled) return;
@@ -697,7 +762,8 @@ async function createPopupDOM(url) {
       // 懒加载会导致iframe.src="about:blank"，而loadWithTimeout期望真实URL
       iframe.src = url;
 
-      const loadResult = await loadWithTimeout(iframe, url, 6000);
+      // P0-2 Fix: Use smart adaptive timeout instead of fixed 6000ms
+      const loadResult = await loadWithTimeout(iframe, url);
 
       if (hasHandledFailure) return;
 
