@@ -4,7 +4,6 @@ import { canLoadInIframe } from "../utils/iframe-compatibility.js";
 import { getMessage } from "../utils/i18n.js";
 import { cleanupLazyLoading } from "../utils/iframe-lazy-loader.js";
 import LazyLoadingDetector from "../utils/lazyLoadingDetector.js";
-// P1-3 性能优化: 引入WeakMap事件管理器，解决内存泄漏风险
 import eventManager from "../utils/event-manager.js";
 
 const initStorageCache = async () => {
@@ -20,7 +19,6 @@ const initStorageCache = async () => {
 
 initStorageCache();
 
-// 初始化世界级懒加载检测器
 if (!window.tabBoostLazyLoadingDetector) {
   window.tabBoostLazyLoadingDetector = new LazyLoadingDetector();
 }
@@ -82,7 +80,6 @@ function createNotificationElement(id, className) {
 }
 
 function applyDefaultNotificationStyle(element) {
-  // Default notification styling now handled by tabboost-notification CSS class
   element.className = "tabboost-notification";
 }
 
@@ -127,7 +124,10 @@ function showSaveNotification() {
       "tabboost-notification"
     );
 
-    const isMac = navigator.platform.includes("Mac");
+    const isMac =
+      navigator.userAgentData?.platform?.includes("Mac") ||
+      (typeof navigator.platform !== "undefined" &&
+        navigator.platform.includes("Mac"));
     const saveInstructionText = isMac
       ? getMessage("savePageInstructionMac") ||
         "You can save this page by selecting File → Save Page As... or press Command+S again within 3 seconds"
@@ -159,12 +159,6 @@ function showSaveNotification() {
 
   appendChildren(notification, [message, saveButton]);
   document.body.appendChild(notification);
-
-  // CSS class styling handled in popupNotificationStyles.css
-
-  // Button styling handled in popupNotificationStyles.css
-
-  // Animations and hover effects handled in popupNotificationStyles.css
 
   const isDarkMode =
     window.matchMedia &&
@@ -359,7 +353,7 @@ function createErrorMsgElement() {
   });
 }
 
-function createPopupDOMElements(url, settings) {
+function createPopupDOMElements(_url, settings) {
   const fragment = document.createDocumentFragment();
 
   const popupOverlay = createElementWithAttributes("div", {
@@ -380,7 +374,6 @@ function createPopupDOMElements(url, settings) {
     popupContent.style.height = `${settings.customHeight}%`;
   }
 
-  // P0-1 Performance Fix: Batch DOM operations for 70% faster creation
   const tempFragment = document.createDocumentFragment();
 
   const { toolbar, titleSpan } = createToolbarElements();
@@ -390,11 +383,9 @@ function createPopupDOMElements(url, settings) {
     id: "tabboost-popup-iframe",
   });
 
-  // 世界级智能懒加载配置
   if (window.tabBoostLazyLoadingDetector) {
     window.tabBoostLazyLoadingDetector.applySmartLazyLoading(iframe, "popup");
   } else {
-    // 降级方案：基础懒加载配置
     if ("loading" in HTMLIFrameElement.prototype) {
       iframe.loading = "lazy";
       if ("importance" in iframe) {
@@ -407,12 +398,10 @@ function createPopupDOMElements(url, settings) {
     id: "tabboost-iframe-wrapper",
   });
 
-  // Batch DOM manipulation: Build structure in memory first
   tempFragment.appendChild(iframe);
   tempFragment.appendChild(errorMsg);
   iframeWrapper.appendChild(tempFragment);
 
-  // Single DOM insertion reduces reflow/repaint cycles
   popupContent.appendChild(toolbar);
   popupContent.appendChild(iframeWrapper);
   popupOverlay.appendChild(popupContent);
@@ -421,9 +410,7 @@ function createPopupDOMElements(url, settings) {
   return { fragment, popupOverlay, popupContent, iframe, errorMsg, titleSpan };
 }
 
-// P0-2 Performance Fix: Smart adaptive timeout based on network conditions
 function calculateSmartTimeout(url, baseTimeout = 2000) {
-  // Network-aware timeout calculation for 100M+ users
   const connection =
     navigator.connection ||
     navigator.mozConnection ||
@@ -431,7 +418,6 @@ function calculateSmartTimeout(url, baseTimeout = 2000) {
   let networkMultiplier = 1.0;
 
   if (connection) {
-    // Adjust based on connection type
     switch (connection.effectiveType) {
       case "slow-2g":
         networkMultiplier = 3.0;
@@ -449,14 +435,12 @@ function calculateSmartTimeout(url, baseTimeout = 2000) {
         networkMultiplier = 1.2;
     }
 
-    // Factor in RTT if available
     if (connection.rtt) {
-      const rttFactor = Math.min(connection.rtt / 150, 2.0); // Cap at 2x for very slow connections
+      const rttFactor = Math.min(connection.rtt / 150, 2.0);
       networkMultiplier *= 1 + rttFactor * 0.3;
     }
   }
 
-  // Domain reliability factor - trusted domains get longer timeout
   const hostname = new URL(url).hostname;
   const trustedDomains = [
     "github.com",
@@ -470,7 +454,6 @@ function calculateSmartTimeout(url, baseTimeout = 2000) {
     ? 1.3
     : 1.0;
 
-  // Calculate final timeout: min 1.5s, max 4s for optimal UX
   const smartTimeout = Math.min(
     Math.max(baseTimeout * networkMultiplier * domainFactor, 1500),
     4000
@@ -480,7 +463,6 @@ function calculateSmartTimeout(url, baseTimeout = 2000) {
 }
 
 function loadWithTimeout(iframe, url, timeout = null) {
-  // Use smart timeout if not explicitly provided
   const finalTimeout = timeout || calculateSmartTimeout(url);
 
   return new Promise((resolve, reject) => {
@@ -515,20 +497,19 @@ function loadWithTimeout(iframe, url, timeout = null) {
           cleanup();
           resolve({ status: "blank" });
         } else {
-          // P0-3 Performance Fix: Async Content-Type check to avoid main thread blocking
-          // Use microtask to defer DOM access and prevent 50-200ms blocking
           queueMicrotask(() => {
             try {
               const contentType = iframe.contentDocument?.contentType;
               if (contentType && !contentType.includes("text/html")) {
-                console.log(`TabBoost: 非HTML内容，排除处理: ${contentType}`);
+                console.log(
+                  `TabBoost: Non-HTML content, excluding: ${contentType}`
+                );
                 cleanup();
                 resolve({ status: "non_html", contentType });
                 return;
               }
             } catch (typeError) {
-              // 如果无法获取contentType，可能是因为跨域限制，继续处理
-              console.log("TabBoost: 无法检查内容类型，继续处理");
+              console.log("TabBoost: Unable to check content type, continuing");
             }
 
             cleanup();
@@ -555,23 +536,25 @@ function loadWithTimeout(iframe, url, timeout = null) {
 
 async function createPopupDOM(url) {
   try {
-    // P1-3 性能优化: 使用WeakMap事件管理器替代数组存储，防止内存泄漏
-    const popupEventController = new AbortController();
-    const managedElements = new Set(); // 追踪需要清理的元素
+    const managedElements = new Set();
 
     const addTrackedEventListener = (element, eventType, listener, options) => {
-      // P1-3 修复: 使用企业级事件管理器，添加错误保护
       try {
         eventManager.addListener(element, eventType, listener, options);
         managedElements.add(element);
       } catch (eventError) {
-        // 降级到传统事件监听器，确保功能不中断
-        console.warn("TabBoost: 事件管理器错误，使用降级方案:", eventError);
+        console.warn(
+          "TabBoost: Event manager error, using fallback:",
+          eventError
+        );
         try {
           element.addEventListener(eventType, listener, options);
           managedElements.add(element);
         } catch (fallbackError) {
-          console.error("TabBoost: 降级事件监听器也失败:", fallbackError);
+          console.error(
+            "TabBoost: Fallback event listener failed:",
+            fallbackError
+          );
         }
       }
     };
@@ -604,18 +587,15 @@ async function createPopupDOM(url) {
       if (hasHandledFailure) return;
       hasHandledFailure = true;
 
-      // P1-3 修复: 简化错误处理，确保不受事件管理器影响
       try {
         console.error("chrome-tabboost: Popup load failure:", error.message);
         if (errorMsg) errorMsg.classList.add("show");
         clearAllTimers();
       } catch (handlerError) {
-        // 防止事件管理器错误影响正常的popup错误处理
         console.error(
           "chrome-tabboost: Error in handleLoadFailure:",
           handlerError
         );
-        // 降级处理：直接在新标签页打开
         try {
           window.open(url, "_blank");
           closePopup();
@@ -630,29 +610,26 @@ async function createPopupDOM(url) {
         clearAllTimers();
         if (!popupOverlay) return;
 
-        // 清理iframe懒加载
         if (iframe) {
           cleanupLazyLoading(iframe);
         }
 
         popupOverlay.classList.remove("show");
 
-        // P1-3 性能优化: 使用WeakMap事件管理器批量清理，一次性解决内存泄漏
         try {
           const elementsToCleanup = Array.from(managedElements);
           const cleanedCount = eventManager.cleanupMultiple(elementsToCleanup);
           managedElements.clear();
 
           console.log(
-            `TabBoost: 已清理 ${cleanedCount} 个元素的事件监听器，防止内存泄漏`
+            `TabBoost: Cleaned ${cleanedCount} event listeners to prevent memory leaks`
           );
         } catch (cleanupError) {
-          // 防止清理错误影响popup关闭流程
           console.warn(
-            "TabBoost: 事件清理遇到错误，使用降级清理:",
+            "TabBoost: Event cleanup error, using fallback:",
             cleanupError
           );
-          managedElements.clear(); // 至少清空集合
+          managedElements.clear();
         }
         timers.closeTimeout = setTimeout(() => {
           if (popupOverlay && popupOverlay.parentNode) {
@@ -682,7 +659,6 @@ async function createPopupDOM(url) {
 
     addTrackedEventListener(window, "keydown", escListener, { capture: true });
 
-    // Enhance ESC key handling within iframes
     const handleIframeEsc = () => {
       try {
         iframe.addEventListener("load", () => {
@@ -803,11 +779,8 @@ async function createPopupDOM(url) {
     addButtonListeners();
 
     try {
-      // Popup场景需要立即加载，不使用懒加载以避免loadWithTimeout冲突
-      // 懒加载会导致iframe.src="about:blank"，而loadWithTimeout期望真实URL
       iframe.src = url;
 
-      // P0-2 Fix: Use smart adaptive timeout instead of fixed 6000ms
       const loadResult = await loadWithTimeout(iframe, url);
 
       if (hasHandledFailure) return;
@@ -824,7 +797,7 @@ async function createPopupDOM(url) {
 
       if (loadResult.status === "non_html") {
         console.log(
-          `TabBoost: 检测到非HTML内容 (${loadResult.contentType})，在新标签页中打开`
+          `TabBoost: Detected non-HTML content (${loadResult.contentType}), opening in new tab`
         );
         window.open(url, "_blank");
         closePopup();
@@ -856,7 +829,7 @@ async function createPopupDOM(url) {
   }
 }
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
   if (request.action === "openRightSplitView" && request.url) {
     const rightIframe = document.getElementById("tabboost-right-iframe");
     if (rightIframe) {

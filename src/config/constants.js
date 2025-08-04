@@ -1,8 +1,7 @@
 /**
- * TabBoost安全常量配置
+ * TabBoost security constants configuration
  */
 
-// 危险协议，不允许加载
 export const DANGEROUS_PROTOCOLS = [
   "javascript:",
   "data:",
@@ -14,10 +13,8 @@ export const DANGEROUS_PROTOCOLS = [
   "view-source:",
 ];
 
-// 危险URL模式，不允许加载
 export const DANGEROUS_URL_PATTERNS = [];
 
-// 需要排除的文件扩展名
 export const EXCLUDED_EXTENSIONS = [
   ".zip",
   ".exe",

@@ -7,12 +7,11 @@ import {
   createElement,
   createIframe,
   createCloseButton,
-  createDivider,
   cleanupElement,
 } from "./splitViewDOMUtils.js";
 import { safeQuerySelector } from "./splitViewUtils.js";
 import * as i18n from "../../utils/i18n.js";
-// setupLazyLoading removed - causes webpack import errors in injected scripts
+// Setup lazy loading removed - causes Webpack import errors in injected scripts
 import {
   createSettingsButton,
   createRatioMenu,
@@ -20,11 +19,6 @@ import {
   applyDefaultRatio,
 } from "./splitViewDOMComponents.js";
 
-/**
- * 初始化分屏视图DOM结构
- * @param {string} leftUrl - 左侧视图URL
- * @returns {boolean} - 是否成功初始化
- */
 export function initSplitViewDOM(leftUrl) {
   console.log("TabBoost: initSplitViewDOM called with URL:", leftUrl);
 
@@ -76,12 +70,6 @@ export function initSplitViewDOM(leftUrl) {
   }
 }
 
-/**
- * 创建视图（左/右）
- * @param {string} side - 'left' 或 'right'
- * @param {string} url - 视图URL
- * @returns {HTMLElement} - 视图元素
- */
 function createView(side, url = "about:blank") {
   const config = {
     ...UI_CONFIG.view,
@@ -95,7 +83,7 @@ function createView(side, url = "about:blank") {
   const view = createElement("div", config);
 
   const closeButton = createCloseButton("close-split-view");
-  closeButton.title = i18n.getMessage("closeSplitView") || "关闭分屏视图";
+  closeButton.title = i18n.getMessage("closeSplitView") || "Close Split View";
   view.appendChild(closeButton);
 
   const settingsButton = createSettingsButton(side);
@@ -114,12 +102,6 @@ function createView(side, url = "about:blank") {
   return view;
 }
 
-/**
- * 创建错误容器
- * @param {string} side - 'left' 或 'right'
- * @param {string} url - 视图URL
- * @returns {HTMLElement} - 错误容器元素
- */
 function createErrorContainer(side, url) {
   const container = createElement("div", {
     id: `tabboost-${side}-error`,
@@ -142,12 +124,6 @@ function createErrorContainer(side, url) {
   return container;
 }
 
-/**
- * 设置iframe事件
- * @param {HTMLIFrameElement} iframe - iframe元素
- * @param {HTMLElement} errorContainer - 错误容器
- * @param {string} url - iframe URL
- */
 function setupIframeEvents(iframe, errorContainer, url) {
   iframe.addEventListener("load", () => {
     if (url !== "about:blank") {
@@ -177,11 +153,6 @@ function setupIframeEvents(iframe, errorContainer, url) {
   });
 }
 
-/**
- * 更新错误按钮数据
- * @param {HTMLElement} container - 错误容器
- * @param {string} url - URL
- */
 function updateErrorButtons(container, url) {
   const retryButton = container.querySelector(".tabboost-retry-load");
   const openButton = container.querySelector(".tabboost-open-in-tab");
@@ -190,9 +161,6 @@ function updateErrorButtons(container, url) {
   if (openButton) openButton.dataset.url = url;
 }
 
-/**
- * 保存原始页面内容
- */
 function saveOriginalContent() {
   try {
     const maxContentLength = 500000;
@@ -214,9 +182,6 @@ function saveOriginalContent() {
   }
 }
 
-/**
- * 隐藏页面现有内容
- */
 function hideExistingContent() {
   Array.from(document.body.children).forEach((element) => {
     if (element.id !== UI_CONFIG.container.id) {
@@ -226,10 +191,6 @@ function hideExistingContent() {
   });
 }
 
-/**
- * 显示错误信息
- * @param {string} message - 错误信息
- */
 function showError(message) {
   try {
     document.body.innerHTML = `
@@ -243,10 +204,6 @@ function showError(message) {
   }
 }
 
-/**
- * 移除分屏视图，恢复原始页面
- * @returns {boolean} - 是否成功移除
- */
 export function removeSplitViewDOM() {
   try {
     if (!document || !document.body) return false;
@@ -287,11 +244,6 @@ export function removeSplitViewDOM() {
   }
 }
 
-/**
- * 更新右侧视图DOM
- * @param {string} url - 右侧视图URL
- * @returns {boolean} - 是否成功更新
- */
 export function updateRightViewDOM(url) {
   try {
     const rightView = safeQuerySelector(`#${UI_CONFIG.view.right.id}`);
@@ -315,7 +267,6 @@ export function updateRightViewDOM(url) {
       setupIframeEvents(rightIframe, errorContainer, url);
       rightView.appendChild(rightIframe);
     } else {
-      // 直接设置src，不使用懒加载以避免webpack导入错误
       rightIframe.src = url;
       if (errorContainer) {
         updateErrorButtons(errorContainer, url);

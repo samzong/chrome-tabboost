@@ -1,6 +1,5 @@
 /**
- * TabBoost iframe 懒加载性能验证工具
- * 世界级性能优化验证和监控
+ * TabBoost iframe lazy loading performance validator
  */
 
 class PerformanceValidator {
@@ -13,9 +12,6 @@ class PerformanceValidator {
     this.startTime = performance.now();
   }
 
-  /**
-   * 开始性能监控
-   */
   startMonitoring(context = "popup") {
     const startTime = performance.now();
 
@@ -23,7 +19,6 @@ class PerformanceValidator {
       context,
       startTime,
 
-      // 测量iframe创建时间
       measureIframeCreation: () => {
         const creationTime = performance.now() - startTime;
         console.log(
@@ -32,7 +27,6 @@ class PerformanceValidator {
         return creationTime;
       },
 
-      // 测量首次绘制时间
       measureFirstPaint: () => {
         if ("getEntriesByType" in performance) {
           const paintEntries = performance.getEntriesByType("paint");
@@ -47,14 +41,12 @@ class PerformanceValidator {
         return null;
       },
 
-      // 测量DOM内容加载完成时间
       measureDOMContentLoaded: () => {
         const loadTime = performance.now() - startTime;
         console.log(`📄 ${context} DOM ready: ${loadTime.toFixed(2)}ms`);
         return loadTime;
       },
 
-      // 结束监控并返回汇总
       finish: () => {
         const totalTime = performance.now() - startTime;
         console.log(
@@ -70,9 +62,6 @@ class PerformanceValidator {
     };
   }
 
-  /**
-   * 验证懒加载优化效果
-   */
   validateLazyLoadingOptimization() {
     const results = {
       lazyLoadingEnabled: false,
@@ -86,7 +75,6 @@ class PerformanceValidator {
       },
     };
 
-    // 检查懒加载检测器
     if (window.tabBoostLazyLoadingDetector) {
       const detector = window.tabBoostLazyLoadingDetector;
       const stats = detector.getPerformanceStats();
@@ -97,7 +85,6 @@ class PerformanceValidator {
       results.deviceOptimization =
         stats.recommendations.suggestedStrategy !== undefined;
 
-      // 估算性能提升
       this.calculateEstimatedSavings(stats, results);
 
       console.log("🚀 Lazy Loading Optimization Results:", results);
@@ -106,20 +93,16 @@ class PerformanceValidator {
     return results;
   }
 
-  /**
-   * 计算预估性能提升
-   */
   calculateEstimatedSavings(stats, results) {
     let loadTimeSaving = 0;
     let bandwidthSaving = 0;
     let memorySaving = 0;
 
-    // 基于网络状况计算节省
     if (stats.networkInfo.effectiveType) {
       switch (stats.networkInfo.effectiveType) {
         case "slow-2g":
-          loadTimeSaving = 2000; // 2秒
-          bandwidthSaving = 50; // 50KB
+          loadTimeSaving = 2000;
+          bandwidthSaving = 50;
           break;
         case "2g":
           loadTimeSaving = 1500;
@@ -136,9 +119,8 @@ class PerformanceValidator {
       }
     }
 
-    // 基于设备性能调整
     if (stats.deviceInfo.hardwareConcurrency < 4) {
-      memorySaving = 15; // 15MB
+      memorySaving = 15;
       loadTimeSaving *= 1.5;
     }
 
@@ -149,20 +131,15 @@ class PerformanceValidator {
     };
   }
 
-  /**
-   * 实时监控iframe加载性能
-   */
   monitorIframePerformance(iframe, context) {
     const monitor = this.startMonitoring(context);
 
-    // 监听iframe加载事件
     const loadStart = performance.now();
 
     iframe.addEventListener("load", () => {
       const loadTime = performance.now() - loadStart;
       console.log(`⚡ ${context} iframe loaded in: ${loadTime.toFixed(2)}ms`);
 
-      // 检查懒加载属性
       if (iframe.loading === "lazy") {
         console.log(`✅ ${context} using native lazy loading`);
       }
@@ -179,9 +156,6 @@ class PerformanceValidator {
     return monitor;
   }
 
-  /**
-   * 生成性能报告
-   */
   generatePerformanceReport() {
     const report = {
       timestamp: new Date().toISOString(),
@@ -216,9 +190,6 @@ class PerformanceValidator {
     return report;
   }
 
-  /**
-   * 获取优化建议
-   */
   getOptimizationRecommendations() {
     const recommendations = [];
 
@@ -226,18 +197,24 @@ class PerformanceValidator {
       const stats = window.tabBoostLazyLoadingDetector.getPerformanceStats();
 
       if (!stats.capabilities.lazyLoading) {
-        recommendations.push("建议升级到支持原生懒加载的浏览器版本");
+        recommendations.push(
+          "Recommend upgrading to a browser version that supports native lazy loading"
+        );
       }
 
       if (
         stats.networkInfo.effectiveType === "slow-2g" ||
         stats.networkInfo.effectiveType === "2g"
       ) {
-        recommendations.push("检测到慢网络，已启用激进懒加载策略");
+        recommendations.push(
+          "Slow network detected, aggressive lazy loading strategy enabled"
+        );
       }
 
       if (stats.deviceInfo.hardwareConcurrency < 4) {
-        recommendations.push("检测到低性能设备，已优化资源使用");
+        recommendations.push(
+          "Low performance device detected, resource usage optimized"
+        );
       }
     }
 
@@ -245,7 +222,6 @@ class PerformanceValidator {
   }
 }
 
-// 创建全局性能验证器
 window.tabBoostPerformanceValidator = new PerformanceValidator();
 
 export default PerformanceValidator;

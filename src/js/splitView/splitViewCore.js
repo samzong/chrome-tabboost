@@ -1,28 +1,12 @@
 import { getCurrentTab } from "../../utils/utils.js";
-import storageCache from "../../utils/storage-cache.js";
-import { canLoadInIframe } from "../../utils/iframe-compatibility.js";
 import * as i18n from "../../utils/i18n.js";
-// P1-2 性能优化: 引入iframe池化管理器，减少800ms-1.2s创建开销
-import iframePool from "../../utils/iframe-pool.js";
-import {
-  initSplitViewDOM,
-  removeSplitViewDOM,
-  updateRightViewDOM,
-} from "./splitViewDOM.js";
-import {
-  setupSplitViewEvents,
-  cleanupSplitViewEvents,
-} from "./splitViewEvents.js";
+import { removeSplitViewDOM } from "./splitViewDOM.js";
 import splitViewState from "./splitViewState.js";
 
 splitViewState.init().catch((error) => {
   console.error("Failed to initialize split view state:", error);
 });
 
-/**
- * 创建分屏视图
- * @returns {Promise<boolean>} - 是否成功创建
- */
 export async function createSplitView() {
   try {
     const currentTab = await getCurrentTab();
@@ -98,7 +82,6 @@ export async function createSplitView() {
         target: { tabId: currentTab.id },
         func: (url, i18nMessages) => {
           try {
-            // 创建基本分屏容器
             const container = document.createElement("div");
             container.id = "tabboost-split-view-container";
             container.style.position = "fixed";
@@ -111,7 +94,6 @@ export async function createSplitView() {
             container.style.display = "flex";
             container.style.overflow = "hidden";
 
-            // 创建视图容器
             const viewsContainer = document.createElement("div");
             viewsContainer.id = "tabboost-views-container";
             viewsContainer.style.display = "flex";
@@ -121,7 +103,6 @@ export async function createSplitView() {
             viewsContainer.style.flexDirection = "row";
             viewsContainer.setAttribute("data-split-direction", "horizontal");
 
-            // 创建左侧视图
             const leftView = document.createElement("div");
             leftView.id = "tabboost-split-left";
             leftView.style.width = "50%";
@@ -129,7 +110,6 @@ export async function createSplitView() {
             leftView.style.overflow = "hidden";
             leftView.style.position = "relative";
 
-            // 左侧关闭按钮
             const leftCloseButton = document.createElement("button");
             leftCloseButton.className = "tabboost-view-close";
             leftCloseButton.dataset.action = "close-split-view";
@@ -217,7 +197,6 @@ export async function createSplitView() {
             leftSettingsButton.appendChild(createSplitIcon());
             leftView.appendChild(leftSettingsButton);
 
-            // P1-2 性能优化: 使用iframe池，减少200ms DOM创建开销
             const leftIframe =
               window.tabBoostIframePool?.getIframe(
                 "splitview-left",
@@ -225,7 +204,6 @@ export async function createSplitView() {
                 url
               ) ||
               (() => {
-                // 降级方案：传统创建方式
                 const iframe = document.createElement("iframe");
                 iframe.id = "tabboost-left-iframe";
                 iframe.style.width = "100%";
@@ -293,7 +271,6 @@ export async function createSplitView() {
             rightSettingsButton.appendChild(createSplitIcon());
             rightView.appendChild(rightSettingsButton);
 
-            // P1-2 性能优化: 使用iframe池创建右侧iframe
             const rightIframe =
               window.tabBoostIframePool?.getIframe(
                 "splitview-right",
@@ -301,7 +278,6 @@ export async function createSplitView() {
                 "about:blank"
               ) ||
               (() => {
-                // 降级方案：传统创建方式
                 const iframe = document.createElement("iframe");
                 iframe.id = "tabboost-right-iframe";
                 iframe.style.width = "100%";
@@ -883,7 +859,6 @@ export async function createSplitView() {
 
                 leftView.appendChild(leftCloseButton);
 
-                // P1-2 性能优化: 简化版本也使用iframe池
                 const leftIframe =
                   window.tabBoostIframePool?.getIframe(
                     "splitview-left",
@@ -931,7 +906,6 @@ export async function createSplitView() {
 
                 rightView.appendChild(rightCloseButton);
 
-                // P1-2 性能优化: 简化版右侧iframe池化
                 const rightIframe =
                   window.tabBoostIframePool?.getIframe(
                     "splitview-right",
@@ -982,10 +956,6 @@ export async function createSplitView() {
   }
 }
 
-/**
- * 关闭分屏视图
- * @returns {Promise<boolean>} - 是否成功关闭
- */
 export async function closeSplitView() {
   if (!splitViewState.getState().isActive) return true;
 
@@ -1006,7 +976,7 @@ export async function closeSplitView() {
       if (success) {
         splitViewState.deactivate();
       } else {
-        await chrome.tabs.reload(currentTab.id);
+        chrome.tabs.reload(currentTab.id);
         splitViewState.deactivate();
       }
 
@@ -1015,7 +985,7 @@ export async function closeSplitView() {
       console.error("Failed to execute restore page script:", e);
 
       try {
-        await chrome.tabs.reload(currentTab.id);
+        chrome.tabs.reload(currentTab.id);
         splitViewState.deactivate();
         return true;
       } catch (reloadError) {
@@ -1028,10 +998,6 @@ export async function closeSplitView() {
   }
 }
 
-/**
- * 切换分屏视图状态
- * @returns {Promise<boolean>} - 操作是否成功
- */
 export async function toggleSplitView() {
   if (splitViewState.getState().isActive) {
     return await closeSplitView();
@@ -1040,11 +1006,6 @@ export async function toggleSplitView() {
   }
 }
 
-/**
- * 更新右侧视图
- * @param {string} url - 右侧视图URL
- * @returns {Promise<boolean>} - 是否成功更新
- */
 export async function updateRightView(url) {
   if (!splitViewState.getState().isActive) {
     const success = await createSplitView();
@@ -1082,7 +1043,7 @@ export async function updateRightView(url) {
       await createSplitView();
     }
 
-    const results = await chrome.scripting.executeScript({
+    await chrome.scripting.executeScript({
       target: { tabId: currentTab.id },
       func: (url) => {
         try {
@@ -1095,7 +1056,6 @@ export async function updateRightView(url) {
           let rightIframe = document.getElementById("tabboost-right-iframe");
 
           if (!rightIframe) {
-            // P1-2 性能优化: 动态创建时也使用iframe池
             rightIframe =
               window.tabBoostIframePool?.getIframe(
                 "splitview-right",
@@ -1145,7 +1105,6 @@ export async function updateRightView(url) {
             }
           }
 
-          // 直接设置src，不使用懒加载以避免webpack导入错误
           rightIframe.src = url;
 
           return true;
@@ -1162,7 +1121,7 @@ export async function updateRightView(url) {
     console.error("Failed to update right view:", error);
 
     try {
-      await chrome.tabs.create({ url });
+      chrome.tabs.create({ url });
       return true;
     } catch (e) {
       console.error("Failed to open URL in new tab:", e);
@@ -1171,17 +1130,10 @@ export async function updateRightView(url) {
   }
 }
 
-/**
- * 获取分屏视图状态
- * @returns {Object} 分屏视图状态
- */
 export function getSplitViewState() {
   return splitViewState.getState();
 }
 
-/**
- * 模块初始化
- */
 export function initSplitViewModule() {
   splitViewState.init();
 }
