@@ -560,9 +560,20 @@ async function createPopupDOM(url) {
     const managedElements = new Set(); // 追踪需要清理的元素
 
     const addTrackedEventListener = (element, eventType, listener, options) => {
-      // 使用企业级事件管理器
-      eventManager.addListener(element, eventType, listener, options);
-      managedElements.add(element);
+      // P1-3 修复: 使用企业级事件管理器，添加错误保护
+      try {
+        eventManager.addListener(element, eventType, listener, options);
+        managedElements.add(element);
+      } catch (eventError) {
+        // 降级到传统事件监听器，确保功能不中断
+        console.warn("TabBoost: 事件管理器错误，使用降级方案:", eventError);
+        try {
+          element.addEventListener(eventType, listener, options);
+          managedElements.add(element);
+        } catch (fallbackError) {
+          console.error("TabBoost: 降级事件监听器也失败:", fallbackError);
+        }
+      }
     };
 
     const settings = await getPreviewSettings();
@@ -592,9 +603,26 @@ async function createPopupDOM(url) {
     const handleLoadFailure = async (error) => {
       if (hasHandledFailure) return;
       hasHandledFailure = true;
-      console.error("chrome-tabboost: Popup load failure:", error.message);
-      if (errorMsg) errorMsg.classList.add("show");
-      clearAllTimers();
+
+      // P1-3 修复: 简化错误处理，确保不受事件管理器影响
+      try {
+        console.error("chrome-tabboost: Popup load failure:", error.message);
+        if (errorMsg) errorMsg.classList.add("show");
+        clearAllTimers();
+      } catch (handlerError) {
+        // 防止事件管理器错误影响正常的popup错误处理
+        console.error(
+          "chrome-tabboost: Error in handleLoadFailure:",
+          handlerError
+        );
+        // 降级处理：直接在新标签页打开
+        try {
+          window.open(url, "_blank");
+          closePopup();
+        } catch (fallbackError) {
+          console.error("chrome-tabboost: Fallback failed:", fallbackError);
+        }
+      }
     };
 
     const closePopup = () => {
@@ -610,13 +638,22 @@ async function createPopupDOM(url) {
         popupOverlay.classList.remove("show");
 
         // P1-3 性能优化: 使用WeakMap事件管理器批量清理，一次性解决内存泄漏
-        const elementsToCleanup = Array.from(managedElements);
-        const cleanedCount = eventManager.cleanupMultiple(elementsToCleanup);
-        managedElements.clear();
+        try {
+          const elementsToCleanup = Array.from(managedElements);
+          const cleanedCount = eventManager.cleanupMultiple(elementsToCleanup);
+          managedElements.clear();
 
-        console.log(
-          `TabBoost: 已清理 ${cleanedCount} 个元素的事件监听器，防止内存泄漏`
-        );
+          console.log(
+            `TabBoost: 已清理 ${cleanedCount} 个元素的事件监听器，防止内存泄漏`
+          );
+        } catch (cleanupError) {
+          // 防止清理错误影响popup关闭流程
+          console.warn(
+            "TabBoost: 事件清理遇到错误，使用降级清理:",
+            cleanupError
+          );
+          managedElements.clear(); // 至少清空集合
+        }
         timers.closeTimeout = setTimeout(() => {
           if (popupOverlay && popupOverlay.parentNode) {
             popupOverlay.parentNode.removeChild(popupOverlay);
