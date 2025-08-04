@@ -513,22 +513,25 @@ function loadWithTimeout(iframe, url, timeout = null) {
           cleanup();
           resolve({ status: "blank" });
         } else {
-          // 检查内容类型，确保只处理HTML内容
-          try {
-            const contentType = iframe.contentDocument.contentType;
-            if (contentType && !contentType.includes("text/html")) {
-              console.log(`TabBoost: 非HTML内容，排除处理: ${contentType}`);
-              cleanup();
-              resolve({ status: "non_html", contentType });
-              return;
+          // P0-3 Performance Fix: Async Content-Type check to avoid main thread blocking
+          // Use microtask to defer DOM access and prevent 50-200ms blocking
+          queueMicrotask(() => {
+            try {
+              const contentType = iframe.contentDocument?.contentType;
+              if (contentType && !contentType.includes("text/html")) {
+                console.log(`TabBoost: 非HTML内容，排除处理: ${contentType}`);
+                cleanup();
+                resolve({ status: "non_html", contentType });
+                return;
+              }
+            } catch (typeError) {
+              // 如果无法获取contentType，可能是因为跨域限制，继续处理
+              console.log("TabBoost: 无法检查内容类型，继续处理");
             }
-          } catch (typeError) {
-            // 如果无法获取contentType，可能是因为跨域限制，继续处理
-            console.log("TabBoost: 无法检查内容类型，继续处理");
-          }
 
-          cleanup();
-          resolve({ status: "success" });
+            cleanup();
+            resolve({ status: "success" });
+          });
         }
       } catch (corsError) {
         cleanup();
