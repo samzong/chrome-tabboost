@@ -20,7 +20,6 @@ import {
 } from "./splitViewDOMComponents.js";
 
 export function initSplitViewDOM(leftUrl) {
-  console.log("TabBoost: initSplitViewDOM called with URL:", leftUrl);
 
   try {
     if (!document || !document.body) {

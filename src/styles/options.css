@@ -288,7 +288,6 @@ code {
   margin-top: 24px;
 }
 
-/* 新增样式 */
 .usage-list {
   margin-left: 20px;
   margin-top: 8px;
@@ -300,7 +299,6 @@ code {
   margin-bottom: 16px;
 }
 
-/* 弹窗大小设置 */
 .range-slider {
   width: 100%;
   height: 6px;
@@ -339,7 +337,6 @@ code {
   background: var(--primary-hover);
 }
 
-/* 尺寸预览 */
 .size-preview-container {
   margin: 20px 0;
   border-top: 1px solid var(--border);
@@ -383,7 +380,6 @@ code {
   margin-top: 10px;
 }
 
-/* 表单动作 */
 .form-action {
   margin-top: 25px;
   display: flex;
@@ -405,7 +401,6 @@ code {
   background-color: var(--primary-hover);
 }
 
-/* 自定义尺寸控件 */
 .custom-size-controls {
   transition:
     opacity 0.3s,
@@ -423,7 +418,6 @@ code {
   }
 }
 
-/* 忽略列表区域标题样式 */
 .ignore-list-section-title {
   font-weight: 600;
   margin: 15px 0 10px;
@@ -432,7 +426,6 @@ code {
   padding-bottom: 5px;
 }
 
-/* 系统域名项样式 */
 .ignore-item.system-domain {
   background-color: #f9f9f9;
   border-left: 3px solid #4299e1;
@@ -448,7 +441,6 @@ code {
   text-transform: uppercase;
 }
 
-/* 域名格式说明样式 */
 .domain-format-guide {
   margin: 15px 0;
   padding: 10px 15px;
@@ -478,7 +470,6 @@ code {
   font-size: 0.9em;
 }
 
-/* 匹配类型标签样式 */
 .match-type {
   padding: 2px 6px;
   border-radius: 3px;
@@ -497,7 +488,6 @@ code {
   color: #3182ce;
 }
 
-/* 删除按钮样式 */
 .remove-domain-button {
   background-color: transparent;
   border: none;
@@ -528,7 +518,6 @@ code {
   transform: scale(0.95);
 }
 
-/* 使按钮在暗模式下更加明显 */
 @media (prefers-color-scheme: dark) {
   .remove-domain-button {
     color: var(--muted-foreground);
@@ -541,7 +530,6 @@ code {
   }
 }
 
-/* 提升列表项的交互性 */
 .ignore-item {
   position: relative;
   transition: background-color 0.2s ease;
@@ -551,7 +539,6 @@ code {
   background-color: var(--muted);
 }
 
-/* 匹配类型徽章样式 */
 .match-type {
   padding: 2px 6px;
   border-radius: 3px;

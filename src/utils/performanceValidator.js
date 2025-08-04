@@ -21,9 +21,6 @@ class PerformanceValidator {
 
       measureIframeCreation: () => {
         const creationTime = performance.now() - startTime;
-        console.log(
-          `📊 ${context} iframe creation: ${creationTime.toFixed(2)}ms`
-        );
         return creationTime;
       },
 
@@ -34,7 +31,6 @@ class PerformanceValidator {
             (entry) => entry.name === "first-paint"
           );
           if (firstPaint) {
-            console.log(`🎨 First paint: ${firstPaint.startTime.toFixed(2)}ms`);
             return firstPaint.startTime;
           }
         }
@@ -43,15 +39,11 @@ class PerformanceValidator {
 
       measureDOMContentLoaded: () => {
         const loadTime = performance.now() - startTime;
-        console.log(`📄 ${context} DOM ready: ${loadTime.toFixed(2)}ms`);
         return loadTime;
       },
 
       finish: () => {
         const totalTime = performance.now() - startTime;
-        console.log(
-          `✅ ${context} total optimization time: ${totalTime.toFixed(2)}ms`
-        );
         return {
           context,
           totalTime,
@@ -87,7 +79,6 @@ class PerformanceValidator {
 
       this.calculateEstimatedSavings(stats, results);
 
-      console.log("🚀 Lazy Loading Optimization Results:", results);
     }
 
     return results;
@@ -138,19 +129,16 @@ class PerformanceValidator {
 
     iframe.addEventListener("load", () => {
       const loadTime = performance.now() - loadStart;
-      console.log(`⚡ ${context} iframe loaded in: ${loadTime.toFixed(2)}ms`);
 
       if (iframe.loading === "lazy") {
-        console.log(`✅ ${context} using native lazy loading`);
       }
 
       if (iframe.importance) {
-        console.log(`🎯 ${context} resource importance: ${iframe.importance}`);
       }
     });
 
     iframe.addEventListener("error", (error) => {
-      console.error(`❌ ${context} iframe failed to load:`, error);
+      console.error(`${context} iframe failed to load:`, error);
     });
 
     return monitor;
@@ -186,7 +174,6 @@ class PerformanceValidator {
       recommendations: this.getOptimizationRecommendations(),
     };
 
-    console.log("📊 TabBoost Performance Report:", report);
     return report;
   }
 

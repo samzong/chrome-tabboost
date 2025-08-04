@@ -53,7 +53,6 @@ export async function canLoadInIframe(url, options = {}) {
     url = validationResult.sanitizedUrl;
 
     if (isExcludedFileType(url)) {
-      console.log(`TabBoost: Excluded file type: ${url}`);
       return false;
     }
 

@@ -782,7 +782,6 @@ export async function createSplitView() {
       }
     } catch (e) {
       console.error("TabBoost: Failed to execute split view script:", e);
-      console.log("TabBoost: Will retry with minimal approach");
 
       try {
         await chrome.scripting.executeScript({
@@ -1039,7 +1038,6 @@ export async function updateRightView(url) {
     });
 
     if (!checkResult || !checkResult[0].result) {
-      console.log("Split view container not found, recreating...");
       await createSplitView();
     }
 

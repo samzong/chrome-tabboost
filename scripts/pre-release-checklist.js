@@ -141,7 +141,8 @@ const checks = [
       const missingVars = requiredVars.filter(varName => !process.env[varName]);
 
       if (missingVars.length > 0) {
-        console.warn(`\n    ${chalk.yellow('.env file or environment is missing required variables: ${missingVars.join(', ')}`)}`);
+        console.warn(`\n    ${chalk.yellow('Missing environment variables:')}`);
+        console.warn(missingVars.join(', '));
         return false;
       }
 

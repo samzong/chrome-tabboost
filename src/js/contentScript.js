@@ -501,15 +501,11 @@ function loadWithTimeout(iframe, url, timeout = null) {
             try {
               const contentType = iframe.contentDocument?.contentType;
               if (contentType && !contentType.includes("text/html")) {
-                console.log(
-                  `TabBoost: Non-HTML content, excluding: ${contentType}`
-                );
                 cleanup();
                 resolve({ status: "non_html", contentType });
                 return;
               }
             } catch (typeError) {
-              console.log("TabBoost: Unable to check content type, continuing");
             }
 
             cleanup();
@@ -621,9 +617,6 @@ async function createPopupDOM(url) {
           const cleanedCount = eventManager.cleanupMultiple(elementsToCleanup);
           managedElements.clear();
 
-          console.log(
-            `TabBoost: Cleaned ${cleanedCount} event listeners to prevent memory leaks`
-          );
         } catch (cleanupError) {
           console.warn(
             "TabBoost: Event cleanup error, using fallback:",
@@ -678,9 +671,6 @@ async function createPopupDOM(url) {
               );
             }
           } catch (e) {
-            console.log(
-              "TabBoost: Unable to directly access iframe content, using alternative close method"
-            );
 
             try {
               if (iframe.contentWindow) {
@@ -796,9 +786,6 @@ async function createPopupDOM(url) {
       }
 
       if (loadResult.status === "non_html") {
-        console.log(
-          `TabBoost: Detected non-HTML content (${loadResult.contentType}), opening in new tab`
-        );
         window.open(url, "_blank");
         closePopup();
         return;

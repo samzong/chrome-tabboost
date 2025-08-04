@@ -16,9 +16,6 @@ class IframePool {
 
   _initializeTemplates() {
     if (typeof document === "undefined") {
-      console.log(
-        "TabBoost IframePool: Skipping template init, DOM unavailable"
-      );
       return;
     }
 
@@ -64,7 +61,6 @@ class IframePool {
 
   getIframe(type, id, url = "about:blank") {
     if (typeof document === "undefined") {
-      console.log("TabBoost IframePool: DOM unavailable, returning null");
       return null;
     }
 
@@ -87,9 +83,6 @@ class IframePool {
 
     const template = this.templateCache.get(type);
     if (!template) {
-      console.log(
-        `TabBoost IframePool: Template not found or DOM unavailable, using fallback: ${type}`
-      );
       return this._createFallbackIframe(id, url);
     }
 
@@ -146,18 +139,12 @@ class IframePool {
       );
     }
 
-    console.log(
-      `TabBoost IframePool: Split View pair created in ${(performance.now() - startTime).toFixed(2)}ms`
-    );
 
     return { leftIframe, rightIframe };
   }
 
   _createFallbackIframe(id, url) {
     if (typeof document === "undefined") {
-      console.log(
-        "TabBoost IframePool: DOM unavailable, cannot create fallback iframe"
-      );
       return null;
     }
 

@@ -50,9 +50,6 @@ class EventManager {
       });
 
       this.metrics.totalListeners++;
-      console.log(
-        `TabBoost EventManager: Added listener ${event} (total: ${this.metrics.totalListeners})`
-      );
 
       return controller;
     } catch (error) {
@@ -82,9 +79,6 @@ class EventManager {
     });
 
     const duration = performance.now() - startTime;
-    console.log(
-      `TabBoost EventManager: Batch added ${eventConfigs.length} listeners in ${duration.toFixed(2)}ms`
-    );
 
     return controller;
   }
@@ -108,9 +102,6 @@ class EventManager {
         this.metrics.activeControllers--;
         this.metrics.memoryLeaksPrevented++;
 
-        console.log(
-          `TabBoost EventManager: Element listeners cleaned (memory leaks prevented: ${this.metrics.memoryLeaksPrevented})`
-        );
         return true;
       } catch (error) {
         console.error(
@@ -140,9 +131,6 @@ class EventManager {
     });
 
     const duration = performance.now() - startTime;
-    console.log(
-      `TabBoost EventManager: Batch cleaned ${successCount}/${elements.length} elements in ${duration.toFixed(2)}ms`
-    );
 
     return successCount;
   }
@@ -170,9 +158,6 @@ class EventManager {
     this.metrics.memoryLeaksPrevented += cleanedCount;
 
     const duration = performance.now() - startTime;
-    console.log(
-      `TabBoost EventManager: Emergency cleaned ${cleanedCount} controllers in ${duration.toFixed(2)}ms`
-    );
 
     return cleanedCount;
   }

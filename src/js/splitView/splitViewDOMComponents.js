@@ -3,10 +3,6 @@ import { createElement } from "./splitViewDOMUtils.js";
 import { safeAddEventListener } from "./splitViewUtils.js";
 import * as i18n from "../../utils/i18n.js";
 
-/**
- * 创建分割图标
- * @returns {HTMLElement} 分割图标元素
- */
 export function createSplitIcon() {
   const icon = createElement("div", {
     styles: {
@@ -35,22 +31,13 @@ export function createSplitIcon() {
   return icon;
 }
 
-/**
- * 创建设置按钮
- * @param {string} side - 'left' 或 'right'
- * @returns {HTMLElement} 设置按钮元素
- */
 export function createSettingsButton(side) {
   const settingsButton = createElement("button", UI_CONFIG.settingsButton);
-  settingsButton.title = "设置分屏比例";
+  settingsButton.title = "Split ratio settings";
   settingsButton.appendChild(createSplitIcon());
   return settingsButton;
 }
 
-/**
- * 当前布局方向
- * @returns {string} 'vertical' 或 'horizontal'
- */
 export function getCurrentDirection() {
   const viewsContainer = document.getElementById(UI_CONFIG.viewsContainer.id);
   return viewsContainer &&
@@ -59,9 +46,6 @@ export function getCurrentDirection() {
     : "horizontal";
 }
 
-/**
- * 更新所有比例示意图
- */
 export function updateRatioIcons() {
   const direction = getCurrentDirection();
 
@@ -79,12 +63,6 @@ export function updateRatioIcons() {
     });
 }
 
-/**
- * 创建比例选项菜单
- * @param {HTMLElement} settingsButton - 设置按钮元素
- * @param {string} viewSide - 'left' 或 'right'
- * @returns {HTMLElement} 菜单元素
- */
 export function createRatioMenu(settingsButton, viewSide) {
   const menu = createElement("div", UI_CONFIG.ratioMenu);
   menu.style.right = viewSide === "left" ? "40px" : "40px";
@@ -283,10 +261,6 @@ export function createRatioMenu(settingsButton, viewSide) {
   return menu;
 }
 
-/**
- * 为视图添加鼠标悬停事件
- * @param {HTMLElement} view - 视图元素
- */
 export function addViewHoverEffects(view) {
   safeAddEventListener(view, "mouseenter", () => {
     const closeButton = view.querySelector(
@@ -311,9 +285,6 @@ export function addViewHoverEffects(view) {
   });
 }
 
-/**
- * 应用默认比例
- */
 export function applyDefaultRatio() {
   try {
     const leftView = document.getElementById(UI_CONFIG.view.left.id);
