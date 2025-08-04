@@ -646,5 +646,25 @@
   "errorCorruptedList": {
     "message": "Ignorieren Sie die Listendaten scheinen beschädigt zu sein.Bitte überprüfen Sie die Speicher- oder Zurücksetzeneinstellungen.",
     "description": "Error notification when the ignore list data is not an array."
+  },
+  "closeSymbol": {
+    "message": "×",
+    "description": "Close button symbol"
+  },
+  "arrowSymbol": {
+    "message": "→",
+    "description": "Arrow symbol for directions"
+  },
+  "commandKey": {
+    "message": "⌘",
+    "description": "Command key symbol (Mac)"
+  },
+  "shiftKey": {
+    "message": "⇧",
+    "description": "Shift key symbol"
+  },
+  "ctrlKey": {
+    "message": "⌃",
+    "description": "Control key symbol (Mac)"
   }
 }

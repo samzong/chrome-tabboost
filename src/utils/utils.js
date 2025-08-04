@@ -38,7 +38,7 @@ export async function showNotification(message) {
       });
     });
   } catch (error) {
-    console.error("Error displaying notification:", error);
+    
   }
 }
 

@@ -12,7 +12,7 @@ export function getMessage(messageName, substitutions = []) {
   const message = chrome.i18n.getMessage(messageName, substitutions);
 
   if (!message) {
-    console.warn(`i18n: Missing message for key "${messageName}"`);
+    
   }
 
   return message;
@@ -48,7 +48,7 @@ export function localizePage(rootElement = document) {
           element.textContent = message;
         }
       } else {
-        console.warn(`Missing i18n message: ${messageName}`);
+        
       }
     }
   });
@@ -66,7 +66,7 @@ export function localizePage(rootElement = document) {
       if (message) {
         element.setAttribute("placeholder", message);
       } else {
-        console.warn(`Missing i18n placeholder message: ${messageName}`);
+        
       }
     }
   });

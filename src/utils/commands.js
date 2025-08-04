@@ -1,3 +1,5 @@
+import { getMessage } from "./i18n.js";
+
 /**
  * Get all registered commands and their shortcuts in the extension
  * @returns {Promise<Object>}
@@ -13,7 +15,7 @@ export async function getCommandShortcuts() {
 
     return shortcuts;
   } catch (error) {
-    console.error("Failed to get shortcuts:", error);
+    
     return {};
   }
 }
@@ -27,11 +29,11 @@ export function formatShortcut(shortcut) {
   if (!shortcut) return "";
 
   return shortcut
-    .replace(/Command/g, "⌘")
+    .replace(/Command/g, getMessage("commandKey"))
     .replace(/Ctrl/g, "Ctrl")
     .replace(/Alt/g, "Alt")
-    .replace(/Shift/g, "⇧")
-    .replace(/MacCtrl/g, "⌃")
+    .replace(/Shift/g, getMessage("shiftKey"))
+    .replace(/MacCtrl/g, getMessage("ctrlKey"))
     .replace(/\+/g, " + ");
 }
 

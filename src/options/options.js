@@ -223,7 +223,7 @@ function loadSettings() {
 
   chrome.storage.sync.get(keys, (result) => {
     if (chrome.runtime.lastError) {
-      console.error("Failed to load settings:", chrome.runtime.lastError);
+      
       return;
     }
 
@@ -285,7 +285,7 @@ function saveSettings() {
 
   chrome.storage.sync.set(settings, () => {
     if (chrome.runtime.lastError) {
-      console.error("Failed to save settings:", chrome.runtime.lastError);
+      
       showPageNotification(
         getMessage("settingsSaveFailed") || "Failed to save",
         "error"

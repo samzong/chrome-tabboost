@@ -10,10 +10,7 @@ const initStorageCache = async () => {
   try {
     await storageCache.init();
   } catch (error) {
-    console.error(
-      "chrome-tabboost: Failed to initialize storage cache:",
-      error
-    );
+    
   }
 };
 
@@ -130,9 +127,9 @@ function showSaveNotification() {
         navigator.platform.includes("Mac"));
     const saveInstructionText = isMac
       ? getMessage("savePageInstructionMac") ||
-        "You can save this page by selecting File → Save Page As... or press Command+S again within 3 seconds"
+        `You can save this page by selecting File ${getMessage("arrowSymbol")} Save Page As... or press Command+S again within 3 seconds`
       : getMessage("savePageInstructionOther") ||
-        "You can save this page by selecting File → Save Page As... or press Ctrl+S again within 3 seconds";
+        `You can save this page by selecting File ${getMessage("arrowSymbol")} Save Page As... or press Ctrl+S again within 3 seconds`;
 
     saveInstructionNotification.textContent = saveInstructionText;
     applyDefaultNotificationStyle(saveInstructionNotification);
@@ -252,9 +249,7 @@ async function createPopup(url) {
     const validationResult = validateUrl(url);
 
     if (!validationResult.isValid) {
-      console.error(
-        `chrome-tabboost: URL security validation failed: ${validationResult.reason}`
-      );
+      
       window.open(url, "_blank");
       return;
     }
@@ -270,7 +265,7 @@ async function createPopup(url) {
 
     await createPopupDOM(url);
   } catch (error) {
-    console.error("chrome-tabboost: Error in createPopup:", error);
+    
     window.open(url, "_blank");
   }
 }
@@ -284,7 +279,7 @@ async function getPreviewSettings() {
     });
     return settings;
   } catch (error) {
-    console.error("chrome-tabboost: Failed to get preview settings:", error);
+    
     return {
       popupSizePreset: "default",
       customWidth: 80,
@@ -328,7 +323,7 @@ function createToolbarElements() {
     className: "tabboost-button tabboost-close-button",
     title: closeText,
     "aria-label": closeText,
-    innerHTML: "&times;",
+    innerHTML: getMessage("closeSymbol"),
   });
 
   appendChildren(buttonsDiv, [copyUrlButton, newTabButton, closeButton]);
@@ -539,18 +534,12 @@ async function createPopupDOM(url) {
         eventManager.addListener(element, eventType, listener, options);
         managedElements.add(element);
       } catch (eventError) {
-        console.warn(
-          "TabBoost: Event manager error, using fallback:",
-          eventError
-        );
+        
         try {
           element.addEventListener(eventType, listener, options);
           managedElements.add(element);
         } catch (fallbackError) {
-          console.error(
-            "TabBoost: Fallback event listener failed:",
-            fallbackError
-          );
+          
         }
       }
     };
@@ -584,19 +573,16 @@ async function createPopupDOM(url) {
       hasHandledFailure = true;
 
       try {
-        console.error("chrome-tabboost: Popup load failure:", error.message);
+        
         if (errorMsg) errorMsg.classList.add("show");
         clearAllTimers();
       } catch (handlerError) {
-        console.error(
-          "chrome-tabboost: Error in handleLoadFailure:",
-          handlerError
-        );
+        
         try {
           window.open(url, "_blank");
           closePopup();
         } catch (fallbackError) {
-          console.error("chrome-tabboost: Fallback failed:", fallbackError);
+          
         }
       }
     };
@@ -618,10 +604,7 @@ async function createPopupDOM(url) {
           managedElements.clear();
 
         } catch (cleanupError) {
-          console.warn(
-            "TabBoost: Event cleanup error, using fallback:",
-            cleanupError
-          );
+          
           managedElements.clear();
         }
         timers.closeTimeout = setTimeout(() => {
@@ -632,7 +615,7 @@ async function createPopupDOM(url) {
           timers.closeTimeout = null;
         }, 300);
       } catch (error) {
-        console.error("chrome-tabboost: Error closing popup:", error);
+        
       }
     };
 
@@ -702,7 +685,7 @@ async function createPopupDOM(url) {
         };
         addTrackedEventListener(window, "message", messageListener);
       } catch (error) {
-        console.error("TabBoost: Failed to add iframe Escape listener:", error);
+        
       }
     };
 
@@ -739,7 +722,7 @@ async function createPopupDOM(url) {
               });
             })
             .catch((error) => {
-              console.error("chrome-tabboost: Error copying URL:", error);
+              
               chrome.runtime.sendMessage({
                 action: "showNotification",
                 message: getMessage("urlCopyFailed") || "Failed to copy URL!",
@@ -811,7 +794,7 @@ async function createPopupDOM(url) {
       }
     }
   } catch (error) {
-    console.error("chrome-tabboost: Error creating popup DOM:", error);
+    
     window.open(url, "_blank");
   }
 }

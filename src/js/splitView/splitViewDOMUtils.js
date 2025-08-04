@@ -1,5 +1,6 @@
 import { UI_CONFIG } from "./splitViewConfig";
 import { safeQuerySelector } from "./splitViewUtils";
+import * as i18n from "../../utils/i18n.js";
 
 export function createElement(tag, config = {}) {
   const element = document.createElement(tag);
@@ -35,7 +36,7 @@ export function addSafeEventListener(element, event, handler) {
   try {
     element.addEventListener(event, handler);
   } catch (e) {
-    console.error(`Failed to add ${event} event listener:`, e);
+    
   }
 }
 
@@ -55,7 +56,7 @@ export function createIframe(id, url = "about:blank") {
 export function createCloseButton(action) {
   const button = createElement("button", UI_CONFIG.closeButton);
   button.dataset.action = action;
-  button.innerText = "×";
+  button.innerText = i18n.getMessage("closeSymbol");
   return button;
 }
 
