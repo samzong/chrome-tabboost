@@ -45,3 +45,17 @@ tests/reports/
 
 # 测试缓存
 tests/cache/
+
+# Cypress 测试生成的文件
+cypress/videos/
+cypress/screenshots/
+cypress/downloads/
+cypress.env.json
+
+# Jest 测试覆盖率
+coverage/
+.nyc_output/
+
+# 临时文件
+*.tmp
+*.temp

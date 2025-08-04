@@ -1,34 +1,34 @@
 import storageCache from "../utils/storage-cache.js";
 import { localizePage, getMessage } from "../utils/i18n.js";
 
-function showPageNotification(message, type = 'success') {
-  let notification = document.getElementById('page-notification');
-  
+function showPageNotification(message, type = "success") {
+  let notification = document.getElementById("page-notification");
+
   if (!notification) {
-    notification = document.createElement('div');
-    notification.id = 'page-notification';
+    notification = document.createElement("div");
+    notification.id = "page-notification";
     notification.className = `page-notification ${type}`;
     document.body.appendChild(notification);
   }
-  
+
   notification.textContent = message;
   notification.className = `page-notification ${type} show`;
-  
+
   notification.animate(
     [
-      { transform: 'translateX(0)' },
-      { transform: 'translateX(-5px)' },
-      { transform: 'translateX(5px)' },
-      { transform: 'translateX(0)' }
+      { transform: "translateX(0)" },
+      { transform: "translateX(-5px)" },
+      { transform: "translateX(5px)" },
+      { transform: "translateX(0)" },
     ],
     {
       duration: 300,
-      iterations: 2
+      iterations: 2,
     }
   );
-  
+
   setTimeout(() => {
-    notification.className = notification.className.replace(' show', '');
+    notification.className = notification.className.replace(" show", "");
     setTimeout(() => {
       notification.remove();
     }, 300);
@@ -94,7 +94,9 @@ const saveButton = document.getElementById("saveButton");
 const headerModificationEnabledCheckbox = document.getElementById(
   "headerModificationEnabled"
 );
-const notificationsEnabledCheckbox = document.getElementById("notificationsEnabled");
+const notificationsEnabledCheckbox = document.getElementById(
+  "notificationsEnabled"
+);
 
 const popupSizePreset = document.getElementById("popupSizePreset");
 const customWidthSlider = document.getElementById("customWidthSlider");
@@ -120,7 +122,7 @@ function setupEventListeners() {
         content.classList.remove("active");
       });
       document.getElementById(`${tabId}-content`).classList.add("active");
-      
+
       updateUrlWithActiveTab(tabId);
     });
   });
@@ -163,7 +165,7 @@ function setupEventListeners() {
           width = 80;
           height = 80;
         } else if (selectedPreset === "large") {
-          width = 95; 
+          width = 95;
           height = 95;
         }
         if (customWidthSlider) customWidthSlider.value = width;
@@ -177,8 +179,7 @@ function setupEventListeners() {
   }
 
   if (popupShortcutSelect) {
-    popupShortcutSelect.addEventListener("change", function () {
-    });
+    popupShortcutSelect.addEventListener("change", function () {});
   }
 
   saveButton.addEventListener("click", saveSettings);
@@ -225,12 +226,16 @@ function loadSettings() {
       console.error("Failed to load settings:", chrome.runtime.lastError);
       return;
     }
-    
-    headerModificationEnabledCheckbox.checked = 
-      result.headerModificationEnabled !== undefined ? result.headerModificationEnabled : true;
 
-    notificationsEnabledCheckbox.checked = 
-      result.notificationsEnabled !== undefined ? result.notificationsEnabled : true;
+    headerModificationEnabledCheckbox.checked =
+      result.headerModificationEnabled !== undefined
+        ? result.headerModificationEnabled
+        : true;
+
+    notificationsEnabledCheckbox.checked =
+      result.notificationsEnabled !== undefined
+        ? result.notificationsEnabled
+        : true;
 
     const loadedPreset = result.popupSizePreset || "default";
     const loadedWidth = result.customWidth || 80;
@@ -255,8 +260,8 @@ function loadSettings() {
 
     updateCustomSizeLabels();
     updateSizePreview();
-    
-    Object.keys(result).forEach(key => {
+
+    Object.keys(result).forEach((key) => {
       storageCache.cache[key] = result[key];
       storageCache.setExpiration(key);
     });
@@ -281,16 +286,21 @@ function saveSettings() {
   chrome.storage.sync.set(settings, () => {
     if (chrome.runtime.lastError) {
       console.error("Failed to save settings:", chrome.runtime.lastError);
-      showPageNotification(getMessage("settingsSaveFailed") || "Failed to save", "error");
+      showPageNotification(
+        getMessage("settingsSaveFailed") || "Failed to save",
+        "error"
+      );
     } else {
       showPageNotification(getMessage("settingsSaved") || "Settings saved");
-      
-      Object.keys(settings).forEach(key => {
+
+      Object.keys(settings).forEach((key) => {
         storageCache.cache[key] = settings[key];
         storageCache.setExpiration(key);
       });
 
-      const popupShortcut = popupShortcutSelect ? popupShortcutSelect.value : "default";
+      const popupShortcut = popupShortcutSelect
+        ? popupShortcutSelect.value
+        : "default";
       chrome.storage.local.set({ popupShortcut }, () => {
         showPageNotification(getMessage("settingsSaved"), "success");
       });
@@ -300,6 +310,6 @@ function saveSettings() {
 
 function updateUrlWithActiveTab(tabId) {
   const url = new URL(window.location.href);
-  url.searchParams.set('tab', tabId);
-  window.history.replaceState({}, '', url);
+  url.searchParams.set("tab", tabId);
+  window.history.replaceState({}, "", url);
 }

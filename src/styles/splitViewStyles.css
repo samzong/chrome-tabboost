@@ -1,6 +1,5 @@
-/* splitViewStyles.css - 分屏模式样式 */
+/* splitViewStyles.css */
 
-/* 分屏容器样式 */
 #tabboost-split-view-container {
   position: fixed;
   top: 0;
@@ -13,12 +12,10 @@
   flex-wrap: wrap;
   overflow: hidden;
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.2);
-  /* 使用硬件加速，减少重绘 */
   transform: translateZ(0);
   will-change: opacity, transform;
 }
 
-/* 使用CSS类控制显示状态，避免直接操作style属性 */
 .tabboost-initially-hidden {
   opacity: 0;
   transform: scale(0.98);
@@ -32,21 +29,16 @@
     transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* 分屏内容容器 - 新增以优化结构 */
 #tabboost-views-container {
   display: flex;
-  flex-direction: row; /* 默认左右布局 */
+  flex-direction: row;
   width: 100%;
-  height: 100%; /* 移除顶部控制栏，视图容器占据全屏 */
+  height: 100%;
   position: relative;
-  /* 使用will-change提示浏览器做好准备处理变化 */
   will-change: contents;
-  /* 调整内边距，为分隔线留出足够空间 */
   padding: 16px;
   box-sizing: border-box;
-  /* 添加布局转换动画 */
   transition: flex-direction 0.3s ease;
-  /* 确保z-index正确，使伪元素能显示 */
   z-index: 1;
 }
 
@@ -61,43 +53,40 @@
   }
 }
 
-/* 左侧视图样式 */
 #tabboost-split-left {
   width: 50%;
-  height: 100%; /* 视图占据完整高度 */
+  height: 100%;
   overflow: hidden;
   position: relative;
-  /* 调整边距，使分隔线视觉效果更好 */
   margin-right: 10px;
   border-radius: 8px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  /* 使用硬件加速，减少重绘 */
+  transition:
+    width 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   transform: translateZ(0);
   will-change: width, height;
   background-color: #fff;
   z-index: 2;
 }
 
-/* 右侧视图样式 */
 #tabboost-split-right {
   width: 50%;
-  height: 100%; /* 现在容器已经计算好高度 */
+  height: 100%;
   overflow: hidden;
   position: relative;
-  /* 调整边距，使分隔线视觉效果更好 */
   margin-left: 10px;
   border-radius: 8px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  /* 使用硬件加速，减少重绘 */
+  transition:
+    width 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   transform: translateZ(0);
   will-change: width, height;
   background-color: #fff;
   z-index: 2;
 }
 
-/* 添加中间短线 */
 #tabboost-split-divider::after {
   content: "";
   position: absolute;
@@ -108,19 +97,17 @@
   height: 40px;
   background-color: #e0e0e0;
   border-radius: 4px;
-  transition: 
+  transition:
     background-color 0.2s,
     height 0.2s,
     width 0.2s;
 }
 
-/* 在悬停或拖动时显示拖动指示 */
 #tabboost-split-divider:hover::after {
   background-color: #3b82f6;
   height: 60px;
 }
 
-/* iframe 样式 */
 #tabboost-left-iframe,
 #tabboost-right-iframe {
   width: 100%;
@@ -129,21 +116,16 @@
   overflow: hidden;
   background-color: #fff;
   transition: opacity 0.3s;
-  /* 使用CSS变量管理iframe可见性，减少重绘 */
   opacity: var(--iframe-opacity, 1);
-  /* 使用硬件加速，减少重绘 */
   transform: translateZ(0);
-  /* 避免不必要的重绘 */
   will-change: opacity;
   border-radius: 8px;
 }
 
-/* 自定义iframe内部内容的边距 */
 .tabboost-iframe-content {
   padding: 16px;
 }
 
-/* iframe错误提示样式 */
 .tabboost-iframe-error {
   position: absolute;
   top: 0;
@@ -151,7 +133,7 @@
   width: 100%;
   height: 100%;
   background-color: rgba(255, 255, 255, 0.95);
-  display: none; /* 默认隐藏 */
+  display: none;
   justify-content: center;
   align-items: center;
   z-index: 10;
@@ -224,7 +206,6 @@
   box-shadow: 0 2px 5px rgba(37, 99, 235, 0.3);
 }
 
-/* 通用错误提示 */
 .tabboost-error {
   position: fixed;
   top: 50%;
@@ -262,7 +243,6 @@
   font-size: 18px;
 }
 
-/* 拖动时的视觉样式 */
 .tabboost-dragging {
   cursor: col-resize !important;
   user-select: none !important;
@@ -280,13 +260,11 @@
   pointer-events: none;
 }
 
-/* 拖动时显示分割线高亮 */
 .tabboost-dragging #tabboost-split-divider::after {
   background-color: #3b82f6 !important;
   height: 60px !important;
 }
 
-/* 横向模式媒体查询 */
 @media (min-width: 769px) {
   #tabboost-views-container {
     flex-direction: row;
@@ -312,7 +290,6 @@
   }
 }
 
-/* 纵向模式媒体查询 */
 @media (max-width: 768px) {
   #tabboost-views-container {
     flex-direction: column;
@@ -344,7 +321,6 @@
     cursor: row-resize;
   }
 
-  /* 纵向模式的分隔短线 */
   #tabboost-split-divider::after {
     width: 40px;
     height: 4px;
@@ -355,7 +331,6 @@
     height: 4px;
   }
 
-  /* 纵向拖动时的样式 */
   .tabboost-dragging #tabboost-split-divider::after {
     width: 60px !important;
     height: 4px !important;
@@ -366,7 +341,6 @@
   }
 }
 
-/* 优化iframe加载过程中的视觉效果 */
 #tabboost-left-iframe:not([src]),
 #tabboost-right-iframe:not([src]),
 #tabboost-left-iframe[src="about:blank"],
@@ -377,7 +351,6 @@
   border-radius: 8px;
 }
 
-/* 深色模式下的样式调整 */
 @media (prefers-color-scheme: dark) {
   #tabboost-split-view-container {
     background-color: #1f2937;
@@ -388,11 +361,10 @@
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
   }
 
-  /* 深色模式的分隔线 */
   #tabboost-split-divider::after {
     background-color: #4b5563;
   }
-  
+
   #tabboost-split-divider:hover::after,
   .tabboost-dragging #tabboost-split-divider::after {
     background-color: #3b82f6;
@@ -454,7 +426,6 @@
   }
 }
 
-/* 分屏中单独区域的关闭按钮 */
 .tabboost-view-close {
   position: absolute;
   top: 12px;
@@ -490,27 +461,26 @@
   transform: scale(1.1);
 }
 
-/* 上下布局的样式调整 */
-#tabboost-views-container[data-split-direction="vertical"] #tabboost-split-left {
+#tabboost-views-container[data-split-direction="vertical"]
+  #tabboost-split-left {
   width: 100%;
   height: 50%;
   margin-right: 0;
   margin-bottom: 10px;
 }
 
-#tabboost-views-container[data-split-direction="vertical"] #tabboost-split-right {
+#tabboost-views-container[data-split-direction="vertical"]
+  #tabboost-split-right {
   width: 100%;
   height: 50%;
   margin-left: 0;
   margin-top: 10px;
 }
 
-/* 分隔空间美化 */
 #tabboost-views-container {
   position: relative;
 }
 
-/* 左右分隔线装饰效果 */
 #tabboost-views-container[data-split-direction="horizontal"]::after {
   content: "";
   position: absolute;
@@ -538,7 +508,6 @@
   z-index: 9;
 }
 
-/* 上下分隔线装饰效果 */
 #tabboost-views-container[data-split-direction="vertical"]::after {
   content: "";
   position: absolute;
@@ -566,7 +535,6 @@
   z-index: 9;
 }
 
-/* 悬停效果增强 */
 #tabboost-views-container:hover[data-split-direction="horizontal"]::after {
   background-color: #e8e8e8;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
@@ -585,31 +553,29 @@
   background-color: #808080;
 }
 
-/* 深色模式下的分隔线样式 */
 @media (prefers-color-scheme: dark) {
   #tabboost-split-left,
   #tabboost-split-right {
     background-color: #1f2937;
   }
-  
+
   #tabboost-views-container[data-split-direction="horizontal"]::after,
   #tabboost-views-container[data-split-direction="vertical"]::after {
     background-color: #374151;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   }
-  
+
   #tabboost-views-container[data-split-direction="horizontal"]::before,
   #tabboost-views-container[data-split-direction="vertical"]::before {
     background-color: #6b7280;
   }
-  
-  /* 深色模式下的悬停效果 */
+
   #tabboost-views-container:hover[data-split-direction="horizontal"]::after,
   #tabboost-views-container:hover[data-split-direction="vertical"]::after {
     background-color: #4b5563;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
   }
-  
+
   #tabboost-views-container:hover[data-split-direction="horizontal"]::before,
   #tabboost-views-container:hover[data-split-direction="vertical"]::before {
     background-color: #9ca3af;

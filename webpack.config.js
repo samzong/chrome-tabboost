@@ -90,6 +90,7 @@ module.exports = {
               manifest.content_scripts[0].js = ["contentScript.js"];
               manifest.content_scripts[0].css = [
                 "assets/styles/popupStyles.css",
+                "assets/styles/popupNotificationStyles.css",
                 "assets/styles/splitViewStyles.css",
               ];
             }
