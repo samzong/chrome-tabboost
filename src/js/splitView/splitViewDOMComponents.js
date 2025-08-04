@@ -308,6 +308,6 @@ export function applyDefaultRatio() {
       }
     }
   } catch (e) {
-    console.error("Error applying default split ratio:", e);
+    
   }
 }

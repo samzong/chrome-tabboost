@@ -11,7 +11,7 @@ import {
 } from "./splitViewDOMUtils.js";
 import { safeQuerySelector } from "./splitViewUtils.js";
 import * as i18n from "../../utils/i18n.js";
-// Setup lazy loading removed - causes Webpack import errors in injected scripts
+
 import {
   createSettingsButton,
   createRatioMenu,
@@ -23,7 +23,7 @@ export function initSplitViewDOM(leftUrl) {
 
   try {
     if (!document || !document.body) {
-      console.error("TabBoost: document or document.body is not available");
+      
       return false;
     }
 
@@ -60,7 +60,7 @@ export function initSplitViewDOM(leftUrl) {
 
     return true;
   } catch (error) {
-    console.error("TabBoost: Error in initSplitViewDOM:", error);
+    
     showError(
       i18n.getMessage("failedToInitSplitView") ||
         "Failed to initialize split view"
@@ -136,10 +136,7 @@ function setupIframeEvents(iframe, errorContainer, url) {
           frameDoc.head.appendChild(style);
         }
       } catch (e) {
-        console.warn(
-          "TabBoost: Cannot access iframe content due to security restrictions:",
-          e.message
-        );
+        
       }
     }
   });
@@ -166,9 +163,7 @@ function saveOriginalContent() {
     let originalContent = document.documentElement.outerHTML || "";
 
     if (originalContent.length > maxContentLength) {
-      console.warn(
-        `TabBoost: Original content exceeds ${maxContentLength} characters, saving placeholder.`
-      );
+      
       originalContent = `<html><head><title>${document.title}</title></head><body><div class="tabboost-restored-content">${i18n.getMessage("contentTooLarge") || "Content was too large to save."}</div></body></html>`;
     }
 
@@ -177,7 +172,7 @@ function saveOriginalContent() {
       originalContent
     );
   } catch (e) {
-    console.error("TabBoost: Error storing original content", e);
+    
   }
 }
 
@@ -199,7 +194,7 @@ function showError(message) {
       </div>
     `;
   } catch (e) {
-    console.error("TabBoost: Error setting error message:", e);
+    
   }
 }
 
@@ -247,7 +242,7 @@ export function updateRightViewDOM(url) {
   try {
     const rightView = safeQuerySelector(`#${UI_CONFIG.view.right.id}`);
     if (!rightView) {
-      console.error("TabBoost: Right view not found");
+      
       return false;
     }
 
@@ -289,11 +284,11 @@ export function updateRightViewDOM(url) {
 
     return true;
   } catch (error) {
-    console.error("TabBoost: Error in updateRightViewDOM:", error);
+    
     try {
       window.open(url, "_blank");
     } catch (e) {
-      console.error("TabBoost: Failed to open URL in new tab:", e);
+      
     }
     return false;
   }

@@ -702,5 +702,25 @@
   "splitViewVertical": {
     "message": "上下分屏",
     "description": "Label for vertical split view layout"
+  },
+  "closeSymbol": {
+    "message": "×",
+    "description": "Close button symbol"
+  },
+  "arrowSymbol": {
+    "message": "→",
+    "description": "Arrow symbol for directions"
+  },
+  "commandKey": {
+    "message": "⌘",
+    "description": "Command key symbol (Mac)"
+  },
+  "shiftKey": {
+    "message": "⇧",
+    "description": "Shift key symbol"
+  },
+  "ctrlKey": {
+    "message": "⌃",
+    "description": "Control key symbol (Mac)"
   }
 }

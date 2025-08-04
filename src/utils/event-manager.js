@@ -15,9 +15,7 @@ class EventManager {
 
   addListener(element, event, handler, options = {}) {
     if (!element || typeof handler !== "function") {
-      console.warn(
-        "TabBoost EventManager: Invalid parameters, skipping listener"
-      );
+      
       return null;
     }
 
@@ -53,7 +51,7 @@ class EventManager {
 
       return controller;
     } catch (error) {
-      console.error("TabBoost EventManager: Failed to add listener:", error);
+      
       elementListeners.delete(listenerInfo);
       return null;
     }
@@ -61,7 +59,7 @@ class EventManager {
 
   addMultipleListeners(element, eventConfigs) {
     if (!element || !Array.isArray(eventConfigs)) {
-      console.warn("TabBoost EventManager: Invalid batch add parameters");
+      
       return null;
     }
 
@@ -85,7 +83,7 @@ class EventManager {
 
   cleanup(element) {
     if (!element) {
-      console.warn("TabBoost EventManager: Invalid cleanup parameters");
+      
       return false;
     }
 
@@ -104,10 +102,7 @@ class EventManager {
 
         return true;
       } catch (error) {
-        console.error(
-          "TabBoost EventManager: Failed to cleanup listeners:",
-          error
-        );
+        
         return false;
       }
     }
@@ -117,7 +112,7 @@ class EventManager {
 
   cleanupMultiple(elements) {
     if (!Array.isArray(elements)) {
-      console.warn("TabBoost EventManager: Invalid batch cleanup parameters");
+      
       return 0;
     }
 
@@ -136,7 +131,7 @@ class EventManager {
   }
 
   emergencyCleanup() {
-    console.warn("TabBoost EventManager: Executing emergency global cleanup");
+    
 
     const startTime = performance.now();
     let cleanedCount = 0;
@@ -146,10 +141,7 @@ class EventManager {
         controller.abort();
         cleanedCount++;
       } catch (error) {
-        console.error(
-          "TabBoost EventManager: Emergency cleanup failed:",
-          error
-        );
+        
       }
     });
 

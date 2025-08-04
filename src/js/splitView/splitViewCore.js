@@ -4,21 +4,21 @@ import { removeSplitViewDOM } from "./splitViewDOM.js";
 import splitViewState from "./splitViewState.js";
 
 splitViewState.init().catch((error) => {
-  console.error("Failed to initialize split view state:", error);
+  
 });
 
 export async function createSplitView() {
   try {
     const currentTab = await getCurrentTab();
     if (!currentTab) {
-      console.error("Failed to get current tab");
+      
       return false;
     }
 
     const leftUrl = currentTab.url;
 
     if (!leftUrl || leftUrl === "about:blank") {
-      console.error("Invalid page URL");
+      
       return false;
     }
 
@@ -34,7 +34,7 @@ export async function createSplitView() {
             );
             return !!container;
           } catch (e) {
-            console.error("Error checking if split view container exists:", e);
+            
             return false;
           }
         },
@@ -69,7 +69,7 @@ export async function createSplitView() {
               }
               return false;
             } catch (e) {
-              console.error("Error making split view container visible:", e);
+              
               return false;
             }
           },
@@ -119,7 +119,7 @@ export async function createSplitView() {
             leftCloseButton.style.zIndex = "10";
             leftCloseButton.style.width = "24px";
             leftCloseButton.style.height = "24px";
-            leftCloseButton.innerText = "×";
+            leftCloseButton.innerText = i18nMessages.closeSymbol;
             leftCloseButton.title = i18nMessages.closeSplitView;
             leftCloseButton.style.backgroundColor = "rgba(0,0,0,0.5)";
             leftCloseButton.style.color = "#fff";
@@ -142,7 +142,7 @@ export async function createSplitView() {
                   try {
                     window.location.href = rightUrl;
                   } catch (e) {
-                    console.error("Error setting location to right URL:", e);
+                    
                   }
                 }, 100);
               } else {
@@ -234,7 +234,7 @@ export async function createSplitView() {
             rightCloseButton.style.zIndex = "10";
             rightCloseButton.style.width = "24px";
             rightCloseButton.style.height = "24px";
-            rightCloseButton.innerText = "×";
+            rightCloseButton.innerText = i18nMessages.closeSymbol;
             rightCloseButton.title = i18nMessages.closeSplitView;
             rightCloseButton.style.backgroundColor = "rgba(0,0,0,0.5)";
             rightCloseButton.style.color = "#fff";
@@ -303,7 +303,7 @@ export async function createSplitView() {
                 originalContent
               );
             } catch (e) {
-              console.error("TabBoost: Error storing original content", e);
+              
             }
 
             const existingElements = Array.from(document.body.children);
@@ -702,7 +702,7 @@ export async function createSplitView() {
                   }
                 }
               } catch (e) {
-                console.error("Error applying default split ratio:", e);
+                
               }
             };
 
@@ -756,7 +756,7 @@ export async function createSplitView() {
 
             return true;
           } catch (e) {
-            console.error("TabBoost: Error creating split view:", e);
+            
             return false;
           }
         },
@@ -777,11 +777,11 @@ export async function createSplitView() {
       if (results && results[0] && results[0].result) {
         return true;
       } else {
-        console.error("TabBoost: Failed to create split view");
+        
         return false;
       }
     } catch (e) {
-      console.error("TabBoost: Failed to execute split view script:", e);
+      
 
       try {
         await chrome.scripting.executeScript({
@@ -822,7 +822,7 @@ export async function createSplitView() {
                 leftCloseButton.style.zIndex = "10";
                 leftCloseButton.style.width = "24px";
                 leftCloseButton.style.height = "24px";
-                leftCloseButton.innerText = "×";
+                leftCloseButton.innerText = i18nMessages.closeSymbol;
                 leftCloseButton.title = i18n.getMessage("closeSplitView");
                 leftCloseButton.style.backgroundColor = "rgba(0,0,0,0.5)";
                 leftCloseButton.style.color = "#fff";
@@ -845,10 +845,7 @@ export async function createSplitView() {
                       try {
                         window.location.href = rightUrl;
                       } catch (e) {
-                        console.error(
-                          "TabBoost: Error setting location to right URL:",
-                          e
-                        );
+                        
                       }
                     }, 100);
                   } else {
@@ -891,7 +888,7 @@ export async function createSplitView() {
                 rightCloseButton.style.zIndex = "10";
                 rightCloseButton.style.width = "24px";
                 rightCloseButton.style.height = "24px";
-                rightCloseButton.innerText = "×";
+                rightCloseButton.innerText = i18nMessages.closeSymbol;
                 rightCloseButton.title = i18n.getMessage("closeSplitView");
                 rightCloseButton.style.backgroundColor = "rgba(0,0,0,0.5)";
                 rightCloseButton.style.color = "#fff";
@@ -933,7 +930,7 @@ export async function createSplitView() {
                 return true;
               }
             } catch (e) {
-              console.error("TabBoost: Error creating minimal split view:", e);
+              
               return false;
             }
           },
@@ -942,15 +939,12 @@ export async function createSplitView() {
 
         return true;
       } catch (retryError) {
-        console.error(
-          "TabBoost: Failed to create minimal split view:",
-          retryError
-        );
+        
         return false;
       }
     }
   } catch (error) {
-    console.error("TabBoost: Failed to create split view:", error);
+    
     return false;
   }
 }
@@ -961,7 +955,7 @@ export async function closeSplitView() {
   try {
     const currentTab = await getCurrentTab();
     if (!currentTab) {
-      console.error("Failed to get current tab");
+      
       return false;
     }
 
@@ -981,19 +975,19 @@ export async function closeSplitView() {
 
       return true;
     } catch (e) {
-      console.error("Failed to execute restore page script:", e);
+      
 
       try {
         chrome.tabs.reload(currentTab.id);
         splitViewState.deactivate();
         return true;
       } catch (reloadError) {
-        console.error("Failed to reload page:", reloadError);
+        
         return false;
       }
     }
   } catch (error) {
-    console.error("Failed to close split view:", error);
+    
   }
 }
 
@@ -1018,7 +1012,7 @@ export async function updateRightView(url) {
   try {
     const currentTab = await getCurrentTab();
     if (!currentTab) {
-      console.error("Failed to get current tab for updateRightView");
+      
       return false;
     }
 
@@ -1031,7 +1025,7 @@ export async function updateRightView(url) {
           );
           return !!container;
         } catch (e) {
-          console.error("Error checking split view container:", e);
+          
           return false;
         }
       },
@@ -1047,7 +1041,7 @@ export async function updateRightView(url) {
         try {
           const rightView = document.getElementById("tabboost-split-right");
           if (!rightView) {
-            console.error("Right view not found");
+            
             return false;
           }
 
@@ -1107,7 +1101,7 @@ export async function updateRightView(url) {
 
           return true;
         } catch (error) {
-          console.error("Error in updateRightViewDOM:", error);
+          
           return false;
         }
       },
@@ -1116,13 +1110,13 @@ export async function updateRightView(url) {
 
     return true;
   } catch (error) {
-    console.error("Failed to update right view:", error);
+    
 
     try {
       chrome.tabs.create({ url });
       return true;
     } catch (e) {
-      console.error("Failed to open URL in new tab:", e);
+      
       return false;
     }
   }

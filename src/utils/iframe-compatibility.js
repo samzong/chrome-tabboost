@@ -36,10 +36,7 @@ async function updateUserConfigCache() {
       };
     }
   } catch (error) {
-    console.error(
-      "iframe compatibility: Failed to update user config cache:",
-      error
-    );
+    
   }
 }
 
@@ -64,7 +61,7 @@ export async function canLoadInIframe(url, options = {}) {
 
     return true;
   } catch (error) {
-    console.error("TabBoost: canLoadInIframe error:", error);
+    
     return false;
   }
 }

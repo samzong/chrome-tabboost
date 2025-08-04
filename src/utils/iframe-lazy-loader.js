@@ -58,14 +58,12 @@ export function setupLazyLoading(iframe, url, options = {}) {
       !iframe.tagName ||
       iframe.tagName.toLowerCase() !== "iframe"
     ) {
-      console.error(
-        "TabBoost: Invalid iframe element provided to setupLazyLoading"
-      );
+      
       return false;
     }
 
     if (!url || typeof url !== "string") {
-      console.error("TabBoost: Invalid URL provided to setupLazyLoading");
+      
       return false;
     }
 
@@ -92,7 +90,7 @@ export function setupLazyLoading(iframe, url, options = {}) {
 
     return true;
   } catch (error) {
-    console.error("TabBoost: Error setting up lazy loading:", error);
+    
     iframe.src = url;
     iframe.dataset.lazyStatus = "error-fallback";
     return false;
@@ -111,7 +109,7 @@ export function loadImmediately(iframe) {
     }
     return false;
   } catch (error) {
-    console.error("TabBoost: Error forcing immediate load:", error);
+    
     return false;
   }
 }
@@ -125,7 +123,7 @@ export function cleanupLazyLoading(iframe) {
       observer.unobserve(iframe);
     }
   } catch (error) {
-    console.error("TabBoost: Error cleaning up lazy loading:", error);
+    
   }
 }
 
@@ -137,7 +135,7 @@ export function destroyLazyLoader() {
     }
     lazyIframes.clear();
   } catch (error) {
-    console.error("TabBoost: Error destroying lazy loader:", error);
+    
   }
 }
 

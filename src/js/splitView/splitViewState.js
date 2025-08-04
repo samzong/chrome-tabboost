@@ -16,7 +16,7 @@ const splitViewState = {
 
       this.layoutDirection = savedState.splitViewDirection || "horizontal";
     } catch (error) {
-      console.error("Failed to initialize split view state:", error);
+      
     }
   },
 

@@ -45,9 +45,7 @@ function getCurrentChannel() {
   const channelName = process.env.BUILD_CHANNEL || "DEV";
 
   if (!CHANNELS[channelName]) {
-    console.warn(
-      `Unknown channel "${channelName}", using development environment configuration`
-    );
+    
     return CHANNELS.DEV;
   }
 

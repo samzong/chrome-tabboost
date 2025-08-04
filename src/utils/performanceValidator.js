@@ -138,7 +138,7 @@ class PerformanceValidator {
     });
 
     iframe.addEventListener("error", (error) => {
-      console.error(`${context} iframe failed to load:`, error);
+      
     });
 
     return monitor;

@@ -11,7 +11,7 @@ async function updateMuteButtonText(muteButton) {
 
     muteButton.textContent = getMessage(isMuted ? "unmuteTab" : "muteTab");
   } catch (error) {
-    console.error("Failed to update mute button text:", error);
+    
   }
 }
 
@@ -34,7 +34,7 @@ async function updateMuteAllButton(muteAllButton) {
       muteAllButton.textContent = getMessage("muteAllAudioTabs");
     }
   } catch (error) {
-    console.error("Failed to update mute all button:", error);
+    
   }
 }
 
@@ -66,7 +66,7 @@ async function updateButtonsWithShortcuts(buttons, shortcuts) {
       }
     }
   } catch (error) {
-    console.error("Failed to update button shortcuts:", error);
+    
   }
 }
 

@@ -9,7 +9,7 @@ export function safeQuerySelector(selector, context = document) {
   try {
     return context.querySelector(selector);
   } catch (e) {
-    console.warn(`Failed to query element ${selector}:`, e);
+    
     return null;
   }
 }
@@ -24,7 +24,7 @@ export function safeQuerySelectorAll(selector, context = document) {
   try {
     return Array.from(context.querySelectorAll(selector));
   } catch (e) {
-    console.warn(`Failed to query element collection ${selector}:`, e);
+    
     return [];
   }
 }
@@ -44,7 +44,7 @@ export function safeAddEventListener(element, eventType, handler) {
     }
     return false;
   } catch (e) {
-    console.warn(`Failed to add ${eventType} event to element:`, e);
+    
     return false;
   }
 }
@@ -64,7 +64,7 @@ export function safeRemoveEventListener(element, eventType, handler) {
     }
     return false;
   } catch (e) {
-    console.warn(`Failed to remove ${eventType} event from element:`, e);
+    
     return false;
   }
 }
@@ -79,7 +79,7 @@ export function extractHostname(url) {
     const urlObj = new URL(url);
     return urlObj.hostname;
   } catch (e) {
-    console.warn("Failed to parse URL:", e);
+    
     return "";
   }
 }
@@ -93,7 +93,7 @@ export function safeParseURL(url) {
   try {
     return new URL(url);
   } catch (e) {
-    console.warn("Failed to parse URL:", url, e);
+    
     return null;
   }
 }
@@ -143,7 +143,7 @@ export function safeGetIframeContent(iframe) {
     }
     return iframe.contentDocument;
   } catch (e) {
-    console.warn("Failed to get iframe content:", e);
+    
     return null;
   }
 }

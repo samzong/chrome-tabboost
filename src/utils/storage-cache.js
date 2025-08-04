@@ -7,11 +7,11 @@ class StorageCache {
     this.cache = {};
     this.expiration = {};
     this.cacheExpiration = 30 * 60 * 1000;
-    this.frequentUpdateExpiration = 2 * 60 * 60 * 1000; // Optimized: increased to 2 hours for better cache hit rate
-    this.stableConfigExpiration = 7 * 24 * 60 * 60 * 1000; // Optimized: increased to 7 days for stable configs
+    this.frequentUpdateExpiration = 2 * 60 * 60 * 1000;
+    this.stableConfigExpiration = 7 * 24 * 60 * 60 * 1000;
     this.initialized = false;
 
-    // Performance metrics for monitoring optimization effectiveness
+
     this.metrics = {
       cacheHits: 0,
       cacheMisses: 0,
@@ -38,15 +38,15 @@ class StorageCache {
 
     this.batchReadCache = {};
     this.batchReadTimer = null;
-    this.batchReadDelay = 10; // Optimized: reduced from 50ms to 10ms for faster response
-    this.maxBatchReadDelay = 50; // Smart batching: max delay for large batches
-    this.readBatchThreshold = 3; // Number of keys to trigger smart batching
+    this.batchReadDelay = 10;
+    this.maxBatchReadDelay = 50;
+    this.readBatchThreshold = 3;
 
     this.writeQueue = {};
     this.writeTimerId = null;
-    this.writeDelay = 200; // Optimized: reduced from 1000ms to 200ms for better UX
-    this.maxWriteDelay = 1000; // Fallback for large batches
-    this.writeBatchThreshold = 5; // Number of keys to trigger extended delay
+    this.writeDelay = 200;
+    this.maxWriteDelay = 1000;
+    this.writeBatchThreshold = 5;
   }
 
   /**
@@ -120,7 +120,7 @@ class StorageCache {
     );
 
     if (keysToFetch.length === 0) {
-      // All data served from cache - performance win!
+
       this.metrics.cacheHits += keyList.length;
       const result = {};
       keyList.forEach((key) => {
@@ -129,7 +129,7 @@ class StorageCache {
       return Promise.resolve(result);
     }
 
-    // Some keys need to be fetched - record cache misses
+
     this.metrics.cacheMisses += keysToFetch.length;
 
     return new Promise((resolve) => {
@@ -148,7 +148,7 @@ class StorageCache {
         clearTimeout(this.batchReadTimer);
       }
 
-      // Smart batching: adjust delay based on batch size for optimal performance
+
       const currentBatchSize = Object.keys(this.batchReadCache).length;
       const smartDelay =
         currentBatchSize >= this.readBatchThreshold
@@ -194,7 +194,7 @@ class StorageCache {
       return;
     }
 
-    // Record batch read metrics
+
     this.metrics.batchReads++;
     const startTime = performance.now();
 
@@ -203,7 +203,7 @@ class StorageCache {
     this.batchReadTimer = null;
 
     chrome.storage.sync.get(keysToFetch, (items) => {
-      // Update average read delay metric
+
       const readTime = performance.now() - startTime;
       this.metrics.avgReadDelay = (this.metrics.avgReadDelay + readTime) / 2;
 
@@ -254,7 +254,7 @@ class StorageCache {
       clearTimeout(this.writeTimerId);
     }
 
-    // Smart write batching: use shorter delay for small batches, longer for large batches
+
     const currentQueueSize = Object.keys(this.writeQueue).length;
     const smartWriteDelay =
       currentQueueSize >= this.writeBatchThreshold
@@ -274,7 +274,7 @@ class StorageCache {
       return;
     }
 
-    // Record batch write metrics
+
     this.metrics.batchWrites++;
     const startTime = performance.now();
 
@@ -288,17 +288,14 @@ class StorageCache {
     try {
       await chrome.storage.sync.set(itemsToWrite);
 
-      // Update average write delay metric
+
       if (startTime) {
         const writeTime = performance.now() - startTime;
         this.metrics.avgWriteDelay =
           (this.metrics.avgWriteDelay + writeTime) / 2;
       }
     } catch (error) {
-      console.error(
-        "chrome-tabboost: Failed to batch write:",
-        chrome.runtime.lastError
-      );
+      
       throw error;
     }
   }
@@ -323,10 +320,7 @@ class StorageCache {
     return new Promise((resolve) => {
       chrome.storage.sync.remove(keyList, () => {
         if (chrome.runtime.lastError) {
-          console.error(
-            "chrome-tabboost: Failed to remove key:",
-            chrome.runtime.lastError
-          );
+          
         }
         resolve();
       });
@@ -356,10 +350,7 @@ class StorageCache {
     return new Promise((resolve) => {
       chrome.storage.sync.clear(() => {
         if (chrome.runtime.lastError) {
-          console.error(
-            "chrome-tabboost: Failed to clear storage:",
-            chrome.runtime.lastError
-          );
+          
         }
         resolve();
       });

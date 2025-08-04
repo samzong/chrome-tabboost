@@ -46,7 +46,7 @@ async function updateHeaderModificationRules(enabled) {
         : [RULE_SETS.POPUP_BYPASS, RULE_SETS.CSP_BYPASS],
     });
   } catch (error) {
-    console.error("TabBoost: Failed to update rule status:", error);
+    
   }
 }
 
@@ -93,7 +93,7 @@ storageCache
     await updateHeaderModificationRules(headerModificationEnabled);
   })
   .catch((error) => {
-    console.error(getMessage("storageInitError"), error);
+    
   });
 
 chrome.storage.onChanged.addListener((changes, areaName) => {
@@ -139,7 +139,7 @@ async function copyTabUrl(tab) {
     showNotification(getMessage("urlCopied"));
     return true;
   } catch (error) {
-    console.error(getMessage("urlCopyError"), error);
+    
     showNotification(getMessage("urlCopyFailed"));
     return false;
   }
@@ -159,7 +159,7 @@ function duplicateTab(tab) {
       }, 500);
     });
   } catch (error) {
-    console.error("Failed to copy tab:", error);
+    
     isDuplicatingTab = false;
   }
 }
@@ -230,7 +230,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       if (tab && tab.url) {
         copyTabUrl(tab).then((success) => {
           if (!success) {
-            console.error("Failed to copy URL");
+            
           }
         });
       }
@@ -278,7 +278,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         sendResponse(result);
       })
       .catch((error) => {
-        console.error("Error handling split view request:", error);
+        
         try {
           chrome.tabs.create({ url: request.url });
           sendResponse({
@@ -286,7 +286,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             message: getMessage("splitViewErrorFallback"),
           });
         } catch (e) {
-          console.error("Failed to open URL in new tab:", e);
+          
           sendResponse({ status: "error", message: error.message });
         }
       });
