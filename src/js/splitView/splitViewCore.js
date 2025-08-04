@@ -222,7 +222,14 @@ export async function createSplitView() {
             leftIframe.style.height = "100%";
             leftIframe.style.border = "none";
             leftIframe.style.display = "block";
-            leftIframe.setAttribute("loading", "lazy");
+            // 智能懒加载配置 - Split View专用优化
+            if ("loading" in HTMLIFrameElement.prototype) {
+              leftIframe.setAttribute("loading", "lazy");
+              // 左侧iframe优先级稍高，因为用户通常先关注左侧
+              if ("importance" in leftIframe) {
+                leftIframe.setAttribute("importance", "auto");
+              }
+            }
             leftIframe.setAttribute("data-tabboost-frame", "left");
             leftIframe.setAttribute("allowfullscreen", "true");
             // 直接设置src，不使用懒加载以避免webpack导入错误
@@ -289,7 +296,14 @@ export async function createSplitView() {
             rightIframe.style.height = "100%";
             rightIframe.style.border = "none";
             rightIframe.style.display = "block";
-            rightIframe.setAttribute("loading", "lazy");
+            // 右侧iframe懒加载 - 更保守的策略
+            if ("loading" in HTMLIFrameElement.prototype) {
+              rightIframe.setAttribute("loading", "lazy");
+              // 右侧iframe优先级更低，延迟加载直到用户交互
+              if ("importance" in rightIframe) {
+                rightIframe.setAttribute("importance", "low");
+              }
+            }
             rightIframe.setAttribute("data-tabboost-frame", "right");
             rightIframe.setAttribute("allowfullscreen", "true");
             rightIframe.src = "about:blank";
@@ -868,6 +882,15 @@ export async function createSplitView() {
                 leftIframe.style.width = "100%";
                 leftIframe.style.height = "100%";
                 leftIframe.style.border = "none";
+
+                // 智能懒加载 - 当前页面iframe
+                if ("loading" in HTMLIFrameElement.prototype) {
+                  leftIframe.setAttribute("loading", "lazy");
+                  if ("importance" in leftIframe) {
+                    leftIframe.setAttribute("importance", "auto");
+                  }
+                }
+
                 leftIframe.src = window.location.href;
 
                 leftView.appendChild(leftIframe);
@@ -906,7 +929,15 @@ export async function createSplitView() {
                 rightIframe.style.width = "100%";
                 rightIframe.style.height = "100%";
                 rightIframe.style.border = "none";
-                // 直接设置src，不使用懒加载以避免webpack导入错误
+
+                // 智能懒加载配置 - 右侧新URL iframe
+                if ("loading" in HTMLIFrameElement.prototype) {
+                  rightIframe.setAttribute("loading", "lazy");
+                  if ("importance" in rightIframe) {
+                    rightIframe.setAttribute("importance", "low");
+                  }
+                }
+
                 rightIframe.src = url;
 
                 rightView.appendChild(rightIframe);
@@ -1062,6 +1093,15 @@ export async function updateRightView(url) {
             rightIframe.style.height = "100%";
             rightIframe.style.border = "none";
             rightIframe.style.display = "block";
+
+            // 智能懒加载配置 - 动态右侧iframe
+            if ("loading" in HTMLIFrameElement.prototype) {
+              rightIframe.setAttribute("loading", "lazy");
+              if ("importance" in rightIframe) {
+                rightIframe.setAttribute("importance", "low");
+              }
+            }
+
             rightIframe.setAttribute("allowfullscreen", "true");
 
             rightView.appendChild(rightIframe);

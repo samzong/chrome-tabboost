@@ -3,6 +3,7 @@ import { validateUrl } from "../utils/utils.js";
 import { canLoadInIframe } from "../utils/iframe-compatibility.js";
 import { getMessage } from "../utils/i18n.js";
 import { cleanupLazyLoading } from "../utils/iframe-lazy-loader.js";
+import LazyLoadingDetector from "../utils/lazyLoadingDetector.js";
 
 const initStorageCache = async () => {
   try {
@@ -16,6 +17,11 @@ const initStorageCache = async () => {
 };
 
 initStorageCache();
+
+// 初始化世界级懒加载检测器
+if (!window.tabBoostLazyLoadingDetector) {
+  window.tabBoostLazyLoadingDetector = new LazyLoadingDetector();
+}
 
 let shouldInterceptSave = true;
 let popupShortcutMode = "default";
@@ -379,8 +385,17 @@ function createPopupDOMElements(url, settings) {
     id: "tabboost-popup-iframe",
   });
 
-  if ("loading" in HTMLIFrameElement.prototype) {
-    iframe.loading = "lazy";
+  // 世界级智能懒加载配置
+  if (window.tabBoostLazyLoadingDetector) {
+    window.tabBoostLazyLoadingDetector.applySmartLazyLoading(iframe, "popup");
+  } else {
+    // 降级方案：基础懒加载配置
+    if ("loading" in HTMLIFrameElement.prototype) {
+      iframe.loading = "lazy";
+      if ("importance" in iframe) {
+        iframe.importance = "low";
+      }
+    }
   }
 
   const iframeWrapper = createElementWithAttributes("div", {
