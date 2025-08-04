@@ -4,6 +4,8 @@ import { canLoadInIframe } from "../utils/iframe-compatibility.js";
 import { getMessage } from "../utils/i18n.js";
 import { cleanupLazyLoading } from "../utils/iframe-lazy-loader.js";
 import LazyLoadingDetector from "../utils/lazyLoadingDetector.js";
+// P1-3 性能优化: 引入WeakMap事件管理器，解决内存泄漏风险
+import eventManager from "../utils/event-manager.js";
 
 const initStorageCache = async () => {
   try {
@@ -553,10 +555,14 @@ function loadWithTimeout(iframe, url, timeout = null) {
 
 async function createPopupDOM(url) {
   try {
-    const eventListeners = [];
+    // P1-3 性能优化: 使用WeakMap事件管理器替代数组存储，防止内存泄漏
+    const popupEventController = new AbortController();
+    const managedElements = new Set(); // 追踪需要清理的元素
+
     const addTrackedEventListener = (element, eventType, listener, options) => {
-      element.addEventListener(eventType, listener, options);
-      eventListeners.push({ element, eventType, listener, options });
+      // 使用企业级事件管理器
+      eventManager.addListener(element, eventType, listener, options);
+      managedElements.add(element);
     };
 
     const settings = await getPreviewSettings();
@@ -602,16 +608,15 @@ async function createPopupDOM(url) {
         }
 
         popupOverlay.classList.remove("show");
-        eventListeners.forEach(({ element, eventType, listener, options }) => {
-          try {
-            if (element && typeof element.removeEventListener === "function") {
-              element.removeEventListener(eventType, listener, options);
-            }
-          } catch (e) {
-            /* Ignore */
-          }
-        });
-        eventListeners.length = 0;
+
+        // P1-3 性能优化: 使用WeakMap事件管理器批量清理，一次性解决内存泄漏
+        const elementsToCleanup = Array.from(managedElements);
+        const cleanedCount = eventManager.cleanupMultiple(elementsToCleanup);
+        managedElements.clear();
+
+        console.log(
+          `TabBoost: 已清理 ${cleanedCount} 个元素的事件监听器，防止内存泄漏`
+        );
         timers.closeTimeout = setTimeout(() => {
           if (popupOverlay && popupOverlay.parentNode) {
             popupOverlay.parentNode.removeChild(popupOverlay);
