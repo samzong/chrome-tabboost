@@ -2,10 +2,7 @@ import storageCache from "../utils/storage-cache.js";
 import { validateUrl } from "../utils/utils.js";
 import { canLoadInIframe } from "../utils/iframe-compatibility.js";
 import { getMessage } from "../utils/i18n.js";
-import {
-  setupLazyLoading,
-  cleanupLazyLoading,
-} from "../utils/iframe-lazy-loader.js";
+import { cleanupLazyLoading } from "../utils/iframe-lazy-loader.js";
 
 const initStorageCache = async () => {
   try {
@@ -672,19 +669,9 @@ async function createPopupDOM(url) {
     addButtonListeners();
 
     try {
-      // 使用懒加载优化iframe加载性能
-      const shouldUseLazyLoading = document.visibilityState === "visible";
-      if (shouldUseLazyLoading) {
-        setupLazyLoading(iframe, url, { immediate: false });
-        // 对于popup，我们希望立即显示，所以等待一小段时间后强制加载
-        setTimeout(() => {
-          if (iframe.dataset.lazyStatus === "pending") {
-            iframe.src = url;
-          }
-        }, 100);
-      } else {
-        iframe.src = url;
-      }
+      // Popup场景需要立即加载，不使用懒加载以避免loadWithTimeout冲突
+      // 懒加载会导致iframe.src="about:blank"，而loadWithTimeout期望真实URL
+      iframe.src = url;
 
       const loadResult = await loadWithTimeout(iframe, url, 6000);
 

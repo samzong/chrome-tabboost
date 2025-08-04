@@ -12,7 +12,7 @@ import {
 } from "./splitViewDOMUtils.js";
 import { safeQuerySelector } from "./splitViewUtils.js";
 import * as i18n from "../../utils/i18n.js";
-import { setupLazyLoading } from "../../utils/iframe-lazy-loader.js";
+// setupLazyLoading removed - causes webpack import errors in injected scripts
 import {
   createSettingsButton,
   createRatioMenu,
@@ -315,8 +315,8 @@ export function updateRightViewDOM(url) {
       setupIframeEvents(rightIframe, errorContainer, url);
       rightView.appendChild(rightIframe);
     } else {
-      // 使用懒加载优化右侧iframe更新性能
-      setupLazyLoading(rightIframe, url, { immediate: false });
+      // 直接设置src，不使用懒加载以避免webpack导入错误
+      rightIframe.src = url;
       if (errorContainer) {
         updateErrorButtons(errorContainer, url);
       }

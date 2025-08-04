@@ -2,7 +2,7 @@ import { getCurrentTab } from "../../utils/utils.js";
 import storageCache from "../../utils/storage-cache.js";
 import { canLoadInIframe } from "../../utils/iframe-compatibility.js";
 import * as i18n from "../../utils/i18n.js";
-import { setupLazyLoading } from "../../utils/iframe-lazy-loader.js";
+// setupLazyLoading removed - causes issues in injected scripts
 import {
   initSplitViewDOM,
   removeSplitViewDOM,
@@ -225,8 +225,8 @@ export async function createSplitView() {
             leftIframe.setAttribute("loading", "lazy");
             leftIframe.setAttribute("data-tabboost-frame", "left");
             leftIframe.setAttribute("allowfullscreen", "true");
-            // 使用懒加载优化左侧iframe性能
-            setupLazyLoading(leftIframe, url, { immediate: true });
+            // 直接设置src，不使用懒加载以避免webpack导入错误
+            leftIframe.src = url;
 
             leftView.appendChild(leftIframe);
 
@@ -906,8 +906,8 @@ export async function createSplitView() {
                 rightIframe.style.width = "100%";
                 rightIframe.style.height = "100%";
                 rightIframe.style.border = "none";
-                // 使用懒加载优化右侧iframe性能 (最小化版本)
-                setupLazyLoading(rightIframe, url, { immediate: false });
+                // 直接设置src，不使用懒加载以避免webpack导入错误
+                rightIframe.src = url;
 
                 rightView.appendChild(rightIframe);
 
@@ -1096,8 +1096,8 @@ export async function updateRightView(url) {
             }
           }
 
-          // 使用懒加载优化右侧iframe性能 (更新版本)
-          setupLazyLoading(rightIframe, url, { immediate: false });
+          // 直接设置src，不使用懒加载以避免webpack导入错误
+          rightIframe.src = url;
 
           return true;
         } catch (error) {
