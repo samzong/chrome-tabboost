@@ -54,7 +54,6 @@ export const UI_CONFIG = {
     },
     attributes: {
       loading: 'lazy',
-      sandbox: 'allow-same-origin allow-scripts allow-popups allow-forms',
       allowfullscreen: 'true'
     },
     left: {

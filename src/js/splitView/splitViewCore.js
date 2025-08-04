@@ -223,7 +223,6 @@ export async function createSplitView() {
             leftIframe.style.border = "none";
             leftIframe.style.display = "block";
             leftIframe.setAttribute("loading", "lazy");
-            leftIframe.setAttribute("sandbox", "allow-same-origin allow-scripts allow-popups allow-forms");
             leftIframe.setAttribute("data-tabboost-frame", "left");
             leftIframe.setAttribute("allowfullscreen", "true");
             leftIframe.src = url;
@@ -295,7 +294,6 @@ export async function createSplitView() {
             rightIframe.style.border = "none";
             rightIframe.style.display = "block";
             rightIframe.setAttribute("loading", "lazy");
-            rightIframe.setAttribute("sandbox", "allow-same-origin allow-scripts allow-popups allow-forms");
             rightIframe.setAttribute("data-tabboost-frame", "right");
             rightIframe.setAttribute("allowfullscreen", "true");
             rightIframe.src = "about:blank";
@@ -1031,7 +1029,6 @@ export async function updateRightView(url) {
             rightIframe.style.height = "100%";
             rightIframe.style.border = "none";
             rightIframe.style.display = "block";
-            rightIframe.setAttribute("sandbox", "allow-same-origin allow-scripts allow-popups allow-forms");
             rightIframe.setAttribute("allowfullscreen", "true");
             
             rightView.appendChild(rightIframe);
