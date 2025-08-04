@@ -1,5 +1,5 @@
-import { UI_CONFIG } from './splitViewConfig';
-import { safeQuerySelector } from './splitViewUtils';
+import { UI_CONFIG } from "./splitViewConfig";
+import { safeQuerySelector } from "./splitViewUtils";
 
 /**
  * 创建并配置DOM元素
@@ -9,29 +9,25 @@ import { safeQuerySelector } from './splitViewUtils';
  */
 export function createElement(tag, config = {}) {
   const element = document.createElement(tag);
-  
-  
+
   if (config.id) {
     element.id = config.id;
   }
-  
-  
+
   if (config.className) {
     element.className = config.className;
   }
-  
-  
+
   if (config.styles) {
     Object.assign(element.style, config.styles);
   }
-  
-  
+
   if (config.attributes) {
     Object.entries(config.attributes).forEach(([key, value]) => {
       element.setAttribute(key, value);
     });
   }
-  
+
   return element;
 }
 
@@ -66,17 +62,17 @@ export function addSafeEventListener(element, event, handler) {
  * @param {string} url - iframe的URL
  * @returns {HTMLIFrameElement} - 配置好的iframe元素
  */
-export function createIframe(id, url = 'about:blank') {
+export function createIframe(id, url = "about:blank") {
   const config = {
     ...UI_CONFIG.iframe,
     id,
     attributes: {
       ...UI_CONFIG.iframe.attributes,
-      src: url
-    }
+      src: url,
+    },
   };
-  
-  return createElement('iframe', config);
+
+  return createElement("iframe", config);
 }
 
 /**
@@ -85,9 +81,9 @@ export function createIframe(id, url = 'about:blank') {
  * @returns {HTMLButtonElement} - 配置好的按钮元素
  */
 export function createCloseButton(action) {
-  const button = createElement('button', UI_CONFIG.closeButton);
+  const button = createElement("button", UI_CONFIG.closeButton);
   button.dataset.action = action;
-  button.innerText = '×';
+  button.innerText = "×";
   return button;
 }
 
@@ -100,4 +96,4 @@ export function cleanupElement(selector) {
   if (element) {
     element.remove();
   }
-} 
+}

@@ -6,11 +6,11 @@ export async function getCommandShortcuts() {
   try {
     const commands = await chrome.commands.getAll();
     const shortcuts = {};
-    
-    commands.forEach(command => {
-      shortcuts[command.name] = command.shortcut || '';
+
+    commands.forEach((command) => {
+      shortcuts[command.name] = command.shortcut || "";
     });
-    
+
     return shortcuts;
   } catch (error) {
     console.error("Failed to get shortcuts:", error);
@@ -24,18 +24,18 @@ export async function getCommandShortcuts() {
  * @returns {string}
  */
 export function formatShortcut(shortcut) {
-  if (!shortcut) return '';
-  
+  if (!shortcut) return "";
+
   return shortcut
-    .replace(/Command/g, '⌘')
-    .replace(/Ctrl/g, 'Ctrl')
-    .replace(/Alt/g, 'Alt')
-    .replace(/Shift/g, '⇧')
-    .replace(/MacCtrl/g, '⌃')
-    .replace(/\+/g, ' + ');
+    .replace(/Command/g, "⌘")
+    .replace(/Ctrl/g, "Ctrl")
+    .replace(/Alt/g, "Alt")
+    .replace(/Shift/g, "⇧")
+    .replace(/MacCtrl/g, "⌃")
+    .replace(/\+/g, " + ");
 }
 
 export default {
   getCommandShortcuts,
-  formatShortcut
-}; 
+  formatShortcut,
+};

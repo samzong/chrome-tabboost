@@ -7,16 +7,18 @@ import { getMessage } from "./i18n.js";
 
 export async function showNotification(message) {
   try {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       chrome.storage.sync.get(["notificationsEnabled"], (result) => {
-        const notificationsEnabled = result.notificationsEnabled !== undefined ? 
-          result.notificationsEnabled : true;
-        
+        const notificationsEnabled =
+          result.notificationsEnabled !== undefined
+            ? result.notificationsEnabled
+            : true;
+
         if (!notificationsEnabled) {
           resolve();
           return;
         }
-        
+
         chrome.notifications.create(
           {
             type: "basic",
@@ -24,7 +26,7 @@ export async function showNotification(message) {
             title: getMessage("appName") || "TabBoost",
             message: message,
             priority: 2,
-            requireInteraction: true
+            requireInteraction: true,
           },
           function (notificationId) {
             setTimeout(() => {
@@ -43,7 +45,7 @@ export async function showNotification(message) {
 import {
   DANGEROUS_PROTOCOLS,
   DANGEROUS_URL_PATTERNS,
-  EXCLUDED_EXTENSIONS
+  EXCLUDED_EXTENSIONS,
 } from "../config/constants.js";
 
 /**
@@ -70,7 +72,11 @@ export function validateUrl(url) {
     };
   }
 
-  if (DANGEROUS_PROTOCOLS.some((protocol) => url.toLowerCase().startsWith(protocol))) {
+  if (
+    DANGEROUS_PROTOCOLS.some((protocol) =>
+      url.toLowerCase().startsWith(protocol)
+    )
+  ) {
     return {
       isValid: false,
       sanitizedUrl: "",
@@ -91,9 +97,9 @@ export function validateUrl(url) {
 
   try {
     const urlObj = new URL(url);
-    
+
     const pathname = urlObj.pathname.toLowerCase();
-    if (EXCLUDED_EXTENSIONS.some(ext => pathname.endsWith(ext))) {
+    if (EXCLUDED_EXTENSIONS.some((ext) => pathname.endsWith(ext))) {
       return {
         isValid: false,
         sanitizedUrl: "",
@@ -103,7 +109,7 @@ export function validateUrl(url) {
 
     if (DANGEROUS_URL_PATTERNS.length > 0) {
       const fullUrl = urlObj.href.toLowerCase();
-      if (DANGEROUS_URL_PATTERNS.some(pattern => fullUrl.includes(pattern))) {
+      if (DANGEROUS_URL_PATTERNS.some((pattern) => fullUrl.includes(pattern))) {
         return {
           isValid: false,
           sanitizedUrl: "",

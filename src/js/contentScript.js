@@ -19,9 +19,10 @@ initStorageCache();
 let shouldInterceptSave = true;
 let popupShortcutMode = "default";
 
-chrome.storage && chrome.storage.local.get({ popupShortcut: "default" }, (result) => {
-  popupShortcutMode = result.popupShortcut || "default";
-});
+chrome.storage &&
+  chrome.storage.local.get({ popupShortcut: "default" }, (result) => {
+    popupShortcutMode = result.popupShortcut || "default";
+  });
 
 document.addEventListener(
   "keydown",
@@ -58,7 +59,7 @@ function createElementWithAttributes(tag, attributes = {}) {
 }
 
 function appendChildren(parent, children) {
-  children.forEach(child => {
+  children.forEach((child) => {
     if (child) parent.appendChild(child);
   });
   return parent;
@@ -67,32 +68,20 @@ function appendChildren(parent, children) {
 function createNotificationElement(id, className) {
   return createElementWithAttributes("div", {
     id,
-    className
+    className,
   });
 }
 
 function applyDefaultNotificationStyle(element) {
-  element.style.cssText = `
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 10px 15px;
-    border-radius: 4px;
-    z-index: 999999;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    font-family: system-ui, -apple-system, sans-serif;
-    font-size: 14px;
-    animation: fadeIn 0.2s ease-out;
-  `;
+  // Default notification styling now handled by tabboost-notification CSS class
+  element.className = "tabboost-notification";
 }
 
 function createButton(text, className, attributes = {}) {
   return createElementWithAttributes("button", {
     textContent: text,
     className,
-    ...attributes
+    ...attributes,
   });
 }
 
@@ -101,10 +90,15 @@ function showSaveNotification() {
     return;
   }
 
-  const notification = createNotificationElement("tabboost-save-notification", "tabboost-notification");
+  const notification = createNotificationElement(
+    "tabboost-save-notification",
+    "tabboost-notification"
+  );
 
   const message = createElementWithAttributes("span", {
-    textContent: getMessage("savePageConfirmation") || "Are you sure you want to save this page?"
+    textContent:
+      getMessage("savePageConfirmation") ||
+      "Are you sure you want to save this page?",
   });
 
   const saveButton = createButton(
@@ -138,8 +132,7 @@ function showSaveNotification() {
 
     setTimeout(() => {
       if (saveInstructionNotification.parentNode) {
-        saveInstructionNotification.style.animation =
-          "fadeOut 0.3s ease-out forwards";
+        saveInstructionNotification.classList.add("fade-out");
         setTimeout(() => {
           if (saveInstructionNotification.parentNode) {
             saveInstructionNotification.parentNode.removeChild(
@@ -158,66 +151,23 @@ function showSaveNotification() {
   appendChildren(notification, [message, saveButton]);
   document.body.appendChild(notification);
 
-  notification.style.cssText = `
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 10px 15px;
-    border-radius: 4px;
-    z-index: 999999;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    font-family: system-ui, -apple-system, sans-serif;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    animation: fadeIn 0.2s ease-out;
-    max-width: 300px;
-  `;
+  // CSS class styling handled in popupNotificationStyles.css
 
-  saveButton.style.cssText = `
-    padding: 4px 10px;
-    background-color: #3b82f6;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 12px;
-    white-space: nowrap;
-  `;
+  // Button styling handled in popupNotificationStyles.css
 
-  const style = document.createElement("style");
-  style.textContent = `
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    #tabboost-save-notification button:hover {
-      background-color: #2563eb;
-    }
-  `;
-  document.head.appendChild(style);
+  // Animations and hover effects handled in popupNotificationStyles.css
 
   const isDarkMode =
     window.matchMedia &&
     window.matchMedia("(prefers-color-scheme: dark)").matches;
 
   if (isDarkMode) {
-    notification.style.backgroundColor = "rgba(31, 41, 55, 0.9)";
+    notification.classList.add("dark-mode");
   }
 
   setTimeout(() => {
     if (notification.parentNode) {
-      notification.style.animation = "fadeOut 0.3s ease-out forwards";
-      style.textContent += `
-        @keyframes fadeOut {
-          from { opacity: 1; transform: translateY(0); }
-          to { opacity: 0; transform: translateY(10px); }
-        }
-      `;
-
+      notification.classList.add("fade-out");
       setTimeout(() => {
         if (notification.parentNode) {
           notification.parentNode.removeChild(notification);
@@ -249,7 +199,10 @@ document.addEventListener(
         },
         function (response) {
           if (response && response.status === "error") {
-            const notification = createNotificationElement("", "tabboost-notification");
+            const notification = createNotificationElement(
+              "",
+              "tabboost-notification"
+            );
             notification.textContent =
               getMessage("splitViewFailure") ||
               "Split view loading failed, trying to open in new tab...";
@@ -270,8 +223,13 @@ document.addEventListener(
     }
 
     if (
-      (popupShortcutMode === "default" && (event.metaKey || event.ctrlKey) && !event.shiftKey) ||
-      (popupShortcutMode === "shift" && event.shiftKey && !event.metaKey && !event.ctrlKey)
+      (popupShortcutMode === "default" &&
+        (event.metaKey || event.ctrlKey) &&
+        !event.shiftKey) ||
+      (popupShortcutMode === "shift" &&
+        event.shiftKey &&
+        !event.metaKey &&
+        !event.ctrlKey)
     ) {
       event.preventDefault();
       event.stopPropagation();
@@ -338,33 +296,36 @@ function createToolbarElements() {
   const closeText = getMessage("close") || "Close";
   const copyUrlText = getMessage("copyUrl") || "Copy URL";
 
-  const toolbar = createElementWithAttributes("div", { id: "tabboost-popup-toolbar" });
+  const toolbar = createElementWithAttributes("div", {
+    id: "tabboost-popup-toolbar",
+  });
   const titleSpan = createElementWithAttributes("span", {
     id: "tabboost-popup-title",
-    textContent: loadingText
+    textContent: loadingText,
   });
-  const buttonsDiv = createElementWithAttributes("div", { id: "tabboost-popup-buttons" });
+  const buttonsDiv = createElementWithAttributes("div", {
+    id: "tabboost-popup-buttons",
+  });
 
   const copyUrlButton = createElementWithAttributes("button", {
     className: "tabboost-button tabboost-copyurl-button",
     title: copyUrlText,
     "aria-label": copyUrlText,
-    textContent: copyUrlText
+    textContent: copyUrlText,
   });
 
   const newTabButton = createElementWithAttributes("button", {
     className: "tabboost-button tabboost-newtab-button",
     title: openInNewTabText,
     "aria-label": openInNewTabText,
-    textContent: openInNewTabText
+    textContent: openInNewTabText,
   });
-
 
   const closeButton = createElementWithAttributes("button", {
     className: "tabboost-button tabboost-close-button",
     title: closeText,
     "aria-label": closeText,
-    innerHTML: "&times;"
+    innerHTML: "&times;",
   });
 
   appendChildren(buttonsDiv, [copyUrlButton, newTabButton, closeButton]);
@@ -376,7 +337,8 @@ function createToolbarElements() {
 function createErrorMsgElement() {
   const openInNewTabText = getMessage("openInNewTab") || "Open in new tab";
   const closeText = getMessage("close") || "Close";
-  const cannotLoadText = getMessage("cannotLoadInPopup") || "Cannot load this website in popup.";
+  const cannotLoadText =
+    getMessage("cannotLoadInPopup") || "Cannot load this website in popup.";
 
   return createElementWithAttributes("div", {
     id: "tabboost-popup-error",
@@ -384,7 +346,7 @@ function createErrorMsgElement() {
       <p>${cannotLoadText}</p>
       <button id="tabboost-open-newtab">${openInNewTabText}</button>
       <button id="tabboost-close-error">${closeText}</button>
-    `
+    `,
   });
 }
 
@@ -394,11 +356,11 @@ function createPopupDOMElements(url, settings) {
   const popupOverlay = createElementWithAttributes("div", {
     id: "tabboost-popup-overlay",
     role: "dialog",
-    "aria-modal": "true"
+    "aria-modal": "true",
   });
 
   const popupContent = createElementWithAttributes("div", {
-    id: "tabboost-popup-content"
+    id: "tabboost-popup-content",
   });
 
   if (settings.popupSizePreset === "large") {
@@ -413,7 +375,7 @@ function createPopupDOMElements(url, settings) {
   const errorMsg = createErrorMsgElement();
 
   const iframe = createElementWithAttributes("iframe", {
-    id: "tabboost-popup-iframe"
+    id: "tabboost-popup-iframe",
   });
 
   if ("loading" in HTMLIFrameElement.prototype) {
@@ -421,7 +383,7 @@ function createPopupDOMElements(url, settings) {
   }
 
   const iframeWrapper = createElementWithAttributes("div", {
-    id: "tabboost-iframe-wrapper"
+    id: "tabboost-iframe-wrapper",
   });
 
   appendChildren(iframeWrapper, [iframe, errorMsg]);
@@ -464,7 +426,7 @@ function loadWithTimeout(iframe, url, timeout = 5000) {
           // 检查内容类型，确保只处理HTML内容
           try {
             const contentType = iframe.contentDocument.contentType;
-            if (contentType && !contentType.includes('text/html')) {
+            if (contentType && !contentType.includes("text/html")) {
               console.log(`TabBoost: 非HTML内容，排除处理: ${contentType}`);
               cleanup();
               resolve({ status: "non_html", contentType });
@@ -474,7 +436,7 @@ function loadWithTimeout(iframe, url, timeout = 5000) {
             // 如果无法获取contentType，可能是因为跨域限制，继续处理
             console.log("TabBoost: 无法检查内容类型，继续处理");
           }
-          
+
           cleanup();
           resolve({ status: "success" });
         }
@@ -582,14 +544,14 @@ async function createPopupDOM(url) {
     // Enhance ESC key handling within iframes
     const handleIframeEsc = () => {
       try {
-        iframe.addEventListener('load', () => {
+        iframe.addEventListener("load", () => {
           try {
             if (iframe.contentWindow && iframe.contentWindow.document) {
               addTrackedEventListener(
                 iframe.contentWindow.document,
-                'keydown',
+                "keydown",
                 (event) => {
-                  if (event.key === 'Escape') {
+                  if (event.key === "Escape") {
                     event.preventDefault();
                     event.stopPropagation();
                     closePopup();
@@ -599,13 +561,16 @@ async function createPopupDOM(url) {
               );
             }
           } catch (e) {
-            console.log("TabBoost: Unable to directly access iframe content, using alternative close method");
-            
+            console.log(
+              "TabBoost: Unable to directly access iframe content, using alternative close method"
+            );
+
             try {
               if (iframe.contentWindow) {
-                iframe.contentWindow.addEventListener('load', () => {
+                iframe.contentWindow.addEventListener("load", () => {
                   try {
-                    const script = iframe.contentDocument.createElement('script');
+                    const script =
+                      iframe.contentDocument.createElement("script");
                     script.textContent = `
                       document.addEventListener('keydown', function(event) {
                         if (event.key === 'Escape') {
@@ -616,21 +581,19 @@ async function createPopupDOM(url) {
                       }, true);
                     `;
                     iframe.contentDocument.head.appendChild(script);
-                  } catch (err) {
-                  }
+                  } catch (err) {}
                 });
               }
-            } catch (err) {
-            }
+            } catch (err) {}
           }
         });
 
         const messageListener = (event) => {
-          if (event.data && event.data.action === 'closePopup') {
+          if (event.data && event.data.action === "closePopup") {
             closePopup();
           }
         };
-        addTrackedEventListener(window, 'message', messageListener);
+        addTrackedEventListener(window, "message", messageListener);
       } catch (error) {
         console.error("TabBoost: Failed to add iframe Escape listener:", error);
       }
@@ -639,9 +602,13 @@ async function createPopupDOM(url) {
     handleIframeEsc();
 
     const addButtonListeners = () => {
-      const newTabButton = popupOverlay.querySelector(".tabboost-newtab-button");
+      const newTabButton = popupOverlay.querySelector(
+        ".tabboost-newtab-button"
+      );
       const closeButton = popupOverlay.querySelector(".tabboost-close-button");
-      const copyUrlButton = popupOverlay.querySelector(".tabboost-copyurl-button");
+      const copyUrlButton = popupOverlay.querySelector(
+        ".tabboost-copyurl-button"
+      );
 
       if (newTabButton) {
         addTrackedEventListener(newTabButton, "click", () => {
@@ -656,24 +623,27 @@ async function createPopupDOM(url) {
 
       if (copyUrlButton) {
         addTrackedEventListener(copyUrlButton, "click", () => {
-          navigator.clipboard.writeText(url)
+          navigator.clipboard
+            .writeText(url)
             .then(() => {
-              chrome.runtime.sendMessage({ 
-                action: "showNotification", 
-                message: getMessage("urlCopied") || "URL copied successfully!"
+              chrome.runtime.sendMessage({
+                action: "showNotification",
+                message: getMessage("urlCopied") || "URL copied successfully!",
               });
             })
             .catch((error) => {
               console.error("chrome-tabboost: Error copying URL:", error);
-              chrome.runtime.sendMessage({ 
-                action: "showNotification", 
-                message: getMessage("urlCopyFailed") || "Failed to copy URL!"
+              chrome.runtime.sendMessage({
+                action: "showNotification",
+                message: getMessage("urlCopyFailed") || "Failed to copy URL!",
               });
             });
         });
       }
 
-      const errorOpenTabButton = errorMsg.querySelector("#tabboost-open-newtab");
+      const errorOpenTabButton = errorMsg.querySelector(
+        "#tabboost-open-newtab"
+      );
       if (errorOpenTabButton) {
         addTrackedEventListener(errorOpenTabButton, "click", () => {
           window.open(url, "_blank");
@@ -708,7 +678,9 @@ async function createPopupDOM(url) {
       }
 
       if (loadResult.status === "non_html") {
-        console.log(`TabBoost: 检测到非HTML内容 (${loadResult.contentType})，在新标签页中打开`);
+        console.log(
+          `TabBoost: 检测到非HTML内容 (${loadResult.contentType})，在新标签页中打开`
+        );
         window.open(url, "_blank");
         closePopup();
         return;

@@ -13,9 +13,6 @@ import {
 } from "./splitViewEvents.js";
 import splitViewState from "./splitViewState.js";
 
-
-
-
 splitViewState.init().catch((error) => {
   console.error("Failed to initialize split view state:", error);
 });
@@ -38,40 +35,42 @@ export async function createSplitView() {
       console.error("Invalid page URL");
       return false;
     }
-    
-    
+
     splitViewState.activate(leftUrl);
 
     try {
-      
       const [checkResult] = await chrome.scripting.executeScript({
         target: { tabId: currentTab.id },
         func: () => {
           try {
-            const container = document.getElementById("tabboost-split-view-container");
+            const container = document.getElementById(
+              "tabboost-split-view-container"
+            );
             return !!container;
           } catch (e) {
             console.error("Error checking if split view container exists:", e);
             return false;
           }
-        }
+        },
       });
 
       if (checkResult && checkResult.result) {
-        
         await chrome.scripting.executeScript({
           target: { tabId: currentTab.id },
           func: () => {
             try {
-              const container = document.getElementById("tabboost-split-view-container");
+              const container = document.getElementById(
+                "tabboost-split-view-container"
+              );
               if (container) {
                 container.style.display = "flex";
                 container.style.opacity = "1";
                 container.style.zIndex = "10000";
 
-                
                 const leftView = document.getElementById("tabboost-split-left");
-                const rightView = document.getElementById("tabboost-split-right");
+                const rightView = document.getElementById(
+                  "tabboost-split-right"
+                );
 
                 if (leftView && rightView) {
                   leftView.style.display = "block";
@@ -87,13 +86,12 @@ export async function createSplitView() {
               console.error("Error making split view container visible:", e);
               return false;
             }
-          }
+          },
         });
 
         return true;
       }
 
-      
       const results = await chrome.scripting.executeScript({
         target: { tabId: currentTab.id },
         func: (url, i18nMessages) => {
@@ -110,7 +108,7 @@ export async function createSplitView() {
             container.style.backgroundColor = "#fff";
             container.style.display = "flex";
             container.style.overflow = "hidden";
-            
+
             // 创建视图容器
             const viewsContainer = document.createElement("div");
             viewsContainer.id = "tabboost-views-container";
@@ -120,7 +118,7 @@ export async function createSplitView() {
             viewsContainer.style.position = "relative";
             viewsContainer.style.flexDirection = "row";
             viewsContainer.setAttribute("data-split-direction", "horizontal");
-            
+
             // 创建左侧视图
             const leftView = document.createElement("div");
             leftView.id = "tabboost-split-left";
@@ -128,7 +126,7 @@ export async function createSplitView() {
             leftView.style.height = "100%";
             leftView.style.overflow = "hidden";
             leftView.style.position = "relative";
-            
+
             // 左侧关闭按钮
             const leftCloseButton = document.createElement("button");
             leftCloseButton.className = "tabboost-view-close";
@@ -146,11 +144,16 @@ export async function createSplitView() {
             leftCloseButton.style.border = "none";
             leftCloseButton.style.borderRadius = "50%";
             leftCloseButton.style.cursor = "pointer";
-            
+
             leftCloseButton.addEventListener("click", () => {
-              
-              const rightIframe = document.getElementById("tabboost-right-iframe");
-              if (rightIframe && rightIframe.src && rightIframe.src !== "about:blank") {
+              const rightIframe = document.getElementById(
+                "tabboost-right-iframe"
+              );
+              if (
+                rightIframe &&
+                rightIframe.src &&
+                rightIframe.src !== "about:blank"
+              ) {
                 const rightUrl = rightIframe.src;
                 chrome.runtime.sendMessage({ action: "closeSplitView" });
                 setTimeout(() => {
@@ -164,10 +167,9 @@ export async function createSplitView() {
                 chrome.runtime.sendMessage({ action: "closeSplitView" });
               }
             });
-            
+
             leftView.appendChild(leftCloseButton);
-            
-            
+
             const leftSettingsButton = document.createElement("button");
             leftSettingsButton.className = "tabboost-view-settings";
             leftSettingsButton.style.position = "absolute";
@@ -188,7 +190,6 @@ export async function createSplitView() {
             leftSettingsButton.style.opacity = "0";
             leftSettingsButton.style.transition = "opacity 0.2s";
 
-            
             const createSplitIcon = () => {
               const icon = document.createElement("div");
               icon.style.width = "16px";
@@ -198,7 +199,6 @@ export async function createSplitView() {
               icon.style.borderRadius = "2px";
               icon.style.overflow = "hidden";
 
-              
               const divider = document.createElement("div");
               divider.style.position = "absolute";
               divider.style.top = "0";
@@ -214,8 +214,7 @@ export async function createSplitView() {
 
             leftSettingsButton.appendChild(createSplitIcon());
             leftView.appendChild(leftSettingsButton);
-            
-            
+
             const leftIframe = document.createElement("iframe");
             leftIframe.id = "tabboost-left-iframe";
             leftIframe.style.width = "100%";
@@ -226,18 +225,16 @@ export async function createSplitView() {
             leftIframe.setAttribute("data-tabboost-frame", "left");
             leftIframe.setAttribute("allowfullscreen", "true");
             leftIframe.src = url;
-            
+
             leftView.appendChild(leftIframe);
-            
-            
+
             const rightView = document.createElement("div");
             rightView.id = "tabboost-split-right";
             rightView.style.width = "50%";
             rightView.style.height = "100%";
             rightView.style.overflow = "hidden";
             rightView.style.position = "relative";
-            
-            
+
             const rightCloseButton = document.createElement("button");
             rightCloseButton.className = "tabboost-view-close";
             rightCloseButton.dataset.action = "close-split-view";
@@ -254,15 +251,13 @@ export async function createSplitView() {
             rightCloseButton.style.border = "none";
             rightCloseButton.style.borderRadius = "50%";
             rightCloseButton.style.cursor = "pointer";
-            
+
             rightCloseButton.addEventListener("click", () => {
-              
               chrome.runtime.sendMessage({ action: "closeSplitView" });
             });
-            
+
             rightView.appendChild(rightCloseButton);
-            
-            
+
             const rightSettingsButton = document.createElement("button");
             rightSettingsButton.className = "tabboost-view-settings";
             rightSettingsButton.style.position = "absolute";
@@ -285,8 +280,7 @@ export async function createSplitView() {
 
             rightSettingsButton.appendChild(createSplitIcon());
             rightView.appendChild(rightSettingsButton);
-            
-            
+
             const rightIframe = document.createElement("iframe");
             rightIframe.id = "tabboost-right-iframe";
             rightIframe.style.width = "100%";
@@ -297,34 +291,32 @@ export async function createSplitView() {
             rightIframe.setAttribute("data-tabboost-frame", "right");
             rightIframe.setAttribute("allowfullscreen", "true");
             rightIframe.src = "about:blank";
-            
+
             rightView.appendChild(rightIframe);
-            
-            
+
             viewsContainer.appendChild(leftView);
             viewsContainer.appendChild(rightView);
             container.appendChild(viewsContainer);
-            
-            
+
             try {
               const originalContent = document.documentElement.outerHTML || "";
-              document.body.setAttribute("data-tabboost-original-content", originalContent);
+              document.body.setAttribute(
+                "data-tabboost-original-content",
+                originalContent
+              );
             } catch (e) {
               console.error("TabBoost: Error storing original content", e);
             }
-            
-            
+
             const existingElements = Array.from(document.body.children);
-            existingElements.forEach(element => {
+            existingElements.forEach((element) => {
               element.dataset.originalDisplay = element.style.display;
               element.style.display = "none";
             });
-            
-            
+
             document.body.style.overflow = "hidden";
             document.body.appendChild(container);
-            
-            
+
             const createRatioMenu = (settingsButton, viewSide) => {
               const menu = document.createElement("div");
               menu.className = "tabboost-ratio-menu";
@@ -340,20 +332,22 @@ export async function createSplitView() {
               menu.style.padding = "6px 0";
               menu.style.minWidth = "160px";
 
-              
               const getCurrentDirection = () => {
-                const viewsContainer = document.getElementById("tabboost-views-container");
-                return viewsContainer && viewsContainer.getAttribute("data-split-direction") === "vertical" 
-                  ? "vertical" : "horizontal";
+                const viewsContainer = document.getElementById(
+                  "tabboost-views-container"
+                );
+                return viewsContainer &&
+                  viewsContainer.getAttribute("data-split-direction") ===
+                    "vertical"
+                  ? "vertical"
+                  : "horizontal";
               };
 
-              
               const layoutSection = document.createElement("div");
               layoutSection.style.borderBottom = "1px solid #f0f0f0";
               layoutSection.style.paddingBottom = "6px";
               layoutSection.style.marginBottom = "6px";
 
-              
               const horizontalOption = document.createElement("div");
               horizontalOption.style.padding = "8px 12px";
               horizontalOption.style.cursor = "pointer";
@@ -373,7 +367,8 @@ export async function createSplitView() {
               horizontalIcon.style.justifyContent = "center";
               horizontalIcon.style.backgroundColor = "#f5f5f5";
               horizontalIcon.style.borderRadius = "3px";
-              horizontalIcon.innerHTML = '<svg viewBox="0 0 20 20" width="20" height="20"><rect x="1" y="3" width="8" height="14" fill="#e0e0e0" rx="2"/><rect x="11" y="3" width="8" height="14" fill="#e0e0e0" rx="2"/></svg>';
+              horizontalIcon.innerHTML =
+                '<svg viewBox="0 0 20 20" width="20" height="20"><rect x="1" y="3" width="8" height="14" fill="#e0e0e0" rx="2"/><rect x="11" y="3" width="8" height="14" fill="#e0e0e0" rx="2"/></svg>';
 
               const horizontalLabel = document.createElement("span");
               horizontalLabel.innerText = i18nMessages.splitViewHorizontal;
@@ -383,7 +378,6 @@ export async function createSplitView() {
               horizontalOption.appendChild(horizontalIcon);
               horizontalOption.appendChild(horizontalLabel);
 
-              
               const verticalOption = document.createElement("div");
               verticalOption.style.padding = "8px 12px";
               verticalOption.style.cursor = "pointer";
@@ -403,7 +397,8 @@ export async function createSplitView() {
               verticalIcon.style.justifyContent = "center";
               verticalIcon.style.backgroundColor = "#f5f5f5";
               verticalIcon.style.borderRadius = "3px";
-              verticalIcon.innerHTML = '<svg viewBox="0 0 20 20" width="20" height="20"><rect x="1" y="1" width="18" height="8" fill="#e0e0e0" rx="2"/><rect x="1" y="11" width="18" height="8" fill="#e0e0e0" rx="2"/></svg>';
+              verticalIcon.innerHTML =
+                '<svg viewBox="0 0 20 20" width="20" height="20"><rect x="1" y="1" width="18" height="8" fill="#e0e0e0" rx="2"/><rect x="1" y="11" width="18" height="8" fill="#e0e0e0" rx="2"/></svg>';
 
               const verticalLabel = document.createElement("span");
               verticalLabel.innerText = i18nMessages.splitViewVertical;
@@ -413,7 +408,6 @@ export async function createSplitView() {
               verticalOption.appendChild(verticalIcon);
               verticalOption.appendChild(verticalLabel);
 
-              
               horizontalOption.addEventListener("mouseover", () => {
                 horizontalOption.style.backgroundColor = "#f5f5f5";
               });
@@ -428,33 +422,39 @@ export async function createSplitView() {
                 verticalOption.style.backgroundColor = "transparent";
               });
 
-              
               const setLayout = (direction) => {
                 const leftView = document.getElementById("tabboost-split-left");
-                const rightView = document.getElementById("tabboost-split-right");
-                const viewsContainer = document.getElementById("tabboost-views-container");
-                
+                const rightView = document.getElementById(
+                  "tabboost-split-right"
+                );
+                const viewsContainer = document.getElementById(
+                  "tabboost-views-container"
+                );
+
                 if (!leftView || !rightView || !viewsContainer) return;
-                
+
                 if (direction === "vertical") {
-                  
                   viewsContainer.style.flexDirection = "column";
                   leftView.style.width = "100%";
                   leftView.style.height = "50%";
                   rightView.style.width = "100%";
                   rightView.style.height = "50%";
-                  viewsContainer.setAttribute("data-split-direction", "vertical");
+                  viewsContainer.setAttribute(
+                    "data-split-direction",
+                    "vertical"
+                  );
                 } else {
-                  
                   viewsContainer.style.flexDirection = "row";
                   leftView.style.width = "50%";
                   leftView.style.height = "100%";
                   rightView.style.width = "50%";
                   rightView.style.height = "100%";
-                  viewsContainer.setAttribute("data-split-direction", "horizontal");
+                  viewsContainer.setAttribute(
+                    "data-split-direction",
+                    "horizontal"
+                  );
                 }
-                
-                
+
                 setTimeout(() => updateRatioIcons(), 50);
               };
 
@@ -472,17 +472,33 @@ export async function createSplitView() {
               layoutSection.appendChild(verticalOption);
               menu.appendChild(layoutSection);
 
-              
               const ratios = [
-                { left: 50, right: 50, top: 50, bottom: 50, label: i18nMessages.splitViewEqualRatio },
-                { left: 70, right: 30, top: 70, bottom: 30, label: i18nMessages.splitViewLeftLarger },
-                { left: 30, right: 70, top: 30, bottom: 70, label: i18nMessages.splitViewRightLarger }
+                {
+                  left: 50,
+                  right: 50,
+                  top: 50,
+                  bottom: 50,
+                  label: i18nMessages.splitViewEqualRatio,
+                },
+                {
+                  left: 70,
+                  right: 30,
+                  top: 70,
+                  bottom: 30,
+                  label: i18nMessages.splitViewLeftLarger,
+                },
+                {
+                  left: 30,
+                  right: 70,
+                  top: 30,
+                  bottom: 70,
+                  label: i18nMessages.splitViewRightLarger,
+                },
               ];
 
-              
               const ratioSection = document.createElement("div");
 
-              ratios.forEach(ratio => {
+              ratios.forEach((ratio) => {
                 const option = document.createElement("div");
                 option.style.padding = "8px 12px";
                 option.style.cursor = "pointer";
@@ -493,7 +509,6 @@ export async function createSplitView() {
                 option.style.transition = "background-color 0.2s";
                 option.setAttribute("data-ratio", JSON.stringify(ratio));
 
-                
                 const diagram = document.createElement("div");
                 diagram.style.width = "20px";
                 diagram.style.height = "20px";
@@ -505,42 +520,36 @@ export async function createSplitView() {
                 diagram.style.borderRadius = "3px";
                 diagram.style.overflow = "hidden";
 
-                
                 const createSvgForDiagram = (direction) => {
                   diagram.innerHTML = "";
-                  
+
                   let svgContent = "";
-                  
+
                   if (direction === "vertical") {
-                    
                     const topHeight = ratio.top;
                     const bottomHeight = ratio.bottom;
-                    
+
                     svgContent = `<svg viewBox="0 0 20 20" width="20" height="20">
-                      <rect x="1" y="1" width="18" height="${topHeight/100 * 17}" fill="#e0e0e0" rx="2"/>
-                      <rect x="1" y="${2 + topHeight/100 * 17}" width="18" height="${bottomHeight/100 * 17}" fill="#e0e0e0" rx="2"/>
+                      <rect x="1" y="1" width="18" height="${(topHeight / 100) * 17}" fill="#e0e0e0" rx="2"/>
+                      <rect x="1" y="${2 + (topHeight / 100) * 17}" width="18" height="${(bottomHeight / 100) * 17}" fill="#e0e0e0" rx="2"/>
                     </svg>`;
                   } else {
-                    
                     const leftWidth = ratio.left;
                     const rightWidth = ratio.right;
-                    
+
                     svgContent = `<svg viewBox="0 0 20 20" width="20" height="20">
-                      <rect x="1" y="3" width="${leftWidth/100 * 17}" height="14" fill="#e0e0e0" rx="2"/>
-                      <rect x="${2 + leftWidth/100 * 17}" y="3" width="${rightWidth/100 * 17}" height="14" fill="#e0e0e0" rx="2"/>
+                      <rect x="1" y="3" width="${(leftWidth / 100) * 17}" height="14" fill="#e0e0e0" rx="2"/>
+                      <rect x="${2 + (leftWidth / 100) * 17}" y="3" width="${(rightWidth / 100) * 17}" height="14" fill="#e0e0e0" rx="2"/>
                     </svg>`;
                   }
-                  
+
                   diagram.innerHTML = svgContent;
                 };
-                
-                
+
                 createSvgForDiagram(getCurrentDirection());
-                
-                
+
                 diagram.updateDivider = createSvgForDiagram;
 
-                
                 const label = document.createElement("span");
                 label.innerText = ratio.label;
                 label.style.fontSize = "13px";
@@ -550,7 +559,6 @@ export async function createSplitView() {
                 option.appendChild(diagram);
                 option.appendChild(label);
 
-                
                 option.addEventListener("mouseover", () => {
                   option.style.backgroundColor = "#f5f5f5";
                 });
@@ -558,26 +566,31 @@ export async function createSplitView() {
                   option.style.backgroundColor = "transparent";
                 });
 
-                
                 option.addEventListener("click", () => {
-                  const leftView = document.getElementById("tabboost-split-left");
-                  const rightView = document.getElementById("tabboost-split-right");
-                  const viewsContainer = document.getElementById("tabboost-views-container");
-                  
+                  const leftView = document.getElementById(
+                    "tabboost-split-left"
+                  );
+                  const rightView = document.getElementById(
+                    "tabboost-split-right"
+                  );
+                  const viewsContainer = document.getElementById(
+                    "tabboost-views-container"
+                  );
+
                   if (!leftView || !rightView || !viewsContainer) return;
-                  
-                  const isVertical = viewsContainer.getAttribute("data-split-direction") === "vertical";
-                  
+
+                  const isVertical =
+                    viewsContainer.getAttribute("data-split-direction") ===
+                    "vertical";
+
                   if (isVertical) {
-                    
                     leftView.style.height = `${ratio.top}%`;
                     rightView.style.height = `${ratio.bottom}%`;
                   } else {
-                    
                     leftView.style.width = `${ratio.left}%`;
                     rightView.style.width = `${ratio.right}%`;
                   }
-                  
+
                   menu.style.display = "none";
                 });
 
@@ -586,34 +599,36 @@ export async function createSplitView() {
 
               menu.appendChild(ratioSection);
 
-              
               menu.ratioOptions = ratioSection.children;
               settingsButton.parentElement.appendChild(menu);
 
-              
               settingsButton.addEventListener("click", () => {
-                const allMenus = document.querySelectorAll(".tabboost-ratio-menu");
-                allMenus.forEach(m => {
+                const allMenus = document.querySelectorAll(
+                  ".tabboost-ratio-menu"
+                );
+                allMenus.forEach((m) => {
                   if (m !== menu) m.style.display = "none";
                 });
-                
-                
+
                 if (menu.style.display === "none") {
                   const currentDirection = getCurrentDirection();
-                  Array.from(menu.ratioOptions).forEach(option => {
+                  Array.from(menu.ratioOptions).forEach((option) => {
                     const diagram = option.firstChild;
                     if (diagram && diagram.updateDivider) {
                       diagram.updateDivider(currentDirection);
                     }
                   });
                 }
-                
-                menu.style.display = menu.style.display === "none" ? "block" : "none";
+
+                menu.style.display =
+                  menu.style.display === "none" ? "block" : "none";
               });
 
-              
               document.addEventListener("click", (e) => {
-                if (!settingsButton.contains(e.target) && !menu.contains(e.target)) {
+                if (
+                  !settingsButton.contains(e.target) &&
+                  !menu.contains(e.target)
+                ) {
                   menu.style.display = "none";
                 }
               });
@@ -621,59 +636,67 @@ export async function createSplitView() {
               return menu;
             };
 
-            
             createRatioMenu(leftSettingsButton, "left");
             createRatioMenu(rightSettingsButton, "right");
 
-            
             function updateRatioIcons() {
-              const viewsContainer = document.getElementById("tabboost-views-container");
+              const viewsContainer = document.getElementById(
+                "tabboost-views-container"
+              );
               if (!viewsContainer) return;
-              
-              const direction = viewsContainer.getAttribute("data-split-direction") === "vertical" ? "vertical" : "horizontal";
-              
-              document.querySelectorAll(".tabboost-ratio-menu").forEach(menu => {
-                if (!menu.ratioOptions) return;
-                
-                Array.from(menu.ratioOptions).forEach(option => {
-                  const diagram = option.firstChild;
-                  if (diagram && diagram.updateDivider) {
-                    diagram.updateDivider(direction);
-                  }
+
+              const direction =
+                viewsContainer.getAttribute("data-split-direction") ===
+                "vertical"
+                  ? "vertical"
+                  : "horizontal";
+
+              document
+                .querySelectorAll(".tabboost-ratio-menu")
+                .forEach((menu) => {
+                  if (!menu.ratioOptions) return;
+
+                  Array.from(menu.ratioOptions).forEach((option) => {
+                    const diagram = option.firstChild;
+                    if (diagram && diagram.updateDivider) {
+                      diagram.updateDivider(direction);
+                    }
+                  });
                 });
-              });
             }
 
-            
-            document.addEventListener("click", function(event) {
+            document.addEventListener("click", function (event) {
               if (event.target.closest("[data-layout]")) {
-                const layoutType = event.target.closest("[data-layout]").getAttribute("data-layout");
+                const layoutType = event.target
+                  .closest("[data-layout]")
+                  .getAttribute("data-layout");
                 if (layoutType) {
-                  
                   setTimeout(() => updateRatioIcons(), 100);
                 }
               }
             });
 
-            
             const applyDefaultRatio = () => {
               try {
                 const leftView = document.getElementById("tabboost-split-left");
-                const rightView = document.getElementById("tabboost-split-right");
-                const viewsContainer = document.getElementById("tabboost-views-container");
-                
+                const rightView = document.getElementById(
+                  "tabboost-split-right"
+                );
+                const viewsContainer = document.getElementById(
+                  "tabboost-views-container"
+                );
+
                 if (leftView && rightView && viewsContainer) {
-                  
-                  const isVertical = viewsContainer.getAttribute("data-split-direction") === "vertical";
-                  
+                  const isVertical =
+                    viewsContainer.getAttribute("data-split-direction") ===
+                    "vertical";
+
                   if (isVertical) {
-                    
                     leftView.style.height = "50%";
                     leftView.style.width = "100%";
                     rightView.style.height = "50%";
                     rightView.style.width = "100%";
                   } else {
-                    
                     leftView.style.width = "50%";
                     leftView.style.height = "100%";
                     rightView.style.width = "50%";
@@ -685,41 +708,54 @@ export async function createSplitView() {
               }
             };
 
-            
             applyDefaultRatio();
-            
-            
+
             leftView.addEventListener("mouseenter", () => {
-              const closeButton = leftView.querySelector(".tabboost-view-close");
-              const settingsButton = leftView.querySelector(".tabboost-view-settings");
+              const closeButton = leftView.querySelector(
+                ".tabboost-view-close"
+              );
+              const settingsButton = leftView.querySelector(
+                ".tabboost-view-settings"
+              );
               if (closeButton) closeButton.style.opacity = "1";
               if (settingsButton) settingsButton.style.opacity = "1";
             });
 
             leftView.addEventListener("mouseleave", () => {
-              const closeButton = leftView.querySelector(".tabboost-view-close");
-              const settingsButton = leftView.querySelector(".tabboost-view-settings");
+              const closeButton = leftView.querySelector(
+                ".tabboost-view-close"
+              );
+              const settingsButton = leftView.querySelector(
+                ".tabboost-view-settings"
+              );
               if (closeButton) closeButton.style.opacity = "0";
               if (settingsButton) settingsButton.style.opacity = "0";
             });
 
             rightView.addEventListener("mouseenter", () => {
-              const closeButton = rightView.querySelector(".tabboost-view-close");
-              const settingsButton = rightView.querySelector(".tabboost-view-settings");
+              const closeButton = rightView.querySelector(
+                ".tabboost-view-close"
+              );
+              const settingsButton = rightView.querySelector(
+                ".tabboost-view-settings"
+              );
               if (closeButton) closeButton.style.opacity = "1";
               if (settingsButton) settingsButton.style.opacity = "1";
             });
 
             rightView.addEventListener("mouseleave", () => {
-              const closeButton = rightView.querySelector(".tabboost-view-close");
-              const settingsButton = rightView.querySelector(".tabboost-view-settings");
+              const closeButton = rightView.querySelector(
+                ".tabboost-view-close"
+              );
+              const settingsButton = rightView.querySelector(
+                ".tabboost-view-settings"
+              );
               if (closeButton) closeButton.style.opacity = "0";
               if (settingsButton) settingsButton.style.opacity = "0";
             });
-            
-            
+
             viewsContainer.setAttribute("data-split-direction", "horizontal");
-            
+
             return true;
           } catch (e) {
             console.error("TabBoost: Error creating split view:", e);
@@ -727,7 +763,7 @@ export async function createSplitView() {
           }
         },
         args: [
-          leftUrl, 
+          leftUrl,
           {
             closeSplitView: i18n.getMessage("closeSplitView"),
             splitViewSettings: i18n.getMessage("splitViewSettings"),
@@ -735,11 +771,11 @@ export async function createSplitView() {
             splitViewLeftLarger: i18n.getMessage("splitViewLeftLarger"),
             splitViewRightLarger: i18n.getMessage("splitViewRightLarger"),
             splitViewHorizontal: i18n.getMessage("splitViewHorizontal"),
-            splitViewVertical: i18n.getMessage("splitViewVertical")
-          }
-        ]
+            splitViewVertical: i18n.getMessage("splitViewVertical"),
+          },
+        ],
       });
-      
+
       if (results && results[0] && results[0].result) {
         return true;
       } else {
@@ -750,13 +786,11 @@ export async function createSplitView() {
       console.error("TabBoost: Failed to execute split view script:", e);
       console.log("TabBoost: Will retry with minimal approach");
 
-      
       try {
         await chrome.scripting.executeScript({
           target: { tabId: currentTab.id },
           func: (url) => {
             try {
-              
               if (!document.getElementById("tabboost-split-view-container")) {
                 const container = document.createElement("div");
                 container.id = "tabboost-split-view-container";
@@ -769,22 +803,19 @@ export async function createSplitView() {
                 container.style.backgroundColor = "#fff";
                 container.style.display = "flex";
                 container.style.overflow = "hidden";
-                
-                
+
                 const viewsContainer = document.createElement("div");
                 viewsContainer.id = "tabboost-views-container";
                 viewsContainer.style.display = "flex";
                 viewsContainer.style.width = "100%";
                 viewsContainer.style.height = "100%";
-                
-                
+
                 const leftView = document.createElement("div");
                 leftView.id = "tabboost-split-left";
                 leftView.style.width = "50%";
                 leftView.style.height = "100%";
                 leftView.style.position = "relative";
-                
-                
+
                 const leftCloseButton = document.createElement("button");
                 leftCloseButton.className = "tabboost-view-close";
                 leftCloseButton.dataset.action = "close-split-view";
@@ -801,44 +832,50 @@ export async function createSplitView() {
                 leftCloseButton.style.border = "none";
                 leftCloseButton.style.borderRadius = "50%";
                 leftCloseButton.style.cursor = "pointer";
-                
+
                 leftCloseButton.addEventListener("click", () => {
-                  
-                  const rightIframe = document.getElementById("tabboost-right-iframe");
-                  if (rightIframe && rightIframe.src && rightIframe.src !== "about:blank") {
+                  const rightIframe = document.getElementById(
+                    "tabboost-right-iframe"
+                  );
+                  if (
+                    rightIframe &&
+                    rightIframe.src &&
+                    rightIframe.src !== "about:blank"
+                  ) {
                     const rightUrl = rightIframe.src;
                     chrome.runtime.sendMessage({ action: "closeSplitView" });
                     setTimeout(() => {
                       try {
                         window.location.href = rightUrl;
                       } catch (e) {
-                        console.error("TabBoost: Error setting location to right URL:", e);
+                        console.error(
+                          "TabBoost: Error setting location to right URL:",
+                          e
+                        );
                       }
                     }, 100);
                   } else {
                     chrome.runtime.sendMessage({ action: "closeSplitView" });
                   }
                 });
-                
+
                 leftView.appendChild(leftCloseButton);
-                
-                
+
                 const leftIframe = document.createElement("iframe");
                 leftIframe.id = "tabboost-left-iframe";
                 leftIframe.style.width = "100%";
                 leftIframe.style.height = "100%";
                 leftIframe.style.border = "none";
                 leftIframe.src = window.location.href;
-                
+
                 leftView.appendChild(leftIframe);
-                
+
                 const rightView = document.createElement("div");
                 rightView.id = "tabboost-split-right";
                 rightView.style.width = "50%";
                 rightView.style.height = "100%";
                 rightView.style.position = "relative";
-                
-                
+
                 const rightCloseButton = document.createElement("button");
                 rightCloseButton.className = "tabboost-view-close";
                 rightCloseButton.dataset.action = "close-split-view";
@@ -855,33 +892,29 @@ export async function createSplitView() {
                 rightCloseButton.style.border = "none";
                 rightCloseButton.style.borderRadius = "50%";
                 rightCloseButton.style.cursor = "pointer";
-                
+
                 rightCloseButton.addEventListener("click", () => {
-                  
                   chrome.runtime.sendMessage({ action: "closeSplitView" });
                 });
-                
+
                 rightView.appendChild(rightCloseButton);
-                
-                
+
                 const rightIframe = document.createElement("iframe");
                 rightIframe.id = "tabboost-right-iframe";
                 rightIframe.style.width = "100%";
                 rightIframe.style.height = "100%";
                 rightIframe.style.border = "none";
                 rightIframe.src = url;
-                
+
                 rightView.appendChild(rightIframe);
-                
-                
+
                 viewsContainer.appendChild(leftView);
                 viewsContainer.appendChild(rightView);
-                
+
                 container.appendChild(viewsContainer);
-                
-                
+
                 document.body.appendChild(container);
-                
+
                 return true;
               }
             } catch (e) {
@@ -889,12 +922,15 @@ export async function createSplitView() {
               return false;
             }
           },
-          args: [leftUrl]
+          args: [leftUrl],
         });
-        
+
         return true;
       } catch (retryError) {
-        console.error("TabBoost: Failed to create minimal split view:", retryError);
+        console.error(
+          "TabBoost: Failed to create minimal split view:",
+          retryError
+        );
         return false;
       }
     }
@@ -928,11 +964,10 @@ export async function closeSplitView() {
       if (success) {
         splitViewState.deactivate();
       } else {
-        
         await chrome.tabs.reload(currentTab.id);
         splitViewState.deactivate();
       }
-      
+
       return true;
     } catch (e) {
       console.error("Failed to execute restore page script:", e);
@@ -969,7 +1004,6 @@ export async function toggleSplitView() {
  * @returns {Promise<boolean>} - 是否成功更新
  */
 export async function updateRightView(url) {
-  
   if (!splitViewState.getState().isActive) {
     const success = await createSplitView();
     if (!success) {
@@ -977,9 +1011,8 @@ export async function updateRightView(url) {
     }
   }
 
-  
   splitViewState.setRightUrl(url);
-  
+
   try {
     const currentTab = await getCurrentTab();
     if (!currentTab) {
@@ -987,18 +1020,19 @@ export async function updateRightView(url) {
       return false;
     }
 
-    
     const checkResult = await chrome.scripting.executeScript({
       target: { tabId: currentTab.id },
       func: () => {
         try {
-          const container = document.getElementById("tabboost-split-view-container");
+          const container = document.getElementById(
+            "tabboost-split-view-container"
+          );
           return !!container;
         } catch (e) {
           console.error("Error checking split view container:", e);
           return false;
         }
-      }
+      },
     });
 
     if (!checkResult || !checkResult[0].result) {
@@ -1006,22 +1040,18 @@ export async function updateRightView(url) {
       await createSplitView();
     }
 
-    
     const results = await chrome.scripting.executeScript({
       target: { tabId: currentTab.id },
       func: (url) => {
         try {
-          
           const rightView = document.getElementById("tabboost-split-right");
           if (!rightView) {
             console.error("Right view not found");
             return false;
           }
-          
-          
+
           let rightIframe = document.getElementById("tabboost-right-iframe");
-          
-          
+
           if (!rightIframe) {
             rightIframe = document.createElement("iframe");
             rightIframe.id = "tabboost-right-iframe";
@@ -1030,58 +1060,54 @@ export async function updateRightView(url) {
             rightIframe.style.border = "none";
             rightIframe.style.display = "block";
             rightIframe.setAttribute("allowfullscreen", "true");
-            
+
             rightView.appendChild(rightIframe);
           }
-          
-          
+
           rightView.style.display = "block";
-          
-          
-          const viewsContainer = document.getElementById("tabboost-views-container");
-          const isVertical = viewsContainer && viewsContainer.getAttribute("data-split-direction") === "vertical";
+
+          const viewsContainer = document.getElementById(
+            "tabboost-views-container"
+          );
+          const isVertical =
+            viewsContainer &&
+            viewsContainer.getAttribute("data-split-direction") === "vertical";
 
           if (isVertical) {
-            
             rightView.style.width = "100%";
             rightView.style.height = "50%";
-            
-            
+
             const leftView = document.getElementById("tabboost-split-left");
             if (leftView) {
               leftView.style.height = "50%";
               leftView.style.width = "100%";
             }
           } else {
-            
             rightView.style.width = "50%";
             rightView.style.height = "100%";
-            
-            
+
             const leftView = document.getElementById("tabboost-split-left");
             if (leftView) {
               leftView.style.width = "50%";
               leftView.style.height = "100%";
             }
           }
-          
-          
+
           rightIframe.src = url;
-          
+
           return true;
         } catch (error) {
           console.error("Error in updateRightViewDOM:", error);
           return false;
         }
       },
-      args: [url]
+      args: [url],
     });
-    
+
     return true;
   } catch (error) {
     console.error("Failed to update right view:", error);
-    
-    
+
     try {
       await chrome.tabs.create({ url });
       return true;

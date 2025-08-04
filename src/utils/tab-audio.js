@@ -8,15 +8,18 @@
  */
 export async function toggleMuteCurrentTab() {
   try {
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    
+    const [tab] = await chrome.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
+
     if (!tab) {
       return { success: false, muted: false };
     }
-    
+
     const newMuteState = !tab.mutedInfo?.muted;
     await chrome.tabs.update(tab.id, { muted: newMuteState });
-    
+
     return { success: true, muted: newMuteState };
   } catch (error) {
     console.error("Failed to toggle mute on current tab:", error);
@@ -31,22 +34,22 @@ export async function toggleMuteCurrentTab() {
 export async function toggleMuteAllAudioTabs() {
   try {
     const audioTabs = await chrome.tabs.query({ audible: true });
-    
+
     if (audioTabs.length === 0) {
       return { success: true, muted: false, count: 0 };
     }
 
-    const mutedCount = audioTabs.filter(tab => tab.mutedInfo?.muted).length;
+    const mutedCount = audioTabs.filter((tab) => tab.mutedInfo?.muted).length;
     const shouldMute = mutedCount < audioTabs.length / 2;
-    
+
     await Promise.all(
-      audioTabs.map(tab => chrome.tabs.update(tab.id, { muted: shouldMute }))
+      audioTabs.map((tab) => chrome.tabs.update(tab.id, { muted: shouldMute }))
     );
-    
+
     return {
       success: true,
       muted: shouldMute,
-      count: audioTabs.length
+      count: audioTabs.length,
     };
   } catch (error) {
     console.error("Failed to toggle mute on audio tabs:", error);
@@ -66,4 +69,4 @@ export async function getAudioTabsCount() {
     console.error("Failed to get audio tabs count:", error);
     return 0;
   }
-} 
+}

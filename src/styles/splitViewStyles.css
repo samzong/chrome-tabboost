@@ -71,7 +71,9 @@
   margin-right: 10px;
   border-radius: 8px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    width 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   /* 使用硬件加速，减少重绘 */
   transform: translateZ(0);
   will-change: width, height;
@@ -89,7 +91,9 @@
   margin-left: 10px;
   border-radius: 8px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    width 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   /* 使用硬件加速，减少重绘 */
   transform: translateZ(0);
   will-change: width, height;
@@ -108,7 +112,7 @@
   height: 40px;
   background-color: #e0e0e0;
   border-radius: 4px;
-  transition: 
+  transition:
     background-color 0.2s,
     height 0.2s,
     width 0.2s;
@@ -392,7 +396,7 @@
   #tabboost-split-divider::after {
     background-color: #4b5563;
   }
-  
+
   #tabboost-split-divider:hover::after,
   .tabboost-dragging #tabboost-split-divider::after {
     background-color: #3b82f6;
@@ -491,14 +495,16 @@
 }
 
 /* 上下布局的样式调整 */
-#tabboost-views-container[data-split-direction="vertical"] #tabboost-split-left {
+#tabboost-views-container[data-split-direction="vertical"]
+  #tabboost-split-left {
   width: 100%;
   height: 50%;
   margin-right: 0;
   margin-bottom: 10px;
 }
 
-#tabboost-views-container[data-split-direction="vertical"] #tabboost-split-right {
+#tabboost-views-container[data-split-direction="vertical"]
+  #tabboost-split-right {
   width: 100%;
   height: 50%;
   margin-left: 0;
@@ -591,25 +597,25 @@
   #tabboost-split-right {
     background-color: #1f2937;
   }
-  
+
   #tabboost-views-container[data-split-direction="horizontal"]::after,
   #tabboost-views-container[data-split-direction="vertical"]::after {
     background-color: #374151;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   }
-  
+
   #tabboost-views-container[data-split-direction="horizontal"]::before,
   #tabboost-views-container[data-split-direction="vertical"]::before {
     background-color: #6b7280;
   }
-  
+
   /* 深色模式下的悬停效果 */
   #tabboost-views-container:hover[data-split-direction="horizontal"]::after,
   #tabboost-views-container:hover[data-split-direction="vertical"]::after {
     background-color: #4b5563;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
   }
-  
+
   #tabboost-views-container:hover[data-split-direction="horizontal"]::before,
   #tabboost-views-container:hover[data-split-direction="vertical"]::before {
     background-color: #9ca3af;

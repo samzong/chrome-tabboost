@@ -67,7 +67,7 @@
   z-index: 10;
   width: 24px;
   height: 24px;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
   color: #fff;
   border: none;
   border-radius: 50%;
@@ -141,4 +141,4 @@
     width: 60px;
     height: 4px;
   }
-} 
+}
