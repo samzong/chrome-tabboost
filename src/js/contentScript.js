@@ -5,12 +5,13 @@ import { getMessage } from "../utils/i18n.js";
 import { cleanupLazyLoading } from "../utils/iframe-lazy-loader.js";
 import LazyLoadingDetector from "../utils/lazyLoadingDetector.js";
 import eventManager from "../utils/event-manager.js";
+import { ErrorHandler } from "../utils/errorHandler.js";
 
 const initStorageCache = async () => {
   try {
     await storageCache.init();
   } catch (error) {
-    
+    ErrorHandler.logError(error, "contentScript.initStorageCache", "warning");
   }
 };
 
@@ -249,7 +250,13 @@ async function createPopup(url) {
     const validationResult = validateUrl(url);
 
     if (!validationResult.isValid) {
-      
+      ErrorHandler.logError(
+        new Error(
+          `Invalid URL: ${validationResult.reason || "Unknown reason"}`
+        ),
+        "contentScript.createPopup.validation",
+        "info"
+      );
       window.open(url, "_blank");
       return;
     }
@@ -265,7 +272,7 @@ async function createPopup(url) {
 
     await createPopupDOM(url);
   } catch (error) {
-    
+    ErrorHandler.logError(error, "contentScript.createPopup", "error");
     window.open(url, "_blank");
   }
 }
@@ -279,7 +286,7 @@ async function getPreviewSettings() {
     });
     return settings;
   } catch (error) {
-    
+    ErrorHandler.logError(error, "contentScript.getPreviewSettings", "warning");
     return {
       popupSizePreset: "default",
       customWidth: 80,
@@ -501,6 +508,7 @@ function loadWithTimeout(iframe, url, timeout = null) {
                 return;
               }
             } catch (typeError) {
+              // Ignore content type check errors - not critical
             }
 
             cleanup();
@@ -534,12 +542,20 @@ async function createPopupDOM(url) {
         eventManager.addListener(element, eventType, listener, options);
         managedElements.add(element);
       } catch (eventError) {
-        
+        ErrorHandler.logError(
+          eventError,
+          "contentScript.addTrackedEventListener.eventManager",
+          "warning"
+        );
         try {
           element.addEventListener(eventType, listener, options);
           managedElements.add(element);
         } catch (fallbackError) {
-          
+          ErrorHandler.logError(
+            fallbackError,
+            "contentScript.addTrackedEventListener.fallback",
+            "error"
+          );
         }
       }
     };
@@ -573,16 +589,23 @@ async function createPopupDOM(url) {
       hasHandledFailure = true;
 
       try {
-        
         if (errorMsg) errorMsg.classList.add("show");
         clearAllTimers();
       } catch (handlerError) {
-        
+        ErrorHandler.logError(
+          handlerError,
+          "contentScript.handleLoadFailure",
+          "error"
+        );
         try {
           window.open(url, "_blank");
           closePopup();
         } catch (fallbackError) {
-          
+          ErrorHandler.logError(
+            fallbackError,
+            "contentScript.handleLoadFailure.fallback",
+            "critical"
+          );
         }
       }
     };
@@ -602,9 +625,12 @@ async function createPopupDOM(url) {
           const elementsToCleanup = Array.from(managedElements);
           const cleanedCount = eventManager.cleanupMultiple(elementsToCleanup);
           managedElements.clear();
-
         } catch (cleanupError) {
-          
+          ErrorHandler.logError(
+            cleanupError,
+            "contentScript.closePopup.cleanup",
+            "warning"
+          );
           managedElements.clear();
         }
         timers.closeTimeout = setTimeout(() => {
@@ -615,7 +641,7 @@ async function createPopupDOM(url) {
           timers.closeTimeout = null;
         }, 300);
       } catch (error) {
-        
+        ErrorHandler.logError(error, "contentScript.closePopup", "error");
       }
     };
 
@@ -654,7 +680,6 @@ async function createPopupDOM(url) {
               );
             }
           } catch (e) {
-
             try {
               if (iframe.contentWindow) {
                 iframe.contentWindow.addEventListener("load", () => {
@@ -671,10 +696,14 @@ async function createPopupDOM(url) {
                       }, true);
                     `;
                     iframe.contentDocument.head.appendChild(script);
-                  } catch (err) {}
+                  } catch (err) {
+                    // Silently ignore - expected for cross-origin iframes
+                  }
                 });
               }
-            } catch (err) {}
+            } catch (err) {
+              // Silently ignore - expected for cross-origin iframes
+            }
           }
         });
 
@@ -685,7 +714,11 @@ async function createPopupDOM(url) {
         };
         addTrackedEventListener(window, "message", messageListener);
       } catch (error) {
-        
+        ErrorHandler.logError(
+          error,
+          "contentScript.handleIframeEsc",
+          "warning"
+        );
       }
     };
 
@@ -722,7 +755,11 @@ async function createPopupDOM(url) {
               });
             })
             .catch((error) => {
-              
+              ErrorHandler.logError(
+                error,
+                "contentScript.copyUrlButton.clipboard",
+                "warning"
+              );
               chrome.runtime.sendMessage({
                 action: "showNotification",
                 message: getMessage("urlCopyFailed") || "Failed to copy URL!",
@@ -794,7 +831,7 @@ async function createPopupDOM(url) {
       }
     }
   } catch (error) {
-    
+    ErrorHandler.logError(error, "contentScript.createPopupDOM", "error");
     window.open(url, "_blank");
   }
 }

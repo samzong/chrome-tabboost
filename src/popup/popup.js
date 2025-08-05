@@ -10,9 +10,7 @@ async function updateMuteButtonText(muteButton) {
     const isMuted = tab.mutedInfo?.muted || false;
 
     muteButton.textContent = getMessage(isMuted ? "unmuteTab" : "muteTab");
-  } catch (error) {
-    
-  }
+  } catch (error) {}
 }
 
 async function updateMuteAllButton(muteAllButton) {
@@ -33,9 +31,7 @@ async function updateMuteAllButton(muteAllButton) {
     } else {
       muteAllButton.textContent = getMessage("muteAllAudioTabs");
     }
-  } catch (error) {
-    
-  }
+  } catch (error) {}
 }
 
 /**
@@ -65,9 +61,7 @@ async function updateButtonsWithShortcuts(buttons, shortcuts) {
         button.textContent = `${textWithoutShortcut} (${formattedShortcut})`;
       }
     }
-  } catch (error) {
-    
-  }
+  } catch (error) {}
 }
 
 document.addEventListener("DOMContentLoaded", async () => {

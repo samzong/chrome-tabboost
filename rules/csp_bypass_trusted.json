@@ -1,0 +1,58 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": {
+      "type": "modifyHeaders",
+      "responseHeaders": [
+        {
+          "header": "X-Frame-Options",
+          "operation": "set",
+          "value": "SAMEORIGIN"
+        }
+      ]
+    },
+    "condition": {
+      "resourceTypes": ["sub_frame"],
+      "requestDomains": [
+        "github.com",
+        "www.github.com",
+        "gist.github.com",
+        "stackoverflow.com",
+        "developer.mozilla.org",
+        "wikipedia.org",
+        "w3.org",
+        "docs.microsoft.com",
+        "nodejs.org",
+        "reactjs.org",
+        "vuejs.org",
+        "angular.io"
+      ]
+    }
+  },
+  {
+    "id": 2,
+    "priority": 2,
+    "action": {
+      "type": "modifyHeaders",
+      "responseHeaders": [
+        {
+          "header": "Content-Security-Policy",
+          "operation": "remove"
+        }
+      ]
+    },
+    "condition": {
+      "resourceTypes": ["sub_frame"],
+      "requestDomains": [
+        "github.com",
+        "www.github.com",
+        "gist.github.com",
+        "stackoverflow.com",
+        "developer.mozilla.org",
+        "wikipedia.org",
+        "w3.org"
+      ]
+    }
+  }
+]

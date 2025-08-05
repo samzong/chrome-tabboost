@@ -15,7 +15,6 @@ class EventManager {
 
   addListener(element, event, handler, options = {}) {
     if (!element || typeof handler !== "function") {
-      
       return null;
     }
 
@@ -51,7 +50,6 @@ class EventManager {
 
       return controller;
     } catch (error) {
-      
       elementListeners.delete(listenerInfo);
       return null;
     }
@@ -59,7 +57,6 @@ class EventManager {
 
   addMultipleListeners(element, eventConfigs) {
     if (!element || !Array.isArray(eventConfigs)) {
-      
       return null;
     }
 
@@ -83,7 +80,6 @@ class EventManager {
 
   cleanup(element) {
     if (!element) {
-      
       return false;
     }
 
@@ -102,7 +98,6 @@ class EventManager {
 
         return true;
       } catch (error) {
-        
         return false;
       }
     }
@@ -112,7 +107,6 @@ class EventManager {
 
   cleanupMultiple(elements) {
     if (!Array.isArray(elements)) {
-      
       return 0;
     }
 
@@ -131,8 +125,6 @@ class EventManager {
   }
 
   emergencyCleanup() {
-    
-
     const startTime = performance.now();
     let cleanedCount = 0;
 
@@ -140,9 +132,7 @@ class EventManager {
       try {
         controller.abort();
         cleanedCount++;
-      } catch (error) {
-        
-      }
+      } catch (error) {}
     });
 
     this.globalControllers.clear();

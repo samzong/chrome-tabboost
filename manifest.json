@@ -14,29 +14,20 @@
     "declarativeNetRequest"
   ],
   "host_permissions": [
-    "<all_urls>"
+    "http://*/*",
+    "https://*/*"
   ],
-  "declarative_net_request": {
-    "rule_resources": [
-      {
-        "id": "popup_bypass_rules",
-        "enabled": true,
-        "path": "rules/popup_bypass.json"
-      },
-      {
-        "id": "csp_bypass_rules",
-        "enabled": true,
-        "path": "rules/csp_bypass.json"
-      }
-    ]
-  },
+  "optional_permissions": [
+    "tabs"
+  ],
   "content_scripts": [
     {
       "matches": [
-        "<all_urls>"
+        "http://*/*",
+        "https://*/*"
       ],
       "js": [
-        "src/js/contentScript.js"
+        "contentScript.js"
       ],
       "css": [
         "src/styles/popupStyles.css",
@@ -46,6 +37,20 @@
       "run_at": "document_start"
     }
   ],
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "popup_bypass_trusted",
+        "enabled": true,
+        "path": "rules/popup_bypass_trusted.json"
+      },
+      {
+        "id": "csp_bypass_trusted",
+        "enabled": true,
+        "path": "rules/csp_bypass_trusted.json"
+      }
+    ]
+  },
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google.com; default-src 'self'; connect-src 'self' https://*.google.com; frame-src 'self'; font-src 'self'; form-action 'none'; base-uri 'none'; upgrade-insecure-requests;",
     "sandbox": "sandbox allow-scripts allow-forms allow-popups allow-modals; script-src 'self'; object-src 'none'"
@@ -107,7 +112,8 @@
         "src/styles/splitViewStyles.css"
       ],
       "matches": [
-        "<all_urls>"
+        "http://*/*",
+        "https://*/*"
       ]
     }
   ]

@@ -2,6 +2,7 @@ import { UI_CONFIG, LAYOUT_CONFIG, SVG_CONFIG } from "./splitViewConfig.js";
 import { createElement } from "./splitViewDOMUtils.js";
 import { safeAddEventListener } from "./splitViewUtils.js";
 import * as i18n from "../../utils/i18n.js";
+import { ErrorHandler } from "../../utils/errorHandler.js";
 
 export function createSplitIcon() {
   const icon = createElement("div", {
@@ -308,6 +309,10 @@ export function applyDefaultRatio() {
       }
     }
   } catch (e) {
-    
+    ErrorHandler.logError(
+      e,
+      "splitViewDOMComponents.restoreOriginalURL",
+      "warning"
+    );
   }
 }

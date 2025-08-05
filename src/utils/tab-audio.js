@@ -22,7 +22,6 @@ export async function toggleMuteCurrentTab() {
 
     return { success: true, muted: newMuteState };
   } catch (error) {
-    
     return { success: false, muted: false };
   }
 }
@@ -52,7 +51,6 @@ export async function toggleMuteAllAudioTabs() {
       count: audioTabs.length,
     };
   } catch (error) {
-    
     return { success: false, muted: false, count: 0 };
   }
 }
@@ -66,7 +64,6 @@ export async function getAudioTabsCount() {
     const audioTabs = await chrome.tabs.query({ audible: true });
     return audioTabs.length;
   } catch (error) {
-    
     return 0;
   }
 }

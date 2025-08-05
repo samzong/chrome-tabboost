@@ -12,7 +12,6 @@ export function getMessage(messageName, substitutions = []) {
   const message = chrome.i18n.getMessage(messageName, substitutions);
 
   if (!message) {
-    
   }
 
   return message;
@@ -48,7 +47,6 @@ export function localizePage(rootElement = document) {
           element.textContent = message;
         }
       } else {
-        
       }
     }
   });
@@ -66,7 +64,6 @@ export function localizePage(rootElement = document) {
       if (message) {
         element.setAttribute("placeholder", message);
       } else {
-        
       }
     }
   });

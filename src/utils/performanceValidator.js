@@ -78,7 +78,6 @@ class PerformanceValidator {
         stats.recommendations.suggestedStrategy !== undefined;
 
       this.calculateEstimatedSavings(stats, results);
-
     }
 
     return results;
@@ -137,9 +136,7 @@ class PerformanceValidator {
       }
     });
 
-    iframe.addEventListener("error", (error) => {
-      
-    });
+    iframe.addEventListener("error", (error) => {});
 
     return monitor;
   }

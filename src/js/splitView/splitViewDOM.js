@@ -11,6 +11,7 @@ import {
 } from "./splitViewDOMUtils.js";
 import { safeQuerySelector } from "./splitViewUtils.js";
 import * as i18n from "../../utils/i18n.js";
+import { ErrorHandler } from "../../utils/errorHandler.js";
 
 import {
   createSettingsButton,
@@ -20,10 +21,8 @@ import {
 } from "./splitViewDOMComponents.js";
 
 export function initSplitViewDOM(leftUrl) {
-
   try {
     if (!document || !document.body) {
-      
       return false;
     }
 
@@ -60,7 +59,6 @@ export function initSplitViewDOM(leftUrl) {
 
     return true;
   } catch (error) {
-    
     showError(
       i18n.getMessage("failedToInitSplitView") ||
         "Failed to initialize split view"
@@ -136,7 +134,7 @@ function setupIframeEvents(iframe, errorContainer, url) {
           frameDoc.head.appendChild(style);
         }
       } catch (e) {
-        
+        // Ignore iframe styling errors - expected for cross-origin iframes
       }
     }
   });
@@ -163,7 +161,6 @@ function saveOriginalContent() {
     let originalContent = document.documentElement.outerHTML || "";
 
     if (originalContent.length > maxContentLength) {
-      
       originalContent = `<html><head><title>${document.title}</title></head><body><div class="tabboost-restored-content">${i18n.getMessage("contentTooLarge") || "Content was too large to save."}</div></body></html>`;
     }
 
@@ -172,7 +169,7 @@ function saveOriginalContent() {
       originalContent
     );
   } catch (e) {
-    
+    ErrorHandler.logError(e, "splitViewDOM.saveOriginalContent", "warning");
   }
 }
 
@@ -194,7 +191,7 @@ function showError(message) {
       </div>
     `;
   } catch (e) {
-    
+    ErrorHandler.logError(e, "splitViewDOM.showError", "error");
   }
 }
 
@@ -242,7 +239,6 @@ export function updateRightViewDOM(url) {
   try {
     const rightView = safeQuerySelector(`#${UI_CONFIG.view.right.id}`);
     if (!rightView) {
-      
       return false;
     }
 
@@ -284,11 +280,14 @@ export function updateRightViewDOM(url) {
 
     return true;
   } catch (error) {
-    
     try {
       window.open(url, "_blank");
     } catch (e) {
-      
+      ErrorHandler.logError(
+        e,
+        "splitViewDOM.updateRightViewDOM.fallback",
+        "critical"
+      );
     }
     return false;
   }

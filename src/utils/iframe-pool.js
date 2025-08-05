@@ -123,8 +123,6 @@ class IframePool {
   createSplitViewPair(leftId, rightId, leftUrl, rightUrl = "about:blank") {
     const startTime = performance.now();
 
-
-
     const leftIframe = this.getIframe("splitview-left", leftId, leftUrl);
     const rightIframe = this.getIframe("splitview-right", rightId, rightUrl);
 
@@ -138,7 +136,6 @@ class IframePool {
         "splitview-right"
       );
     }
-
 
     return { leftIframe, rightIframe };
   }

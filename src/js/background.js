@@ -16,6 +16,7 @@ import {
   toggleMuteCurrentTab,
   toggleMuteAllAudioTabs,
 } from "../utils/tab-audio.js";
+import { ErrorHandler } from "../utils/errorHandler.js";
 
 let currentTabCache = {
   tab: null,
@@ -27,8 +28,8 @@ let isDuplicatingTab = false;
 const TAB_CACHE_TTL = 1000;
 
 const RULE_SETS = {
-  POPUP_BYPASS: "popup_bypass_rules",
-  CSP_BYPASS: "csp_bypass_rules",
+  POPUP_BYPASS: "popup_bypass_trusted",
+  CSP_BYPASS: "csp_bypass_trusted",
 };
 
 /**
@@ -46,7 +47,11 @@ async function updateHeaderModificationRules(enabled) {
         : [RULE_SETS.POPUP_BYPASS, RULE_SETS.CSP_BYPASS],
     });
   } catch (error) {
-    
+    ErrorHandler.logError(
+      error,
+      "background.updateHeaderModificationRules",
+      "warning"
+    );
   }
 }
 
@@ -93,7 +98,7 @@ storageCache
     await updateHeaderModificationRules(headerModificationEnabled);
   })
   .catch((error) => {
-    
+    ErrorHandler.logError(error, "background.storageCache.init", "error");
   });
 
 chrome.storage.onChanged.addListener((changes, areaName) => {
@@ -139,7 +144,7 @@ async function copyTabUrl(tab) {
     showNotification(getMessage("urlCopied"));
     return true;
   } catch (error) {
-    
+    ErrorHandler.logError(error, "background.copyTabUrl", "error");
     showNotification(getMessage("urlCopyFailed"));
     return false;
   }
@@ -159,7 +164,10 @@ function duplicateTab(tab) {
       }, 500);
     });
   } catch (error) {
-    
+    ErrorHandler.logError(error, "background.duplicateTab", "warning");
+    showNotification(
+      getMessage("duplicateTabFailed") || "Failed to duplicate tab"
+    );
     isDuplicatingTab = false;
   }
 }
@@ -230,7 +238,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       if (tab && tab.url) {
         copyTabUrl(tab).then((success) => {
           if (!success) {
-            
+            ErrorHandler.logError(
+              new Error("Failed to copy tab URL"),
+              "background.copyCurrentTabUrl.callback",
+              "warning"
+            );
           }
         });
       }
@@ -278,7 +290,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         sendResponse(result);
       })
       .catch((error) => {
-        
+        ErrorHandler.logError(error, "background.openInSplitView", "error");
         try {
           chrome.tabs.create({ url: request.url });
           sendResponse({
@@ -286,7 +298,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             message: getMessage("splitViewErrorFallback"),
           });
         } catch (e) {
-          
+          ErrorHandler.logError(
+            e,
+            "background.openInSplitView.fallback",
+            "critical"
+          );
           sendResponse({ status: "error", message: error.message });
         }
       });

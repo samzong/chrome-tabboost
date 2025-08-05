@@ -45,7 +45,6 @@ function getCurrentChannel() {
   const channelName = process.env.BUILD_CHANNEL || "DEV";
 
   if (!CHANNELS[channelName]) {
-    
     return CHANNELS.DEV;
   }
 

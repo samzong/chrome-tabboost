@@ -2,23 +2,22 @@ import { getCurrentTab } from "../../utils/utils.js";
 import * as i18n from "../../utils/i18n.js";
 import { removeSplitViewDOM } from "./splitViewDOM.js";
 import splitViewState from "./splitViewState.js";
+import { ErrorHandler } from "../../utils/errorHandler.js";
 
 splitViewState.init().catch((error) => {
-  
+  ErrorHandler.logError(error, "splitViewCore.init", "warning");
 });
 
 export async function createSplitView() {
   try {
     const currentTab = await getCurrentTab();
     if (!currentTab) {
-      
       return false;
     }
 
     const leftUrl = currentTab.url;
 
     if (!leftUrl || leftUrl === "about:blank") {
-      
       return false;
     }
 
@@ -34,7 +33,6 @@ export async function createSplitView() {
             );
             return !!container;
           } catch (e) {
-            
             return false;
           }
         },
@@ -69,7 +67,6 @@ export async function createSplitView() {
               }
               return false;
             } catch (e) {
-              
               return false;
             }
           },
@@ -142,7 +139,11 @@ export async function createSplitView() {
                   try {
                     window.location.href = rightUrl;
                   } catch (e) {
-                    
+                    ErrorHandler.logError(
+                      e,
+                      "splitViewCore.createSplitView.navigateToRightUrl",
+                      "error"
+                    );
                   }
                 }, 100);
               } else {
@@ -303,7 +304,11 @@ export async function createSplitView() {
                 originalContent
               );
             } catch (e) {
-              
+              ErrorHandler.logError(
+                e,
+                "splitViewCore.createSplitView.saveOriginalContent",
+                "warning"
+              );
             }
 
             const existingElements = Array.from(document.body.children);
@@ -702,7 +707,11 @@ export async function createSplitView() {
                   }
                 }
               } catch (e) {
-                
+                ErrorHandler.logError(
+                  e,
+                  "splitViewCore.createSplitView.revertToOriginal",
+                  "warning"
+                );
               }
             };
 
@@ -756,7 +765,11 @@ export async function createSplitView() {
 
             return true;
           } catch (e) {
-            
+            ErrorHandler.logError(
+              e,
+              "splitViewCore.createSplitView.scriptExecution",
+              "error"
+            );
             return false;
           }
         },
@@ -777,12 +790,9 @@ export async function createSplitView() {
       if (results && results[0] && results[0].result) {
         return true;
       } else {
-        
         return false;
       }
     } catch (e) {
-      
-
       try {
         await chrome.scripting.executeScript({
           target: { tabId: currentTab.id },
@@ -845,7 +855,11 @@ export async function createSplitView() {
                       try {
                         window.location.href = rightUrl;
                       } catch (e) {
-                        
+                        ErrorHandler.logError(
+                          e,
+                          "splitViewCore.createSplitView.navigateToRightUrl2",
+                          "error"
+                        );
                       }
                     }, 100);
                   } else {
@@ -930,7 +944,11 @@ export async function createSplitView() {
                 return true;
               }
             } catch (e) {
-              
+              ErrorHandler.logError(
+                e,
+                "splitViewCore.updateRightView.scriptExecution",
+                "error"
+              );
               return false;
             }
           },
@@ -939,12 +957,10 @@ export async function createSplitView() {
 
         return true;
       } catch (retryError) {
-        
         return false;
       }
     }
   } catch (error) {
-    
     return false;
   }
 }
@@ -955,7 +971,6 @@ export async function closeSplitView() {
   try {
     const currentTab = await getCurrentTab();
     if (!currentTab) {
-      
       return false;
     }
 
@@ -975,20 +990,15 @@ export async function closeSplitView() {
 
       return true;
     } catch (e) {
-      
-
       try {
         chrome.tabs.reload(currentTab.id);
         splitViewState.deactivate();
         return true;
       } catch (reloadError) {
-        
         return false;
       }
     }
-  } catch (error) {
-    
-  }
+  } catch (error) {}
 }
 
 export async function toggleSplitView() {
@@ -1012,7 +1022,6 @@ export async function updateRightView(url) {
   try {
     const currentTab = await getCurrentTab();
     if (!currentTab) {
-      
       return false;
     }
 
@@ -1025,7 +1034,6 @@ export async function updateRightView(url) {
           );
           return !!container;
         } catch (e) {
-          
           return false;
         }
       },
@@ -1041,7 +1049,6 @@ export async function updateRightView(url) {
         try {
           const rightView = document.getElementById("tabboost-split-right");
           if (!rightView) {
-            
             return false;
           }
 
@@ -1101,7 +1108,6 @@ export async function updateRightView(url) {
 
           return true;
         } catch (error) {
-          
           return false;
         }
       },
@@ -1110,13 +1116,11 @@ export async function updateRightView(url) {
 
     return true;
   } catch (error) {
-    
-
     try {
       chrome.tabs.create({ url });
       return true;
     } catch (e) {
-      
+      ErrorHandler.logError(e, "splitViewCore.openInNewTab", "error");
       return false;
     }
   }

@@ -1,6 +1,6 @@
 import storageCache from "./storage-cache.js";
-import { validateUrl } from "./utils.js";
-import { EXCLUDED_EXTENSIONS } from "../config/constants.js";
+import { SecurityValidator } from "./securityValidator.js";
+import { ErrorHandler } from "./errorHandler.js";
 
 let userConfigCache = {
   headerModificationEnabled: true,
@@ -8,16 +8,6 @@ let userConfigCache = {
 };
 
 const CONFIG_CACHE_TTL = 60 * 1000;
-
-function isExcludedFileType(url) {
-  try {
-    const urlObj = new URL(url);
-    const path = urlObj.pathname.toLowerCase();
-    return EXCLUDED_EXTENSIONS.some((ext) => path.endsWith(ext));
-  } catch (e) {
-    return false;
-  }
-}
 
 async function updateUserConfigCache() {
   try {
@@ -36,32 +26,48 @@ async function updateUserConfigCache() {
       };
     }
   } catch (error) {
-    
+    ErrorHandler.logError(
+      error,
+      "iframe-compatibility.updateUserConfigCache",
+      "warning"
+    );
   }
 }
 
 export async function canLoadInIframe(url, options = {}) {
   try {
-    const validationResult = validateUrl(url);
-    if (!validationResult.isValid) {
-      return false;
-    }
+    // Use SecurityValidator for iframe validation
+    const validationResult = SecurityValidator.validateForIframe(url);
 
-    url = validationResult.sanitizedUrl;
-
-    if (isExcludedFileType(url)) {
+    if (!validationResult.canLoad) {
+      ErrorHandler.logError(
+        new Error(`Iframe blocked: ${validationResult.reason}`),
+        "iframe-compatibility.canLoadInIframe",
+        validationResult.risk === "critical" ? "warning" : "info"
+      );
       return false;
     }
 
     await updateUserConfigCache();
 
+    // For popups, check if header modification is enabled
     if (options.isPopup) {
-      return userConfigCache.headerModificationEnabled;
+      // Only allow if it's a trusted domain or header modification is enabled
+      const urlObj = new URL(url);
+      const isTrusted = SecurityValidator.isTrustedDomain(urlObj.hostname);
+
+      if (!isTrusted && !userConfigCache.headerModificationEnabled) {
+        return false;
+      }
     }
 
     return true;
   } catch (error) {
-    
+    ErrorHandler.logError(
+      error,
+      "iframe-compatibility.canLoadInIframe",
+      "error"
+    );
     return false;
   }
 }

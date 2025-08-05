@@ -39,3 +39,24 @@ export const EXCLUDED_EXTENSIONS = [
   ".ttf",
   ".woff",
 ];
+
+export const DANGEROUS_FILE_TYPES = [
+  ".exe",
+  ".dmg",
+  ".msi",
+  ".app",
+  ".deb",
+  ".rpm",
+  ".bat",
+  ".cmd",
+  ".sh",
+  ".ps1",
+  ".com",
+  ".scr",
+  ".vbs",
+  ".vbe",
+  ".js",
+  ".jar",
+  ".swf",
+  ".xap",
+];

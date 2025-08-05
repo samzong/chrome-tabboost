@@ -58,12 +58,10 @@ export function setupLazyLoading(iframe, url, options = {}) {
       !iframe.tagName ||
       iframe.tagName.toLowerCase() !== "iframe"
     ) {
-      
       return false;
     }
 
     if (!url || typeof url !== "string") {
-      
       return false;
     }
 
@@ -90,7 +88,6 @@ export function setupLazyLoading(iframe, url, options = {}) {
 
     return true;
   } catch (error) {
-    
     iframe.src = url;
     iframe.dataset.lazyStatus = "error-fallback";
     return false;
@@ -109,7 +106,6 @@ export function loadImmediately(iframe) {
     }
     return false;
   } catch (error) {
-    
     return false;
   }
 }
@@ -122,9 +118,7 @@ export function cleanupLazyLoading(iframe) {
     if (observer) {
       observer.unobserve(iframe);
     }
-  } catch (error) {
-    
-  }
+  } catch (error) {}
 }
 
 export function destroyLazyLoader() {
@@ -134,9 +128,7 @@ export function destroyLazyLoader() {
       observer = null;
     }
     lazyIframes.clear();
-  } catch (error) {
-    
-  }
+  } catch (error) {}
 }
 
 export function getLazyStatus(iframe) {

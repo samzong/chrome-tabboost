@@ -15,7 +15,6 @@ export async function getCommandShortcuts() {
 
     return shortcuts;
   } catch (error) {
-    
     return {};
   }
 }

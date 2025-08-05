@@ -1,4 +1,5 @@
 import storageCache from "../../utils/storage-cache.js";
+import { ErrorHandler } from "../../utils/errorHandler.js";
 
 const splitViewState = {
   isActive: false,
@@ -16,7 +17,7 @@ const splitViewState = {
 
       this.layoutDirection = savedState.splitViewDirection || "horizontal";
     } catch (error) {
-      
+      ErrorHandler.logError(error, "splitViewState.init", "warning");
     }
   },
 

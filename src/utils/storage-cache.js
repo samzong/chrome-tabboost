@@ -11,7 +11,6 @@ class StorageCache {
     this.stableConfigExpiration = 7 * 24 * 60 * 60 * 1000;
     this.initialized = false;
 
-
     this.metrics = {
       cacheHits: 0,
       cacheMisses: 0,
@@ -120,7 +119,6 @@ class StorageCache {
     );
 
     if (keysToFetch.length === 0) {
-
       this.metrics.cacheHits += keyList.length;
       const result = {};
       keyList.forEach((key) => {
@@ -128,7 +126,6 @@ class StorageCache {
       });
       return Promise.resolve(result);
     }
-
 
     this.metrics.cacheMisses += keysToFetch.length;
 
@@ -147,7 +144,6 @@ class StorageCache {
       if (this.batchReadTimer) {
         clearTimeout(this.batchReadTimer);
       }
-
 
       const currentBatchSize = Object.keys(this.batchReadCache).length;
       const smartDelay =
@@ -194,7 +190,6 @@ class StorageCache {
       return;
     }
 
-
     this.metrics.batchReads++;
     const startTime = performance.now();
 
@@ -203,7 +198,6 @@ class StorageCache {
     this.batchReadTimer = null;
 
     chrome.storage.sync.get(keysToFetch, (items) => {
-
       const readTime = performance.now() - startTime;
       this.metrics.avgReadDelay = (this.metrics.avgReadDelay + readTime) / 2;
 
@@ -254,7 +248,6 @@ class StorageCache {
       clearTimeout(this.writeTimerId);
     }
 
-
     const currentQueueSize = Object.keys(this.writeQueue).length;
     const smartWriteDelay =
       currentQueueSize >= this.writeBatchThreshold
@@ -274,7 +267,6 @@ class StorageCache {
       return;
     }
 
-
     this.metrics.batchWrites++;
     const startTime = performance.now();
 
@@ -288,14 +280,12 @@ class StorageCache {
     try {
       await chrome.storage.sync.set(itemsToWrite);
 
-
       if (startTime) {
         const writeTime = performance.now() - startTime;
         this.metrics.avgWriteDelay =
           (this.metrics.avgWriteDelay + writeTime) / 2;
       }
     } catch (error) {
-      
       throw error;
     }
   }
@@ -320,7 +310,6 @@ class StorageCache {
     return new Promise((resolve) => {
       chrome.storage.sync.remove(keyList, () => {
         if (chrome.runtime.lastError) {
-          
         }
         resolve();
       });
@@ -350,7 +339,6 @@ class StorageCache {
     return new Promise((resolve) => {
       chrome.storage.sync.clear(() => {
         if (chrome.runtime.lastError) {
-          
         }
         resolve();
       });

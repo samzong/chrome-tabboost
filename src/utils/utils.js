@@ -37,23 +37,33 @@ export async function showNotification(message) {
         );
       });
     });
-  } catch (error) {
-    
-  }
+  } catch (error) {}
 }
 
-import {
-  DANGEROUS_PROTOCOLS,
-  DANGEROUS_URL_PATTERNS,
-  EXCLUDED_EXTENSIONS,
-} from "../config/constants.js";
+import { SecurityValidator } from "./securityValidator.js";
 
 /**
  * Verify if the URL is safe and valid
  * @param {string} url
- * @returns {{isValid: boolean, sanitizedUrl: string, message: string}}
+ * @returns {{isValid: boolean, sanitizedUrl: string, message: string, reason?: string}}
  */
 export function validateUrl(url) {
+  const validation = SecurityValidator.validateUrl(url);
+
+  return {
+    isValid: validation.isValid,
+    sanitizedUrl: validation.sanitizedUrl || "",
+    message:
+      validation.reason || (validation.isValid ? "Valid URL" : "Invalid URL"),
+    reason: validation.reason,
+  };
+}
+
+/**
+ * Legacy validation function for backward compatibility
+ * @deprecated Use validateUrl instead
+ */
+export function validateUrlLegacy(url) {
   if (!url || typeof url !== "string") {
     return {
       isValid: false,
@@ -69,18 +79,6 @@ export function validateUrl(url) {
       isValid: false,
       sanitizedUrl: "",
       message: "URL cannot be empty",
-    };
-  }
-
-  if (
-    DANGEROUS_PROTOCOLS.some((protocol) =>
-      url.toLowerCase().startsWith(protocol)
-    )
-  ) {
-    return {
-      isValid: false,
-      sanitizedUrl: "",
-      message: "URL uses an unsafe protocol",
     };
   }
 

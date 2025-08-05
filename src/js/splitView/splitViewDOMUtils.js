@@ -1,6 +1,7 @@
 import { UI_CONFIG } from "./splitViewConfig";
 import { safeQuerySelector } from "./splitViewUtils";
 import * as i18n from "../../utils/i18n.js";
+import { ErrorHandler } from "../../utils/errorHandler.js";
 
 export function createElement(tag, config = {}) {
   const element = document.createElement(tag);
@@ -36,7 +37,11 @@ export function addSafeEventListener(element, event, handler) {
   try {
     element.addEventListener(event, handler);
   } catch (e) {
-    
+    ErrorHandler.logError(
+      e,
+      "splitViewDOMUtils.addSafeEventListener",
+      "warning"
+    );
   }
 }
 
