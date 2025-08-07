@@ -1,5 +1,35 @@
 import { validateUrl } from '../../src/utils/utils';
 
+// Mock chrome.runtime.getManifest and chrome.storage
+global.chrome = {
+  runtime: {
+    getManifest: jest.fn(() => ({
+      version: '2.4.3'
+    }))
+  },
+  storage: {
+    local: {
+      get: jest.fn((keys, callback) => {
+        callback({ errorLog: [] });
+      }),
+      set: jest.fn((data, callback) => {
+        if (callback) callback();
+      })
+    }
+  }
+};
+
+// Mock navigator
+global.navigator = {
+  userAgent: 'Mozilla/5.0 (Test) Chrome/120.0.0.0'
+};
+
+// Mock localStorage
+global.localStorage = {
+  getItem: jest.fn(),
+  setItem: jest.fn()
+};
+
 jest.mock('../../src/utils/i18n.js', () => ({
   getMessage: jest.fn((key) => {
     const messages = {
@@ -15,6 +45,7 @@ jest.mock('../../src/utils/i18n.js', () => ({
 
 jest.mock('../../src/config/constants.js', () => ({
   DANGEROUS_PROTOCOLS: ['javascript:', 'data:', 'vbscript:'],
+  DANGEROUS_FILE_TYPES: ['.exe', '.dll', '.bat', '.cmd', '.msi'],
   DANGEROUS_URL_PATTERNS: [
     'javascript:',
     'data:',
@@ -49,27 +80,27 @@ describe('validateUrl', () => {
   test('should reject empty URL', () => {
     const result = validateUrl('');
     expect(result.isValid).toBe(false);
-    expect(result.message).toBe('URL must be a non-empty string');
+    expect(result.message).toBe('Invalid URL format');
   });
 
   test('should reject non-string URL', () => {
     const result = validateUrl(null);
     expect(result.isValid).toBe(false);
-    expect(result.message).toBe('URL must be a non-empty string');
+    expect(result.message).toBe('Invalid URL format');
   });
 
   test('should reject JavaScript protocol URL', () => {
     const url = 'javascript:alert("XSS")';
     const result = validateUrl(url);
     expect(result.isValid).toBe(false);
-    expect(result.message).toBe('URL uses an unsafe protocol');
+    expect(result.message).toBe('Potential XSS detected');
   });
 
   test('should reject URL with XSS attacks', () => {
     const url = 'https://example.com/?q=<script>alert(1)</script>';
     const result = validateUrl(url);
     expect(result.isValid).toBe(false);
-    expect(result.message).toBe('URL contains potential dangerous patterns');
+    expect(result.message).toBe('Potential XSS detected');
   });
 
   test('should correctly handle URL with special characters', () => {
