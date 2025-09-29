@@ -15,6 +15,10 @@
     "message": "Copy URL",
     "description": "Action to copy the current URL"
   },
+  "refreshPreview": {
+    "message": "Refresh",
+    "description": "Button text to reload the link preview iframe"
+  },
   "toggleSplitView": {
     "message": "Toggle split view",
     "description": "Action to toggle split view mode"
@@ -772,5 +776,13 @@
   "splitViewVertical": {
     "message": "Vertical Split",
     "description": "Label for vertical split view layout"
+  },
+  "splitViewUpdatedStatus": {
+    "message": "Split view settings updated",
+    "description": "Shown when split-view preferences are saved successfully"
+  },
+  "pageLoaded": {
+    "message": "Page loaded",
+    "description": "Shown in the preview header once the iframe content has finished loading."
   }
 }
