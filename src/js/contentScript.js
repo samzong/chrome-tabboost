@@ -606,7 +606,7 @@ async function createPopupDOM(url) {
         }
 
         if (loadResult.status === "non_html") {
-          console.log(`TabBoost: 检测到非HTML内容 (${loadResult.contentType})，在新标签页中打开`);
+          console.log('TabBoost: Non-HTML content detected (' + loadResult.contentType + '), opening in a new tab.');
           window.open(url, "_blank");
           closePopup();
           return;
