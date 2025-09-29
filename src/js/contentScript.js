@@ -335,6 +335,7 @@ async function getPreviewSettings() {
 function createToolbarElements() {
   const loadingText = getMessage("loading") || "Loading...";
   const openInNewTabText = getMessage("openInNewTab") || "Open in new tab";
+  const refreshText = getMessage("refreshPreview") || "Refresh";
   const closeText = getMessage("close") || "Close";
   const copyUrlText = getMessage("copyUrl") || "Copy URL";
 
@@ -352,6 +353,13 @@ function createToolbarElements() {
     textContent: copyUrlText
   });
 
+  const refreshButton = createElementWithAttributes("button", {
+    className: "tabboost-button tabboost-refresh-button",
+    title: refreshText,
+    "aria-label": refreshText,
+    textContent: refreshText
+  });
+
   const newTabButton = createElementWithAttributes("button", {
     className: "tabboost-button tabboost-newtab-button",
     title: openInNewTabText,
@@ -367,7 +375,7 @@ function createToolbarElements() {
     innerHTML: "&times;"
   });
 
-  appendChildren(buttonsDiv, [copyUrlButton, newTabButton, closeButton]);
+  appendChildren(buttonsDiv, [copyUrlButton, refreshButton, newTabButton, closeButton]);
   appendChildren(toolbar, [titleSpan, buttonsDiv]);
 
   return { toolbar, titleSpan };
@@ -528,6 +536,18 @@ async function createPopupDOM(url) {
       });
     };
 
+    const resetBeforeLoad = () => {
+      if (errorMsg) {
+        errorMsg.classList.remove("show");
+      }
+      if (titleSpan) {
+        titleSpan.innerText = getMessage("loading") || "Loading...";
+      }
+      if (iframe) {
+        iframe.style.opacity = "1";
+      }
+    };
+
     const handleLoadFailure = async (error) => {
       if (hasHandledFailure) return;
       hasHandledFailure = true;
@@ -560,6 +580,56 @@ async function createPopupDOM(url) {
         }, 300);
       } catch (error) {
         console.error("chrome-tabboost: Error closing popup:", error);
+      }
+    };
+
+    const loadIframeContent = async () => {
+      hasHandledFailure = false;
+      clearAllTimers();
+      resetBeforeLoad();
+
+      try {
+        const loadPromise = loadWithTimeout(iframe, url, 6000);
+        iframe.src = url;
+        const loadResult = await loadPromise;
+
+        if (hasHandledFailure) return;
+
+        if (loadResult.status === "blank") {
+          await handleLoadFailure(
+            new Error(
+              getMessage("cannotLoadInPopup") ||
+                "Content is blank or inaccessible"
+            )
+          );
+          return;
+        }
+
+        if (loadResult.status === "non_html") {
+          console.log('TabBoost: Non-HTML content detected (' + loadResult.contentType + '), opening in a new tab.');
+          window.open(url, "_blank");
+          closePopup();
+          return;
+        }
+
+        try {
+          if (iframe.contentDocument && iframe.contentDocument.title) {
+            const iframeTitle = iframe.contentDocument.title;
+            if (titleSpan)
+              titleSpan.innerText =
+                iframeTitle || getMessage("pageLoaded") || "Page loaded";
+          } else {
+            if (titleSpan)
+              titleSpan.innerText = getMessage("pageLoaded") || "Page loaded";
+          }
+        } catch (e) {
+          if (titleSpan)
+            titleSpan.innerText = getMessage("pageLoaded") || "Page loaded";
+        }
+      } catch (error) {
+        if (!hasHandledFailure) {
+          await handleLoadFailure(error);
+        }
       }
     };
 
@@ -673,6 +743,13 @@ async function createPopupDOM(url) {
         });
       }
 
+      const refreshButton = popupOverlay.querySelector(".tabboost-refresh-button");
+      if (refreshButton) {
+        addTrackedEventListener(refreshButton, "click", () => {
+          loadIframeContent();
+        });
+      }
+
       const errorOpenTabButton = errorMsg.querySelector("#tabboost-open-newtab");
       if (errorOpenTabButton) {
         addTrackedEventListener(errorOpenTabButton, "click", () => {
@@ -691,48 +768,7 @@ async function createPopupDOM(url) {
     };
     addButtonListeners();
 
-    try {
-      iframe.src = url;
-      const loadResult = await loadWithTimeout(iframe, url, 6000);
-
-      if (hasHandledFailure) return;
-
-      if (loadResult.status === "blank") {
-        await handleLoadFailure(
-          new Error(
-            getMessage("cannotLoadInPopup") ||
-              "Content is blank or inaccessible"
-          )
-        );
-        return;
-      }
-
-      if (loadResult.status === "non_html") {
-        console.log(`TabBoost: 检测到非HTML内容 (${loadResult.contentType})，在新标签页中打开`);
-        window.open(url, "_blank");
-        closePopup();
-        return;
-      }
-
-      try {
-        if (iframe.contentDocument && iframe.contentDocument.title) {
-          const iframeTitle = iframe.contentDocument.title;
-          if (titleSpan)
-            titleSpan.innerText =
-              iframeTitle || getMessage("pageLoaded") || "Page loaded";
-        } else {
-          if (titleSpan)
-            titleSpan.innerText = getMessage("pageLoaded") || "Page loaded";
-        }
-      } catch (e) {
-        if (titleSpan)
-          titleSpan.innerText = getMessage("pageLoaded") || "Page loaded";
-      }
-    } catch (error) {
-      if (!hasHandledFailure) {
-        await handleLoadFailure(error);
-      }
-    }
+    await loadIframeContent();
   } catch (error) {
     console.error("chrome-tabboost: Error creating popup DOM:", error);
     window.open(url, "_blank");
