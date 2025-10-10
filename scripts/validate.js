@@ -31,6 +31,8 @@ async function validateExtension() {
       }
     }
 
+    enforceBundleBudgets();
+
     const maxSize = 5 * 1024 * 1024; // 5MB
     const files = getAllFiles(buildDir);
     for (const file of files) {
@@ -41,13 +43,7 @@ async function validateExtension() {
     }
 
     console.log('Running web-ext validation...');
-    try {
-      await execAsync(`npx web-ext lint --source-dir ${buildDir}`);
-    } catch (error) {
-      if (error.stderr && !error.stderr.includes('Your extension is valid')) {
-        throw new Error(`web-ext validation failed: ${error.stderr}`);
-      }
-    }
+    await runWebExtLint();
 
     validatePermissions(manifest);
     validateContentSecurity(manifest);
@@ -83,6 +79,49 @@ function validateContentSecurity(manifest) {
   } else if (csp.includes("'unsafe-eval'") || csp.includes("'unsafe-inline'")) {
     console.warn('⚠️ Warning: Using unsafe CSP directives may affect security');
   }
+}
+
+function enforceBundleBudgets() {
+  const budgets = {
+    "background.js": 130 * 1024, // 130 KB
+    "contentScript.js": 80 * 1024, // 80 KB
+    "popup.js": 60 * 1024, // 60 KB
+    "options.js": 70 * 1024, // 70 KB
+    "vendors.js": 180 * 1024, // 180 KB
+    "common.js": 120 * 1024, // 120 KB
+  };
+
+  const formattedResults = [];
+
+  Object.entries(budgets).forEach(([bundle, budget]) => {
+    const bundlePath = path.join(buildDir, bundle);
+    if (!fs.existsSync(bundlePath)) {
+      return;
+    }
+
+    const size = fs.statSync(bundlePath).size;
+    formattedResults.push(`${bundle}: ${formatBytes(size)} / ${formatBytes(budget)}`);
+
+    if (size > budget) {
+      throw new Error(
+        `Bundle size exceeded for ${bundle}: ${formatBytes(size)} (limit ${formatBytes(budget)})`
+      );
+    }
+  });
+
+  if (formattedResults.length > 0) {
+    console.log("Bundle size check passed:\n  " + formattedResults.join("\n  "));
+  } else {
+    console.warn("⚠️ Unable to locate expected bundle files for size check. Make sure npm run build was executed.");
+  }
+}
+
+function formatBytes(bytes) {
+  if (bytes === 0) return "0 B";
+  const units = ["B", "KB", "MB", "GB"];
+  const index = Math.floor(Math.log(bytes) / Math.log(1024));
+  const value = bytes / Math.pow(1024, index);
+  return `${value.toFixed(1)} ${units[index]}`;
 }
 
 /**
@@ -129,4 +168,25 @@ function getAllFiles(dir) {
   return files;
 }
 
-validateExtension(); 
+validateExtension();
+
+async function runWebExtLint() {
+  try {
+    await execAsync(`npx web-ext lint --source-dir ${buildDir}`);
+  } catch (error) {
+    const output = [error.stdout, error.stderr, error.message]
+      .filter(Boolean)
+      .join("\n");
+
+    if (output.includes("Your extension is valid")) {
+      return;
+    }
+
+    if (output.includes("web-ext update check failed")) {
+      console.warn("⚠️ web-ext lint update check failed; skipping update check but continuing validation.");
+      return;
+    }
+
+    throw new Error(`web-ext validation failed: ${output}`);
+  }
+}
