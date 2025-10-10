@@ -2,9 +2,11 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
+const isProduction = process.env.NODE_ENV === "production";
+
 module.exports = {
-  mode: process.env.NODE_ENV || "development",
-  devtool: "cheap-module-source-map",
+  mode: isProduction ? "production" : "development",
+  devtool: isProduction ? false : "cheap-module-source-map",
   entry: {
     popup: "./src/popup/popup.js",
     options: "./src/options/options.js",
@@ -15,6 +17,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, "build"),
     filename: "[name].js",
+    chunkFilename: "[name].js",
     clean: true,
   },
   devServer: {
@@ -140,5 +143,27 @@ module.exports = {
   ],
   optimization: {
     moduleIds: "deterministic",
+    ...(isProduction
+      ? {
+          splitChunks: {
+            chunks: (chunk) => chunk.name && chunk.name !== "background",
+            minSize: 0,
+            cacheGroups: {
+              vendors: {
+                test: /[\\/]node_modules[\\/]/,
+                name: "vendors",
+                priority: -10,
+                enforce: true,
+              },
+              common: {
+                minChunks: 2,
+                name: "common",
+                priority: -20,
+                reuseExistingChunk: true,
+              },
+            },
+          },
+        }
+      : {}),
   },
 };
