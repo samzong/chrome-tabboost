@@ -16,6 +16,7 @@ class StorageCache {
       "customHeight",
       "defaultAction",
       "splitViewEnabled",
+      "notificationsEnabled",
     ];
 
     this.stableConfigKeys = [
@@ -24,6 +25,7 @@ class StorageCache {
       "customHeight",
       "defaultAction",
       "splitViewEnabled",
+      "notificationsEnabled",
     ];
 
     this.batchReadCache = {};
@@ -33,6 +35,8 @@ class StorageCache {
     this.writeQueue = {};
     this.writeTimerId = null;
     this.writeDelay = 1000;
+
+    this.registerChangeListener();
   }
 
   /**
@@ -54,6 +58,29 @@ class StorageCache {
 
         this.initialized = true;
         resolve();
+      });
+    });
+  }
+
+  registerChangeListener() {
+    if (typeof chrome === "undefined" || !chrome.storage || !chrome.storage.onChanged) {
+      return;
+    }
+
+    chrome.storage.onChanged.addListener((changes, areaName) => {
+      if (areaName !== "sync") {
+        return;
+      }
+
+      Object.entries(changes).forEach(([key, { newValue }]) => {
+        if (newValue === undefined) {
+          delete this.cache[key];
+          delete this.expiration[key];
+          return;
+        }
+
+        this.cache[key] = newValue;
+        this.setExpiration(key);
       });
     });
   }
