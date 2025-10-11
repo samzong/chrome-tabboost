@@ -5,6 +5,19 @@ import { getMessage } from "../utils/i18n.js";
 import splitViewController from "./splitView/splitViewController.js";
 
 const POPUP_IFRAME_TIMEOUT_MS = 5000;
+const CAPTURE_PHASE_HOST_WHITELIST = ["feishu.cn","larksuite.com"];
+
+const shouldUseCapturePhase = (() => {
+  try {
+    const { hostname } = window.location;
+    return CAPTURE_PHASE_HOST_WHITELIST.some((domain) => {
+      return hostname === domain || hostname.endsWith(`.${domain}`);
+    });
+  } catch (error) {
+    console.error("chrome-tabboost: Failed to resolve hostname for capture phase:", error);
+    return false;
+  }
+})();
 
 const initStorageCache = async () => {
   try {
@@ -230,6 +243,10 @@ function showSaveNotification() {
   }, 5000);
 }
 
+const clickListenerOptions = shouldUseCapturePhase
+  ? { capture: true, passive: false }
+  : { passive: false };
+
 document.addEventListener(
   "click",
   async function (event) {
@@ -282,7 +299,7 @@ document.addEventListener(
       return;
     }
   },
-  { passive: false }
+  clickListenerOptions
 );
 
 async function createPopup(url) {
