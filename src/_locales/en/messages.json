@@ -29,7 +29,7 @@
   },
   "popupSizePreset": {
     "message": "Popup size preset",
-    "description": "Setting for popup size preset"
+    "description": "Label for popup size preset dropdown"
   },
   "customWidth": {
     "message": "Custom width",
@@ -44,12 +44,8 @@
     "description": "Setting for split view enabled"
   },
   "iframeIgnoreEnabled": {
-    "message": "Iframe ignore enabled",
-    "description": "Setting for iframe ignore enabled"
-  },
-  "iframeIgnoreList": {
-    "message": "Iframe ignore list",
-    "description": "Setting for iframe ignore list"
+    "message": "Enable website ignore list feature",
+    "description": "Label for enabling the iframe ignore list option"
   },
   "autoAddToIgnoreList": {
     "message": "$hostname$ has been automatically added to the ignore list. Next time it will open in a new tab",
@@ -100,10 +96,6 @@
   "openInNewTab": {
     "message": "Open in new tab",
     "description": "Button to open in new tab"
-  },
-  "addToIgnoreList": {
-    "message": "Add to Ignore List",
-    "description": "Button text to add a domain to the ignore list"
   },
   "close": {
     "message": "Close",
@@ -158,8 +150,8 @@
     "description": "Preview description"
   },
   "iframeCompatibility": {
-    "message": "Iframe Compatibility",
-    "description": "Title for iframe compatibility settings"
+    "message": "Iframe Compatibility Settings",
+    "description": "Title for iframe compatibility settings tab"
   },
   "closeSplitView": {
     "message": "Close split view",
@@ -233,65 +225,9 @@
     "message": "In split view mode, hold Command+Shift and click a link to open it on the right side",
     "description": "Instructions for using split view mode"
   },
-  "adjustPopupSize": {
-    "message": "Adjust popup size to get the best browsing experience",
-    "description": "Description for popup size settings"
-  },
-  "popupSizePreset": {
-    "message": "Popup size preset",
-    "description": "Label for popup size preset dropdown"
-  },
-  "defaultSize": {
-    "message": "Default (80%)",
-    "description": "Default size option"
-  },
-  "largeSize": {
-    "message": "Large (90%)",
-    "description": "Large size option"
-  },
-  "customSize": {
-    "message": "Custom",
-    "description": "Custom size option"
-  },
-  "customWidthLabel": {
-    "message": "Custom width: $WIDTH$%",
-    "description": "Label for custom width slider",
-    "placeholders": {
-      "WIDTH": {
-        "content": "$1",
-        "example": "80"
-      }
-    }
-  },
-  "customHeightLabel": {
-    "message": "Custom height: $HEIGHT$%",
-    "description": "Label for custom height slider",
-    "placeholders": {
-      "HEIGHT": {
-        "content": "$1",
-        "example": "80"
-      }
-    }
-  },
-  "sizePreview": {
-    "message": "Size Preview",
-    "description": "Title for size preview section"
-  },
-  "previewDescription": {
-    "message": "Gray area represents clickable empty space",
-    "description": "Description for size preview"
-  },
-  "iframeCompatibility": {
-    "message": "iframe Compatibility Settings",
-    "description": "Title for iframe compatibility settings tab"
-  },
   "iframeCompatibilityDescription": {
     "message": "Configure how websites are loaded in popups and split view",
     "description": "Description for iframe compatibility settings"
-  },
-  "iframeIgnoreEnabled": {
-    "message": "Enable website ignore list feature",
-    "description": "Label for enabling iframe ignore list"
   },
   "iframeIgnoreEnabledDescription": {
     "message": "When enabled, websites in the list below will open directly in a new tab instead of using the popup or split view",
@@ -430,22 +366,6 @@
   "contentTooLarge": {
     "message": "Content is too large, cannot be saved for restoration.",
     "description": "Message shown in restored content when original page was too large to save."
-  },
-  "failedToInitSplitView": {
-    "message": "Failed to initialize split view, please refresh the page",
-    "description": "Error message shown when split view DOM fails to initialize."
-  },
-  "failedToRestoreOriginal": {
-    "message": "Failed to restore original page, please refresh the browser",
-    "description": "Error message shown when restoring original page content fails."
-  },
-  "refreshPage": {
-    "message": "Refresh page",
-    "description": "Button text to refresh the page after an error."
-  },
-  "cannotFindOriginalContent": {
-    "message": "Cannot find original page content, please refresh the browser",
-    "description": "Error message shown when original page content cannot be found for restoration."
   },
   "restoreError": {
     "message": "Could not restore tab content.",
