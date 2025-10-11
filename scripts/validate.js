@@ -1,11 +1,26 @@
 const fs = require('fs');
 const path = require('path');
-const { exec } = require('child_process');
-const util = require('util');
-const execAsync = util.promisify(exec);
-
 const buildDir = path.join(__dirname, '../build');
 const manifestPath = path.join(buildDir, 'manifest.json');
+const WEB_EXT_IGNORED_ERROR_CODES = new Set([
+  'MANIFEST_FIELD_UNSUPPORTED',
+  'EXTENSION_ID_REQUIRED',
+]);
+
+let cachedWebExt;
+
+async function loadWebExt() {
+  if (!cachedWebExt) {
+    try {
+      const imported = await import('web-ext');
+      cachedWebExt = imported.default || imported;
+    } catch (err) {
+      throw new Error(`Unable to load web-ext module: ${err.message || err}`);
+    }
+  }
+
+  return cachedWebExt;
+}
 
 async function validateExtension() {
   try {
@@ -171,22 +186,51 @@ function getAllFiles(dir) {
 validateExtension();
 
 async function runWebExtLint() {
+  const webExt = await loadWebExt();
   try {
-    await execAsync(`npx web-ext lint --source-dir ${buildDir}`);
+    const result = await webExt.cmd.lint(
+      { sourceDir: buildDir, selfHosted: true },
+      { shouldExitProgram: false }
+    );
+
+    const actionableErrors = [];
+    const ignoredErrors = [];
+
+    for (const message of result.errors || []) {
+      if (WEB_EXT_IGNORED_ERROR_CODES.has(message.code)) {
+        ignoredErrors.push(message);
+        continue;
+      }
+      actionableErrors.push(message);
+    }
+
+    if (ignoredErrors.length > 0) {
+      const codes = [...new Set(ignoredErrors.map(msg => msg.code))].join(', ');
+      console.warn(`⚠️ Ignoring Firefox-only web-ext errors: ${codes}`);
+    }
+
+    if (actionableErrors.length > 0) {
+      const formatted = actionableErrors
+        .map(formatLintMessage)
+        .join('\n  ');
+      throw new Error(`web-ext validation failed:\n  ${formatted}`);
+    }
+
+    if (result.warnings && result.warnings.length > 0) {
+      const sampleWarnings = result.warnings.slice(0, 5).map(formatLintMessage);
+      console.warn(
+        `⚠️ web-ext reported ${result.warnings.length} warning(s).` +
+        (sampleWarnings.length ? `\n  ${sampleWarnings.join('\n  ')}` : '')
+      );
+    }
   } catch (error) {
-    const output = [error.stdout, error.stderr, error.message]
-      .filter(Boolean)
-      .join("\n");
-
-    if (output.includes("Your extension is valid")) {
-      return;
-    }
-
-    if (output.includes("web-ext update check failed")) {
-      console.warn("⚠️ web-ext lint update check failed; skipping update check but continuing validation.");
-      return;
-    }
-
-    throw new Error(`web-ext validation failed: ${output}`);
+    throw new Error(`web-ext lint execution failed: ${error.message || error}`);
   }
+}
+
+function formatLintMessage(message) {
+  const location = message.file
+    ? `${message.file}${message.line ? `:${message.line}` : ''}`
+    : '';
+  return `${message.code}: ${message.message}${location ? ` (${location})` : ''}`;
 }

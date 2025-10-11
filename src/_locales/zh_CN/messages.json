@@ -25,7 +25,7 @@
   },
   "popupSizePreset": {
     "message": "弹窗大小预设",
-    "description": "Setting for popup size preset"
+    "description": "Label for popup size preset dropdown"
   },
   "customWidth": {
     "message": "自定义宽度",
@@ -40,12 +40,12 @@
     "description": "Setting for split view enabled"
   },
   "iframeIgnoreEnabled": {
-    "message": "Iframe 忽略已启用",
-    "description": "Setting for iframe ignore enabled"
+    "message": "启用网站忽略列表功能",
+    "description": "Label for enabling iframe ignore list"
   },
   "iframeIgnoreList": {
-    "message": "Iframe 忽略列表",
-    "description": "Setting for iframe ignore list"
+    "message": "忽略列表",
+    "description": "Label for iframe ignore list"
   },
   "autoAddToIgnoreList": {
     "message": "$hostname$ 已自动添加到忽略列表。下次将直接在新标签页中打开",
@@ -98,8 +98,8 @@
     "description": "Button to open in new tab"
   },
   "addToIgnoreList": {
-    "message": "添加到忽略列表",
-    "description": "Button to add to ignore list"
+    "message": "添加",
+    "description": "Button text to add domain to ignore list"
   },
   "close": {
     "message": "关闭",
@@ -147,15 +147,15 @@
   },
   "sizePreview": {
     "message": "大小预览",
-    "description": "Size preview title"
+    "description": "Title for size preview section"
   },
   "previewDescription": {
     "message": "灰色区域表示可点击的空白区域",
-    "description": "Preview description"
+    "description": "Description for size preview"
   },
   "iframeCompatibility": {
-    "message": "Iframe 兼容性",
-    "description": "Title for iframe compatibility settings"
+    "message": "iframe 兼容性设置",
+    "description": "Title for iframe compatibility settings tab"
   },
   "closeSplitView": {
     "message": "关闭分屏模式",
@@ -229,73 +229,13 @@
     "message": "在分屏模式下，按住 Command+Shift 并点击链接以在新标签页中打开它们",
     "description": "Instructions for using split view mode"
   },
-  "adjustPopupSize": {
-    "message": "调整弹窗大小以获得最佳浏览体验",
-    "description": "Description for popup size settings"
-  },
-  "popupSizePreset": {
-    "message": "弹窗大小预设",
-    "description": "Label for popup size preset dropdown"
-  },
-  "defaultSize": {
-    "message": "默认 (80%)",
-    "description": "Default size option"
-  },
-  "largeSize": {
-    "message": "大 (90%)",
-    "description": "Large size option"
-  },
-  "customSize": {
-    "message": "自定义",
-    "description": "Custom size option"
-  },
-  "customWidthLabel": {
-    "message": "自定义宽度: $WIDTH$%",
-    "description": "Label for custom width slider",
-    "placeholders": {
-      "WIDTH": {
-        "content": "$1",
-        "example": "80"
-      }
-    }
-  },
-  "customHeightLabel": {
-    "message": "自定义高度: $HEIGHT$%",
-    "description": "Label for custom height slider",
-    "placeholders": {
-      "HEIGHT": {
-        "content": "$1",
-        "example": "80"
-      }
-    }
-  },
-  "sizePreview": {
-    "message": "大小预览",
-    "description": "Title for size preview section"
-  },
-  "previewDescription": {
-    "message": "灰色区域表示可点击的空白区域",
-    "description": "Description for size preview"
-  },
-  "iframeCompatibility": {
-    "message": "iframe 兼容性设置",
-    "description": "Title for iframe compatibility settings tab"
-  },
   "iframeCompatibilityDescription": {
     "message": "配置网站在弹窗和分屏模式中的加载方式",
     "description": "Description for iframe compatibility settings"
   },
-  "iframeIgnoreEnabled": {
-    "message": "启用网站忽略列表功能",
-    "description": "Label for enabling iframe ignore list"
-  },
   "iframeIgnoreEnabledDescription": {
     "message": "启用后，列表中的网站将直接在新标签页中打开，而不是使用弹出窗口或分屏视图。",
     "description": "Description for iframe ignore list enable option"
-  },
-  "iframeIgnoreList": {
-    "message": "忽略列表",
-    "description": "Label for iframe ignore list"
   },
   "noIgnoredWebsites": {
     "message": "没有忽略的网站",
@@ -316,10 +256,6 @@
   "enterDomainPlaceholder": {
     "message": "输入要忽略的域名，例如：example.com 或 *.example.com",
     "description": "Placeholder for new domain input"
-  },
-  "addToIgnoreList": {
-    "message": "添加",
-    "description": "Button text to add domain to ignore list"
   },
   "systemReservedDomains": {
     "message": "系统保留域名 (无法删除)",
@@ -395,39 +331,23 @@
   },
   "failedToInitSplitView": {
     "message": "分屏模式初始化失败，请刷新页面",
-    "description": "Error message when split view initialization fails"
-  },
-  "failedToRestoreOriginal": {
-    "message": "无法恢复原始页面，请刷新浏览器",
-    "description": "Error message when restoring original page fails"
-  },
-  "cannotFindOriginalContent": {
-    "message": "无法找到原始页面内容，请刷新浏览器",
-    "description": "Error message when original page content cannot be found"
-  },
-  "refreshPage": {
-    "message": "刷新页面",
-    "description": "Button text to refresh the page"
-  },
-  "contentTooLarge": {
-    "message": "内容太大，无法保存以恢复",
-    "description": "Message shown in restored content when original page was too large to save."
-  },
-  "failedToInitSplitView": {
-    "message": "分屏模式初始化失败，请刷新页面",
     "description": "Error message shown when split view DOM fails to initialize."
   },
   "failedToRestoreOriginal": {
     "message": "无法恢复原始页面，请刷新浏览器",
     "description": "Error message shown when restoring original page content fails."
   },
+  "cannotFindOriginalContent": {
+    "message": "无法找到原始页面内容，请刷新浏览器",
+    "description": "Error message shown when original page content cannot be found for restoration."
+  },
   "refreshPage": {
     "message": "刷新页面",
     "description": "Button text to refresh the page after an error."
   },
-  "cannotFindOriginalContent": {
-    "message": "无法找到原始页面内容，请刷新浏览器",
-    "description": "Error message shown when original page content cannot be found for restoration."
+  "contentTooLarge": {
+    "message": "内容太大，无法保存以恢复",
+    "description": "Message shown in restored content when original page was too large to save."
   },
   "restoreError": {
     "message": "无法恢复标签页内容",
