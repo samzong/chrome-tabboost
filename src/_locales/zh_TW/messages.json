@@ -646,5 +646,17 @@
   "errorCorruptedList": {
     "message": "忽略列表數據似乎損壞了。請檢查存儲或重置設置。",
     "description": "Error notification when the ignore list data is not an array."
+  },
+  "loadingIssues": {
+    "message": "偵測到載入問題",
+    "description": "Headline shown when iframe content cannot be loaded."
+  },
+  "bypassingFrameRestrictions": {
+    "message": "正在嘗試繞過 iframe 限制。",
+    "description": "Body copy for iframe error message explaining the workaround."
+  },
+  "retryLoading": {
+    "message": "重新載入",
+    "description": "Button text to retry iframe loading."
   }
 }

@@ -646,5 +646,17 @@
   "errorCorruptedList": {
     "message": "リストデータを無視すると破損しているようです。ストレージまたはリセット設定を確認してください。",
     "description": "Error notification when the ignore list data is not an array."
+  },
+  "loadingIssues": {
+    "message": "読み込み問題が検出されました",
+    "description": "Headline shown when iframe content cannot be loaded."
+  },
+  "bypassingFrameRestrictions": {
+    "message": "フレーム制限の回避を試みています。",
+    "description": "Body copy for iframe error message explaining the workaround."
+  },
+  "retryLoading": {
+    "message": "再読み込み",
+    "description": "Button text to retry iframe loading."
   }
 }

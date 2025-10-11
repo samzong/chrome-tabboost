@@ -5,9 +5,31 @@ let isDragging = false;
 let startX = 0;
 let startY = 0;
 let leftWidth = 50;
+let listenersBound = false;
 
 export function setupSplitViewEvents() {
-  document.addEventListener("click", handleSplitViewClick);
+  if (listenersBound) {
+    return;
+  }
+
+  listenersBound = true;
+  document.addEventListener("click", handleSplitViewClick, true);
+  document.addEventListener("mousemove", onDrag);
+  document.addEventListener("mouseup", stopDrag);
+  document.addEventListener("touchmove", onDragTouch, { passive: false });
+  document.addEventListener("touchend", stopDrag);
+
+  bindDividerListeners();
+}
+
+function bindDividerListeners() {
+  const divider = document.getElementById("tabboost-split-divider");
+  if (!divider) {
+    return;
+  }
+
+  divider.addEventListener("mousedown", startDrag);
+  divider.addEventListener("touchstart", startDragTouch, { passive: false });
 }
 
 function setupDividerDrag() {
@@ -159,7 +181,12 @@ function handleSplitViewClick(event) {
 }
 
 export function cleanupSplitViewEvents() {
-  document.removeEventListener("click", handleSplitViewClick);
+  if (!listenersBound) {
+    return;
+  }
+
+  listenersBound = false;
+  document.removeEventListener("click", handleSplitViewClick, true);
 
   const divider = document.getElementById("tabboost-split-divider");
   if (divider) {

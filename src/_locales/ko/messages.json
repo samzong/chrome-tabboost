@@ -646,5 +646,17 @@
   "errorCorruptedList": {
     "message": "목록 데이터를 무시하면 손상된 것 같습니다.스토리지 또는 재설정 설정을 확인하십시오.",
     "description": "Error notification when the ignore list data is not an array."
+  },
+  "loadingIssues": {
+    "message": "로딩 문제를 감지했습니다",
+    "description": "Headline shown when iframe content cannot be loaded."
+  },
+  "bypassingFrameRestrictions": {
+    "message": "iframe 제한을 우회하려고 시도하는 중입니다.",
+    "description": "Body copy for iframe error message explaining the workaround."
+  },
+  "retryLoading": {
+    "message": "다시 로드",
+    "description": "Button text to retry iframe loading."
   }
 }

@@ -28,9 +28,9 @@ class StorageCache {
       "notificationsEnabled",
     ];
 
-    this.batchReadCache = {};
     this.batchReadTimer = null;
     this.batchReadDelay = 50;
+    this.pendingReadRequests = [];
 
     this.writeQueue = {};
     this.writeTimerId = null;
@@ -133,24 +133,72 @@ class StorageCache {
     );
 
     if (keysToFetch.length === 0) {
-      const result = {};
-      keyList.forEach((key) => {
-        result[key] = key in this.cache ? this.cache[key] : defaults[key];
-      });
-      return Promise.resolve(result);
+      return Promise.resolve(this.buildResult(keyList, defaults));
     }
 
-    return new Promise((resolve) => {
-      const resolvers = {};
-      keysToFetch.forEach((key) => {
-        if (!this.batchReadCache[key]) {
-          this.batchReadCache[key] = [];
-        }
+    return this.enqueueBatchRequest({ keyList, defaults, keysToFetch });
+  }
 
-        this.batchReadCache[key].push((value) => {
-          resolvers[key] = value;
-        });
+  /**
+   * Execute batch read operation
+   */
+  executeBatchRead() {
+    const requests = this.pendingReadRequests;
+
+    if (!requests || requests.length === 0) {
+      this.batchReadTimer = null;
+      return;
+    }
+
+    this.pendingReadRequests = [];
+    this.batchReadTimer = null;
+
+    const keysToFetch = Array.from(
+      new Set(
+        requests.reduce((allKeys, request) => {
+          allKeys.push(...request.keysToFetch);
+          return allKeys;
+        }, [])
+      )
+    );
+
+    if (keysToFetch.length === 0) {
+      requests.forEach((request) => {
+        request.resolve(this.buildResult(request.keyList, request.defaults));
       });
+      return;
+    }
+
+    chrome.storage.sync.get(keysToFetch, (items) => {
+      const lastError = chrome.runtime && chrome.runtime.lastError;
+      if (lastError) {
+        console.error("chrome-tabboost: Failed to batch read:", lastError);
+      }
+
+      const resolvedItems = items || {};
+
+      Object.keys(resolvedItems).forEach((key) => {
+        this.cache[key] = resolvedItems[key];
+        this.setExpiration(key);
+      });
+
+      keysToFetch.forEach((key) => {
+        if (!(key in resolvedItems)) {
+          const defaultValue = this.findDefaultForKey(requests, key);
+          this.cache[key] = defaultValue;
+          this.setExpiration(key);
+        }
+      });
+
+      requests.forEach((request) => {
+        request.resolve(this.buildResult(request.keyList, request.defaults));
+      });
+    });
+  }
+
+  enqueueBatchRequest(request) {
+    return new Promise((resolve) => {
+      this.pendingReadRequests.push({ ...request, resolve });
 
       if (this.batchReadTimer) {
         clearTimeout(this.batchReadTimer);
@@ -159,66 +207,35 @@ class StorageCache {
       this.batchReadTimer = setTimeout(() => {
         this.executeBatchRead();
       }, this.batchReadDelay);
-
-      const checkComplete = () => {
-        const allResolved = keysToFetch.every((key) => key in resolvers);
-
-        if (allResolved) {
-          const result = {};
-          keyList.forEach((key) => {
-            if (key in resolvers) {
-              result[key] = resolvers[key];
-            } else if (key in this.cache) {
-              result[key] = this.cache[key];
-            } else {
-              result[key] = defaults[key];
-            }
-          });
-
-          resolve(result);
-        } else {
-          setTimeout(checkComplete, 10);
-        }
-      };
-
-      checkComplete();
     });
   }
 
-  /**
-   * Execute batch read operation
-   */
-  executeBatchRead() {
-    const keysToFetch = Object.keys(this.batchReadCache);
+  buildResult(keyList, defaults = {}) {
+    const result = {};
 
-    if (keysToFetch.length === 0) {
-      return;
+    keyList.forEach((key) => {
+      if (key in this.cache && !this.isExpired(key)) {
+        result[key] = this.cache[key];
+      } else if (key in defaults) {
+        result[key] = defaults[key];
+        this.cache[key] = defaults[key];
+        this.setExpiration(key);
+      } else {
+        result[key] = undefined;
+      }
+    });
+
+    return result;
+  }
+
+  findDefaultForKey(requests, key) {
+    for (let i = 0; i < requests.length; i += 1) {
+      if (requests[i].defaults && key in requests[i].defaults) {
+        return requests[i].defaults[key];
+      }
     }
 
-    const currentBatch = { ...this.batchReadCache };
-    this.batchReadCache = {};
-    this.batchReadTimer = null;
-
-    chrome.storage.sync.get(keysToFetch, (items) => {
-      Object.keys(items).forEach((key) => {
-        this.cache[key] = items[key];
-        this.setExpiration(key);
-
-        if (currentBatch[key]) {
-          currentBatch[key].forEach((resolver) => {
-            resolver(items[key]);
-          });
-        }
-      });
-
-      keysToFetch.forEach((key) => {
-        if (!(key in items) && currentBatch[key]) {
-          currentBatch[key].forEach((resolver) => {
-            resolver(undefined);
-          });
-        }
-      });
-    });
+    return undefined;
   }
 
   /**
@@ -317,7 +334,7 @@ class StorageCache {
     this.cache = {};
     this.expiration = {};
     this.writeQueue = {};
-    this.batchReadCache = {};
+    this.pendingReadRequests = [];
 
     if (this.writeTimerId) {
       clearTimeout(this.writeTimerId);

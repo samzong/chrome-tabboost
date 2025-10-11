@@ -2,6 +2,9 @@ import storageCache from "../utils/storage-cache.js";
 import { validateUrl } from "../utils/utils.js";
 import { canLoadInIframe } from "../utils/iframe-compatibility.js";
 import { getMessage } from "../utils/i18n.js";
+import splitViewController from "./splitView/splitViewController.js";
+
+const POPUP_IFRAME_TIMEOUT_MS = 5000;
 
 const initStorageCache = async () => {
   try {
@@ -336,8 +339,8 @@ function createToolbarElements() {
   const loadingText = getMessage("loading") || "Loading...";
   const openInNewTabText = getMessage("openInNewTab") || "Open in new tab";
   const refreshText = getMessage("refreshPreview") || "Refresh";
-  const closeText = getMessage("close") || "Close";
   const copyUrlText = getMessage("copyUrl") || "Copy URL";
+  const closeText = getMessage("close") || "Close";
 
   const toolbar = createElementWithAttributes("div", { id: "tabboost-popup-toolbar" });
   const titleSpan = createElementWithAttributes("span", {
@@ -383,7 +386,7 @@ function createToolbarElements() {
 
 function createErrorMsgElement() {
   const openInNewTabText = getMessage("openInNewTab") || "Open in new tab";
-  const closeText = getMessage("close") || "Close";
+  const retryText = getMessage("retryLoading") || "Retry loading";
   const cannotLoadText = getMessage("cannotLoadInPopup") || "Cannot load this website in popup.";
 
   return createElementWithAttributes("div", {
@@ -391,7 +394,7 @@ function createErrorMsgElement() {
     innerHTML: `
       <p>${cannotLoadText}</p>
       <button id="tabboost-open-newtab">${openInNewTabText}</button>
-      <button id="tabboost-close-error">${closeText}</button>
+      <button id="tabboost-retry-error">${retryText}</button>
     `
   });
 }
@@ -440,7 +443,39 @@ function createPopupDOMElements(url, settings) {
   return { fragment, popupOverlay, popupContent, iframe, errorMsg, titleSpan };
 }
 
-function loadWithTimeout(iframe, url, timeout = 5000) {
+function evaluateIframeLoad(iframe) {
+  let currentHref = "";
+  try {
+    currentHref =
+      iframe.contentWindow &&
+      iframe.contentWindow.location &&
+      iframe.contentWindow.location.href;
+  } catch (corsError) {
+    return { status: "cors" };
+  }
+
+  const declaredSrc = iframe.getAttribute("src") || iframe.src;
+
+  if (!currentHref || currentHref === "about:blank") {
+    if (declaredSrc && declaredSrc !== "about:blank") {
+      return { status: "pending" };
+    }
+    return { status: "blank" };
+  }
+
+  try {
+    const contentType = iframe.contentDocument && iframe.contentDocument.contentType;
+    if (contentType && !contentType.includes("text/html")) {
+      return { status: "non_html", contentType };
+    }
+  } catch (typeError) {
+    /* Ignore, treat as success */
+  }
+
+  return { status: "success" };
+}
+
+function loadWithTimeout(iframe, url, timeout = POPUP_IFRAME_TIMEOUT_MS) {
   return new Promise((resolve, reject) => {
     let timeoutId;
     let hasSettled = false;
@@ -460,36 +495,15 @@ function loadWithTimeout(iframe, url, timeout = 5000) {
 
     iframe.onload = () => {
       if (hasSettled) return;
-      try {
-        if (
-          !iframe.contentWindow ||
-          !iframe.contentWindow.location ||
-          iframe.contentWindow.location.href === "about:blank"
-        ) {
-          cleanup();
-          resolve({ status: "blank" });
-        } else {
-          // 检查内容类型，确保只处理HTML内容
-          try {
-            const contentType = iframe.contentDocument.contentType;
-            if (contentType && !contentType.includes('text/html')) {
-              console.log(`TabBoost: 非HTML内容，排除处理: ${contentType}`);
-              cleanup();
-              resolve({ status: "non_html", contentType });
-              return;
-            }
-          } catch (typeError) {
-            // 如果无法获取contentType，可能是因为跨域限制，继续处理
-            console.log("TabBoost: 无法检查内容类型，继续处理");
-          }
-          
-          cleanup();
-          resolve({ status: "success" });
-        }
-      } catch (corsError) {
-        cleanup();
-        resolve({ status: "cors" });
+
+      const outcome = evaluateIframeLoad(iframe);
+
+      if (outcome.status === "pending") {
+        return;
       }
+
+      cleanup();
+      resolve(outcome);
     };
 
     iframe.onerror = () => {
@@ -539,6 +553,11 @@ async function createPopupDOM(url) {
     const resetBeforeLoad = () => {
       if (errorMsg) {
         errorMsg.classList.remove("show");
+        const messageElement = errorMsg.querySelector("p");
+        if (messageElement) {
+          messageElement.textContent =
+            getMessage("cannotLoadInPopup") || "Cannot load this website in popup.";
+        }
       }
       if (titleSpan) {
         titleSpan.innerText = getMessage("loading") || "Loading...";
@@ -546,14 +565,6 @@ async function createPopupDOM(url) {
       if (iframe) {
         iframe.style.opacity = "1";
       }
-    };
-
-    const handleLoadFailure = async (error) => {
-      if (hasHandledFailure) return;
-      hasHandledFailure = true;
-      console.error("chrome-tabboost: Popup load failure:", error.message);
-      if (errorMsg) errorMsg.classList.add("show");
-      clearAllTimers();
     };
 
     const closePopup = () => {
@@ -583,49 +594,98 @@ async function createPopupDOM(url) {
       }
     };
 
+    const handleLoadFailure = async (error) => {
+      if (hasHandledFailure) return;
+      hasHandledFailure = true;
+      clearAllTimers();
+
+      console.error("chrome-tabboost: Popup load failure:", error.message);
+
+      const isTimeout = error && error.message && error.message.toLowerCase().includes("timeout");
+
+      if (isTimeout) {
+        const lateLoadHandler = async () => {
+          const outcome = evaluateIframeLoad(iframe);
+          if (outcome.status === "pending") {
+            return;
+          }
+
+          hasHandledFailure = false;
+          if (errorMsg) {
+            errorMsg.classList.remove("show");
+          }
+
+          await handleSuccessfulLoad(outcome);
+        };
+
+        addTrackedEventListener(iframe, "load", lateLoadHandler, { once: true });
+      }
+
+      if (errorMsg) {
+        errorMsg.classList.add("show");
+        const messageElement = errorMsg.querySelector("p");
+        if (messageElement && error && error.message) {
+          messageElement.textContent = error.message;
+        }
+      }
+    };
+
+    const handleSuccessfulLoad = async (loadResult) => {
+      if (errorMsg) {
+        errorMsg.classList.remove("show");
+      }
+
+      if (loadResult.status === "blank") {
+        await handleLoadFailure(
+          new Error(
+            getMessage("cannotLoadInPopup") ||
+              "Content is blank or inaccessible"
+          )
+        );
+        return;
+      }
+
+      if (loadResult.status === "non_html") {
+        console.log('TabBoost: Non-HTML content detected (' + loadResult.contentType + ').');
+        await handleLoadFailure(
+          new Error(
+            getMessage("cannotLoadInPopup") || "Cannot load this website in popup."
+          )
+        );
+        return;
+      }
+
+      try {
+        if (iframe.contentDocument && iframe.contentDocument.title) {
+          const iframeTitle = iframe.contentDocument.title;
+          if (titleSpan)
+            titleSpan.innerText =
+              iframeTitle || getMessage("pageLoaded") || "Page loaded";
+        } else if (titleSpan) {
+          titleSpan.innerText = getMessage("pageLoaded") || "Page loaded";
+        }
+      } catch (e) {
+        if (titleSpan) {
+          titleSpan.innerText = getMessage("pageLoaded") || "Page loaded";
+        }
+      }
+    };
+
     const loadIframeContent = async () => {
       hasHandledFailure = false;
       clearAllTimers();
       resetBeforeLoad();
 
       try {
-        const loadPromise = loadWithTimeout(iframe, url, 6000);
+        const loadPromise = loadWithTimeout(iframe, url, POPUP_IFRAME_TIMEOUT_MS);
         iframe.src = url;
         const loadResult = await loadPromise;
 
-        if (hasHandledFailure) return;
-
-        if (loadResult.status === "blank") {
-          await handleLoadFailure(
-            new Error(
-              getMessage("cannotLoadInPopup") ||
-                "Content is blank or inaccessible"
-            )
-          );
+        if (hasHandledFailure) {
           return;
         }
 
-        if (loadResult.status === "non_html") {
-          console.log('TabBoost: Non-HTML content detected (' + loadResult.contentType + '), opening in a new tab.');
-          window.open(url, "_blank");
-          closePopup();
-          return;
-        }
-
-        try {
-          if (iframe.contentDocument && iframe.contentDocument.title) {
-            const iframeTitle = iframe.contentDocument.title;
-            if (titleSpan)
-              titleSpan.innerText =
-                iframeTitle || getMessage("pageLoaded") || "Page loaded";
-          } else {
-            if (titleSpan)
-              titleSpan.innerText = getMessage("pageLoaded") || "Page loaded";
-          }
-        } catch (e) {
-          if (titleSpan)
-            titleSpan.innerText = getMessage("pageLoaded") || "Page loaded";
-        }
+        await handleSuccessfulLoad(loadResult);
       } catch (error) {
         if (!hasHandledFailure) {
           await handleLoadFailure(error);
@@ -758,11 +818,10 @@ async function createPopupDOM(url) {
         });
       }
 
-      const closeErrorButton = errorMsg.querySelector("#tabboost-close-error");
-      if (closeErrorButton) {
-        addTrackedEventListener(closeErrorButton, "click", () => {
-          if (errorMsg) errorMsg.classList.remove("show");
-          if (iframe) iframe.style.opacity = "1";
+      const retryErrorButton = errorMsg.querySelector("#tabboost-retry-error");
+      if (retryErrorButton) {
+        addTrackedEventListener(retryErrorButton, "click", () => {
+          loadIframeContent();
         });
       }
     };
@@ -775,7 +834,14 @@ async function createPopupDOM(url) {
   }
 }
 
+const SPLIT_VIEW_NAMESPACE = "tabboost.splitView";
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request?.namespace === SPLIT_VIEW_NAMESPACE) {
+    handleSplitViewMessage(request, sendResponse);
+    return true;
+  }
+
   if (request.action === "openRightSplitView" && request.url) {
     const rightIframe = document.getElementById("tabboost-right-iframe");
     if (rightIframe) {
@@ -788,3 +854,36 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
   return true;
 });
+
+function handleSplitViewMessage(request, sendResponse) {
+  const { command, payload = {} } = request;
+
+  try {
+    switch (command) {
+      case "init": {
+        const result = splitViewController.ensureActive(payload.leftUrl || window.location.href);
+        sendResponse(result);
+        break;
+      }
+      case "teardown": {
+        const result = splitViewController.teardown();
+        sendResponse(result);
+        break;
+      }
+      case "updateRight": {
+        const result = splitViewController.updateRightView(payload.url, payload.leftUrl || window.location.href);
+        sendResponse(result);
+        break;
+      }
+      case "status": {
+        sendResponse({ success: true, status: splitViewController.getStatus() });
+        break;
+      }
+      default:
+        sendResponse({ success: false, error: "unknown-command" });
+    }
+  } catch (error) {
+    console.error("chrome-tabboost: split view controller error:", error);
+    sendResponse({ success: false, error: error.message });
+  }
+}

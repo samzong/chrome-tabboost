@@ -7,6 +7,7 @@ export const {
   toggleSplitView,
   updateRightView,
   getSplitViewState,
+  querySplitViewStatus,
 } = splitViewCore;
 
 export { canLoadInIframe };

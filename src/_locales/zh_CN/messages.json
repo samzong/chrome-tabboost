@@ -702,5 +702,17 @@
   "splitViewVertical": {
     "message": "上下分屏",
     "description": "Label for vertical split view layout"
+  },
+  "loadingIssues": {
+    "message": "检测到加载问题",
+    "description": "Headline shown when iframe content cannot be loaded."
+  },
+  "bypassingFrameRestrictions": {
+    "message": "正在尝试绕过 iframe 限制。",
+    "description": "Body copy for iframe error message explaining the workaround."
+  },
+  "retryLoading": {
+    "message": "重试加载",
+    "description": "Button text to retry iframe loading."
   }
 }

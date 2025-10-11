@@ -784,5 +784,17 @@
   "pageLoaded": {
     "message": "Page loaded",
     "description": "Shown in the preview header once the iframe content has finished loading."
+  },
+  "loadingIssues": {
+    "message": "Loading issues detected",
+    "description": "Headline shown when iframe content cannot be loaded."
+  },
+  "bypassingFrameRestrictions": {
+    "message": "We're trying to bypass frame restrictions.",
+    "description": "Body copy for iframe error message explaining the workaround."
+  },
+  "retryLoading": {
+    "message": "Retry loading",
+    "description": "Button text to retry iframe loading."
   }
 }
