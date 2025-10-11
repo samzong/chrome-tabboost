@@ -2,79 +2,91 @@ import { UI_CONFIG, ANIMATION_CONFIG, LAYOUT_CONFIG } from './splitViewConfig.js
 import {
   createElement,
   createIframe,
-  createCloseButton,
-  createDivider,
-  cleanupElement
+  createCloseButton
 } from './splitViewDOMUtils.js';
 import { safeQuerySelector } from './splitViewUtils.js';
 import * as i18n from "../../utils/i18n.js";
-import { 
-  createSettingsButton, 
-  createRatioMenu, 
-  addViewHoverEffects, 
-  applyDefaultRatio 
+import {
+  createSettingsButton,
+  createRatioMenu,
+  addViewHoverEffects,
+  applyDefaultRatio
 } from './splitViewDOMComponents.js';
+
+const ORIGINAL_ROOT_ID = "tabboost-original-content-root";
+const ORIGINAL_ROOT_ATTR = "data-tabboost-original-root";
+const ORIGINAL_STATE_DATA_KEY = "tabboostOriginalState";
 
 /**
  * 初始化分屏视图DOM结构
  * @param {string} leftUrl - 左侧视图URL
- * @returns {boolean} - 是否成功初始化
+ * @returns {{success: boolean, container?: HTMLElement, leftContentRoot?: HTMLElement, rightView?: HTMLElement, reused?: boolean, reason?: string, error?: Error}}
  */
 export function initSplitViewDOM(leftUrl) {
-  console.log("TabBoost: initSplitViewDOM called with URL:", leftUrl);
-
   try {
     if (!document || !document.body) {
-      console.error("TabBoost: document or document.body is not available");
-      return false;
+      return { success: false, reason: "document-unavailable" };
     }
 
-    
-    cleanupElement(`#${UI_CONFIG.container.id}`);
+    const existingContainer = safeQuerySelector(`#${UI_CONFIG.container.id}`);
+    if (existingContainer) {
+      existingContainer.style.display = "flex";
+      return { success: true, container: existingContainer, reused: true };
+    }
 
-    
-    saveOriginalContent();
+    const originalNodes = Array.from(document.body.childNodes);
+    const originalState = captureOriginalState();
 
-    
-    const splitViewContainer = createElement('div', UI_CONFIG.container);
+    const splitViewContainer = createElement("div", UI_CONFIG.container);
     splitViewContainer.classList.add(ANIMATION_CONFIG.initialClass);
 
-    
-    const viewsContainer = createElement('div', UI_CONFIG.viewsContainer);
-    viewsContainer.setAttribute('data-split-direction', 'horizontal');
+    const viewsContainer = createElement("div", UI_CONFIG.viewsContainer);
+    viewsContainer.setAttribute("data-split-direction", "horizontal");
 
-    
-    const leftView = createView('left', leftUrl);
-    const rightView = createView('right');
+    const leftView = createView("left", leftUrl, { useIframe: false });
+    const rightView = createView("right");
 
-    
+    const leftContentRoot = createElement("div", {
+      id: ORIGINAL_ROOT_ID,
+      styles: {
+        width: "100%",
+        height: "100%",
+        overflow: "auto",
+        position: "relative"
+      }
+    });
+    leftContentRoot.setAttribute(ORIGINAL_ROOT_ATTR, "true");
+
+    leftView.appendChild(leftContentRoot);
     viewsContainer.appendChild(leftView);
     viewsContainer.appendChild(rightView);
     splitViewContainer.appendChild(viewsContainer);
 
-    
-    hideExistingContent();
-    document.body.style.overflow = 'hidden';
-    document.body.appendChild(splitViewContainer);
+    relocateOriginalNodes(originalNodes, leftContentRoot);
 
-    
+    document.body.appendChild(splitViewContainer);
+    splitViewContainer.dataset[ORIGINAL_STATE_DATA_KEY] = JSON.stringify(originalState);
+    lockDocument();
+
     addViewHoverEffects(leftView);
     addViewHoverEffects(rightView);
-
-    
     applyDefaultRatio();
 
-    
     requestAnimationFrame(() => {
       splitViewContainer.classList.remove(ANIMATION_CONFIG.initialClass);
       splitViewContainer.classList.add(ANIMATION_CONFIG.visibleClass);
+      leftContentRoot.scrollTo(originalState.scrollX, originalState.scrollY);
     });
 
-    return true;
+    return {
+      success: true,
+      container: splitViewContainer,
+      leftContentRoot,
+      rightView
+    };
   } catch (error) {
     console.error("TabBoost: Error in initSplitViewDOM:", error);
-    showError(i18n.getMessage("failedToInitSplitView") || "Failed to initialize split view");
-    return false;
+    return { success: false, error };
   }
 }
 
@@ -84,7 +96,8 @@ export function initSplitViewDOM(leftUrl) {
  * @param {string} url - 视图URL
  * @returns {HTMLElement} - 视图元素
  */
-function createView(side, url = 'about:blank') {
+function createView(side, url = "about:blank", options = {}) {
+  const { useIframe = true } = options;
   const config = {
     ...UI_CONFIG.view,
     id: UI_CONFIG.view[side].id,
@@ -104,19 +117,19 @@ function createView(side, url = 'about:blank') {
   
   const settingsButton = createSettingsButton(side);
   view.appendChild(settingsButton);
-  
-  
+
+
   createRatioMenu(settingsButton, side);
 
-  
-  const errorContainer = createErrorContainer(side, url);
-  view.appendChild(errorContainer);
+  if (useIframe) {
+    const errorContainer = createErrorContainer(side, url);
+    view.appendChild(errorContainer);
 
-  
-  const iframe = createIframe(UI_CONFIG.iframe[side].id, url);
-  iframe.setAttribute('data-tabboost-frame', side);
-  setupIframeEvents(iframe, errorContainer, url);
-  view.appendChild(iframe);
+    const iframe = createIframe(UI_CONFIG.iframe[side].id, url);
+    iframe.setAttribute("data-tabboost-frame", side);
+    setupIframeEvents(iframe, errorContainer, url);
+    view.appendChild(iframe);
+  }
 
   return view;
 }
@@ -196,49 +209,73 @@ function updateErrorButtons(container, url) {
 /**
  * 保存原始页面内容
  */
-function saveOriginalContent() {
-  try {
-    const maxContentLength = 500000;
-    let originalContent = document.documentElement.outerHTML || "";
-    
-    if (originalContent.length > maxContentLength) {
-      console.warn(`TabBoost: Original content exceeds ${maxContentLength} characters, saving placeholder.`);
-      originalContent = `<html><head><title>${document.title}</title></head><body><div class="tabboost-restored-content">${i18n.getMessage("contentTooLarge") || "Content was too large to save."}</div></body></html>`;
-    }
-    
-    document.body.setAttribute('data-tabboost-original-content', originalContent);
-  } catch (e) {
-    console.error("TabBoost: Error storing original content", e);
-  }
+function captureOriginalState() {
+  return {
+    overflow: document.body.style.overflow || "",
+    scrollX: window.scrollX || 0,
+    scrollY: window.scrollY || 0
+  };
 }
 
-/**
- * 隐藏页面现有内容
- */
-function hideExistingContent() {
-  Array.from(document.body.children).forEach(element => {
-    if (element.id !== UI_CONFIG.container.id) {
-      element.dataset.originalDisplay = element.style.display;
-      element.style.display = 'none';
+function lockDocument() {
+  document.body.style.overflow = "hidden";
+}
+
+function relocateOriginalNodes(nodes, target) {
+  const fragment = document.createDocumentFragment();
+
+  nodes.forEach((node) => {
+    if (
+      node.nodeType === Node.ELEMENT_NODE &&
+      node.id === UI_CONFIG.container.id
+    ) {
+      return;
     }
+
+    fragment.appendChild(node);
   });
+
+  target.appendChild(fragment);
 }
 
-/**
- * 显示错误信息
- * @param {string} message - 错误信息
- */
-function showError(message) {
-  try {
-    document.body.innerHTML = `
-      <div class="tabboost-error">
-        <p>${message}</p>
-        <button onclick="window.location.reload()">${i18n.getMessage("refreshPage") || "Refresh Page"}</button>
-      </div>
-    `;
-  } catch (e) {
-    console.error("TabBoost: Error setting error message:", e);
+function parseOriginalState(container) {
+  const raw = container?.dataset?.[ORIGINAL_STATE_DATA_KEY];
+  if (!raw) {
+    return null;
   }
+
+  try {
+    return JSON.parse(raw);
+  } catch (error) {
+    console.warn("TabBoost: Failed to parse original state payload:", error);
+    return null;
+  }
+}
+
+function restoreOriginalContent(container) {
+  const targetRoot = container?.querySelector(`#${ORIGINAL_ROOT_ID}`);
+  if (!targetRoot) {
+    return;
+  }
+
+  const fragment = document.createDocumentFragment();
+
+  while (targetRoot.firstChild) {
+    fragment.appendChild(targetRoot.firstChild);
+  }
+
+  document.body.insertBefore(fragment, container);
+}
+
+function restoreDocumentState(state) {
+  if (!state) {
+    document.body.style.overflow = "";
+    window.scrollTo(0, 0);
+    return;
+  }
+
+  document.body.style.overflow = state.overflow || "";
+  window.scrollTo(state.scrollX || 0, state.scrollY || 0);
 }
 
 /**
@@ -247,28 +284,23 @@ function showError(message) {
  */
 export function removeSplitViewDOM() {
   try {
-    if (!document || !document.body) return false;
-
-    const originalContent = document.body.getAttribute('data-tabboost-original-content');
-    if (!originalContent) {
-      showError(i18n.getMessage("cannotFindOriginalContent") || "Cannot find original content");
+    if (!document || !document.body) {
       return false;
     }
 
-    try {
-      const parser = new DOMParser();
-      const originalDoc = parser.parseFromString(originalContent, 'text/html');
-      document.documentElement.innerHTML = originalDoc.documentElement.innerHTML;
-    } catch (e) {
-      showError(i18n.getMessage("failedToRestoreOriginal") || "Failed to restore original content");
+    const container = safeQuerySelector(`#${UI_CONFIG.container.id}`);
+    if (!container) {
       return false;
     }
 
-    document.body.removeAttribute('data-tabboost-original-content');
-    document.body.style.overflow = '';
+    const originalState = parseOriginalState(container);
+    restoreOriginalContent(container);
+    container.remove();
+    restoreDocumentState(originalState);
+
     return true;
   } catch (error) {
-    showError(i18n.getMessage("failedToRestoreOriginal") || "Failed to restore original content");
+    console.error("TabBoost: Failed to remove split view DOM:", error);
     return false;
   }
 }

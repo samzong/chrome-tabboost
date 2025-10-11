@@ -646,5 +646,17 @@
   "errorCorruptedList": {
     "message": "ไม่สนใจข้อมูลรายการดูเหมือนจะเสียหายโปรดตรวจสอบการจัดเก็บหรือรีเซ็ตการตั้งค่า",
     "description": "Error notification when the ignore list data is not an array."
+  },
+  "loadingIssues": {
+    "message": "ตรวจพบปัญหาการโหลด",
+    "description": "Headline shown when iframe content cannot be loaded."
+  },
+  "bypassingFrameRestrictions": {
+    "message": "กำลังพยายามข้ามข้อจำกัดของ iframe.",
+    "description": "Body copy for iframe error message explaining the workaround."
+  },
+  "retryLoading": {
+    "message": "ลองโหลดอีกครั้ง",
+    "description": "Button text to retry iframe loading."
   }
 }

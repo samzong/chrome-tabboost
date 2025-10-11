@@ -646,5 +646,17 @@
   "errorCorruptedList": {
     "message": "Ignorieren Sie die Listendaten scheinen beschädigt zu sein.Bitte überprüfen Sie die Speicher- oder Zurücksetzeneinstellungen.",
     "description": "Error notification when the ignore list data is not an array."
+  },
+  "loadingIssues": {
+    "message": "Ladeprobleme erkannt",
+    "description": "Headline shown when iframe content cannot be loaded."
+  },
+  "bypassingFrameRestrictions": {
+    "message": "Wir versuchen, Frame-Einschränkungen zu umgehen.",
+    "description": "Body copy for iframe error message explaining the workaround."
+  },
+  "retryLoading": {
+    "message": "Erneut laden",
+    "description": "Button text to retry iframe loading."
   }
 }

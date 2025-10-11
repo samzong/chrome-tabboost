@@ -646,5 +646,17 @@
   "errorCorruptedList": {
     "message": "Les données d'ignorance de la liste semble corrompue.Veuillez vérifier les paramètres de stockage ou de réinitialisation.",
     "description": "Error notification when the ignore list data is not an array."
+  },
+  "loadingIssues": {
+    "message": "Problèmes de chargement détectés",
+    "description": "Headline shown when iframe content cannot be loaded."
+  },
+  "bypassingFrameRestrictions": {
+    "message": "Nous essayons de contourner les restrictions de frame.",
+    "description": "Body copy for iframe error message explaining the workaround."
+  },
+  "retryLoading": {
+    "message": "Réessayer le chargement",
+    "description": "Button text to retry iframe loading."
   }
 }

@@ -646,5 +646,17 @@
   "errorCorruptedList": {
     "message": "Игнорировать данные списка кажется поврежденным.Пожалуйста, проверьте настройки хранения или сброса.",
     "description": "Error notification when the ignore list data is not an array."
+  },
+  "loadingIssues": {
+    "message": "Обнаружены проблемы с загрузкой",
+    "description": "Headline shown when iframe content cannot be loaded."
+  },
+  "bypassingFrameRestrictions": {
+    "message": "Пытаемся обойти ограничения iframe.",
+    "description": "Body copy for iframe error message explaining the workaround."
+  },
+  "retryLoading": {
+    "message": "Повторить загрузку",
+    "description": "Button text to retry iframe loading."
   }
 }

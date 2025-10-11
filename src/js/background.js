@@ -4,6 +4,7 @@ import {
   closeSplitView,
   toggleSplitView,
   updateRightView,
+  querySplitViewStatus,
 } from "./splitView.js";
 import storageCache from "../utils/storage-cache.js";
 import { getMessage } from "../utils/i18n.js";
@@ -320,26 +321,20 @@ async function handleSplitViewRequest(url) {
       throw new Error("Failed to get current tab");
     }
 
-    const isActive = await chrome.scripting.executeScript({
-      target: { tabId: currentTab.id },
-      func: () => {
-        const container = document.getElementById("tabboost-split-view-container");
-        return {
-          result: !!container && container.style.display !== "none",
-        };
-      },
-    });
+    const status = await querySplitViewStatus();
+    const updated = await updateRightView(url);
 
-    if (isActive && isActive[0] && isActive[0].result) {
-      await updateRightView(url);
-      return { status: "success", message: getMessage("splitViewUpdatedStatus") };
-    } else {
-      await createSplitView();
-      setTimeout(async () => {
-        await updateRightView(url);
-      }, 300);
-      return { status: "success", message: getMessage("splitViewCreatedStatus") };
+    if (!updated) {
+      throw new Error("split-view-update-failed");
     }
+
+    const wasActive = Boolean(status?.isActive);
+    return {
+      status: "success",
+      message: wasActive
+        ? getMessage("splitViewUpdatedStatus")
+        : getMessage("splitViewCreatedStatus"),
+    };
   } catch (error) {
     try {
       await closeSplitView();
