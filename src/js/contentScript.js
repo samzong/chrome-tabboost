@@ -10,9 +10,9 @@ const CAPTURE_PHASE_HOST_WHITELIST = ["feishu.cn","larksuite.com"];
 const shouldUseCapturePhase = (() => {
   try {
     const { hostname } = window.location;
-    return CAPTURE_PHASE_HOST_WHITELIST.some((domain) => {
-      return hostname === domain || hostname.endsWith(`.${domain}`);
-    });
+    return CAPTURE_PHASE_HOST_WHITELIST.some(
+      (domain) => hostname === domain || hostname.endsWith(`.${domain}`)
+    );
   } catch (error) {
     console.error("chrome-tabboost: Failed to resolve hostname for capture phase:", error);
     return false;
