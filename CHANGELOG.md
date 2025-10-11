@@ -1,3 +1,15 @@
+## 2.5.0 (2025-10-11)
+
+* Refactor/speed (#54) ([6666517](https://github.com/samzong/chrome-tabboost/commit/6666517)), closes [#54](https://github.com/samzong/chrome-tabboost/issues/54)
+* Refactor/validate (#56) ([0979941](https://github.com/samzong/chrome-tabboost/commit/0979941)), closes [#56](https://github.com/samzong/chrome-tabboost/issues/56)
+* refactor(splitView): streamline split view status handling and update logic (#55) ([a768d6d](https://github.com/samzong/chrome-tabboost/commit/a768d6d)), closes [#55](https://github.com/samzong/chrome-tabboost/issues/55)
+* feat: add bundle size enforcement and improve web-ext linting process ([c704887](https://github.com/samzong/chrome-tabboost/commit/c704887))
+* feat(storage-cache): add notificationsEnabled key and sync change listener ([73536dd](https://github.com/samzong/chrome-tabboost/commit/73536dd))
+* feat(webpack): enhance production configuration with optimized chunking and source maps ([c4e1d9c](https://github.com/samzong/chrome-tabboost/commit/c4e1d9c))
+* fix: correct string interpolation in warning message for missing environment variables ([bb01227](https://github.com/samzong/chrome-tabboost/commit/bb01227))
+
+
+
 ## <small>2.4.3 (2025-05-12)</small>
 
 * docs: add Product Hunt badge to README for better visibility ([51c481b](https://github.com/samzong/chrome-tabboost/commit/51c481b))
