@@ -1,3 +1,9 @@
+## <small>2.5.1 (2025-10-11)</small>
+
+* fix(contentscript.js): add capture phase handling for specific hostnames in click listener (#57) ([cf83172](https://github.com/samzong/chrome-tabboost/commit/cf83172)), closes [#57](https://github.com/samzong/chrome-tabboost/issues/57)
+
+
+
 ## 2.5.0 (2025-10-11)
 
 * Refactor/speed (#54) ([6666517](https://github.com/samzong/chrome-tabboost/commit/6666517)), closes [#54](https://github.com/samzong/chrome-tabboost/issues/54)
