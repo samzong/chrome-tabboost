@@ -43,24 +43,6 @@
     "message": "分割ビューを有効にします",
     "description": "Setting for split view enabled"
   },
-  "iframeIgnoreEnabled": {
-    "message": "Webサイトを有効にしてくださいリスト機能を無視します",
-    "description": "Label for enabling iframe ignore list"
-  },
-  "iframeIgnoreList": {
-    "message": "リストを無視します",
-    "description": "Label for iframe ignore list"
-  },
-  "autoAddToIgnoreList": {
-    "message": "$ hostname $は、無視リストに自動的に追加されました。次回は新しいタブで開きます",
-    "description": "Message shown when a website is automatically added to ignore list",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
   "save": {
     "message": "保存",
     "description": "Save button text"
@@ -100,10 +82,6 @@
   "openInNewTab": {
     "message": "新しいタブで開きます",
     "description": "Button to open in new tab"
-  },
-  "addToIgnoreList": {
-    "message": "リストを無視して追加します",
-    "description": "Button text to add a domain to the ignore list"
   },
   "close": {
     "message": "近い",
@@ -237,46 +215,6 @@
     "message": "ウェブサイトのロードされたポップアップとスプリットビューを構成する",
     "description": "Description for iframe compatibility settings"
   },
-  "iframeIgnoreEnabledDescription": {
-    "message": "有効にすると、以下のリストのWebサイトは、ポップアップまたはスプリットビューを使用する代わりに、新しいタブに直接開きます",
-    "description": "Description for iframe ignore list enable option"
-  },
-  "noIgnoredWebsites": {
-    "message": "まだ無視されたウェブサイトはありません",
-    "description": "Text shown when the ignore list is empty"
-  },
-  "domainFormatGuide": {
-    "message": "ドメイン形式ガイド：",
-    "description": "Title for domain format guide"
-  },
-  "exactMatchExample": {
-    "message": "embles.com- example.comのみを一致させる（正確な一致）",
-    "description": "Example of exact match domain format"
-  },
-  "wildcardMatchExample": {
-    "message": "*.example.com- example.comのすべてのサブドメインを一致させます",
-    "description": "Example of wildcard domain format"
-  },
-  "enterDomainPlaceholder": {
-    "message": "無視するためにドメインを入力します",
-    "description": "Placeholder text for the domain input field"
-  },
-  "systemReservedDomains": {
-    "message": "System Reserved Domains (cannot be removed)",
-    "description": "Title for the section showing system-reserved domains"
-  },
-  "exactMatch": {
-    "message": "ちょうど",
-    "description": "Badge text indicating an exact domain match"
-  },
-  "wildcardMatch": {
-    "message": "ワイルドカード",
-    "description": "Badge text indicating a wildcard domain match"
-  },
-  "systemBadge": {
-    "message": "システム",
-    "description": "Badge text indicating a system-reserved domain"
-  },
   "extensionFooter": {
     "message": "TabBoost-ブラウジングエクスペリエンスをより効率的にします",
     "description": "Footer text in options page"
@@ -284,10 +222,6 @@
   "popupFooter": {
     "message": "TabBoost",
     "description": "Footer text in popup"
-  },
-  "autoAddToIgnoreListOption": {
-    "message": "無視リストにロードできないWebサイトを自動的に追加します",
-    "description": "Option to automatically add websites that fail to load to the ignore list"
   },
   "popupSizeHint": {
     "message": "ポップアップサイズは、拡張オプションで調整できます",
@@ -349,40 +283,6 @@
     "message": "更新ページ",
     "description": "Button text to refresh the page after an error."
   },
-  "failedToAddToIgnoreList": {
-    "message": "無視するリストに追加できませんでした",
-    "description": "Error message when adding to ignore list fails"
-  },
-  "addedToIgnoreList": {
-    "message": "$ hostname $がIngroreリストに追加されており、次回は新しいタブに直接開かれます。",
-    "description": "Message shown when a website is added to ignore list",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "alreadyInIgnoreList": {
-    "message": "$ hostname $はすでに無視リストにあります。",
-    "description": "Message shown when a website is already in ignore list",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "autoAddedToIgnoreList": {
-    "message": "$ hostname $は無視リストに自動的に追加されており、次回は新しいタブに直接開かれます。",
-    "description": "Message shown when a website is automatically added to ignore list",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
   "enterValidDomain": {
     "message": "有効なドメイン名を入力してください。",
     "description": "Error message when the domain input is empty or invalid"
@@ -400,30 +300,6 @@
         "example": "google.com"
       }
     }
-  },
-  "addedToIgnoreListAlert": {
-    "message": "$hostname$ がIngroreリストに追加されており、次回は新しいタブに直接開かれます。",
-    "description": "Alert shown when a hostname is successfully added to the ignore list.",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "alreadyInIgnoreListAlert": {
-    "message": "$hostname$ はすでに無視リストにあります。",
-    "description": "Alert shown when trying to add a hostname that is already in the ignore list.",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "addToIgnoreListFailedAlert": {
-    "message": "無視するリストに追加できませんでした。",
-    "description": "Alert shown when adding a hostname to the ignore list fails."
   },
   "contentTooLarge": {
     "message": "コンテンツが大きすぎるため、復元のために保存することはできません。",
@@ -590,62 +466,6 @@
   "optionsPageTitle": {
     "message": "Tabboostオプション",
     "description": "The title of the options page"
-  },
-  "domainRemoved": {
-    "message": "Domain '$domain$' は、無視リストから正常に削除されました。",
-    "description": "Notification shown after a domain is successfully removed.",
-    "placeholders": {
-      "DOMAIN": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "removeDomain": {
-    "message": "ドメインを削除します",
-    "description": "Generic text for removing a domain, maybe used in confirmations or titles."
-  },
-  "removeFromList": {
-    "message": "リストから削除します",
-    "description": "Tooltip and accessible label for the remove button next to each domain."
-  },
-  "domainAdded": {
-    "message": "domain '$domain$' が正常に追加されました。",
-    "description": "Success notification when a domain is added.",
-    "placeholders": {
-      "DOMAIN": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "domainAddFailed": {
-    "message": "domain '$domain$'を追加できませんでした。もう一度やり直してください。",
-    "description": "Error notification when adding a domain fails.",
-    "placeholders": {
-      "DOMAIN": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "domainRemoveFailed": {
-    "message": "domain '$domain$'を削除できませんでした。もう一度やり直してください。",
-    "description": "Error notification when removing a domain fails.",
-    "placeholders": {
-      "DOMAIN": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "errorFetchingList": {
-    "message": "Ingroreリストを取得するエラー。もう一度やり直してください。",
-    "description": "Error notification when fetching the list fails."
-  },
-  "errorCorruptedList": {
-    "message": "リストデータを無視すると破損しているようです。ストレージまたはリセット設定を確認してください。",
-    "description": "Error notification when the ignore list data is not an array."
   },
   "loadingIssues": {
     "message": "読み込み問題が検出されました",

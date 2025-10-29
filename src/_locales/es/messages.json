@@ -43,24 +43,6 @@
     "message": "Vista dividida habilitada",
     "description": "Setting for split view enabled"
   },
-  "iframeIgnoreEnabled": {
-    "message": "Habilitar la función de lista de ignorar el sitio web",
-    "description": "Label for enabling iframe ignore list"
-  },
-  "iframeIgnoreList": {
-    "message": "Ignorar la lista",
-    "description": "Label for iframe ignore list"
-  },
-  "autoAddToIgnoreList": {
-    "message": "$hostname$ se ha agregado automáticamente a la lista Ignore.La próxima vez se abrirá en una nueva pestaña",
-    "description": "Message shown when a website is automatically added to ignore list",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
   "save": {
     "message": "Ahorrar",
     "description": "Save button text"
@@ -100,10 +82,6 @@
   "openInNewTab": {
     "message": "Abrir en una nueva pestaña",
     "description": "Button to open in new tab"
-  },
-  "addToIgnoreList": {
-    "message": "Agregar para ignorar la lista",
-    "description": "Button text to add a domain to the ignore list"
   },
   "close": {
     "message": "Cerca",
@@ -237,46 +215,6 @@
     "message": "Configurar cómo se cargan los sitios web en ventanas emergentes y una vista dividida",
     "description": "Description for iframe compatibility settings"
   },
-  "iframeIgnoreEnabledDescription": {
-    "message": "Cuando está habilitado, los sitios web en la lista a continuación se abrirán directamente en una nueva pestaña en lugar de usar la ventana emergente o la vista dividida",
-    "description": "Description for iframe ignore list enable option"
-  },
-  "noIgnoredWebsites": {
-    "message": "No hay sitios web ignorados todavía",
-    "description": "Text shown when the ignore list is empty"
-  },
-  "domainFormatGuide": {
-    "message": "Guía de formato de dominio:",
-    "description": "Title for domain format guide"
-  },
-  "exactMatchExample": {
-    "message": "Ejemplo.com - solo coincide Ejemplo.com (coincidencia exacta)",
-    "description": "Example of exact match domain format"
-  },
-  "wildcardMatchExample": {
-    "message": "*.example.com - coincide con todos los subdominios de ejemplo.com",
-    "description": "Example of wildcard domain format"
-  },
-  "enterDomainPlaceholder": {
-    "message": "Ingrese el dominio para ignorar, por ejemplo: ejemplo.com o *.example.com",
-    "description": "Placeholder text for the domain input field"
-  },
-  "systemReservedDomains": {
-    "message": "Dominios reservados del sistema (no se puede eliminar)",
-    "description": "Title for the section showing system-reserved domains"
-  },
-  "exactMatch": {
-    "message": "Exact",
-    "description": "Badge text indicating an exact domain match"
-  },
-  "wildcardMatch": {
-    "message": "Comodín",
-    "description": "Badge text indicating a wildcard domain match"
-  },
-  "systemBadge": {
-    "message": "Sistema",
-    "description": "Badge text indicating a system-reserved domain"
-  },
   "extensionFooter": {
     "message": "TabBoost - Haga que su experiencia de navegación sea más eficiente",
     "description": "Footer text in options page"
@@ -284,10 +222,6 @@
   "popupFooter": {
     "message": "TabBoost",
     "description": "Footer text in popup"
-  },
-  "autoAddToIgnoreListOption": {
-    "message": "Agregue automáticamente sitios web que no se cargan en la lista Ignorar",
-    "description": "Option to automatically add websites that fail to load to the ignore list"
   },
   "popupSizeHint": {
     "message": "El tamaño emergente se puede ajustar en opciones de extensión",
@@ -349,40 +283,6 @@
     "message": "Actualizar",
     "description": "Button text to refresh the page after an error."
   },
-  "failedToAddToIgnoreList": {
-    "message": "No se pudo agregar para ignorar la lista",
-    "description": "Error message when adding to ignore list fails"
-  },
-  "addedToIgnoreList": {
-    "message": "$hostname$ se ha agregado a la lista Ignore, y se abrirá directamente en una nueva pestaña la próxima vez.",
-    "description": "Message shown when a website is added to ignore list",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "alreadyInIgnoreList": {
-    "message": "$hostname$ ya está en la lista Ignore.",
-    "description": "Message shown when a website is already in ignore list",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "autoAddedToIgnoreList": {
-    "message": "$hostname$ se ha agregado automáticamente a la lista Ignore, y se abrirá directamente en una nueva pestaña la próxima vez.",
-    "description": "Message shown when a website is automatically added to ignore list",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
   "enterValidDomain": {
     "message": "Ingrese un nombre de dominio válido.",
     "description": "Error message when the domain input is empty or invalid"
@@ -400,30 +300,6 @@
         "example": "google.com"
       }
     }
-  },
-  "addedToIgnoreListAlert": {
-    "message": "$hostname$ se ha agregado a la lista Ignore, y se abrirá directamente en una nueva pestaña la próxima vez.",
-    "description": "Alert shown when a hostname is successfully added to the ignore list.",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "alreadyInIgnoreListAlert": {
-    "message": "$hostname$ ya está en la lista Ignore.",
-    "description": "Alert shown when trying to add a hostname that is already in the ignore list.",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "addToIgnoreListFailedAlert": {
-    "message": "No se pudo agregar para ignorar la lista.",
-    "description": "Alert shown when adding a hostname to the ignore list fails."
   },
   "contentTooLarge": {
     "message": "El contenido es demasiado grande, no se puede guardar para la restauración.",
@@ -590,62 +466,6 @@
   "optionsPageTitle": {
     "message": "Opciones de TabBoost",
     "description": "The title of the options page"
-  },
-  "domainRemoved": {
-    "message": "Domain '$ Domain $' se eliminó con éxito de la lista Ignore.",
-    "description": "Notification shown after a domain is successfully removed.",
-    "placeholders": {
-      "DOMAIN": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "removeDomain": {
-    "message": "Eliminar el dominio",
-    "description": "Generic text for removing a domain, maybe used in confirmations or titles."
-  },
-  "removeFromList": {
-    "message": "Eliminar de la lista",
-    "description": "Tooltip and accessible label for the remove button next to each domain."
-  },
-  "domainAdded": {
-    "message": "Dominio '$domain$' agregado con éxito.",
-    "description": "Success notification when a domain is added.",
-    "placeholders": {
-      "DOMAIN": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "domainAddFailed": {
-    "message": "No se pudo agregar dominio '$domain$'.Por favor intente de nuevo.",
-    "description": "Error notification when adding a domain fails.",
-    "placeholders": {
-      "DOMAIN": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "domainRemoveFailed": {
-    "message": "No se pudo eliminar el dominio '$domain$'.Por favor intente de nuevo.",
-    "description": "Error notification when removing a domain fails.",
-    "placeholders": {
-      "DOMAIN": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "errorFetchingList": {
-    "message": "Error al obtener la lista Ignore.Por favor intente de nuevo.",
-    "description": "Error notification when fetching the list fails."
-  },
-  "errorCorruptedList": {
-    "message": "Ignorar los datos de la lista parece dañado.Verifique la configuración de almacenamiento o restablecimiento.",
-    "description": "Error notification when the ignore list data is not an array."
   },
   "loadingIssues": {
     "message": "Problemas de carga detectados",

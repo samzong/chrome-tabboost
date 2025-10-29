@@ -43,24 +43,6 @@
     "message": "Раздельный вид включен",
     "description": "Setting for split view enabled"
   },
-  "iframeIgnoreEnabled": {
-    "message": "Включить сайт игнорировать функцию списка",
-    "description": "Label for enabling iframe ignore list"
-  },
-  "iframeIgnoreList": {
-    "message": "Игнорировать список",
-    "description": "Label for iframe ignore list"
-  },
-  "autoAddToIgnoreList": {
-    "message": "$hostname$ было автоматически добавлено в список игнорирования.В следующий раз, когда он откроется в новой вкладке",
-    "description": "Message shown when a website is automatically added to ignore list",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
   "save": {
     "message": "Сохранять",
     "description": "Save button text"
@@ -100,10 +82,6 @@
   "openInNewTab": {
     "message": "Открыто в новой вкладке",
     "description": "Button to open in new tab"
-  },
-  "addToIgnoreList": {
-    "message": "Добавить в список игнорировать",
-    "description": "Button text to add a domain to the ignore list"
   },
   "close": {
     "message": "Закрывать",
@@ -237,46 +215,6 @@
     "message": "Настройка того, как загружаются веб -сайты во всплывающих окнах и разделительно",
     "description": "Description for iframe compatibility settings"
   },
-  "iframeIgnoreEnabledDescription": {
-    "message": "При включении веб -сайты в списке ниже откроются непосредственно на новой вкладке вместо использования всплывающего или разделенного представления",
-    "description": "Description for iframe ignore list enable option"
-  },
-  "noIgnoredWebsites": {
-    "message": "Еще не игнорируемые веб -сайты",
-    "description": "Text shown when the ignore list is empty"
-  },
-  "domainFormatGuide": {
-    "message": "Руководство по формату домена:",
-    "description": "Title for domain format guide"
-  },
-  "exactMatchExample": {
-    "message": "example.com - совпадает только с примером.com (точное совпадение)",
-    "description": "Example of exact match domain format"
-  },
-  "wildcardMatchExample": {
-    "message": "*.example.com - Сопоставление всех субдоменов примеров.com",
-    "description": "Example of wildcard domain format"
-  },
-  "enterDomainPlaceholder": {
-    "message": "Введите домен, чтобы игнорировать, например,: example.com или *.example.com",
-    "description": "Placeholder text for the domain input field"
-  },
-  "systemReservedDomains": {
-    "message": "Зарезервированные домены системы (не могут быть удалены)",
-    "description": "Title for the section showing system-reserved domains"
-  },
-  "exactMatch": {
-    "message": "Точный",
-    "description": "Badge text indicating an exact domain match"
-  },
-  "wildcardMatch": {
-    "message": "Подстановочный знак",
-    "description": "Badge text indicating a wildcard domain match"
-  },
-  "systemBadge": {
-    "message": "Система",
-    "description": "Badge text indicating a system-reserved domain"
-  },
   "extensionFooter": {
     "message": "Tabboost - Сделайте свой опыт просмотра более эффективным",
     "description": "Footer text in options page"
@@ -284,10 +222,6 @@
   "popupFooter": {
     "message": "Tabboost",
     "description": "Footer text in popup"
-  },
-  "autoAddToIgnoreListOption": {
-    "message": "Автоматически добавлять веб -сайты, которые не загружаются в список игнорирования",
-    "description": "Option to automatically add websites that fail to load to the ignore list"
   },
   "popupSizeHint": {
     "message": "Размер всплывающего окна можно настроить в параметрах расширения",
@@ -349,40 +283,6 @@
     "message": "Обновить страницу",
     "description": "Button text to refresh the page after an error."
   },
-  "failedToAddToIgnoreList": {
-    "message": "Не удалось добавить в список игнорировать",
-    "description": "Error message when adding to ignore list fails"
-  },
-  "addedToIgnoreList": {
-    "message": "$hostname$ было добавлено в список игнорирования, и в следующий раз он будет открыт непосредственно на новой вкладке.",
-    "description": "Message shown when a website is added to ignore list",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "alreadyInIgnoreList": {
-    "message": "$ hostname $ уже в списке игнорирования.",
-    "description": "Message shown when a website is already in ignore list",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "autoAddedToIgnoreList": {
-    "message": "$ hostname $ было автоматически добавлено в список игнорирования, и в следующий раз он будет открыт непосредственно на новой вкладке.",
-    "description": "Message shown when a website is automatically added to ignore list",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
   "enterValidDomain": {
     "message": "Пожалуйста, введите действительное доменное имя.",
     "description": "Error message when the domain input is empty or invalid"
@@ -400,30 +300,6 @@
         "example": "google.com"
       }
     }
-  },
-  "addedToIgnoreListAlert": {
-    "message": "$hostname$ было добавлено в список игнорирования, и в следующий раз он будет открыт непосредственно на новой вкладке.",
-    "description": "Alert shown when a hostname is successfully added to the ignore list.",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "alreadyInIgnoreListAlert": {
-    "message": "$hostname$ уже в списке игнорирования.",
-    "description": "Alert shown when trying to add a hostname that is already in the ignore list.",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "addToIgnoreListFailedAlert": {
-    "message": "Не удалось добавить в список игнорировать.",
-    "description": "Alert shown when adding a hostname to the ignore list fails."
   },
   "contentTooLarge": {
     "message": "Content is too large, cannot be saved for restoration.",
@@ -590,62 +466,6 @@
   "optionsPageTitle": {
     "message": "Параметры Tabboost",
     "description": "The title of the options page"
-  },
-  "domainRemoved": {
-    "message": "Домен '$domain$' был успешно удален из списка игнорирования.",
-    "description": "Notification shown after a domain is successfully removed.",
-    "placeholders": {
-      "DOMAIN": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "removeDomain": {
-    "message": "Удалить домен",
-    "description": "Generic text for removing a domain, maybe used in confirmations or titles."
-  },
-  "removeFromList": {
-    "message": "Удалить из списка",
-    "description": "Tooltip and accessible label for the remove button next to each domain."
-  },
-  "domainAdded": {
-    "message": "Домен '$ domain $' успешно добавлен.",
-    "description": "Success notification when a domain is added.",
-    "placeholders": {
-      "DOMAIN": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "domainAddFailed": {
-    "message": "Не удалось добавить домен '$domain$'.Пожалуйста, попробуйте еще раз.",
-    "description": "Error notification when adding a domain fails.",
-    "placeholders": {
-      "DOMAIN": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "domainRemoveFailed": {
-    "message": "Не удалось удалить домен '$domain$'.Пожалуйста, попробуйте еще раз.",
-    "description": "Error notification when removing a domain fails.",
-    "placeholders": {
-      "DOMAIN": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "errorFetchingList": {
-    "message": "Ошибка извлечена список игнорирования.Пожалуйста, попробуйте еще раз.",
-    "description": "Error notification when fetching the list fails."
-  },
-  "errorCorruptedList": {
-    "message": "Игнорировать данные списка кажется поврежденным.Пожалуйста, проверьте настройки хранения или сброса.",
-    "description": "Error notification when the ignore list data is not an array."
   },
   "loadingIssues": {
     "message": "Обнаружены проблемы с загрузкой",

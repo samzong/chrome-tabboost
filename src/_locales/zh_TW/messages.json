@@ -43,24 +43,6 @@
     "message": "啟用拆分視圖",
     "description": "Setting for split view enabled"
   },
-  "iframeIgnoreEnabled": {
-    "message": "啟用網站忽略列表功能",
-    "description": "Label for enabling iframe ignore list"
-  },
-  "iframeIgnoreList": {
-    "message": "忽略列表",
-    "description": "Label for iframe ignore list"
-  },
-  "autoAddToIgnoreList": {
-    "message": "$HOSTNAME$ 已自動添加到忽略列表中。下次它將在新標籤中打開",
-    "description": "Message shown when a website is automatically added to ignore list",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
   "save": {
     "message": "節省",
     "description": "Save button text"
@@ -100,10 +82,6 @@
   "openInNewTab": {
     "message": "在新標籤中打開",
     "description": "Button to open in new tab"
-  },
-  "addToIgnoreList": {
-    "message": "添加到忽略列表",
-    "description": "Button text to add a domain to the ignore list"
   },
   "close": {
     "message": "關閉",
@@ -237,46 +215,6 @@
     "message": "配置網站在彈出窗口中加載的方式和拆分視圖",
     "description": "Description for iframe compatibility settings"
   },
-  "iframeIgnoreEnabledDescription": {
-    "message": "啟用後，下面列表中的網站將直接在新標籤中打開，而不是使用彈出式或拆分視圖",
-    "description": "Description for iframe ignore list enable option"
-  },
-  "noIgnoredWebsites": {
-    "message": "還沒有忽略的網站",
-    "description": "Text shown when the ignore list is empty"
-  },
-  "domainFormatGuide": {
-    "message": "域格式指南：",
-    "description": "Title for domain format guide"
-  },
-  "exactMatchExample": {
-    "message": "example.com-僅匹配example.com（確切匹配）",
-    "description": "Example of exact match domain format"
-  },
-  "wildcardMatchExample": {
-    "message": "*.example.com-匹配example.com的所有子域",
-    "description": "Example of wildcard domain format"
-  },
-  "enterDomainPlaceholder": {
-    "message": "輸入要忽略的域，例如：example.com或 *.example.com",
-    "description": "Placeholder text for the domain input field"
-  },
-  "systemReservedDomains": {
-    "message": "系統保留域（無法刪除）",
-    "description": "Title for the section showing system-reserved domains"
-  },
-  "exactMatch": {
-    "message": "精確的",
-    "description": "Badge text indicating an exact domain match"
-  },
-  "wildcardMatch": {
-    "message": "通配符",
-    "description": "Badge text indicating a wildcard domain match"
-  },
-  "systemBadge": {
-    "message": "系統",
-    "description": "Badge text indicating a system-reserved domain"
-  },
   "extensionFooter": {
     "message": "Tabboost - 使您的瀏覽體驗更有效",
     "description": "Footer text in options page"
@@ -284,10 +222,6 @@
   "popupFooter": {
     "message": "Tabboost",
     "description": "Footer text in popup"
-  },
-  "autoAddToIgnoreListOption": {
-    "message": "自動添加無法加載到忽略列表的網站",
-    "description": "Option to automatically add websites that fail to load to the ignore list"
   },
   "popupSizeHint": {
     "message": "可以在擴展選項中調整彈出尺寸",
@@ -349,40 +283,6 @@
     "message": "刷新頁面",
     "description": "Button text to refresh the page after an error."
   },
-  "failedToAddToIgnoreList": {
-    "message": "無法添加到忽略列表",
-    "description": "Error message when adding to ignore list fails"
-  },
-  "addedToIgnoreList": {
-    "message": "$HOSTNAME$ 已添加到忽略列表中，下次將直接在新標籤中打開。",
-    "description": "Message shown when a website is added to ignore list",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "alreadyInIgnoreList": {
-    "message": "$HOSTNAME$ 已經在忽略列表中。",
-    "description": "Message shown when a website is already in ignore list",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "autoAddedToIgnoreList": {
-    "message": "$HOSTNAME$ 已自動添加到忽略列表中，下次將直接在新標籤中打開。",
-    "description": "Message shown when a website is automatically added to ignore list",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
   "enterValidDomain": {
     "message": "請輸入有效的域名。",
     "description": "Error message when the domain input is empty or invalid"
@@ -400,30 +300,6 @@
         "example": "google.com"
       }
     }
-  },
-  "addedToIgnoreListAlert": {
-    "message": "$HOSTNAME$ 已添加到忽略列表中，下次將直接在新標籤中打開。",
-    "description": "Alert shown when a hostname is successfully added to the ignore list.",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "alreadyInIgnoreListAlert": {
-    "message": "$HOSTNAME$ 已經在忽略列表中。",
-    "description": "Alert shown when trying to add a hostname that is already in the ignore list.",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "addToIgnoreListFailedAlert": {
-    "message": "無法添加到忽略列表。",
-    "description": "Alert shown when adding a hostname to the ignore list fails."
   },
   "contentTooLarge": {
     "message": "內容太大，不能保存用於修復。",
@@ -590,62 +466,6 @@
   "optionsPageTitle": {
     "message": "TABBOOST選項",
     "description": "The title of the options page"
-  },
-  "domainRemoved": {
-    "message": "域“ $domain$”已成功從忽略列表中刪除。",
-    "description": "Notification shown after a domain is successfully removed.",
-    "placeholders": {
-      "DOMAIN": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "removeDomain": {
-    "message": "刪除域",
-    "description": "Generic text for removing a domain, maybe used in confirmations or titles."
-  },
-  "removeFromList": {
-    "message": "從列表中刪除",
-    "description": "Tooltip and accessible label for the remove button next to each domain."
-  },
-  "domainAdded": {
-    "message": "域“ $domain$” 成功添加了。",
-    "description": "Success notification when a domain is added.",
-    "placeholders": {
-      "DOMAIN": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "domainAddFailed": {
-    "message": "無法添加域“ $domain$”。請重試。",
-    "description": "Error notification when adding a domain fails.",
-    "placeholders": {
-      "DOMAIN": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "domainRemoveFailed": {
-    "message": "無法刪除域“ $domain$”。請重試。",
-    "description": "Error notification when removing a domain fails.",
-    "placeholders": {
-      "DOMAIN": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "errorFetchingList": {
-    "message": "錯誤獲取忽略列表。請重試。",
-    "description": "Error notification when fetching the list fails."
-  },
-  "errorCorruptedList": {
-    "message": "忽略列表數據似乎損壞了。請檢查存儲或重置設置。",
-    "description": "Error notification when the ignore list data is not an array."
   },
   "loadingIssues": {
     "message": "偵測到載入問題",

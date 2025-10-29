@@ -39,24 +39,6 @@
     "message": "分屏模式已启用",
     "description": "Setting for split view enabled"
   },
-  "iframeIgnoreEnabled": {
-    "message": "启用网站忽略列表功能",
-    "description": "Label for enabling iframe ignore list"
-  },
-  "iframeIgnoreList": {
-    "message": "忽略列表",
-    "description": "Label for iframe ignore list"
-  },
-  "autoAddToIgnoreList": {
-    "message": "$hostname$ 已自动添加到忽略列表。下次将直接在新标签页中打开",
-    "description": "Message shown when a website is automatically added to ignore list",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
   "save": {
     "message": "保存",
     "description": "Save button text"
@@ -96,10 +78,6 @@
   "openInNewTab": {
     "message": "在新标签页中打开",
     "description": "Button to open in new tab"
-  },
-  "addToIgnoreList": {
-    "message": "添加",
-    "description": "Button text to add domain to ignore list"
   },
   "close": {
     "message": "关闭",
@@ -233,46 +211,6 @@
     "message": "配置网站在弹窗和分屏模式中的加载方式",
     "description": "Description for iframe compatibility settings"
   },
-  "iframeIgnoreEnabledDescription": {
-    "message": "启用后，列表中的网站将直接在新标签页中打开，而不是使用弹出窗口或分屏视图。",
-    "description": "Description for iframe ignore list enable option"
-  },
-  "noIgnoredWebsites": {
-    "message": "没有忽略的网站",
-    "description": "Text shown when the ignore list is empty"
-  },
-  "domainFormatGuide": {
-    "message": "域名格式指南：",
-    "description": "Title for domain format guide"
-  },
-  "exactMatchExample": {
-    "message": "example.com - matches only example.com (exact match)",
-    "description": "Example of exact match domain format"
-  },
-  "wildcardMatchExample": {
-    "message": "*.example.com - matches all subdomains of example.com",
-    "description": "Example of wildcard domain format"
-  },
-  "enterDomainPlaceholder": {
-    "message": "输入要忽略的域名，例如：example.com 或 *.example.com",
-    "description": "Placeholder for new domain input"
-  },
-  "systemReservedDomains": {
-    "message": "系统保留域名 (无法删除)",
-    "description": "Title for system reserved domains section"
-  },
-  "exactMatch": {
-    "message": "精确匹配",
-    "description": "Badge text for exact match type"
-  },
-  "wildcardMatch": {
-    "message": "通配符匹配",
-    "description": "Badge text for wildcard match type"
-  },
-  "systemBadge": {
-    "message": "系统",
-    "description": "Badge text for system domains"
-  },
   "extensionFooter": {
     "message": "TabBoost - 让您的浏览体验更加高效",
     "description": "Footer text in options page"
@@ -280,10 +218,6 @@
   "popupFooter": {
     "message": "TabBoost",
     "description": "Footer text in popup"
-  },
-  "autoAddToIgnoreListOption": {
-    "message": "自动将无法加载的网站添加到忽略列表",
-    "description": "Option to automatically add websites that fail to load to the ignore list"
   },
   "popupSizeHint": {
     "message": "弹窗大小可以在扩展选项中调整",

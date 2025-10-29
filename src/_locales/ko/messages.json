@@ -43,24 +43,6 @@
     "message": "분할보기가 활성화되었습니다",
     "description": "Setting for split view enabled"
   },
-  "iframeIgnoreEnabled": {
-    "message": "웹 사이트 활성화 목록 기능을 무시하십시오",
-    "description": "Label for enabling iframe ignore list"
-  },
-  "iframeIgnoreList": {
-    "message": "목록을 무시하십시오",
-    "description": "Label for iframe ignore list"
-  },
-  "autoAddToIgnoreList": {
-    "message": "$hostname$ 가 무시 목록에 자동으로 추가되었습니다.다음에 새 탭에서 열립니다",
-    "description": "Message shown when a website is automatically added to ignore list",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
   "save": {
     "message": "구하다",
     "description": "Save button text"
@@ -100,10 +82,6 @@
   "openInNewTab": {
     "message": "새 탭에서 열립니다",
     "description": "Button to open in new tab"
-  },
-  "addToIgnoreList": {
-    "message": "무시 목록에 추가하십시오",
-    "description": "Button text to add a domain to the ignore list"
   },
   "close": {
     "message": "닫다",
@@ -237,46 +215,6 @@
     "message": "웹 사이트가 팝업 및 분할보기로로드되는 방법을 구성",
     "description": "Description for iframe compatibility settings"
   },
-  "iframeIgnoreEnabledDescription": {
-    "message": "활성화되면 아래 목록의 웹 사이트는 팝업 또는 분할보기를 사용하는 대신 새 탭에서 직접 열립니다.",
-    "description": "Description for iframe ignore list enable option"
-  },
-  "noIgnoredWebsites": {
-    "message": "아직 무시되지 않았습니다",
-    "description": "Text shown when the ignore list is empty"
-  },
-  "domainFormatGuide": {
-    "message": "도메인 형식 안내서 :",
-    "description": "Title for domain format guide"
-  },
-  "exactMatchExample": {
-    "message": "example.com- 만 일치 만 example.com (정확히 일치)",
-    "description": "Example of exact match domain format"
-  },
-  "wildcardMatchExample": {
-    "message": "*.example.com- example.com의 모든 하위 도메인과 일치합니다",
-    "description": "Example of wildcard domain format"
-  },
-  "enterDomainPlaceholder": {
-    "message": "예를 들어, example.com 또는 *.example.com을 무시하려면 도메인을 입력하십시오",
-    "description": "Placeholder text for the domain input field"
-  },
-  "systemReservedDomains": {
-    "message": "시스템 예약 도메인 (제거 할 수 없음)",
-    "description": "Title for the section showing system-reserved domains"
-  },
-  "exactMatch": {
-    "message": "정확한",
-    "description": "Badge text indicating an exact domain match"
-  },
-  "wildcardMatch": {
-    "message": "와일드 카드",
-    "description": "Badge text indicating a wildcard domain match"
-  },
-  "systemBadge": {
-    "message": "체계",
-    "description": "Badge text indicating a system-reserved domain"
-  },
   "extensionFooter": {
     "message": "Tabboost- 탐색 경험을보다 효율적으로 만듭니다",
     "description": "Footer text in options page"
@@ -284,10 +222,6 @@
   "popupFooter": {
     "message": "Tabboost",
     "description": "Footer text in popup"
-  },
-  "autoAddToIgnoreListOption": {
-    "message": "무시 목록에로드하지 못하는 웹 사이트 추가 자동 추가",
-    "description": "Option to automatically add websites that fail to load to the ignore list"
   },
   "popupSizeHint": {
     "message": "팝업 크기는 확장 옵션에서 조정할 수 있습니다",
@@ -349,40 +283,6 @@
     "message": "새로 고침 페이지",
     "description": "Button text to refresh the page after an error."
   },
-  "failedToAddToIgnoreList": {
-    "message": "무시 목록에 추가하지 못했습니다",
-    "description": "Error message when adding to ignore list fails"
-  },
-  "addedToIgnoreList": {
-    "message": "$hostname$ 가 무시 목록에 추가되었으며 다음에 새 탭에서 직접 열립니다.",
-    "description": "Message shown when a website is added to ignore list",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "alreadyInIgnoreList": {
-    "message": "$hostname$ 는 이미 무시 목록에 있습니다.",
-    "description": "Message shown when a website is already in ignore list",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "autoAddedToIgnoreList": {
-    "message": "$hostname$ 가 무시 목록에 자동으로 추가되었으며 다음에 새 탭에서 직접 열립니다.",
-    "description": "Message shown when a website is automatically added to ignore list",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
   "enterValidDomain": {
     "message": "유효한 도메인 이름을 입력하십시오.",
     "description": "Error message when the domain input is empty or invalid"
@@ -400,30 +300,6 @@
         "example": "google.com"
       }
     }
-  },
-  "addedToIgnoreListAlert": {
-    "message": "$hostname$ 가 무시 목록에 추가되었으며 다음에 새 탭에서 직접 열립니다.",
-    "description": "Alert shown when a hostname is successfully added to the ignore list.",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "alreadyInIgnoreListAlert": {
-    "message": "$hostname$ 는 이미 무시 목록에 있습니다.",
-    "description": "Alert shown when trying to add a hostname that is already in the ignore list.",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "addToIgnoreListFailedAlert": {
-    "message": "무시 목록에 추가하지 못했습니다.",
-    "description": "Alert shown when adding a hostname to the ignore list fails."
   },
   "contentTooLarge": {
     "message": "내용이 너무 크고 복원을 위해 저장할 수 없습니다.",
@@ -590,62 +466,6 @@
   "optionsPageTitle": {
     "message": "tabboost 옵션",
     "description": "The title of the options page"
-  },
-  "domainRemoved": {
-    "message": "도메인 '$domain$' 가 무시 목록에서 성공적으로 제거되었습니다.",
-    "description": "Notification shown after a domain is successfully removed.",
-    "placeholders": {
-      "DOMAIN": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "removeDomain": {
-    "message": "도메인을 제거하십시오",
-    "description": "Generic text for removing a domain, maybe used in confirmations or titles."
-  },
-  "removeFromList": {
-    "message": "목록에서 제거하십시오",
-    "description": "Tooltip and accessible label for the remove button next to each domain."
-  },
-  "domainAdded": {
-    "message": "도메인 '$domain$' 가 성공적으로 추가되었습니다.",
-    "description": "Success notification when a domain is added.",
-    "placeholders": {
-      "DOMAIN": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "domainAddFailed": {
-    "message": "도메인 '$domain$' 를 추가하지 못했습니다.다시 시도하십시오.",
-    "description": "Error notification when adding a domain fails.",
-    "placeholders": {
-      "DOMAIN": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "domainRemoveFailed": {
-    "message": "도메인 '$domain$' 를 제거하지 못했습니다.다시 시도하십시오.",
-    "description": "Error notification when removing a domain fails.",
-    "placeholders": {
-      "DOMAIN": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "errorFetchingList": {
-    "message": "오류가 무시 목록을 가져 오십시오.다시 시도하십시오.",
-    "description": "Error notification when fetching the list fails."
-  },
-  "errorCorruptedList": {
-    "message": "목록 데이터를 무시하면 손상된 것 같습니다.스토리지 또는 재설정 설정을 확인하십시오.",
-    "description": "Error notification when the ignore list data is not an array."
   },
   "loadingIssues": {
     "message": "로딩 문제를 감지했습니다",

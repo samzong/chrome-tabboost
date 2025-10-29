@@ -43,24 +43,6 @@
     "message": "เปิดใช้งานการแยกมุมมอง",
     "description": "Setting for split view enabled"
   },
-  "iframeIgnoreEnabled": {
-    "message": "เปิดใช้งานคุณสมบัติเว็บไซต์ละเว้นรายการ",
-    "description": "Label for enabling iframe ignore list"
-  },
-  "iframeIgnoreList": {
-    "message": "ไม่สนใจรายการ",
-    "description": "Label for iframe ignore list"
-  },
-  "autoAddToIgnoreList": {
-    "message": "$hostname$ ได้รับการเพิ่มโดยอัตโนมัติในรายการที่ไม่สนใจครั้งต่อไปมันจะเปิดในแท็บใหม่",
-    "description": "Message shown when a website is automatically added to ignore list",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
   "save": {
     "message": "บันทึก",
     "description": "Save button text"
@@ -100,10 +82,6 @@
   "openInNewTab": {
     "message": "เปิดในแท็บใหม่",
     "description": "Button to open in new tab"
-  },
-  "addToIgnoreList": {
-    "message": "เพิ่มลงในรายการที่ไม่สนใจ",
-    "description": "Button text to add a domain to the ignore list"
   },
   "close": {
     "message": "ปิด",
@@ -237,46 +215,6 @@
     "message": "กำหนดค่าวิธีการโหลดเว็บไซต์ในป๊อปอัปและมุมมองแยก",
     "description": "Description for iframe compatibility settings"
   },
-  "iframeIgnoreEnabledDescription": {
-    "message": "เมื่อเปิดใช้งานเว็บไซต์ในรายการด้านล่างจะเปิดโดยตรงในแท็บใหม่แทนที่จะใช้ Popup หรือ Split View",
-    "description": "Description for iframe ignore list enable option"
-  },
-  "noIgnoredWebsites": {
-    "message": "ยังไม่มีเว็บไซต์ที่ถูกเพิกเฉย",
-    "description": "Text shown when the ignore list is empty"
-  },
-  "domainFormatGuide": {
-    "message": "คู่มือรูปแบบโดเมน:",
-    "description": "Title for domain format guide"
-  },
-  "exactMatchExample": {
-    "message": "Example.com - ตรงกับตัวอย่างเท่านั้น (การจับคู่ที่แน่นอน)",
-    "description": "Example of exact match domain format"
-  },
-  "wildcardMatchExample": {
-    "message": "*.example.com - ตรงกับโดเมนย่อยทั้งหมดของ example.com",
-    "description": "Example of wildcard domain format"
-  },
-  "enterDomainPlaceholder": {
-    "message": "ป้อนโดเมนเพื่อละเว้นเช่น: example.com หรือ *.Example.com",
-    "description": "Placeholder text for the domain input field"
-  },
-  "systemReservedDomains": {
-    "message": "โดเมนที่สงวนระบบ (ไม่สามารถลบออกได้)",
-    "description": "Title for the section showing system-reserved domains"
-  },
-  "exactMatch": {
-    "message": "ที่แน่นอน",
-    "description": "Badge text indicating an exact domain match"
-  },
-  "wildcardMatch": {
-    "message": "ไพ่",
-    "description": "Badge text indicating a wildcard domain match"
-  },
-  "systemBadge": {
-    "message": "ระบบ",
-    "description": "Badge text indicating a system-reserved domain"
-  },
   "extensionFooter": {
     "message": "Tabboost - ทำให้ประสบการณ์การท่องเว็บของคุณมีประสิทธิภาพมากขึ้น",
     "description": "Footer text in options page"
@@ -284,10 +222,6 @@
   "popupFooter": {
     "message": "Tabboost",
     "description": "Footer text in popup"
-  },
-  "autoAddToIgnoreListOption": {
-    "message": "เพิ่มเว็บไซต์ที่ไม่สามารถโหลดไปยังรายการที่ไม่สนใจได้โดยอัตโนมัติ",
-    "description": "Option to automatically add websites that fail to load to the ignore list"
   },
   "popupSizeHint": {
     "message": "ขนาดป๊อปอัปสามารถปรับได้ในตัวเลือกส่วนขยาย",
@@ -349,40 +283,6 @@
     "message": "รีเฟรชหน้า",
     "description": "Button text to refresh the page after an error."
   },
-  "failedToAddToIgnoreList": {
-    "message": "ไม่สามารถเพิ่มลงในรายการที่ไม่สนใจ",
-    "description": "Error message when adding to ignore list fails"
-  },
-  "addedToIgnoreList": {
-    "message": "$hostname$ ถูกเพิ่มลงในรายการที่ไม่สนใจและจะเปิดโดยตรงในแท็บใหม่ในครั้งต่อไป",
-    "description": "Message shown when a website is added to ignore list",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "alreadyInIgnoreList": {
-    "message": "$hostname$ อยู่ในรายการที่ไม่สนใจ",
-    "description": "Message shown when a website is already in ignore list",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "autoAddedToIgnoreList": {
-    "message": "$hostname$ ได้รับการเพิ่มโดยอัตโนมัติในรายการที่ไม่สนใจและจะเปิดโดยตรงในแท็บใหม่ในครั้งต่อไป",
-    "description": "Message shown when a website is automatically added to ignore list",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
   "enterValidDomain": {
     "message": "โปรดป้อนชื่อโดเมนที่ถูกต้อง",
     "description": "Error message when the domain input is empty or invalid"
@@ -400,30 +300,6 @@
         "example": "google.com"
       }
     }
-  },
-  "addedToIgnoreListAlert": {
-    "message": "$hostname$ ถูกเพิ่มลงในรายการที่ไม่สนใจและจะเปิดโดยตรงในแท็บใหม่ในครั้งต่อไป",
-    "description": "Alert shown when a hostname is successfully added to the ignore list.",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "alreadyInIgnoreListAlert": {
-    "message": "$hostname$ อยู่ในรายการที่ไม่สนใจ",
-    "description": "Alert shown when trying to add a hostname that is already in the ignore list.",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "addToIgnoreListFailedAlert": {
-    "message": "ไม่สามารถเพิ่มลงในรายการที่ไม่สนใจ",
-    "description": "Alert shown when adding a hostname to the ignore list fails."
   },
   "contentTooLarge": {
     "message": "เนื้อหามีขนาดใหญ่เกินไปไม่สามารถบันทึกไว้สำหรับการฟื้นฟู",
@@ -590,62 +466,6 @@
   "optionsPageTitle": {
     "message": "ตัวเลือก tabboost",
     "description": "The title of the options page"
-  },
-  "domainRemoved": {
-    "message": "โดเมน '$domain$' ถูกลบออกจากรายการที่ไม่สนใจสำเร็จ",
-    "description": "Notification shown after a domain is successfully removed.",
-    "placeholders": {
-      "DOMAIN": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "removeDomain": {
-    "message": "ลบโดเมน",
-    "description": "Generic text for removing a domain, maybe used in confirmations or titles."
-  },
-  "removeFromList": {
-    "message": "ลบออกจากรายการ",
-    "description": "Tooltip and accessible label for the remove button next to each domain."
-  },
-  "domainAdded": {
-    "message": "โดเมน '$domain$' เพิ่มสำเร็จ",
-    "description": "Success notification when a domain is added.",
-    "placeholders": {
-      "DOMAIN": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "domainAddFailed": {
-    "message": "ไม่สามารถเพิ่มโดเมน '$domain$'โปรดลองอีกครั้ง",
-    "description": "Error notification when adding a domain fails.",
-    "placeholders": {
-      "DOMAIN": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "domainRemoveFailed": {
-    "message": "ไม่สามารถลบโดเมน '$domain$' โปรดลองอีกครั้ง",
-    "description": "Error notification when removing a domain fails.",
-    "placeholders": {
-      "DOMAIN": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "errorFetchingList": {
-    "message": "การดึงข้อผิดพลาดในรายการละเว้นโปรดลองอีกครั้ง",
-    "description": "Error notification when fetching the list fails."
-  },
-  "errorCorruptedList": {
-    "message": "ไม่สนใจข้อมูลรายการดูเหมือนจะเสียหายโปรดตรวจสอบการจัดเก็บหรือรีเซ็ตการตั้งค่า",
-    "description": "Error notification when the ignore list data is not an array."
   },
   "loadingIssues": {
     "message": "ตรวจพบปัญหาการโหลด",
