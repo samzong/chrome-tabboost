@@ -69,6 +69,8 @@ chrome.tabs.query({ active: true }, (tabs) => {
 
 ## Build and Test Commands
 
+**Note:** This project supports both `npm` and `yarn` package managers. The examples below use `npm`, but you can substitute with `yarn` commands.
+
 ### Development
 ```bash
 npm run dev          # Build in development mode
@@ -89,7 +91,7 @@ npm run test:ci      # Run tests in CI mode
 ```bash
 npm run format       # Format code with Prettier
 npm run format:check # Check code formatting
-# ESLint is configured but not in npm scripts - run manually if needed
+npx eslint src/      # Run ESLint manually (not in npm scripts)
 ```
 
 ### Release
@@ -249,7 +251,7 @@ chrome.commands.onCommand.addListener((command) => {
 
 ## Dependencies
 
-The project uses Yarn as the package manager. Key dependencies include:
+The project supports both npm and Yarn as package managers (Yarn is specified in `packageManager` field). Key dependencies include:
 - Webpack and related loaders for bundling
 - Babel for JavaScript transpilation
 - Jest and testing utilities
