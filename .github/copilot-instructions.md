@@ -45,8 +45,8 @@ TabBoost is a Chrome extension that enhances browser tab efficiency with feature
 
 ### Code Style
 ```javascript
-// Use descriptive variable names
-const isValidUrl = validateUrl(url);
+// Use descriptive variable names and destructure returned objects
+const { isValid } = validateUrl(url);
 
 // Use async/await for asynchronous operations
 async function fetchData() {
@@ -138,11 +138,11 @@ describe("Component or Function", () => {
 ### Security Patterns
 ```javascript
 // URL validation example
-import { validateUrl } from "./utils/utils";
+import { validateUrl } from "../utils/utils.js";
 
 const result = validateUrl(url);
 if (!result.isValid) {
-  console.error("Invalid URL:", result.reason);
+  console.error("Invalid URL:", result.message);
   return;
 }
 ```
