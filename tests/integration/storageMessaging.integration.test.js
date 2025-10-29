@@ -4,44 +4,56 @@
 import { chrome } from "jest-chrome";
 
 // Mock storageCache for background context
-jest.mock("../../src/utils/storage-cache.js", () => {
-  const mockCache = {
-    cache: {},
-    get: jest.fn(),
-    set: jest.fn(),
-    init: jest.fn().mockResolvedValue(),
-  };
-  return { default: mockCache };
-});
+const mockStorageCache = {
+  cache: {},
+  get: jest.fn(),
+  set: jest.fn(),
+  init: jest.fn().mockResolvedValue(),
+};
+
+jest.mock("../../src/utils/storage-cache.js", () => ({
+  default: mockStorageCache,
+}));
+
+// Test helper: Simulates the storageGet message handler logic
+async function handleStorageGet(request, sender, sendResponse) {
+  if (request.action === "storageGet" && request.keys) {
+    try {
+      const result = await mockStorageCache.get(request.keys);
+      sendResponse({ success: true, data: result });
+    } catch (error) {
+      sendResponse({ success: false, error: error.message });
+    }
+    return true;
+  }
+}
+
+// Test helper: Simulates the storageSet message handler logic
+async function handleStorageSet(request, sender, sendResponse) {
+  if (request.action === "storageSet" && request.items) {
+    try {
+      await mockStorageCache.set(request.items);
+      sendResponse({ success: true });
+    } catch (error) {
+      sendResponse({ success: false, error: error.message });
+    }
+    return true;
+  }
+}
 
 describe("Background Storage Message Handlers", () => {
-  let messageListener;
-  let storageCache;
-
   beforeAll(() => {
     global.chrome = chrome;
   });
 
-  beforeEach(async () => {
+  beforeEach(() => {
     // Clear all mocks
     jest.clearAllMocks();
-    chrome.runtime.onMessage.addListener.mockClear();
-
-    // Import fresh instances
-    storageCache = (await import("../../src/utils/storage-cache.js")).default;
-
-    // Capture the message listener when background.js registers it
-    chrome.runtime.onMessage.addListener.mockImplementation((listener) => {
-      messageListener = listener;
-    });
-
-    // Note: We can't actually import background.js here because it has side effects
-    // Instead, we'll test the message handler logic directly
   });
 
   test("storageGet message returns data from cache", async () => {
     const mockData = { setting1: "value1", setting2: "value2" };
-    storageCache.get.mockResolvedValue(mockData);
+    mockStorageCache.get.mockResolvedValue(mockData);
 
     const request = {
       action: "storageGet",
@@ -50,23 +62,10 @@ describe("Background Storage Message Handlers", () => {
 
     const sendResponse = jest.fn();
 
-    // Simulate the message handler logic
-    const handleStorageGet = async (request, sender, sendResponse) => {
-      if (request.action === "storageGet" && request.keys) {
-        try {
-          const result = await storageCache.get(request.keys);
-          sendResponse({ success: true, data: result });
-        } catch (error) {
-          sendResponse({ success: false, error: error.message });
-        }
-        return true;
-      }
-    };
-
     const result = await handleStorageGet(request, {}, sendResponse);
 
     expect(result).toBe(true);
-    expect(storageCache.get).toHaveBeenCalledWith(request.keys);
+    expect(mockStorageCache.get).toHaveBeenCalledWith(request.keys);
     expect(sendResponse).toHaveBeenCalledWith({
       success: true,
       data: mockData,
@@ -75,7 +74,7 @@ describe("Background Storage Message Handlers", () => {
 
   test("storageGet message handles errors gracefully", async () => {
     const errorMessage = "Storage error";
-    storageCache.get.mockRejectedValue(new Error(errorMessage));
+    mockStorageCache.get.mockRejectedValue(new Error(errorMessage));
 
     const request = {
       action: "storageGet",
@@ -83,18 +82,6 @@ describe("Background Storage Message Handlers", () => {
     };
 
     const sendResponse = jest.fn();
-
-    const handleStorageGet = async (request, sender, sendResponse) => {
-      if (request.action === "storageGet" && request.keys) {
-        try {
-          const result = await storageCache.get(request.keys);
-          sendResponse({ success: true, data: result });
-        } catch (error) {
-          sendResponse({ success: false, error: error.message });
-        }
-        return true;
-      }
-    };
 
     await handleStorageGet(request, {}, sendResponse);
 
@@ -105,7 +92,7 @@ describe("Background Storage Message Handlers", () => {
   });
 
   test("storageSet message writes to cache", async () => {
-    storageCache.set.mockResolvedValue();
+    mockStorageCache.set.mockResolvedValue();
 
     const request = {
       action: "storageSet",
@@ -114,28 +101,16 @@ describe("Background Storage Message Handlers", () => {
 
     const sendResponse = jest.fn();
 
-    const handleStorageSet = async (request, sender, sendResponse) => {
-      if (request.action === "storageSet" && request.items) {
-        try {
-          await storageCache.set(request.items);
-          sendResponse({ success: true });
-        } catch (error) {
-          sendResponse({ success: false, error: error.message });
-        }
-        return true;
-      }
-    };
-
     const result = await handleStorageSet(request, {}, sendResponse);
 
     expect(result).toBe(true);
-    expect(storageCache.set).toHaveBeenCalledWith(request.items);
+    expect(mockStorageCache.set).toHaveBeenCalledWith(request.items);
     expect(sendResponse).toHaveBeenCalledWith({ success: true });
   });
 
   test("storageSet message handles errors gracefully", async () => {
     const errorMessage = "Write failed";
-    storageCache.set.mockRejectedValue(new Error(errorMessage));
+    mockStorageCache.set.mockRejectedValue(new Error(errorMessage));
 
     const request = {
       action: "storageSet",
@@ -144,18 +119,6 @@ describe("Background Storage Message Handlers", () => {
 
     const sendResponse = jest.fn();
 
-    const handleStorageSet = async (request, sender, sendResponse) => {
-      if (request.action === "storageSet" && request.items) {
-        try {
-          await storageCache.set(request.items);
-          sendResponse({ success: true });
-        } catch (error) {
-          sendResponse({ success: false, error: error.message });
-        }
-        return true;
-      }
-    };
-
     await handleStorageSet(request, {}, sendResponse);
 
     expect(sendResponse).toHaveBeenCalledWith({
@@ -163,4 +126,5 @@ describe("Background Storage Message Handlers", () => {
       error: errorMessage,
     });
   });
+});
 });
