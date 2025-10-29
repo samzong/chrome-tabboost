@@ -43,20 +43,6 @@
     "message": "Split view enabled",
     "description": "Setting for split view enabled"
   },
-  "iframeIgnoreEnabled": {
-    "message": "Enable website ignore list feature",
-    "description": "Label for enabling the iframe ignore list option"
-  },
-  "autoAddToIgnoreList": {
-    "message": "$hostname$ has been automatically added to the ignore list. Next time it will open in a new tab",
-    "description": "Message shown when a website is automatically added to ignore list",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
   "save": {
     "message": "Save",
     "description": "Save button text"
@@ -229,54 +215,6 @@
     "message": "Configure how websites are loaded in popups and split view",
     "description": "Description for iframe compatibility settings"
   },
-  "iframeIgnoreEnabledDescription": {
-    "message": "When enabled, websites in the list below will open directly in a new tab instead of using the popup or split view",
-    "description": "Description for iframe ignore list enable option"
-  },
-  "iframeIgnoreList": {
-    "message": "Ignore List",
-    "description": "Label for iframe ignore list"
-  },
-  "noIgnoredWebsites": {
-    "message": "No ignored websites yet",
-    "description": "Text shown when the ignore list is empty"
-  },
-  "domainFormatGuide": {
-    "message": "Domain Format Guide:",
-    "description": "Title for domain format guide"
-  },
-  "exactMatchExample": {
-    "message": "example.com - matches only example.com (exact match)",
-    "description": "Example of exact match domain format"
-  },
-  "wildcardMatchExample": {
-    "message": "*.example.com - matches all subdomains of example.com",
-    "description": "Example of wildcard domain format"
-  },
-  "enterDomainPlaceholder": {
-    "message": "Enter domain to ignore, e.g.: example.com or *.example.com",
-    "description": "Placeholder text for the domain input field"
-  },
-  "addToIgnoreList": {
-    "message": "Add to Ignore List",
-    "description": "Button text to add a domain to the ignore list"
-  },
-  "systemReservedDomains": {
-    "message": "System Reserved Domains (cannot be removed)",
-    "description": "Title for the section showing system-reserved domains"
-  },
-  "exactMatch": {
-    "message": "Exact",
-    "description": "Badge text indicating an exact domain match"
-  },
-  "wildcardMatch": {
-    "message": "Wildcard",
-    "description": "Badge text indicating a wildcard domain match"
-  },
-  "systemBadge": {
-    "message": "System",
-    "description": "Badge text indicating a system-reserved domain"
-  },
   "extensionFooter": {
     "message": "TabBoost - Make your browsing experience more efficient",
     "description": "Footer text in options page"
@@ -284,10 +222,6 @@
   "popupFooter": {
     "message": "TabBoost",
     "description": "Footer text in popup"
-  },
-  "autoAddToIgnoreListOption": {
-    "message": "Automatically add websites that fail to load to the ignore list",
-    "description": "Option to automatically add websites that fail to load to the ignore list"
   },
   "popupSizeHint": {
     "message": "Popup size can be adjusted in extension options",
@@ -348,20 +282,6 @@
   "refreshPage": {
     "message": "Refresh page",
     "description": "Button text to refresh the page"
-  },
-  "failedToAddToIgnoreList": {
-    "message": "Failed to add to ignore list",
-    "description": "Error message when adding to ignore list fails"
-  },
-  "alreadyInIgnoreList": {
-    "message": "$hostname$ is already in the ignore list.",
-    "description": "Message shown when a website is already in ignore list",
-    "placeholders": {
-      "hostname": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
   },
   "contentTooLarge": {
     "message": "Content is too large, cannot be saved for restoration.",
@@ -528,62 +448,6 @@
   "optionsPageTitle": {
     "message": "TabBoost Options",
     "description": "The title of the options page"
-  },
-  "domainRemoved": {
-    "message": "Domain '$DOMAIN$' was successfully removed from the ignore list.",
-    "description": "Notification shown after a domain is successfully removed.",
-    "placeholders": {
-      "DOMAIN": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "removeDomain": {
-    "message": "Remove Domain",
-    "description": "Generic text for removing a domain, maybe used in confirmations or titles."
-  },
-  "removeFromList": {
-    "message": "Remove from list",
-    "description": "Tooltip and accessible label for the remove button next to each domain."
-  },
-  "domainAdded": {
-    "message": "Domain '$DOMAIN$' added successfully.",
-    "description": "Success notification when a domain is added.",
-    "placeholders": {
-      "DOMAIN": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "domainAddFailed": {
-    "message": "Failed to add domain '$DOMAIN$'. Please try again.",
-    "description": "Error notification when adding a domain fails.",
-    "placeholders": {
-      "DOMAIN": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "domainRemoveFailed": {
-    "message": "Failed to remove domain '$DOMAIN$'. Please try again.",
-    "description": "Error notification when removing a domain fails.",
-    "placeholders": {
-      "DOMAIN": {
-        "content": "$1",
-        "example": "example.com"
-      }
-    }
-  },
-  "errorFetchingList": {
-    "message": "Error fetching the ignore list. Please try again.",
-    "description": "Error notification when fetching the list fails."
-  },
-  "errorCorruptedList": {
-    "message": "Ignore list data seems corrupted. Please check storage or reset settings.",
-    "description": "Error notification when the ignore list data is not an array."
   },
   "responseHeaderModification": {
     "message": "CSP & Iframe Compatibility Settings",

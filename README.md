@@ -22,7 +22,7 @@ TabBoost is a Chrome extension that enhances browser tab efficiency. It provides
 
 - **🚀 Link Preview**: Preview links without leaving the current page. Hold down the `Command` key (Mac) or `Ctrl` key (Windows - configurable) and click a link to open it in a popup window on the current page.
 - **📺 Split Screen Preview**: View two web pages side-by-side within a single tab. Triggered by `Shift + Command + Click` (Mac) or similar method (Windows) on a link, or activated via the extension menu. Ideal for comparing content or multitasking.
-- **🧠 Smart Compatibility Handling**: Automatically detects websites that cannot be loaded in preview or split screen (due to `X-Frame-Options` or CSP restrictions) and provides options to "Open in New Tab" or add them to an "Ignore List". The ignore list can be managed in the settings.
+- **🧠 Smart Compatibility Handling**: Automatically detects websites that cannot be loaded in preview or split screen (due to `X-Frame-Options` or CSP restrictions) and provides an option to "Open in New Tab".
 - **💾 Web Page Save Confirmation**: Intercepts the `Command+S` (Mac) or `Ctrl+S` (Windows) save shortcut, displaying a confirmation dialog to prevent accidentally saving the webpage instead of a file. After confirmation, there is a 3-second window to use the native save function.
 - **✨ Tab Duplication**: Quickly duplicate the current tab using the shortcut (`Ctrl+M` / `MacCtrl+M`).
 - **🖱️ URL Copy**: Copy the current page URL to the clipboard with a single click using the shortcut (`Alt+C` / `Shift+Command+C`).
