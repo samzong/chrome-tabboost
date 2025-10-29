@@ -127,4 +127,3 @@ describe("Background Storage Message Handlers", () => {
     });
   });
 });
-});
