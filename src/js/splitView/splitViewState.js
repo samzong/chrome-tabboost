@@ -1,4 +1,4 @@
-import storageCache from "../../utils/storage-cache.js";
+import storageProxy from "../../utils/storage-proxy.js";
 
 /**
  * 分屏视图状态管理模块
@@ -17,7 +17,7 @@ const splitViewState = {
   async init() {
     try {
       
-      const savedState = await storageCache.get({
+      const savedState = await storageProxy.get({
         splitViewDirection: 'horizontal',
         splitViewHorizontalRatio: 50,
         splitViewVerticalRatio: 50
@@ -59,7 +59,7 @@ const splitViewState = {
    */
   setLayoutDirection(direction) {
     this.layoutDirection = direction;
-    storageCache.set({ splitViewDirection: direction });
+    storageProxy.set({ splitViewDirection: direction });
   },
   
   /**
@@ -68,9 +68,9 @@ const splitViewState = {
    */
   saveRatio(ratio) {
     if (this.layoutDirection === 'horizontal') {
-      storageCache.set({ splitViewHorizontalRatio: ratio });
+      storageProxy.set({ splitViewHorizontalRatio: ratio });
     } else {
-      storageCache.set({ splitViewVerticalRatio: ratio });
+      storageProxy.set({ splitViewVerticalRatio: ratio });
     }
   },
   

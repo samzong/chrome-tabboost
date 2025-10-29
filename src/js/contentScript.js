@@ -1,4 +1,4 @@
-import storageCache from "../utils/storage-cache.js";
+import storageProxy from "../utils/storage-proxy.js";
 import { validateUrl } from "../utils/utils.js";
 import { canLoadInIframe } from "../utils/iframe-compatibility.js";
 import { getMessage } from "../utils/i18n.js";
@@ -21,10 +21,10 @@ const shouldUseCapturePhase = (() => {
 
 const initStorageCache = async () => {
   try {
-    await storageCache.init();
+    await storageProxy.init();
   } catch (error) {
     console.error(
-      "chrome-tabboost: Failed to initialize storage cache:",
+      "chrome-tabboost: Failed to initialize storage proxy:",
       error
     );
   }
@@ -336,7 +336,7 @@ async function createPopup(url) {
 
 async function getPreviewSettings() {
   try {
-    const settings = await storageCache.get({
+    const settings = await storageProxy.get({
       popupSizePreset: "default",
       customWidth: 80,
       customHeight: 80,

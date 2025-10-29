@@ -260,6 +260,30 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true;
   }
 
+  if (request.action === "storageGet" && request.keys) {
+    storageCache.get(request.keys)
+      .then((result) => {
+        sendResponse({ success: true, data: result });
+      })
+      .catch((error) => {
+        console.error("Error getting storage from cache:", error);
+        sendResponse({ success: false, error: error.message });
+      });
+    return true;
+  }
+
+  if (request.action === "storageSet" && request.items) {
+    storageCache.set(request.items)
+      .then(() => {
+        sendResponse({ success: true });
+      })
+      .catch((error) => {
+        console.error("Error setting storage in cache:", error);
+        sendResponse({ success: false, error: error.message });
+      });
+    return true;
+  }
+
   if (request.action === "openInSplitView" && request.url) {
     handleSplitViewRequest(request.url)
       .then((result) => {

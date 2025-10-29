@@ -1,4 +1,4 @@
-import storageCache from "./storage-cache.js";
+import * as storage from "./storage-unified.js";
 import { validateUrl } from "./utils.js";
 import { EXCLUDED_EXTENSIONS } from "../config/constants.js";
 
@@ -31,7 +31,7 @@ async function updateUserConfigCache() {
   try {
     const now = Date.now();
     if (now - userConfigCache.lastUpdated > CONFIG_CACHE_TTL) {
-      const result = await storageCache.get({
+      const result = await storage.get({
         headerModificationEnabled: true,
       });
 

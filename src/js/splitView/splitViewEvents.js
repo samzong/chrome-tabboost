@@ -1,4 +1,4 @@
-import storageCache from "../../utils/storage-cache.js";
+import storageProxy from "../../utils/storage-proxy.js";
 import * as i18n from "../../utils/i18n.js";
 
 let isDragging = false;
@@ -153,11 +153,11 @@ function stopDrag() {
 
     if (isHorizontalSplit) {
       const width = (parseFloat(computedStyle.width) / window.innerWidth) * 100;
-      storageCache.set({ splitViewHorizontalRatio: width });
+      storageProxy.set({ splitViewHorizontalRatio: width });
     } else {
       const height =
         (parseFloat(computedStyle.height) / window.innerHeight) * 100;
-      storageCache.set({ splitViewVerticalRatio: height });
+      storageProxy.set({ splitViewVerticalRatio: height });
     }
   }
 }
