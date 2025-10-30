@@ -184,7 +184,7 @@ function setupIframeEvents(iframe, errorContainer, url) {
         const frameDoc =
           iframe.contentDocument || iframe.contentWindow.document;
         if (frameDoc && frameDoc.body) {
-          // 注入样式以消除页面边距，确保在 split-view 中正确显示
+          // Inject styles to remove page margins for proper display in split-view
           const style = frameDoc.createElement("style");
           style.textContent = "body { margin: 0; padding: 0; }";
           frameDoc.head.appendChild(style);
