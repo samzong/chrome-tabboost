@@ -1,3 +1,15 @@
+## <small>2.5.2 (2025-10-30)</small>
+
+* chore(makefile): remove Makefile used for Chrome extension development environment setup ([bbd38ef](https://github.com/samzong/chrome-tabboost/commit/bbd38ef))
+* chore(package): bump version to 2.5.1 and remove yarn.lock file ([9c9d17b](https://github.com/samzong/chrome-tabboost/commit/9c9d17b))
+* refactor(background): improve code formatting and error handling in s… (#63) ([d81c11f](https://github.com/samzong/chrome-tabboost/commit/d81c11f)), closes [#63](https://github.com/samzong/chrome-tabboost/issues/63)
+* refactor(contentScript): replace manual event listener tracking with eventListenerTracker utility (# ([1b5a921](https://github.com/samzong/chrome-tabboost/commit/1b5a921)), closes [#62](https://github.com/samzong/chrome-tabboost/issues/62)
+* docs(testing): remove outdated testing guide document ([c01dddd](https://github.com/samzong/chrome-tabboost/commit/c01dddd))
+* Add Copilot instructions for repository context (#60) ([46b0ebf](https://github.com/samzong/chrome-tabboost/commit/46b0ebf)), closes [#60](https://github.com/samzong/chrome-tabboost/issues/60)
+* Remove unused Ignore List feature remnants (#58) ([0700788](https://github.com/samzong/chrome-tabboost/commit/0700788)), closes [#58](https://github.com/samzong/chrome-tabboost/issues/58)
+
+
+
 ## <small>2.5.1 (2025-10-11)</small>
 
 * fix(contentscript.js): add capture phase handling for specific hostnames in click listener (#57) ([cf83172](https://github.com/samzong/chrome-tabboost/commit/cf83172)), closes [#57](https://github.com/samzong/chrome-tabboost/issues/57)
