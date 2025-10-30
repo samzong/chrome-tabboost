@@ -4,6 +4,12 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 const isProduction = process.env.NODE_ENV === "production";
 
+// Path mapping constants for build transformations
+const PATH_MAPPINGS = {
+  STYLES_SOURCE: "src/styles/",
+  STYLES_BUILD: "assets/styles/",
+};
+
 module.exports = {
   mode: isProduction ? "production" : "development",
   devtool: isProduction ? false : "cheap-module-source-map",
@@ -12,12 +18,12 @@ module.exports = {
     options: "./src/options/options.js",
     background: "./src/js/background.js",
     contentScript: "./src/js/contentScript.js",
-    storageCache: "./src/utils/storage-cache.js",
   },
   output: {
     path: path.resolve(__dirname, "build"),
     filename: "[name].js",
     chunkFilename: "[name].js",
+    publicPath: "",
     clean: true,
   },
   devServer: {
@@ -98,9 +104,21 @@ module.exports = {
             }
 
             if (manifest.web_accessible_resources && manifest.web_accessible_resources.length > 0) {
-              manifest.web_accessible_resources[0].resources = [
+              const existingResources = (manifest.web_accessible_resources[0].resources || []).map((resource) => {
+                if (resource.startsWith(PATH_MAPPINGS.STYLES_SOURCE)) {
+                  return resource.replace(PATH_MAPPINGS.STYLES_SOURCE, PATH_MAPPINGS.STYLES_BUILD);
+                }
+                return resource;
+              });
+
+              const requiredResources = new Set([
                 "assets/styles/splitViewStyles.css",
-              ];
+                "split-view-controller.js",
+              ]);
+
+              manifest.web_accessible_resources[0].resources = Array.from(
+                new Set([...existingResources, ...requiredResources])
+              );
             }
 
             if (manifest.background) {

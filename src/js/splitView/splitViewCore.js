@@ -13,7 +13,10 @@ function isNoReceiverError(error) {
   }
 
   const message = typeof error === "string" ? error : error.message;
-  return typeof message === "string" && message.includes("Could not establish connection");
+  return (
+    typeof message === "string" &&
+    message.includes("Could not establish connection")
+  );
 }
 
 function sendSplitViewCommand(tabId, command, payload = {}) {
@@ -23,7 +26,7 @@ function sendSplitViewCommand(tabId, command, payload = {}) {
       {
         namespace: SPLIT_VIEW_NAMESPACE,
         command,
-        payload
+        payload,
       },
       (response) => {
         const runtimeError = chrome.runtime.lastError;
@@ -42,7 +45,9 @@ export async function createSplitView() {
   try {
     const currentTab = await getCurrentTab();
     if (!currentTab || !currentTab.id) {
-      console.error("TabBoost: Unable to determine current tab when creating split view");
+      console.error(
+        "TabBoost: Unable to determine current tab when creating split view"
+      );
       return false;
     }
 
@@ -52,7 +57,9 @@ export async function createSplitView() {
       return false;
     }
 
-    const response = await sendSplitViewCommand(currentTab.id, "init", { leftUrl });
+    const response = await sendSplitViewCommand(currentTab.id, "init", {
+      leftUrl,
+    });
     if (!response || response.success !== true) {
       throw new Error(response?.error || "split-view-init-failed");
     }
@@ -76,7 +83,9 @@ export async function closeSplitView() {
   try {
     const currentTab = await getCurrentTab();
     if (!currentTab || !currentTab.id) {
-      console.error("TabBoost: Unable to determine current tab when closing split view");
+      console.error(
+        "TabBoost: Unable to determine current tab when closing split view"
+      );
       return false;
     }
 
@@ -108,14 +117,16 @@ export async function updateRightView(url) {
   try {
     const currentTab = await getCurrentTab();
     if (!currentTab || !currentTab.id) {
-      console.error("TabBoost: Unable to determine current tab when updating split view");
+      console.error(
+        "TabBoost: Unable to determine current tab when updating split view"
+      );
       return false;
     }
 
     const leftUrl = splitViewState.getState().leftUrl || currentTab.url;
     const response = await sendSplitViewCommand(currentTab.id, "updateRight", {
       url,
-      leftUrl
+      leftUrl,
     });
 
     if (!response || response.success !== true) {
@@ -170,5 +181,5 @@ export default {
   updateRightView,
   getSplitViewState,
   initSplitViewModule,
-  querySplitViewStatus
+  querySplitViewStatus,
 };

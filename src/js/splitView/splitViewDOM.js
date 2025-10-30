@@ -1,17 +1,21 @@
-import { UI_CONFIG, ANIMATION_CONFIG, LAYOUT_CONFIG } from './splitViewConfig.js';
+import {
+  UI_CONFIG,
+  ANIMATION_CONFIG,
+  LAYOUT_CONFIG,
+} from "./splitViewConfig.js";
 import {
   createElement,
   createIframe,
-  createCloseButton
-} from './splitViewDOMUtils.js';
-import { safeQuerySelector } from './splitViewUtils.js';
+  createCloseButton,
+} from "./splitViewDOMUtils.js";
+import { safeQuerySelector } from "./splitViewUtils.js";
 import * as i18n from "../../utils/i18n.js";
 import {
   createSettingsButton,
   createRatioMenu,
   addViewHoverEffects,
-  applyDefaultRatio
-} from './splitViewDOMComponents.js';
+  applyDefaultRatio,
+} from "./splitViewDOMComponents.js";
 
 const ORIGINAL_ROOT_ID = "tabboost-original-content-root";
 const ORIGINAL_ROOT_ATTR = "data-tabboost-original-root";
@@ -52,12 +56,18 @@ export function initSplitViewDOM(leftUrl) {
         width: "100%",
         height: "100%",
         overflow: "auto",
-        position: "relative"
-      }
+        position: "relative",
+        boxSizing: "border-box",
+        margin: "0",
+        padding: "0",
+        display: "block",
+      },
     });
     leftContentRoot.setAttribute(ORIGINAL_ROOT_ATTR, "true");
 
     leftView.appendChild(leftContentRoot);
+    // Mark left view as containing original content for CSS styling
+    leftView.setAttribute("data-has-original-content", "true");
     viewsContainer.appendChild(leftView);
     viewsContainer.appendChild(rightView);
     splitViewContainer.appendChild(viewsContainer);
@@ -65,7 +75,8 @@ export function initSplitViewDOM(leftUrl) {
     relocateOriginalNodes(originalNodes, leftContentRoot);
 
     document.body.appendChild(splitViewContainer);
-    splitViewContainer.dataset[ORIGINAL_STATE_DATA_KEY] = JSON.stringify(originalState);
+    splitViewContainer.dataset[ORIGINAL_STATE_DATA_KEY] =
+      JSON.stringify(originalState);
     lockDocument();
 
     addViewHoverEffects(leftView);
@@ -82,7 +93,7 @@ export function initSplitViewDOM(leftUrl) {
       success: true,
       container: splitViewContainer,
       leftContentRoot,
-      rightView
+      rightView,
     };
   } catch (error) {
     console.error("TabBoost: Error in initSplitViewDOM:", error);
@@ -103,21 +114,18 @@ function createView(side, url = "about:blank", options = {}) {
     id: UI_CONFIG.view[side].id,
     styles: {
       ...UI_CONFIG.view.styles,
-      [side === 'left' ? 'marginRight' : 'marginLeft']: '6px'
-    }
+      [side === "left" ? "marginRight" : "marginLeft"]: "6px",
+    },
   };
 
-  const view = createElement('div', config);
-  
-  
-  const closeButton = createCloseButton('close-split-view');
+  const view = createElement("div", config);
+
+  const closeButton = createCloseButton("close-split-view");
   closeButton.title = i18n.getMessage("closeSplitView") || "关闭分屏视图";
   view.appendChild(closeButton);
-  
-  
+
   const settingsButton = createSettingsButton(side);
   view.appendChild(settingsButton);
-
 
   createRatioMenu(settingsButton, side);
 
@@ -141,13 +149,13 @@ function createView(side, url = "about:blank", options = {}) {
  * @returns {HTMLElement} - 错误容器元素
  */
 function createErrorContainer(side, url) {
-  const container = createElement('div', {
+  const container = createElement("div", {
     id: `tabboost-${side}-error`,
-    className: 'tabboost-iframe-error',
+    className: "tabboost-iframe-error",
     styles: {
-      display: 'none',
-      borderRadius: '8px'
-    }
+      display: "none",
+      borderRadius: "8px",
+    },
   });
 
   container.innerHTML = `
@@ -169,25 +177,28 @@ function createErrorContainer(side, url) {
  * @param {string} url - iframe URL
  */
 function setupIframeEvents(iframe, errorContainer, url) {
-  iframe.addEventListener('load', () => {
-    if (url !== 'about:blank') {
-      errorContainer.style.display = 'none';
+  iframe.addEventListener("load", () => {
+    if (url !== "about:blank") {
+      errorContainer.style.display = "none";
       try {
-        const frameDoc = iframe.contentDocument || iframe.contentWindow.document;
+        const frameDoc =
+          iframe.contentDocument || iframe.contentWindow.document;
         if (frameDoc && frameDoc.body) {
-          const style = frameDoc.createElement('style');
-          style.textContent = 'body { margin: 0; padding: 0; }';
+          // Inject styles to remove page margins for proper display in split-view
+          const style = frameDoc.createElement("style");
+          style.textContent = "body { margin: 0; padding: 0; }";
           frameDoc.head.appendChild(style);
         }
       } catch (e) {
-        console.warn("TabBoost: Cannot access iframe content due to security restrictions:", e.message);
+        // If unable to access iframe content (e.g., cross-origin restrictions), this is expected
+        // In this case, the page's original styles are preserved; may need CSS-level handling
       }
     }
   });
 
-  iframe.addEventListener('error', () => {
-    if (url !== 'about:blank') {
-      errorContainer.style.display = 'flex';
+  iframe.addEventListener("error", () => {
+    if (url !== "about:blank") {
+      errorContainer.style.display = "flex";
       updateErrorButtons(errorContainer, url);
     }
   });
@@ -199,9 +210,9 @@ function setupIframeEvents(iframe, errorContainer, url) {
  * @param {string} url - URL
  */
 function updateErrorButtons(container, url) {
-  const retryButton = container.querySelector('.tabboost-retry-load');
-  const openButton = container.querySelector('.tabboost-open-in-tab');
-  
+  const retryButton = container.querySelector(".tabboost-retry-load");
+  const openButton = container.querySelector(".tabboost-open-in-tab");
+
   if (retryButton) retryButton.dataset.url = url;
   if (openButton) openButton.dataset.url = url;
 }
@@ -213,7 +224,7 @@ function captureOriginalState() {
   return {
     overflow: document.body.style.overflow || "",
     scrollX: window.scrollX || 0,
-    scrollY: window.scrollY || 0
+    scrollY: window.scrollY || 0,
   };
 }
 
@@ -320,16 +331,16 @@ export function updateRightViewDOM(url) {
 
     let rightIframe = safeQuerySelector(`#${UI_CONFIG.iframe.right.id}`);
     let errorContainer = safeQuerySelector(`#tabboost-right-error`);
-    
+
     if (!rightIframe) {
       rightIframe = createIframe(UI_CONFIG.iframe.right.id, url);
-      rightIframe.setAttribute('data-tabboost-frame', 'right');
-      
+      rightIframe.setAttribute("data-tabboost-frame", "right");
+
       if (!errorContainer) {
-        errorContainer = createErrorContainer('right', url);
+        errorContainer = createErrorContainer("right", url);
         rightView.appendChild(errorContainer);
       }
-      
+
       setupIframeEvents(rightIframe, errorContainer, url);
       rightView.appendChild(rightIframe);
     } else {
@@ -339,13 +350,12 @@ export function updateRightViewDOM(url) {
       }
     }
 
-    
-    rightView.style.display = 'block';
-    
-    
+    rightView.style.display = "block";
+
     const viewsContainer = safeQuerySelector(`#${UI_CONFIG.viewsContainer.id}`);
     if (viewsContainer) {
-      const isVertical = viewsContainer.getAttribute('data-split-direction') === 'vertical';
+      const isVertical =
+        viewsContainer.getAttribute("data-split-direction") === "vertical";
       if (isVertical) {
         rightView.style.width = LAYOUT_CONFIG.vertical.rightWidth;
         rightView.style.height = LAYOUT_CONFIG.vertical.rightHeight;
@@ -359,7 +369,7 @@ export function updateRightViewDOM(url) {
   } catch (error) {
     console.error("TabBoost: Error in updateRightViewDOM:", error);
     try {
-      window.open(url, '_blank');
+      window.open(url, "_blank");
     } catch (e) {
       console.error("TabBoost: Failed to open URL in new tab:", e);
     }

@@ -19,7 +19,26 @@ export const DANGEROUS_URL_PATTERNS = [];
 
 // 需要排除的文件扩展名
 export const EXCLUDED_EXTENSIONS = [
-  '.zip', '.exe', '.dmg', '.pdf', '.doc', '.xls', '.ppt',
-  '.mp3', '.mp4', '.avi', '.mov', '.jpg', '.jpeg', '.png', '.gif',
-  '.js', '.css', '.json', '.xml', '.csv', '.ttf', '.woff'
+  ".zip",
+  ".exe",
+  ".dmg",
+  ".pdf",
+  ".doc",
+  ".xls",
+  ".ppt",
+  ".mp3",
+  ".mp4",
+  ".avi",
+  ".mov",
+  ".jpg",
+  ".jpeg",
+  ".png",
+  ".gif",
+  ".js",
+  ".css",
+  ".json",
+  ".xml",
+  ".csv",
+  ".ttf",
+  ".woff",
 ];

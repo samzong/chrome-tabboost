@@ -229,8 +229,6 @@ select:focus {
   background-color: #dc2626;
 }
 
-
-
 code {
   background-color: var(--muted);
   padding: 2px 4px;
@@ -388,8 +386,6 @@ code {
     background-color: var(--card-background);
   }
 }
-
-
 
 .warning-box {
   display: flex;

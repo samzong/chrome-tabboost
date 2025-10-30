@@ -1,44 +1,40 @@
-import { UI_CONFIG } from './splitViewConfig';
-import { safeQuerySelector } from './splitViewUtils';
+import { UI_CONFIG } from "./splitViewConfig";
+import { safeQuerySelector } from "./splitViewUtils";
 
 /**
- * 创建并配置DOM元素
- * @param {string} tag - HTML标签名
- * @param {Object} config - 元素配置
- * @returns {HTMLElement} - 配置好的DOM元素
+ * Create a DOM element with optional configuration
+ * @param {string} tag - HTML tag name
+ * @param {Object} config - Element configuration
+ * @returns {HTMLElement} - Configured DOM element
  */
 export function createElement(tag, config = {}) {
   const element = document.createElement(tag);
-  
-  
+
   if (config.id) {
     element.id = config.id;
   }
-  
-  
+
   if (config.className) {
     element.className = config.className;
   }
-  
-  
+
   if (config.styles) {
     Object.assign(element.style, config.styles);
   }
-  
-  
+
   if (config.attributes) {
     Object.entries(config.attributes).forEach(([key, value]) => {
       element.setAttribute(key, value);
     });
   }
-  
+
   return element;
 }
 
 /**
- * 应用样式到元素
- * @param {HTMLElement} element - 目标元素
- * @param {Object} styles - 样式对象
+ * Apply a style object to an element
+ * @param {HTMLElement} element - Target element
+ * @param {Object} styles - Style map
  */
 export function applyStyles(element, styles) {
   if (!element || !styles) return;
@@ -46,10 +42,10 @@ export function applyStyles(element, styles) {
 }
 
 /**
- * 安全地添加事件监听器
- * @param {HTMLElement} element - 目标元素
- * @param {string} event - 事件名
- * @param {Function} handler - 处理函数
+ * Add an event listener with basic error protection
+ * @param {HTMLElement} element - Target element
+ * @param {string} event - Event name
+ * @param {Function} handler - Listener function
  */
 export function addSafeEventListener(element, event, handler) {
   if (!element || !handler) return;
@@ -61,43 +57,43 @@ export function addSafeEventListener(element, event, handler) {
 }
 
 /**
- * 创建iframe元素
- * @param {string} id - iframe的ID
- * @param {string} url - iframe的URL
- * @returns {HTMLIFrameElement} - 配置好的iframe元素
+ * Create a configured iframe element
+ * @param {string} id - Element identifier
+ * @param {string} url - Source URL
+ * @returns {HTMLIFrameElement} - Configured iframe
  */
-export function createIframe(id, url = 'about:blank') {
+export function createIframe(id, url = "about:blank") {
   const config = {
     ...UI_CONFIG.iframe,
     id,
     attributes: {
       ...UI_CONFIG.iframe.attributes,
-      src: url
-    }
+      src: url,
+    },
   };
-  
-  return createElement('iframe', config);
+
+  return createElement("iframe", config);
 }
 
 /**
- * 创建关闭按钮
- * @param {string} action - 按钮动作
- * @returns {HTMLButtonElement} - 配置好的按钮元素
+ * Create the close button element
+ * @param {string} action - Command stored in data attributes
+ * @returns {HTMLButtonElement} - Button element
  */
 export function createCloseButton(action) {
-  const button = createElement('button', UI_CONFIG.closeButton);
+  const button = createElement("button", UI_CONFIG.closeButton);
   button.dataset.action = action;
-  button.innerText = '×';
+  button.innerText = "×";
   return button;
 }
 
 /**
- * 清理DOM元素
- * @param {string} selector - 元素选择器
+ * Remove an element from the DOM if it exists
+ * @param {string} selector - CSS selector
  */
 export function cleanupElement(selector) {
   const element = safeQuerySelector(selector);
   if (element) {
     element.remove();
   }
-} 
+}

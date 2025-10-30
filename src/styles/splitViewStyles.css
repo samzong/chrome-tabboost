@@ -71,12 +71,19 @@
   margin-right: 10px;
   border-radius: 8px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    width 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   /* 使用硬件加速，减少重绘 */
   transform: translateZ(0);
   will-change: width, height;
   background-color: #fff;
   z-index: 2;
+}
+
+/* 当左侧视图包含原始内容时，确保背景透明，让原始页面背景显示 */
+#tabboost-split-left[data-has-original-content="true"] {
+  background-color: transparent;
 }
 
 /* 右侧视图样式 */
@@ -89,7 +96,9 @@
   margin-left: 10px;
   border-radius: 8px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    width 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   /* 使用硬件加速，减少重绘 */
   transform: translateZ(0);
   will-change: width, height;
@@ -108,7 +117,7 @@
   height: 40px;
   background-color: #e0e0e0;
   border-radius: 4px;
-  transition: 
+  transition:
     background-color 0.2s,
     height 0.2s,
     width 0.2s;
@@ -141,6 +150,41 @@
 /* 自定义iframe内部内容的边距 */
 .tabboost-iframe-content {
   padding: 16px;
+}
+
+/* 原始内容根容器样式 - 确保正确的布局和隔离 */
+#tabboost-original-content-root {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  position: relative;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  display: block;
+  /* 确保内容正确显示，不受外部样式影响 */
+  isolation: isolate;
+  /* 保持滚动行为 */
+  overscroll-behavior: contain;
+  /* 确保背景透明，继承原始页面的背景 */
+  background-color: transparent;
+  /* 确保不覆盖原始页面的样式 */
+  color: inherit;
+}
+
+/* 确保原始内容在容器内正确显示 */
+#tabboost-original-content-root > * {
+  box-sizing: border-box;
+}
+
+/* 当左侧视图包含原始内容时，确保背景透明 */
+#tabboost-split-left:has(#tabboost-original-content-root) {
+  background-color: transparent;
+}
+
+/* 兼容性：如果浏览器不支持 :has，使用属性选择器 */
+#tabboost-split-left[data-has-original-content="true"] {
+  background-color: transparent;
 }
 
 /* iframe错误提示样式 */
@@ -392,7 +436,7 @@
   #tabboost-split-divider::after {
     background-color: #4b5563;
   }
-  
+
   #tabboost-split-divider:hover::after,
   .tabboost-dragging #tabboost-split-divider::after {
     background-color: #3b82f6;
@@ -491,14 +535,16 @@
 }
 
 /* 上下布局的样式调整 */
-#tabboost-views-container[data-split-direction="vertical"] #tabboost-split-left {
+#tabboost-views-container[data-split-direction="vertical"]
+  #tabboost-split-left {
   width: 100%;
   height: 50%;
   margin-right: 0;
   margin-bottom: 10px;
 }
 
-#tabboost-views-container[data-split-direction="vertical"] #tabboost-split-right {
+#tabboost-views-container[data-split-direction="vertical"]
+  #tabboost-split-right {
   width: 100%;
   height: 50%;
   margin-left: 0;
@@ -591,25 +637,25 @@
   #tabboost-split-right {
     background-color: #1f2937;
   }
-  
+
   #tabboost-views-container[data-split-direction="horizontal"]::after,
   #tabboost-views-container[data-split-direction="vertical"]::after {
     background-color: #374151;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   }
-  
+
   #tabboost-views-container[data-split-direction="horizontal"]::before,
   #tabboost-views-container[data-split-direction="vertical"]::before {
     background-color: #6b7280;
   }
-  
+
   /* 深色模式下的悬停效果 */
   #tabboost-views-container:hover[data-split-direction="horizontal"]::after,
   #tabboost-views-container:hover[data-split-direction="vertical"]::after {
     background-color: #4b5563;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
   }
-  
+
   #tabboost-views-container:hover[data-split-direction="horizontal"]::before,
   #tabboost-views-container:hover[data-split-direction="vertical"]::before {
     background-color: #9ca3af;

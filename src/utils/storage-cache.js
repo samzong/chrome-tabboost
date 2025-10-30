@@ -63,7 +63,11 @@ class StorageCache {
   }
 
   registerChangeListener() {
-    if (typeof chrome === "undefined" || !chrome.storage || !chrome.storage.onChanged) {
+    if (
+      typeof chrome === "undefined" ||
+      !chrome.storage ||
+      !chrome.storage.onChanged
+    ) {
       return;
     }
 

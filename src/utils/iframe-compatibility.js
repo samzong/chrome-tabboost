@@ -18,7 +18,7 @@ function isExcludedFileType(url) {
   try {
     const urlObj = new URL(url);
     const path = urlObj.pathname.toLowerCase();
-    return EXCLUDED_EXTENSIONS.some(ext => path.endsWith(ext));
+    return EXCLUDED_EXTENSIONS.some((ext) => path.endsWith(ext));
   } catch (e) {
     return false;
   }
@@ -36,23 +36,22 @@ async function updateUserConfigCache() {
       });
 
       userConfigCache = {
-        headerModificationEnabled: result.headerModificationEnabled !== undefined ? 
-          result.headerModificationEnabled : true,
+        headerModificationEnabled:
+          result.headerModificationEnabled !== undefined
+            ? result.headerModificationEnabled
+            : true,
         lastUpdated: now,
       };
     }
   } catch (error) {
-    console.error(
-      "iframe compatibility: 更新用户配置缓存失败:",
-      error
-    );
+    console.error("iframe compatibility: 更新用户配置缓存失败:", error);
   }
 }
 
 /**
  * 统一的iframe加载检查函数
  * 检查URL是否可以在iframe中加载（用于popup和splitView）
- * 
+ *
  * @param {string} url - 要检查的URL
  * @param {Object} options - 选项
  * @param {boolean} options.isPopup - 是否为弹窗模式（而非分屏模式）
@@ -82,7 +81,7 @@ export async function canLoadInIframe(url, options = {}) {
     if (options.isPopup) {
       return userConfigCache.headerModificationEnabled;
     }
-    
+
     // 由于使用declarativeNetRequest处理响应头
     // 可以假设URL是可加载的，只要它不是禁止的文件类型
     return true;
