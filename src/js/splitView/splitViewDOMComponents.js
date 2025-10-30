@@ -1,6 +1,7 @@
 import { UI_CONFIG, LAYOUT_CONFIG, SVG_CONFIG } from './splitViewConfig.js';
 import { createElement } from './splitViewDOMUtils.js';
 import { safeAddEventListener } from './splitViewUtils.js';
+import { addSplitViewEventListener } from "./splitViewEventTracker.js";
 import * as i18n from "../../utils/i18n.js";
 
 /**
@@ -285,11 +286,13 @@ export function createRatioMenu(settingsButton, viewSide) {
   });
 
   
-  safeAddEventListener(document, 'click', (e) => {
-    if (!settingsButton.contains(e.target) && !menu.contains(e.target)) {
+  const handleOutsideClick = (event) => {
+    if (!settingsButton.contains(event.target) && !menu.contains(event.target)) {
       menu.style.display = 'none';
     }
-  });
+  };
+
+  addSplitViewEventListener(document, "click", handleOutsideClick);
 
   return menu;
 }
