@@ -1,5 +1,9 @@
 import storageCache from "../../utils/storage-cache.js";
 import * as i18n from "../../utils/i18n.js";
+import {
+  addSplitViewEventListener,
+  clearSplitViewEventListeners,
+} from "./splitViewEventTracker.js";
 
 let isDragging = false;
 let startX = 0;
@@ -13,11 +17,13 @@ export function setupSplitViewEvents() {
   }
 
   listenersBound = true;
-  document.addEventListener("click", handleSplitViewClick, true);
-  document.addEventListener("mousemove", onDrag);
-  document.addEventListener("mouseup", stopDrag);
-  document.addEventListener("touchmove", onDragTouch, { passive: false });
-  document.addEventListener("touchend", stopDrag);
+  addSplitViewEventListener(document, "click", handleSplitViewClick, true);
+  addSplitViewEventListener(document, "mousemove", onDrag);
+  addSplitViewEventListener(document, "mouseup", stopDrag);
+  addSplitViewEventListener(document, "touchmove", onDragTouch, {
+    passive: false,
+  });
+  addSplitViewEventListener(document, "touchend", stopDrag);
 
   bindDividerListeners();
 }
@@ -28,8 +34,10 @@ function bindDividerListeners() {
     return;
   }
 
-  divider.addEventListener("mousedown", startDrag);
-  divider.addEventListener("touchstart", startDragTouch, { passive: false });
+  addSplitViewEventListener(divider, "mousedown", startDrag);
+  addSplitViewEventListener(divider, "touchstart", startDragTouch, {
+    passive: false,
+  });
 }
 
 function setupDividerDrag() {
@@ -186,16 +194,7 @@ export function cleanupSplitViewEvents() {
   }
 
   listenersBound = false;
-  document.removeEventListener("click", handleSplitViewClick, true);
-
-  const divider = document.getElementById("tabboost-split-divider");
-  if (divider) {
-    divider.removeEventListener("mousedown", startDrag);
-    divider.removeEventListener("touchstart", startDragTouch);
-  }
-
-  document.removeEventListener("mousemove", onDrag);
-  document.removeEventListener("mouseup", stopDrag);
-  document.removeEventListener("touchmove", onDragTouch);
-  document.removeEventListener("touchend", stopDrag);
+  isDragging = false;
+  document.body.classList.remove("tabboost-dragging");
+  clearSplitViewEventListeners();
 }
