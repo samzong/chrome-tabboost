@@ -40,10 +40,6 @@ function bindDividerListeners() {
   });
 }
 
-function setupDividerDrag() {
-  
-}
-
 function startDrag(e) {
   isDragging = true;
   startX = e.clientX;
@@ -116,11 +112,14 @@ function updateSplitPosition(clientX, clientY) {
 
     leftView.style.width = "var(--left-width)";
     rightView.style.width = "var(--right-width)";
-    
+
     if (divider) {
       divider.style.left = `${newLeftWidth}%`;
-      if (!divider.style.transform || !divider.style.transform.includes('translateX')) {
-        divider.style.transform = 'translateX(-50%)';
+      if (
+        !divider.style.transform ||
+        !divider.style.transform.includes("translateX")
+      ) {
+        divider.style.transform = "translateX(-50%)";
       }
     }
   } else {
@@ -137,11 +136,14 @@ function updateSplitPosition(clientX, clientY) {
 
     leftView.style.height = "var(--top-height)";
     rightView.style.height = "var(--bottom-height)";
-    
+
     if (divider) {
       divider.style.top = `${newTopHeight}%`;
-      if (!divider.style.transform || !divider.style.transform.includes('translateY')) {
-        divider.style.transform = 'translateY(-50%)';
+      if (
+        !divider.style.transform ||
+        !divider.style.transform.includes("translateY")
+      ) {
+        divider.style.transform = "translateY(-50%)";
       }
     }
   }
@@ -173,7 +175,9 @@ function stopDrag() {
 function handleSplitViewClick(event) {
   const target = event.target;
 
-  if (target.closest('#tabboost-split-close, [data-action="close-split-view"]')) {
+  if (
+    target.closest('#tabboost-split-close, [data-action="close-split-view"]')
+  ) {
     chrome.runtime.sendMessage({ action: "closeSplitView" });
     return;
   }

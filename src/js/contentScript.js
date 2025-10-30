@@ -1,12 +1,120 @@
-import storageCache from "../utils/storage-cache.js";
+import { fetchSharedSyncValues } from "../utils/sharedStorageClient.js";
 import { validateUrl } from "../utils/utils.js";
 import { canLoadInIframe } from "../utils/iframe-compatibility.js";
 import { getMessage } from "../utils/i18n.js";
 import { createEventListenerTracker } from "../utils/eventListenerTracker.js";
-import splitViewController from "./splitView/splitViewController.js";
+import {
+  LOAD_EXTENSION_SCRIPT_ACTION,
+} from "../utils/messageChannels.js";
+
+/* global __webpack_public_path__ */
+
+const extensionAssetBaseUrl =
+  typeof chrome !== "undefined" &&
+  chrome.runtime &&
+  typeof chrome.runtime.getURL === "function"
+    ? chrome.runtime.getURL("")
+    : "";
+
+if (extensionAssetBaseUrl) {
+  try {
+    // Ensure dynamic imports load from the extension package when injected as a content script
+    // eslint-disable-next-line no-undef
+    __webpack_public_path__ = extensionAssetBaseUrl;
+  } catch (error) {
+    // Ignore webpack public path configuration errors
+  }
+}
+
+function getExtensionAssetUrl(relativePath) {
+  if (typeof chrome === "undefined" || !chrome.runtime?.getURL) {
+    return relativePath;
+  }
+
+  if (relativePath.startsWith("chrome-extension://")) {
+    return relativePath;
+  }
+
+  return chrome.runtime.getURL(relativePath.replace(/^\//, ""));
+}
+
+function sendChunkInjectionRequest(url, chunkId) {
+  return new Promise((resolve, reject) => {
+    chrome.runtime.sendMessage(
+      {
+        action: LOAD_EXTENSION_SCRIPT_ACTION,
+        payload: {
+          url,
+          chunkId,
+        },
+      },
+      (response) => {
+        const lastError = chrome.runtime && chrome.runtime.lastError;
+        if (lastError) {
+          reject(lastError);
+          return;
+        }
+
+        if (response && response.success) {
+          resolve();
+        } else {
+          const errorMessage =
+            (response && response.error) || "Unknown chunk injection failure";
+          reject(new Error(errorMessage));
+        }
+      }
+    );
+  });
+}
+
+if (typeof __webpack_require__ === "function") {
+  // Custom webpack chunk loader: In Chrome extension content scripts, standard webpack chunk loading
+  // does not work due to extension security policies and CSP restrictions. Chunks must be loaded
+  // via the background script, which has access to extension resources. This override ensures
+  // dynamic imports function correctly in content scripts.
+  __webpack_require__.l = function loadChunkViaBackground(url, done, key, chunkId) {
+    const resolvedUrl = getExtensionAssetUrl(url);
+
+    sendChunkInjectionRequest(resolvedUrl, chunkId)
+      .then(() => {
+        done();
+      })
+      .catch((error) => {
+        done(error);
+      });
+  };
+}
 
 const POPUP_IFRAME_TIMEOUT_MS = 5000;
-const CAPTURE_PHASE_HOST_WHITELIST = ["feishu.cn","larksuite.com"];
+const CAPTURE_PHASE_HOST_WHITELIST = ["feishu.cn", "larksuite.com"];
+
+let splitViewControllerModule;
+let splitViewControllerImportPromise;
+
+function resolveSplitViewControllerModule(module) {
+  splitViewControllerModule = module && module.default ? module.default : module;
+  return splitViewControllerModule;
+}
+
+
+async function getSplitViewController() {
+  if (splitViewControllerModule) {
+    return splitViewControllerModule;
+  }
+
+  if (!splitViewControllerImportPromise) {
+    splitViewControllerImportPromise = import(
+      /* webpackChunkName: "split-view-controller" */ "./splitView/splitViewController.js"
+    )
+      .then(resolveSplitViewControllerModule)
+      .catch((error) => {
+        splitViewControllerImportPromise = null;
+        throw error;
+      });
+  }
+
+  return splitViewControllerImportPromise;
+}
 
 const shouldUseCapturePhase = (() => {
   try {
@@ -15,30 +123,21 @@ const shouldUseCapturePhase = (() => {
       (domain) => hostname === domain || hostname.endsWith(`.${domain}`)
     );
   } catch (error) {
-    console.error("chrome-tabboost: Failed to resolve hostname for capture phase:", error);
+    console.error(
+      "chrome-tabboost: Failed to resolve hostname for capture phase:",
+      error
+    );
     return false;
   }
 })();
 
-const initStorageCache = async () => {
-  try {
-    await storageCache.init();
-  } catch (error) {
-    console.error(
-      "chrome-tabboost: Failed to initialize storage cache:",
-      error
-    );
-  }
-};
-
-initStorageCache();
-
 let shouldInterceptSave = true;
 let popupShortcutMode = "default";
 
-chrome.storage && chrome.storage.local.get({ popupShortcut: "default" }, (result) => {
-  popupShortcutMode = result.popupShortcut || "default";
-});
+chrome.storage &&
+  chrome.storage.local.get({ popupShortcut: "default" }, (result) => {
+    popupShortcutMode = result.popupShortcut || "default";
+  });
 
 document.addEventListener(
   "keydown",
@@ -75,7 +174,7 @@ function createElementWithAttributes(tag, attributes = {}) {
 }
 
 function appendChildren(parent, children) {
-  children.forEach(child => {
+  children.forEach((child) => {
     if (child) parent.appendChild(child);
   });
   return parent;
@@ -84,7 +183,7 @@ function appendChildren(parent, children) {
 function createNotificationElement(id, className) {
   return createElementWithAttributes("div", {
     id,
-    className
+    className,
   });
 }
 
@@ -109,7 +208,7 @@ function createButton(text, className, attributes = {}) {
   return createElementWithAttributes("button", {
     textContent: text,
     className,
-    ...attributes
+    ...attributes,
   });
 }
 
@@ -118,10 +217,15 @@ function showSaveNotification() {
     return;
   }
 
-  const notification = createNotificationElement("tabboost-save-notification", "tabboost-notification");
+  const notification = createNotificationElement(
+    "tabboost-save-notification",
+    "tabboost-notification"
+  );
 
   const message = createElementWithAttributes("span", {
-    textContent: getMessage("savePageConfirmation") || "Are you sure you want to save this page?"
+    textContent:
+      getMessage("savePageConfirmation") ||
+      "Are you sure you want to save this page?",
   });
 
   const saveButton = createButton(
@@ -270,7 +374,10 @@ document.addEventListener(
         },
         function (response) {
           if (response && response.status === "error") {
-            const notification = createNotificationElement("", "tabboost-notification");
+            const notification = createNotificationElement(
+              "",
+              "tabboost-notification"
+            );
             notification.textContent =
               getMessage("splitViewFailure") ||
               "Split view loading failed, trying to open in new tab...";
@@ -291,8 +398,13 @@ document.addEventListener(
     }
 
     if (
-      (popupShortcutMode === "default" && (event.metaKey || event.ctrlKey) && !event.shiftKey) ||
-      (popupShortcutMode === "shift" && event.shiftKey && !event.metaKey && !event.ctrlKey)
+      (popupShortcutMode === "default" &&
+        (event.metaKey || event.ctrlKey) &&
+        !event.shiftKey) ||
+      (popupShortcutMode === "shift" &&
+        event.shiftKey &&
+        !event.metaKey &&
+        !event.ctrlKey)
     ) {
       event.preventDefault();
       event.stopPropagation();
@@ -336,20 +448,18 @@ async function createPopup(url) {
 }
 
 async function getPreviewSettings() {
+  const defaults = {
+    popupSizePreset: "default",
+    customWidth: 80,
+    customHeight: 80,
+  };
+
   try {
-    const settings = await storageCache.get({
-      popupSizePreset: "default",
-      customWidth: 80,
-      customHeight: 80,
-    });
-    return settings;
+    const settings = await fetchSharedSyncValues(defaults);
+    return { ...defaults, ...settings };
   } catch (error) {
     console.error("chrome-tabboost: Failed to get preview settings:", error);
-    return {
-      popupSizePreset: "default",
-      customWidth: 80,
-      customHeight: 80,
-    };
+    return defaults;
   }
 }
 
@@ -360,43 +470,51 @@ function createToolbarElements() {
   const copyUrlText = getMessage("copyUrl") || "Copy URL";
   const closeText = getMessage("close") || "Close";
 
-  const toolbar = createElementWithAttributes("div", { id: "tabboost-popup-toolbar" });
+  const toolbar = createElementWithAttributes("div", {
+    id: "tabboost-popup-toolbar",
+  });
   const titleSpan = createElementWithAttributes("span", {
     id: "tabboost-popup-title",
-    textContent: loadingText
+    textContent: loadingText,
   });
-  const buttonsDiv = createElementWithAttributes("div", { id: "tabboost-popup-buttons" });
+  const buttonsDiv = createElementWithAttributes("div", {
+    id: "tabboost-popup-buttons",
+  });
 
   const copyUrlButton = createElementWithAttributes("button", {
     className: "tabboost-button tabboost-copyurl-button",
     title: copyUrlText,
     "aria-label": copyUrlText,
-    textContent: copyUrlText
+    textContent: copyUrlText,
   });
 
   const refreshButton = createElementWithAttributes("button", {
     className: "tabboost-button tabboost-refresh-button",
     title: refreshText,
     "aria-label": refreshText,
-    textContent: refreshText
+    textContent: refreshText,
   });
 
   const newTabButton = createElementWithAttributes("button", {
     className: "tabboost-button tabboost-newtab-button",
     title: openInNewTabText,
     "aria-label": openInNewTabText,
-    textContent: openInNewTabText
+    textContent: openInNewTabText,
   });
-
 
   const closeButton = createElementWithAttributes("button", {
     className: "tabboost-button tabboost-close-button",
     title: closeText,
     "aria-label": closeText,
-    innerHTML: "&times;"
+    innerHTML: "&times;",
   });
 
-  appendChildren(buttonsDiv, [copyUrlButton, refreshButton, newTabButton, closeButton]);
+  appendChildren(buttonsDiv, [
+    copyUrlButton,
+    refreshButton,
+    newTabButton,
+    closeButton,
+  ]);
   appendChildren(toolbar, [titleSpan, buttonsDiv]);
 
   return { toolbar, titleSpan };
@@ -405,7 +523,8 @@ function createToolbarElements() {
 function createErrorMsgElement() {
   const openInNewTabText = getMessage("openInNewTab") || "Open in new tab";
   const retryText = getMessage("retryLoading") || "Retry loading";
-  const cannotLoadText = getMessage("cannotLoadInPopup") || "Cannot load this website in popup.";
+  const cannotLoadText =
+    getMessage("cannotLoadInPopup") || "Cannot load this website in popup.";
 
   return createElementWithAttributes("div", {
     id: "tabboost-popup-error",
@@ -413,7 +532,7 @@ function createErrorMsgElement() {
       <p>${cannotLoadText}</p>
       <button id="tabboost-open-newtab">${openInNewTabText}</button>
       <button id="tabboost-retry-error">${retryText}</button>
-    `
+    `,
   });
 }
 
@@ -423,11 +542,11 @@ function createPopupDOMElements(url, settings) {
   const popupOverlay = createElementWithAttributes("div", {
     id: "tabboost-popup-overlay",
     role: "dialog",
-    "aria-modal": "true"
+    "aria-modal": "true",
   });
 
   const popupContent = createElementWithAttributes("div", {
-    id: "tabboost-popup-content"
+    id: "tabboost-popup-content",
   });
 
   if (settings.popupSizePreset === "large") {
@@ -442,7 +561,7 @@ function createPopupDOMElements(url, settings) {
   const errorMsg = createErrorMsgElement();
 
   const iframe = createElementWithAttributes("iframe", {
-    id: "tabboost-popup-iframe"
+    id: "tabboost-popup-iframe",
   });
 
   if ("loading" in HTMLIFrameElement.prototype) {
@@ -450,7 +569,7 @@ function createPopupDOMElements(url, settings) {
   }
 
   const iframeWrapper = createElementWithAttributes("div", {
-    id: "tabboost-iframe-wrapper"
+    id: "tabboost-iframe-wrapper",
   });
 
   appendChildren(iframeWrapper, [iframe, errorMsg]);
@@ -482,7 +601,8 @@ function evaluateIframeLoad(iframe) {
   }
 
   try {
-    const contentType = iframe.contentDocument && iframe.contentDocument.contentType;
+    const contentType =
+      iframe.contentDocument && iframe.contentDocument.contentType;
     if (contentType && !contentType.includes("text/html")) {
       return { status: "non_html", contentType };
     }
@@ -572,7 +692,8 @@ async function createPopupDOM(url) {
         const messageElement = errorMsg.querySelector("p");
         if (messageElement) {
           messageElement.textContent =
-            getMessage("cannotLoadInPopup") || "Cannot load this website in popup.";
+            getMessage("cannotLoadInPopup") ||
+            "Cannot load this website in popup.";
         }
       }
       if (titleSpan) {
@@ -608,7 +729,10 @@ async function createPopupDOM(url) {
 
       console.error("chrome-tabboost: Popup load failure:", error.message);
 
-      const isTimeout = error && error.message && error.message.toLowerCase().includes("timeout");
+      const isTimeout =
+        error &&
+        error.message &&
+        error.message.toLowerCase().includes("timeout");
 
       if (isTimeout) {
         const lateLoadHandler = async () => {
@@ -625,7 +749,9 @@ async function createPopupDOM(url) {
           await handleSuccessfulLoad(outcome);
         };
 
-        addTrackedEventListener(iframe, "load", lateLoadHandler, { once: true });
+        addTrackedEventListener(iframe, "load", lateLoadHandler, {
+          once: true,
+        });
       }
 
       if (errorMsg) {
@@ -653,10 +779,10 @@ async function createPopupDOM(url) {
       }
 
       if (loadResult.status === "non_html") {
-        console.log('TabBoost: Non-HTML content detected (' + loadResult.contentType + ').');
         await handleLoadFailure(
           new Error(
-            getMessage("cannotLoadInPopup") || "Cannot load this website in popup."
+            getMessage("cannotLoadInPopup") ||
+              "Cannot load this website in popup."
           )
         );
         return;
@@ -684,7 +810,11 @@ async function createPopupDOM(url) {
       resetBeforeLoad();
 
       try {
-        const loadPromise = loadWithTimeout(iframe, url, POPUP_IFRAME_TIMEOUT_MS);
+        const loadPromise = loadWithTimeout(
+          iframe,
+          url,
+          POPUP_IFRAME_TIMEOUT_MS
+        );
         iframe.src = url;
         const loadResult = await loadPromise;
 
@@ -736,9 +866,6 @@ async function createPopupDOM(url) {
               );
             }
           } catch (e) {
-            console.log(
-              "TabBoost: Unable to directly access iframe content, using alternative close method"
-            );
 
             try {
               if (iframe.contentWindow) {
@@ -792,9 +919,13 @@ async function createPopupDOM(url) {
     handleIframeEsc();
 
     const addButtonListeners = () => {
-      const newTabButton = popupOverlay.querySelector(".tabboost-newtab-button");
+      const newTabButton = popupOverlay.querySelector(
+        ".tabboost-newtab-button"
+      );
       const closeButton = popupOverlay.querySelector(".tabboost-close-button");
-      const copyUrlButton = popupOverlay.querySelector(".tabboost-copyurl-button");
+      const copyUrlButton = popupOverlay.querySelector(
+        ".tabboost-copyurl-button"
+      );
 
       if (newTabButton) {
         addTrackedEventListener(newTabButton, "click", () => {
@@ -809,31 +940,36 @@ async function createPopupDOM(url) {
 
       if (copyUrlButton) {
         addTrackedEventListener(copyUrlButton, "click", () => {
-          navigator.clipboard.writeText(url)
+          navigator.clipboard
+            .writeText(url)
             .then(() => {
-              chrome.runtime.sendMessage({ 
-                action: "showNotification", 
-                message: getMessage("urlCopied") || "URL copied successfully!"
+              chrome.runtime.sendMessage({
+                action: "showNotification",
+                message: getMessage("urlCopied") || "URL copied successfully!",
               });
             })
             .catch((error) => {
               console.error("chrome-tabboost: Error copying URL:", error);
-              chrome.runtime.sendMessage({ 
-                action: "showNotification", 
-                message: getMessage("urlCopyFailed") || "Failed to copy URL!"
+              chrome.runtime.sendMessage({
+                action: "showNotification",
+                message: getMessage("urlCopyFailed") || "Failed to copy URL!",
               });
             });
         });
       }
 
-      const refreshButton = popupOverlay.querySelector(".tabboost-refresh-button");
+      const refreshButton = popupOverlay.querySelector(
+        ".tabboost-refresh-button"
+      );
       if (refreshButton) {
         addTrackedEventListener(refreshButton, "click", () => {
           loadIframeContent();
         });
       }
 
-      const errorOpenTabButton = errorMsg.querySelector("#tabboost-open-newtab");
+      const errorOpenTabButton = errorMsg.querySelector(
+        "#tabboost-open-newtab"
+      );
       if (errorOpenTabButton) {
         addTrackedEventListener(errorOpenTabButton, "click", () => {
           window.open(url, "_blank");
@@ -879,33 +1015,46 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   return true;
 });
 
-function handleSplitViewMessage(request, sendResponse) {
+async function handleSplitViewMessage(request, sendResponse) {
   const { command, payload = {} } = request;
 
   try {
+    let result;
+
     switch (command) {
       case "init": {
-        const result = splitViewController.ensureActive(payload.leftUrl || window.location.href);
-        sendResponse(result);
+        const controller = await getSplitViewController();
+        result = controller.ensureActive(
+          payload.leftUrl || window.location.href
+        );
         break;
       }
       case "teardown": {
-        const result = splitViewController.teardown();
-        sendResponse(result);
+        const controller = await getSplitViewController();
+        result = controller.teardown();
         break;
       }
       case "updateRight": {
-        const result = splitViewController.updateRightView(payload.url, payload.leftUrl || window.location.href);
-        sendResponse(result);
+        const controller = await getSplitViewController();
+        result = controller.updateRightView(
+          payload.url,
+          payload.leftUrl || window.location.href
+        );
         break;
       }
       case "status": {
-        sendResponse({ success: true, status: splitViewController.getStatus() });
+        const controller = await getSplitViewController();
+        result = {
+          success: true,
+          status: controller.getStatus(),
+        };
         break;
       }
       default:
-        sendResponse({ success: false, error: "unknown-command" });
+        result = { success: false, error: "unknown-command" };
     }
+
+    sendResponse(result);
   } catch (error) {
     console.error("chrome-tabboost: split view controller error:", error);
     sendResponse({ success: false, error: error.message });

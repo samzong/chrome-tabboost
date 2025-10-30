@@ -1,4 +1,8 @@
-import { getCurrentTab, validateUrl, showNotification } from "../utils/utils.js";
+import {
+  getCurrentTab,
+  validateUrl,
+  showNotification,
+} from "../utils/utils.js";
 import {
   createSplitView,
   closeSplitView,
@@ -7,9 +11,13 @@ import {
   querySplitViewStatus,
 } from "./splitView.js";
 import storageCache from "../utils/storage-cache.js";
+import { STORAGE_MESSAGE_ACTION, LOAD_EXTENSION_SCRIPT_ACTION } from "../utils/messageChannels.js";
 import { getMessage } from "../utils/i18n.js";
 import { canLoadInIframe } from "../utils/iframe-compatibility.js";
-import { toggleMuteCurrentTab, toggleMuteAllAudioTabs } from "../utils/tab-audio.js";
+import {
+  toggleMuteCurrentTab,
+  toggleMuteAllAudioTabs,
+} from "../utils/tab-audio.js";
 
 let currentTabCache = {
   tab: null,
@@ -22,7 +30,7 @@ const TAB_CACHE_TTL = 1000;
 
 const RULE_SETS = {
   POPUP_BYPASS: "popup_bypass_rules",
-  CSP_BYPASS: "csp_bypass_rules"
+  CSP_BYPASS: "csp_bypass_rules",
 };
 
 /**
@@ -32,10 +40,13 @@ const RULE_SETS = {
 async function updateHeaderModificationRules(enabled) {
   try {
     await chrome.declarativeNetRequest.updateEnabledRulesets({
-      enableRulesetIds: enabled ? [RULE_SETS.POPUP_BYPASS, RULE_SETS.CSP_BYPASS] : [],
-      disableRulesetIds: enabled ? [] : [RULE_SETS.POPUP_BYPASS, RULE_SETS.CSP_BYPASS]
+      enableRulesetIds: enabled
+        ? [RULE_SETS.POPUP_BYPASS, RULE_SETS.CSP_BYPASS]
+        : [],
+      disableRulesetIds: enabled
+        ? []
+        : [RULE_SETS.POPUP_BYPASS, RULE_SETS.CSP_BYPASS],
     });
-    
   } catch (error) {
     console.error("TabBoost: Failed to update rule status:", error);
   }
@@ -74,15 +85,18 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
   }
 });
 
-storageCache.init().then(async () => {
-  const { headerModificationEnabled } = await storageCache.get({
-    headerModificationEnabled: true
+storageCache
+  .init()
+  .then(async () => {
+    const { headerModificationEnabled } = await storageCache.get({
+      headerModificationEnabled: true,
+    });
+
+    await updateHeaderModificationRules(headerModificationEnabled);
+  })
+  .catch((error) => {
+    console.error(getMessage("storageInitError"), error);
   });
-  
-  await updateHeaderModificationRules(headerModificationEnabled);
-}).catch((error) => {
-  console.error(getMessage("storageInitError"), error);
-});
 
 chrome.storage.onChanged.addListener((changes, areaName) => {
   if (areaName === "sync" && changes.headerModificationEnabled) {
@@ -137,11 +151,11 @@ function duplicateTab(tab) {
   if (isDuplicatingTab) {
     return;
   }
-  
+
   try {
     isDuplicatingTab = true;
-    
-    chrome.tabs.duplicate(tab.id, () => {      
+
+    chrome.tabs.duplicate(tab.id, () => {
       setTimeout(() => {
         isDuplicatingTab = false;
       }, 500);
@@ -168,9 +182,7 @@ chrome.commands.onCommand.addListener(async (command) => {
   } else if (command === "toggle-mute-current-tab") {
     const result = await toggleMuteCurrentTab();
     if (result.success) {
-      showNotification(
-        getMessage(result.muted ? "tabMuted" : "tabUnmuted")
-      );
+      showNotification(getMessage(result.muted ? "tabMuted" : "tabUnmuted"));
     }
   } else if (command === "toggle-mute-all-audio-tabs") {
     const result = await toggleMuteAllAudioTabs();
@@ -186,7 +198,94 @@ chrome.commands.onCommand.addListener(async (command) => {
   }
 });
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((request = {}, sender, sendResponse) => {
+  if (request.action === STORAGE_MESSAGE_ACTION) {
+    const payload = request.payload || {};
+    const queryArg =
+      payload.defaults !== undefined
+        ? payload.defaults
+        : payload.keys !== undefined
+          ? payload.keys
+          : undefined;
+
+    if (queryArg === undefined) {
+      sendResponse({ success: true, data: {} });
+      return false;
+    }
+
+    storageCache
+      .get(queryArg)
+      .then((data) => {
+        sendResponse({ success: true, data });
+      })
+      .catch((error) => {
+        console.error(
+          "TabBoost: Failed to resolve shared storage request",
+          error
+        );
+        sendResponse({
+          success: false,
+          error: error.message || "Unknown error",
+        });
+      });
+
+    return true;
+  }
+
+  if (request.action === LOAD_EXTENSION_SCRIPT_ACTION) {
+    const payload = request.payload || {};
+    const url = payload.url;
+    const chunkId = payload.chunkId;
+
+    if (!url) {
+      sendResponse({ success: false, error: "Missing chunk URL" });
+      return false;
+    }
+
+    if (!sender.tab || typeof sender.tab.id !== "number") {
+      sendResponse({ success: false, error: "Missing tab context for chunk injection" });
+      return false;
+    }
+
+    let relativePath;
+
+    try {
+      const parsedUrl = new URL(url);
+      relativePath = parsedUrl.pathname.replace(/^\//, "");
+    } catch (error) {
+      relativePath = url;
+    }
+
+    const target = {
+      tabId: sender.tab.id,
+    };
+
+    if (typeof sender.frameId === "number") {
+      target.frameIds = [sender.frameId];
+    }
+
+    chrome.scripting
+      .executeScript({
+        target,
+        files: [relativePath],
+        world: "ISOLATED",
+        injectImmediately: true,
+      })
+      .then(() => {
+        sendResponse({ success: true });
+      })
+      .catch((error) => {
+        console.error("TabBoost: Failed to inject chunk", {
+          chunkId,
+          relativePath,
+          error,
+        });
+        sendResponse({ success: false, error: error.message || "Injection failed" });
+      });
+
+    return true;
+  }
+
   if (request.action === "openOptionsPage") {
     chrome.runtime.openOptionsPage(() => {
       if (request.section) {
@@ -207,7 +306,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 
   if (request.action === "duplicateCurrentTab") {
-    getCurrentTab().then(tab => {
+    getCurrentTab().then((tab) => {
       if (tab) {
         duplicateTab(tab);
       }
@@ -216,9 +315,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 
   if (request.action === "copyCurrentTabUrl") {
-    getCurrentTab().then(tab => {
+    getCurrentTab().then((tab) => {
       if (tab && tab.url) {
-        copyTabUrl(tab).then(success => {
+        copyTabUrl(tab).then((success) => {
           if (!success) {
             console.error("Failed to copy URL");
           }
@@ -229,11 +328,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 
   if (request.action === "toggleMuteCurrentTab") {
-    toggleMuteCurrentTab().then(result => {
+    toggleMuteCurrentTab().then((result) => {
       if (result.success) {
-        showNotification(
-          getMessage(result.muted ? "tabMuted" : "tabUnmuted")
-        );
+        showNotification(getMessage(result.muted ? "tabMuted" : "tabUnmuted"));
         sendResponse({ success: true, muted: result.muted });
       } else {
         sendResponse({ success: false });
@@ -241,9 +338,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     });
     return true;
   }
-  
+
   if (request.action === "toggleMuteAllAudioTabs") {
-    toggleMuteAllAudioTabs().then(result => {
+    toggleMuteAllAudioTabs().then((result) => {
       if (result.success) {
         if (result.count === 0) {
           showNotification(getMessage("noAudioTabs"));
@@ -252,7 +349,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             getMessage(result.muted ? "allTabsMuted" : "allTabsUnmuted")
           );
         }
-        sendResponse({ success: true, muted: result.muted, count: result.count });
+        sendResponse({
+          success: true,
+          muted: result.muted,
+          count: result.count,
+        });
       } else {
         sendResponse({ success: false });
       }

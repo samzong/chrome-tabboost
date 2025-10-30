@@ -1,11 +1,18 @@
-import { initSplitViewDOM, removeSplitViewDOM, updateRightViewDOM } from "./splitViewDOM.js";
-import { setupSplitViewEvents, cleanupSplitViewEvents } from "./splitViewEvents.js";
+import {
+  initSplitViewDOM,
+  removeSplitViewDOM,
+  updateRightViewDOM,
+} from "./splitViewDOM.js";
+import {
+  setupSplitViewEvents,
+  cleanupSplitViewEvents,
+} from "./splitViewEvents.js";
 
 const state = {
   isActive: false,
   container: null,
   leftUrl: "",
-  rightUrl: ""
+  rightUrl: "",
 };
 
 function activate(leftUrl) {
@@ -74,7 +81,7 @@ export function getStatus() {
   return {
     isActive: state.isActive,
     leftUrl: state.leftUrl,
-    rightUrl: state.rightUrl
+    rightUrl: state.rightUrl,
   };
 }
 
@@ -82,5 +89,5 @@ export default {
   ensureActive,
   teardown,
   updateRightView,
-  getStatus
+  getStatus,
 };
