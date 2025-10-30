@@ -82,9 +82,6 @@
       },
       "description": "__MSG_copyUrl__"
     },
-    "toggle-split-view": {
-      "description": "__MSG_toggleSplitView__"
-    },
     "toggle-mute-current-tab": {
       "suggested_key": {
         "default": "Alt+M",
