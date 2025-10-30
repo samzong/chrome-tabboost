@@ -1,3 +1,11 @@
+## <small>2.5.3 (2025-10-30)</small>
+
+* chore(ci): switch from yarn to npm in GitHub workflows and update actions version (#66) ([aaf6761](https://github.com/samzong/chrome-tabboost/commit/aaf6761)), closes [#66](https://github.com/samzong/chrome-tabboost/issues/66)
+* chore(package): update node engine requirement to >=22 and clean dependencies ([9f3a748](https://github.com/samzong/chrome-tabboost/commit/9f3a748))
+* refactor(manifest): remove unused toggle-split-view description key (#65) ([2d5e599](https://github.com/samzong/chrome-tabboost/commit/2d5e599)), closes [#65](https://github.com/samzong/chrome-tabboost/issues/65)
+
+
+
 ## <small>2.5.2 (2025-10-30)</small>
 
 * chore(makefile): remove Makefile used for Chrome extension development environment setup ([bbd38ef](https://github.com/samzong/chrome-tabboost/commit/bbd38ef))
