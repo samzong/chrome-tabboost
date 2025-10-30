@@ -190,8 +190,8 @@ function setupIframeEvents(iframe, errorContainer, url) {
           frameDoc.head.appendChild(style);
         }
       } catch (e) {
-        // 如果无法访问 iframe 内容（例如跨域限制），这是正常的
-        // 在这种情况下，页面的原始样式会保留，可能需要在 CSS 层面处理
+        // If unable to access iframe content (e.g., cross-origin restrictions), this is expected
+        // In this case, the page's original styles are preserved; may need CSS-level handling
       }
     }
   });
