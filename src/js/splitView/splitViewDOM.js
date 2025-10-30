@@ -66,7 +66,7 @@ export function initSplitViewDOM(leftUrl) {
     leftContentRoot.setAttribute(ORIGINAL_ROOT_ATTR, "true");
 
     leftView.appendChild(leftContentRoot);
-    // 标记左侧视图包含原始内容，用于 CSS 样式选择
+    // Mark left view as containing original content for CSS styling
     leftView.setAttribute("data-has-original-content", "true");
     viewsContainer.appendChild(leftView);
     viewsContainer.appendChild(rightView);
