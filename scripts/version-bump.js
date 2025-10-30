@@ -12,6 +12,7 @@ const chalk = require('chalk');
 const CONFIG = {
   PACKAGE_PATH: path.join(__dirname, '../package.json'),
   MANIFEST_PATH: path.join(__dirname, '../manifest.json'),
+  PACKAGE_LOCK_PATH: path.join(__dirname, '../package-lock.json'),
   VERSION_TYPES: ['patch', 'minor', 'major', 'prepatch', 'preminor', 'premajor', 'prerelease']
 };
 
@@ -65,6 +66,21 @@ async function updateVersion(type) {
       console.log(chalk.green(`✅ Updated manifest.json version number`));
     }
 
+    if (fs.existsSync(CONFIG.PACKAGE_LOCK_PATH)) {
+      try {
+        const packageLockData = JSON.parse(fs.readFileSync(CONFIG.PACKAGE_LOCK_PATH, 'utf8'));
+        packageLockData.version = newVersion;
+        if (packageLockData.packages && packageLockData.packages['']) {
+          packageLockData.packages[''].version = newVersion;
+        }
+        fs.writeFileSync(CONFIG.PACKAGE_LOCK_PATH, JSON.stringify(packageLockData, null, 2) + '\n', 'utf8');
+        console.log(chalk.green(`✅ Updated package-lock.json version number`));
+      } catch (error) {
+        console.error(chalk.red(`❌ Failed to update package-lock.json: ${error.message}`));
+        throw error;
+      }
+    }
+
     try {
       // Check if inside a Git repository before attempting Git operations
       execSync('git rev-parse --is-inside-work-tree', { stdio: 'ignore' });
@@ -74,7 +90,7 @@ async function updateVersion(type) {
       console.log(chalk.green(`✅ Generated changelog`));
 
       // Stage changed files
-      runGitCommand(`git add package.json manifest.json CHANGELOG.md`, "Staged version changes");
+      runGitCommand(`git add package.json manifest.json package-lock.json CHANGELOG.md`, "Staged version changes");
 
       // Commit the changes
       runGitCommand(`git commit -m "chore(release): v${newVersion}"`, `Committed version v${newVersion}`);

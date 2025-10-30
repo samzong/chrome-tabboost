@@ -5,6 +5,7 @@ const manifestPath = path.join(buildDir, 'manifest.json');
 const WEB_EXT_IGNORED_ERROR_CODES = new Set([
   'MANIFEST_FIELD_UNSUPPORTED',
   'EXTENSION_ID_REQUIRED',
+  'ADDON_ID_REQUIRED',
 ]);
 
 let cachedWebExt;
