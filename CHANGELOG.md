@@ -1,3 +1,9 @@
+## 2.6.0 (2025-11-08)
+
+* feat(site-blocklist): add site-specific blocklist with UI and sync storage support ([2d3cf85](https://github.com/samzong/chrome-tabboost/commit/2d3cf85))
+
+
+
 ## <small>2.5.3 (2025-10-30)</small>
 
 * chore(ci): switch from yarn to npm in GitHub workflows and update actions version (#66) ([aaf6761](https://github.com/samzong/chrome-tabboost/commit/aaf6761)), closes [#66](https://github.com/samzong/chrome-tabboost/issues/66)
