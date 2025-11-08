@@ -478,5 +478,65 @@
   "retryLoading": {
     "message": "再読み込み",
     "description": "Button text to retry iframe loading."
+  },
+  "advancedSettings": {
+    "message": "詳細設定",
+    "description": "Advanced settings tab title"
+  },
+  "blocklistSectionTitle": {
+    "message": "ウェブサイトブロックリスト",
+    "description": "Title for website blocklist section"
+  },
+  "blocklistSectionDescription": {
+    "message": "特定のウェブサイトで TabBoost 機能を無効化",
+    "description": "Description for website blocklist section"
+  },
+  "blocklistAddPlaceholder": {
+    "message": "ドメインを入力（例：example.com, *.example.com）",
+    "description": "Placeholder for blocklist add input"
+  },
+  "blocklistAddButton": {
+    "message": "追加",
+    "description": "Button to add domain to blocklist"
+  },
+  "blocklistDeleteButton": {
+    "message": "削除",
+    "description": "Button to delete domain from blocklist"
+  },
+  "blocklistHelper": {
+    "message": "正確なドメイン、ワイルドカード（*.example.com）、サブドメインをサポート",
+    "description": "Helper text for blocklist input"
+  },
+  "blocklistDuplicateError": {
+    "message": "このドメインは既にブロックリストに含まれています",
+    "description": "Error message when domain already exists in blocklist"
+  },
+  "blocklistInvalidPattern": {
+    "message": "無効なドメインパターン",
+    "description": "Error message for invalid domain pattern"
+  },
+  "blocklistSaved": {
+    "message": "ブロックリストを更新しました",
+    "description": "Success message when blocklist is saved"
+  },
+  "blocklistEmpty": {
+    "message": "ブロックされたサイトはありません。上記にドメインを追加して、特定のウェブサイトで TabBoost を無効にできます。",
+    "description": "Message shown when blocklist is empty"
+  },
+  "popupDisableOnSite": {
+    "message": "このサイトで無効化",
+    "description": "Button to disable TabBoost on current site"
+  },
+  "popupEnableOnSite": {
+    "message": "このサイトで有効化",
+    "description": "Button to enable TabBoost on current site"
+  },
+  "popupSiteAddedToBlocklist": {
+    "message": "サイトをブロックリストに追加しました。ページを再読み込みして適用してください。",
+    "description": "Notification when site is added to blocklist from popup"
+  },
+  "popupSiteRemovedFromBlocklist": {
+    "message": "サイトをブロックリストから削除しました。ページを再読み込みして適用してください。",
+    "description": "Notification when site is removed from blocklist from popup"
   }
 }

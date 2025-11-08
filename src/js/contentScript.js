@@ -6,6 +6,7 @@ import { createEventListenerTracker } from "../utils/eventListenerTracker.js";
 import {
   LOAD_EXTENSION_SCRIPT_ACTION,
 } from "../utils/messageChannels.js";
+import { shouldBypass, DEFAULT_BLOCKLIST } from "../utils/siteBlocklist.js";
 
 /* global __webpack_public_path__ */
 
@@ -133,6 +134,7 @@ const shouldUseCapturePhase = (() => {
 
 let shouldInterceptSave = true;
 let popupShortcutMode = "default";
+let isBlocked = false;
 
 chrome.storage &&
   chrome.storage.local.get({ popupShortcut: "default" }, (result) => {
@@ -143,11 +145,9 @@ document.addEventListener(
   "keydown",
   function saveKeyListener(event) {
     if ((event.metaKey || event.ctrlKey) && event.key === "s") {
-      if (shouldInterceptSave) {
+      if (shouldInterceptSave && !isBlocked) {
         event.preventDefault();
-
         showSaveNotification();
-
         return false;
       }
     }
@@ -355,6 +355,7 @@ const clickListenerOptions = shouldUseCapturePhase
 document.addEventListener(
   "click",
   async function (event) {
+    if (isBlocked) return;
     if (event.button !== 0) {
       return;
     }
@@ -414,6 +415,45 @@ document.addEventListener(
   },
   clickListenerOptions
 );
+
+chrome.storage.onChanged.addListener((changes, areaName) => {
+  if (areaName === "sync" && changes.siteBlocklistConfig) {
+    const newConfig = changes.siteBlocklistConfig.newValue || DEFAULT_BLOCKLIST;
+    const entries = newConfig.entries || [];
+    const wasBlocked = isBlocked;
+    isBlocked = shouldBypass(window.location.href, entries);
+
+    if (!wasBlocked && isBlocked) {
+      window.__tabboostDisabled = true;
+      window.location.reload();
+    }
+  }
+});
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === "checkBlocklistStatus") {
+    sendResponse({ blocked: isBlocked });
+    return true;
+  }
+  return false;
+});
+
+(async function initContentScript() {
+  try {
+    const blocklistConfig = await fetchSharedSyncValues({
+      siteBlocklistConfig: DEFAULT_BLOCKLIST,
+    });
+    const config = blocklistConfig.siteBlocklistConfig || DEFAULT_BLOCKLIST;
+    const entries = config.entries || [];
+
+    if (shouldBypass(window.location.href, entries)) {
+      window.__tabboostDisabled = true;
+      isBlocked = true;
+    }
+  } catch (error) {
+    console.error("chrome-tabboost: Failed to check blocklist:", error);
+  }
+})();
 
 async function createPopup(url) {
   try {

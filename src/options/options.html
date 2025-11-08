@@ -84,6 +84,13 @@
         </svg>
         <span data-i18n="iframeCompatibility"></span>
       </div>
+      <div class="tab" data-tab="advanced">
+        <svg class="tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M12 1v6m0 6v6m9-9h-6m-6 0H3"></path>
+        </svg>
+        <span data-i18n="advancedSettings"></span>
+      </div>
     </div>
 
     <div class="tab-content active" id="general-content">
@@ -208,6 +215,27 @@
             <div class="warning-icon">⚠️</div>
             <div class="warning-text" data-i18n="headerModificationWarning">注意：禁用此功能可能导致某些网站的链接预览无法正常工作，因为这些网站可能禁止在iframe中显示。如果遇到预览无法加载的情况，请启用此选项。</div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="advanced-content">
+      <div class="card">
+        <h2 class="card-title" data-i18n="blocklistSectionTitle">Website Blocklist</h2>
+        <p class="card-description" data-i18n="blocklistSectionDescription">Disable TabBoost features on specific websites</p>
+
+        <div class="form-group">
+          <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+            <input type="text" id="blocklistAddInput" class="form-control" placeholder="Enter domain (e.g., example.com, *.example.com)" data-i18n-placeholder="blocklistAddPlaceholder" style="flex: 1;">
+            <button id="blocklistAddButton" class="button" data-i18n="blocklistAddButton">Add</button>
+          </div>
+          <p class="hint-text" data-i18n="blocklistHelper">Supports exact domains, wildcards (*.example.com), and subdomains</p>
+        </div>
+
+        <div class="form-group">
+          <ul id="blocklistEntries" style="list-style: none; padding: 0; margin: 0;">
+          </ul>
+          <p id="blocklistEmpty" class="hint-text" style="display: none;" data-i18n="blocklistEmpty">No blocked sites. Add domains above to disable TabBoost on specific websites.</p>
         </div>
       </div>
     </div>

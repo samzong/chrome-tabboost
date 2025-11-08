@@ -288,7 +288,7 @@
     "description": "Error message when the domain input is empty or invalid"
   },
   "invalidWildcardFormat": {
-    "message": "Format générique non valide.Doit être comme '* .example.com'.",
+    "message": "Format générique non valide. Doit être comme '*.example.com'.",
     "description": "Error message for invalid wildcard domain format"
   },
   "domainInSystemReserved": {
@@ -478,5 +478,65 @@
   "retryLoading": {
     "message": "Réessayer le chargement",
     "description": "Button text to retry iframe loading."
+  },
+  "advancedSettings": {
+    "message": "Avancé Configuration",
+    "description": "Advanced settings tab title"
+  },
+  "blocklistSectionTitle": {
+    "message": "Liste de blocage de sites web",
+    "description": "Title for website blocklist section"
+  },
+  "blocklistSectionDescription": {
+    "message": "Désactiver les fonctionnalités TabBoost sur des sites web spécifiques",
+    "description": "Description for website blocklist section"
+  },
+  "blocklistAddPlaceholder": {
+    "message": "Entrer un domaine (ex: example.com, *.example.com)",
+    "description": "Placeholder for blocklist add input"
+  },
+  "blocklistAddButton": {
+    "message": "Ajouter",
+    "description": "Button to add domain to blocklist"
+  },
+  "blocklistDeleteButton": {
+    "message": "Supprimer",
+    "description": "Button to delete domain from blocklist"
+  },
+  "blocklistHelper": {
+    "message": "Prend en charge les domaines exacts, les caractères génériques (*.example.com) et les sous-domaines",
+    "description": "Helper text for blocklist input"
+  },
+  "blocklistDuplicateError": {
+    "message": "Ce domaine est déjà dans la liste de blocage",
+    "description": "Error message when domain already exists in blocklist"
+  },
+  "blocklistInvalidPattern": {
+    "message": "Modèle de domaine invalide",
+    "description": "Error message for invalid domain pattern"
+  },
+  "blocklistSaved": {
+    "message": "Liste de blocage mise à jour",
+    "description": "Success message when blocklist is saved"
+  },
+  "blocklistEmpty": {
+    "message": "Aucun site bloqué. Ajoutez des domaines ci-dessus pour désactiver TabBoost sur des sites web spécifiques.",
+    "description": "Message shown when blocklist is empty"
+  },
+  "popupDisableOnSite": {
+    "message": "Désactiver sur ce site",
+    "description": "Button to disable TabBoost on current site"
+  },
+  "popupEnableOnSite": {
+    "message": "Activer sur ce site",
+    "description": "Button to enable TabBoost on current site"
+  },
+  "popupSiteAddedToBlocklist": {
+    "message": "Site ajouté à la liste de blocage. Rechargez la page pour appliquer.",
+    "description": "Notification when site is added to blocklist from popup"
+  },
+  "popupSiteRemovedFromBlocklist": {
+    "message": "Site supprimé de la liste de blocage. Rechargez la page pour appliquer.",
+    "description": "Notification when site is removed from blocklist from popup"
   }
 }

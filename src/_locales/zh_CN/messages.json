@@ -568,5 +568,65 @@
   "retryLoading": {
     "message": "重试加载",
     "description": "Button text to retry iframe loading."
+  },
+  "advancedSettings": {
+    "message": "高级配置",
+    "description": "Advanced settings tab title"
+  },
+  "blocklistSectionTitle": {
+    "message": "网站黑名单",
+    "description": "Title for website blocklist section"
+  },
+  "blocklistSectionDescription": {
+    "message": "在特定网站上禁用 TabBoost 功能",
+    "description": "Description for website blocklist section"
+  },
+  "blocklistAddPlaceholder": {
+    "message": "输入域名（例如：example.com, *.example.com）",
+    "description": "Placeholder for blocklist add input"
+  },
+  "blocklistAddButton": {
+    "message": "添加",
+    "description": "Button to add domain to blocklist"
+  },
+  "blocklistDeleteButton": {
+    "message": "删除",
+    "description": "Button to delete domain from blocklist"
+  },
+  "blocklistHelper": {
+    "message": "支持精确域名、通配符（*.example.com）和子域名",
+    "description": "Helper text for blocklist input"
+  },
+  "blocklistDuplicateError": {
+    "message": "该域名已在黑名单中",
+    "description": "Error message when domain already exists in blocklist"
+  },
+  "blocklistInvalidPattern": {
+    "message": "无效的域名格式",
+    "description": "Error message for invalid domain pattern"
+  },
+  "blocklistSaved": {
+    "message": "黑名单已更新",
+    "description": "Success message when blocklist is saved"
+  },
+  "blocklistEmpty": {
+    "message": "暂无被禁用的网站。在上方添加域名以在特定网站上禁用 TabBoost。",
+    "description": "Message shown when blocklist is empty"
+  },
+  "popupDisableOnSite": {
+    "message": "在此站点禁用",
+    "description": "Button to disable TabBoost on current site"
+  },
+  "popupEnableOnSite": {
+    "message": "在此站点启用",
+    "description": "Button to enable TabBoost on current site"
+  },
+  "popupSiteAddedToBlocklist": {
+    "message": "站点已添加到黑名单。刷新页面以生效。",
+    "description": "Notification when site is added to blocklist from popup"
+  },
+  "popupSiteRemovedFromBlocklist": {
+    "message": "站点已从黑名单移除。刷新页面以生效。",
+    "description": "Notification when site is removed from blocklist from popup"
   }
 }

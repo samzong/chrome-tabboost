@@ -478,5 +478,65 @@
   "retryLoading": {
     "message": "Повторить загрузку",
     "description": "Button text to retry iframe loading."
+  },
+  "advancedSettings": {
+    "message": "Дополнительно",
+    "description": "Advanced settings tab title"
+  },
+  "blocklistSectionTitle": {
+    "message": "Черный список сайтов",
+    "description": "Title for website blocklist section"
+  },
+  "blocklistSectionDescription": {
+    "message": "Отключить функции TabBoost на определенных веб-сайтах",
+    "description": "Description for website blocklist section"
+  },
+  "blocklistAddPlaceholder": {
+    "message": "Введите домен (например: example.com, *.example.com)",
+    "description": "Placeholder for blocklist add input"
+  },
+  "blocklistAddButton": {
+    "message": "Добавить",
+    "description": "Button to add domain to blocklist"
+  },
+  "blocklistDeleteButton": {
+    "message": "Удалить",
+    "description": "Button to delete domain from blocklist"
+  },
+  "blocklistHelper": {
+    "message": "Поддерживает точные домены, подстановочные знаки (*.example.com) и поддомены",
+    "description": "Helper text for blocklist input"
+  },
+  "blocklistDuplicateError": {
+    "message": "Этот домен уже в черном списке",
+    "description": "Error message when domain already exists in blocklist"
+  },
+  "blocklistInvalidPattern": {
+    "message": "Неверный шаблон домена",
+    "description": "Error message for invalid domain pattern"
+  },
+  "blocklistSaved": {
+    "message": "Черный список обновлен",
+    "description": "Success message when blocklist is saved"
+  },
+  "blocklistEmpty": {
+    "message": "Нет заблокированных сайтов. Добавьте домены выше, чтобы отключить TabBoost на определенных веб-сайтах.",
+    "description": "Message shown when blocklist is empty"
+  },
+  "popupDisableOnSite": {
+    "message": "Отключить на этом сайте",
+    "description": "Button to disable TabBoost on current site"
+  },
+  "popupEnableOnSite": {
+    "message": "Включить на этом сайте",
+    "description": "Button to enable TabBoost on current site"
+  },
+  "popupSiteAddedToBlocklist": {
+    "message": "Сайт добавлен в черный список. Перезагрузите страницу для применения.",
+    "description": "Notification when site is added to blocklist from popup"
+  },
+  "popupSiteRemovedFromBlocklist": {
+    "message": "Сайт удален из черного списка. Перезагрузите страницу для применения.",
+    "description": "Notification when site is removed from blocklist from popup"
   }
 }

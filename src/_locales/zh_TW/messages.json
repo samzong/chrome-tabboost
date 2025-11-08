@@ -478,5 +478,65 @@
   "retryLoading": {
     "message": "重新載入",
     "description": "Button text to retry iframe loading."
+  },
+  "advancedSettings": {
+    "message": "進階配置",
+    "description": "Advanced settings tab title"
+  },
+  "blocklistSectionTitle": {
+    "message": "網站黑名單",
+    "description": "Title for website blocklist section"
+  },
+  "blocklistSectionDescription": {
+    "message": "在特定網站上停用 TabBoost 功能",
+    "description": "Description for website blocklist section"
+  },
+  "blocklistAddPlaceholder": {
+    "message": "輸入網域（例如：example.com, *.example.com）",
+    "description": "Placeholder for blocklist add input"
+  },
+  "blocklistAddButton": {
+    "message": "新增",
+    "description": "Button to add domain to blocklist"
+  },
+  "blocklistDeleteButton": {
+    "message": "刪除",
+    "description": "Button to delete domain from blocklist"
+  },
+  "blocklistHelper": {
+    "message": "支援精確網域、萬用字元（*.example.com）和子網域",
+    "description": "Helper text for blocklist input"
+  },
+  "blocklistDuplicateError": {
+    "message": "該網域已在黑名單中",
+    "description": "Error message when domain already exists in blocklist"
+  },
+  "blocklistInvalidPattern": {
+    "message": "無效的網域格式",
+    "description": "Error message for invalid domain pattern"
+  },
+  "blocklistSaved": {
+    "message": "黑名單已更新",
+    "description": "Success message when blocklist is saved"
+  },
+  "blocklistEmpty": {
+    "message": "目前沒有被停用的網站。在上方新增網域以在特定網站上停用 TabBoost。",
+    "description": "Message shown when blocklist is empty"
+  },
+  "popupDisableOnSite": {
+    "message": "在此網站停用",
+    "description": "Button to disable TabBoost on current site"
+  },
+  "popupEnableOnSite": {
+    "message": "在此網站啟用",
+    "description": "Button to enable TabBoost on current site"
+  },
+  "popupSiteAddedToBlocklist": {
+    "message": "網站已新增至黑名單。重新載入頁面以生效。",
+    "description": "Notification when site is added to blocklist from popup"
+  },
+  "popupSiteRemovedFromBlocklist": {
+    "message": "網站已從黑名單移除。重新載入頁面以生效。",
+    "description": "Notification when site is removed from blocklist from popup"
   }
 }

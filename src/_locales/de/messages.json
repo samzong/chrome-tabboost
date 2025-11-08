@@ -478,5 +478,65 @@
   "retryLoading": {
     "message": "Erneut laden",
     "description": "Button text to retry iframe loading."
+  },
+  "advancedSettings": {
+    "message": "Erweiterte Einstellungen",
+    "description": "Advanced settings tab title"
+  },
+  "blocklistSectionTitle": {
+    "message": "Website-Blockierungsliste",
+    "description": "Title for website blocklist section"
+  },
+  "blocklistSectionDescription": {
+    "message": "TabBoost-Funktionen auf bestimmten Websites deaktivieren",
+    "description": "Description for website blocklist section"
+  },
+  "blocklistAddPlaceholder": {
+    "message": "Domain eingeben (z.B. example.com, *.example.com)",
+    "description": "Placeholder for blocklist add input"
+  },
+  "blocklistAddButton": {
+    "message": "Hinzufügen",
+    "description": "Button to add domain to blocklist"
+  },
+  "blocklistDeleteButton": {
+    "message": "Löschen",
+    "description": "Button to delete domain from blocklist"
+  },
+  "blocklistHelper": {
+    "message": "Unterstützt exakte Domains, Platzhalter (*.example.com) und Unterdomains",
+    "description": "Helper text for blocklist input"
+  },
+  "blocklistDuplicateError": {
+    "message": "Diese Domain ist bereits in der Blockierungsliste",
+    "description": "Error message when domain already exists in blocklist"
+  },
+  "blocklistInvalidPattern": {
+    "message": "Ungültiges Domain-Muster",
+    "description": "Error message for invalid domain pattern"
+  },
+  "blocklistSaved": {
+    "message": "Blockierungsliste aktualisiert",
+    "description": "Success message when blocklist is saved"
+  },
+  "blocklistEmpty": {
+    "message": "Keine blockierten Websites. Fügen Sie oben Domains hinzu, um TabBoost auf bestimmten Websites zu deaktivieren.",
+    "description": "Message shown when blocklist is empty"
+  },
+  "popupDisableOnSite": {
+    "message": "Auf dieser Website deaktivieren",
+    "description": "Button to disable TabBoost on current site"
+  },
+  "popupEnableOnSite": {
+    "message": "Auf dieser Website aktivieren",
+    "description": "Button to enable TabBoost on current site"
+  },
+  "popupSiteAddedToBlocklist": {
+    "message": "Website zur Blockierungsliste hinzugefügt. Seite neu laden, um anzuwenden.",
+    "description": "Notification when site is added to blocklist from popup"
+  },
+  "popupSiteRemovedFromBlocklist": {
+    "message": "Website aus Blockierungsliste entfernt. Seite neu laden, um anzuwenden.",
+    "description": "Notification when site is removed from blocklist from popup"
   }
 }

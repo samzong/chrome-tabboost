@@ -17,6 +17,7 @@ class StorageCache {
       "defaultAction",
       "splitViewEnabled",
       "notificationsEnabled",
+      "siteBlocklistConfig",
     ];
 
     this.stableConfigKeys = [
@@ -26,6 +27,7 @@ class StorageCache {
       "defaultAction",
       "splitViewEnabled",
       "notificationsEnabled",
+      "siteBlocklistConfig",
     ];
 
     this.batchReadTimer = null;
