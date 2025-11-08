@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Blocklist Design (Issue #67) chrome-tabboost</title>
+    <meta name="description" content="Users need a way to disable TabBoost content-script features on specific sites (e.g., DevTools, browser terminals) where">
+    <meta name="keywords" content="Chrome,Extension,Arc,TabBoost,Chrome Extension,Arc Browser,Chrome TabBoost">
+    <link rel="stylesheet" type="text/css" href="css/main.css?v=1.34.2">
+    <link rel="stylesheet" type="text/css" href="css/tocbot.css?v=1.34.2">
+    <link rel="stylesheet" type="text/css" href="css/media.css?v=1.34.2">
+    <link rel="stylesheet" type="text/css" href="css/sidebar.css?v=1.34.2">
+    <link rel="stylesheet" type="text/css" href="css/copy.css?v=1.34.2">
+    <link rel="stylesheet" type="text/css" href="css/demo-preview.css?v=1.34.2">
+    <script src="js/copy.js?v=1.34.2"></script>
+    <script src="js/dark-mode.js?v=1.34.2"></script>
+    <script src="js/markdown-style.js?v=1.34.2"></script>
+  </head>
+  <body id="idoctotop"><a href="#idoctotop" class="gototop">top</a>
+    <header class="header">
+      <article class="inner warpper" style="max-width:720px;"><a class="logo" href="index.html"><span class="title">chrome-tabboost</span></a>
+        <div class="content">
+          <ul class="menu">
+            <li><a href="index.html" target="" class="">Home</a></li>
+            <li><a href="https://github.com/samzong" target="__blank" class="">About</a></li>
+          </ul><a href="https://github.com/samzong/chrome-tabboost" target="_blank" rel="noopener noreferrer" title="Github" name="Github" class="github"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+            </svg></a>
+          <dark-mode permanent=""></dark-mode>
+        </div>
+      </article>
+    </header>
+    <div style="max-width:720px;" class="warpper-content warpper notocs">
+      <markdown-style theme-auto-switch-disabled="">
+        <h1 id="website-blocklist-design-issue-67"><a aria-hidden="true" tabindex="-1" href="#website-blocklist-design-issue-67" class="anchor"><span class="icon icon-link"></span></a>Website Blocklist Design (Issue #67)</h1>
+        <h2 id="context"><a aria-hidden="true" tabindex="-1" href="#context" class="anchor"><span class="icon icon-link"></span></a>Context</h2>
+        <p>Users need a way to disable TabBoost content-script features on specific sites (e.g., DevTools, browser terminals) where global listeners conflict with critical workflows. Goal: configurable site blocklist without disabling the entire extension.</p>
+        <h2 id="goals"><a aria-hidden="true" tabindex="-1" href="#goals" class="anchor"><span class="icon icon-link"></span></a>Goals</h2>
+        <ul>
+          <li><strong>Site-scoped opt-out</strong>: Disable all content-script features (link preview, split-view, save intercept, notifications) on selected domains.</li>
+          <li><strong>Early evaluation</strong>: Check blocklist before DOM listeners attach.</li>
+          <li><strong>Management UI</strong>: Advanced Settings tab in options page for add/remove entries.</li>
+          <li><strong>Quick disable</strong>: Popup button to add current site to blocklist.</li>
+          <li><strong>Sync storage</strong>: Persist via <code>chrome.storage.sync</code> with quota limits and deduplication.</li>
+        </ul>
+        <h2 id="non-goals"><a aria-hidden="true" tabindex="-1" href="#non-goals" class="anchor"><span class="icon icon-link"></span></a>Non-goals</h2>
+        <ul>
+          <li>Per-feature toggles (MVP: all-or-nothing per site).</li>
+          <li><code>chrome.commands</code> shortcuts remain global (not affected).</li>
+          <li>Dynamic permission or <code>declarativeNetRequest</code> changes.</li>
+        </ul>
+        <h2 id="ux-summary"><a aria-hidden="true" tabindex="-1" href="#ux-summary" class="anchor"><span class="icon icon-link"></span></a>UX Summary</h2>
+        <h3 id="options-page---advanced-settings-tab"><a aria-hidden="true" tabindex="-1" href="#options-page---advanced-settings-tab" class="anchor"><span class="icon icon-link"></span></a>Options Page - Advanced Settings Tab</h3>
+        <ul>
+          <li>New "Advanced Settings" tab with "Website Blocklist" card.</li>
+          <li>Empty list by default.</li>
+          <li>Add input accepts:
+            <ul>
+              <li>Domain names: <code>example.com</code>, <code>www.example.com</code>, <code>sub.example.com</code></li>
+              <li>Wildcard patterns: <code>*.example.com</code> (matches <code>a.example.com</code>, <code>b.example.com</code>, etc.)</li>
+              <li>Full URLs: protocol stripped during normalization</li>
+            </ul>
+          </li>
+          <li>Inline delete button per entry.</li>
+          <li>Autosave on add/remove.</li>
+        </ul>
+        <h3 id="extension-popup"><a aria-hidden="true" tabindex="-1" href="#extension-popup" class="anchor"><span class="icon icon-link"></span></a>Extension Popup</h3>
+        <ul>
+          <li>"Disable on this site" button.</li>
+          <li>On click: extracts current tab domain, normalizes, adds to blocklist, shows notification.</li>
+          <li>Button state reflects blocked status.</li>
+          <li>Hidden on <code>chrome://</code> and extension pages.</li>
+        </ul>
+        <h2 id="data-model"><a aria-hidden="true" tabindex="-1" href="#data-model" class="anchor"><span class="icon icon-link"></span></a>Data Model</h2>
+        <pre class="language-ts"><code class="language-ts code-highlight"><span class="code-line line-number" line="1"><span class="token keyword">interface</span> <span class="token class-name">SiteBlocklistEntry</span> <span class="token punctuation">{</span>
+</span><span class="code-line line-number" line="2">  id<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+</span><span class="code-line line-number" line="3">  pattern<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>        <span class="token comment">// normalized lowercase</span>
+</span><span class="code-line line-number" line="4">  matchType<span class="token operator">:</span> <span class="token string">"domain"</span> <span class="token operator">|</span> <span class="token string">"wildcard"</span> <span class="token operator">|</span> <span class="token string">"prefix"</span> <span class="token operator">|</span> <span class="token string">"regex"</span><span class="token punctuation">;</span>
+</span><span class="code-line line-number" line="5"><span class="token punctuation">}</span>
+</span><span class="code-line line-number" line="6">
+</span><span class="code-line line-number" line="7"><span class="token keyword">interface</span> <span class="token class-name">SiteBlocklistConfig</span> <span class="token punctuation">{</span>
+</span><span class="code-line line-number" line="8">  version<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">;</span>
+</span><span class="code-line line-number" line="9">  entries<span class="token operator">:</span> SiteBlocklistEntry<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+</span><span class="code-line line-number" line="10"><span class="token punctuation">}</span>
+</span></code><input type="hidden" value="interface SiteBlocklistEntry {
+  id: string;
+  pattern: string;        // normalized lowercase
+  matchType: &#x22;domain&#x22; | &#x22;wildcard&#x22; | &#x22;prefix&#x22; | &#x22;regex&#x22;;
+}
+
+interface SiteBlocklistConfig {
+  version: 1;
+  entries: SiteBlocklistEntry[];
+}
+"><div onclick="copied(this)" class="copied"><svg class="octicon-copy" aria-hidden="true" viewBox="0 0 16 16" fill="currentColor" height="12" width="12"><path fill-rule="evenodd" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path><path fill-rule="evenodd" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path></svg><svg class="octicon-check" aria-hidden="true" viewBox="0 0 16 16" fill="currentColor" height="12" width="12"><path fill-rule="evenodd" d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"></path></svg></div></pre>
+        <p>Storage:</p>
+        <ul>
+          <li><code>siteBlocklistConfig</code> (sync): main config</li>
+          <li><code>siteBlocklistCompiled</code> (local): compiled matcher cache</li>
+        </ul>
+        <p>Default: <code>{ version: 1, entries: [] }</code></p>
+        <h2 id="architecture"><a aria-hidden="true" tabindex="-1" href="#architecture" class="anchor"><span class="icon icon-link"></span></a>Architecture</h2>
+        <h3 id="site-matching-srcutilssiteblocklistjs"><a aria-hidden="true" tabindex="-1" href="#site-matching-srcutilssiteblocklistjs" class="anchor"><span class="icon icon-link"></span></a>Site Matching (<code>src/utils/siteBlocklist.js</code>)</h3>
+        <p>New module:</p>
+        <ul>
+          <li><strong>Normalize</strong>: strip protocol, lowercase, hostname-only.</li>
+          <li><strong>Match types</strong>:
+            <ul>
+              <li><code>*.example.com</code> → wildcard (matches <code>a.example.com</code>, <code>b.example.com</code>)</li>
+              <li><code>example.com</code> → domain (matches <code>example.com</code> and subdomains)</li>
+              <li>Full URL with <code>/</code> → prefix</li>
+              <li><code>/regex/</code> → regex (with safety limits)</li>
+            </ul>
+          </li>
+          <li><strong>Compile</strong>: build matcher objects, expose <code>shouldBypass(url)</code>.</li>
+          <li><strong>Cache</strong>: store compiled regexes in local storage.</li>
+        </ul>
+        <h3 id="content-script-srcjscontentscriptjs"><a aria-hidden="true" tabindex="-1" href="#content-script-srcjscontentscriptjs" class="anchor"><span class="icon icon-link"></span></a>Content Script (<code>src/js/contentScript.js</code>)</h3>
+        <ol>
+          <li>Fetch blocklist config before attaching listeners.</li>
+          <li>If <code>shouldBypass(window.location.href)</code>:
+            <ul>
+              <li>Set <code>window.__tabboostDisabled = true</code></li>
+              <li>Abort initialization (minimal message handler only)</li>
+            </ul>
+          </li>
+          <li>Listen to <code>chrome.storage.onChanged</code> for updates; teardown if newly blocked.</li>
+        </ol>
+        <h3 id="background-srcjsbackgroundjs"><a aria-hidden="true" tabindex="-1" href="#background-srcjsbackgroundjs" class="anchor"><span class="icon icon-link"></span></a>Background (<code>src/js/background.js</code>)</h3>
+        <p>Message handlers:</p>
+        <ul>
+          <li><code>getSiteBlocklistConfig</code>: return current config</li>
+          <li><code>setSiteBlocklistConfig</code>: validate, write to sync storage</li>
+          <li><code>addSiteToBlocklist</code>: extract domain from tab, normalize, add entry</li>
+          <li><code>isTabBlocked(tabUrl)</code>: check if URL matches blocklist</li>
+        </ul>
+        <h3 id="options-ui-srcoptionsoptionshtmljs"><a aria-hidden="true" tabindex="-1" href="#options-ui-srcoptionsoptionshtmljs" class="anchor"><span class="icon icon-link"></span></a>Options UI (<code>src/options/options.html/js</code>)</h3>
+        <ul>
+          <li>HTML: Advanced Settings tab with blocklist card (list, add input, delete buttons).</li>
+          <li>JS: Load config, validate/normalize patterns, autosave on changes, show errors.</li>
+        </ul>
+        <h3 id="popup-ui-srcpopuppopuphtmljs"><a aria-hidden="true" tabindex="-1" href="#popup-ui-srcpopuppopuphtmljs" class="anchor"><span class="icon icon-link"></span></a>Popup UI (<code>src/popup/popup.html/js</code>)</h3>
+        <ul>
+          <li>Check blocked status on open.</li>
+          <li>"Disable on this site" button: extract domain, send <code>addSiteToBlocklist</code> message.</li>
+          <li>Update button state after changes.</li>
+        </ul>
+        <h3 id="localization"><a aria-hidden="true" tabindex="-1" href="#localization" class="anchor"><span class="icon icon-link"></span></a>Localization</h3>
+        <p>New keys: <code>blocklistSectionTitle</code>, <code>blocklistAddPlaceholder</code>, <code>blocklistHelper</code>, <code>blocklistDuplicateError</code>, <code>blocklistInvalidPattern</code>, <code>popupDisableOnSite</code>, <code>popupEnableOnSite</code>, <code>popupSiteAddedToBlocklist</code>.</p>
+        <h2 id="edge-cases"><a aria-hidden="true" tabindex="-1" href="#edge-cases" class="anchor"><span class="icon icon-link"></span></a>Edge Cases</h2>
+        <ul>
+          <li>Protocol-restricted pages (<code>chrome://</code>): short-circuit gracefully, hide popup button.</li>
+          <li>Quota limits: max 200 entries, deduplicate before save.</li>
+          <li>Regex safety: max 256 chars, wrap in try/catch.</li>
+          <li>Race conditions: use <code>await fetchSharedSyncValues</code> before listeners (top-level await or async IIFE).</li>
+        </ul>
+        <h2 id="testing"><a aria-hidden="true" tabindex="-1" href="#testing" class="anchor"><span class="icon icon-link"></span></a>Testing</h2>
+        <ul>
+          <li>Unit tests: pattern normalization, matching logic, wildcard/domain behavior.</li>
+          <li>Integration tests: content script initialization gating, popup flow.</li>
+          <li>Manual QA: add/remove entries, sync across profiles, teardown on mid-session changes.</li>
+        </ul>
+        <h2 id="rollout"><a aria-hidden="true" tabindex="-1" href="#rollout" class="anchor"><span class="icon icon-link"></span></a>Rollout</h2>
+        <ol>
+          <li>Default empty list (no behavior change).</li>
+          <li>Migration: backfill <code>{ version: 1, entries: [] }</code> for existing users.</li>
+          <li>Update docs after verification.</li>
+        </ol>
+      </markdown-style>
+    </div>
+    <script src="js/demo-preview.js?v=1.34.2"></script>
+    <div class="footer warpper" style="max-width:720px;">Copyright © 2025 <a href="https://github.com/samzong" target="_blank">samzong</a><br></div>
+    <script src="js/tocbot.js?v=1.34.2"></script>
+  </body>
+</html>
