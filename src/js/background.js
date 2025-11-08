@@ -18,6 +18,13 @@ import {
   toggleMuteCurrentTab,
   toggleMuteAllAudioTabs,
 } from "../utils/tab-audio.js";
+import {
+  DEFAULT_BLOCKLIST,
+  shouldBypass,
+  createEntry,
+  normalizePattern,
+  getEntryKey,
+} from "../utils/siteBlocklist.js";
 
 let currentTabCache = {
   tab: null,
@@ -25,6 +32,7 @@ let currentTabCache = {
 };
 
 let isDuplicatingTab = false;
+let blocklistLock = false;
 
 const TAB_CACHE_TTL = 1000;
 
@@ -75,13 +83,56 @@ function invalidateTabCache() {
   };
 }
 
+async function updateBadgeForCurrentTab() {
+  try {
+    const tab = await getCurrentTab();
+    if (tab) {
+      await updateBadgeForTab(tab.id);
+    }
+  } catch (error) {
+    // Ignore errors
+  }
+}
+
+async function updateBadgeForTab(tabId) {
+  try {
+    const tab = await chrome.tabs.get(tabId);
+    if (!tab || !tab.url) {
+      chrome.action.setBadgeText({ text: "", tabId });
+      return;
+    }
+
+    const url = tab.url;
+    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+      chrome.action.setBadgeText({ text: "", tabId });
+      return;
+    }
+
+    const config = await storageCache.get({ siteBlocklistConfig: DEFAULT_BLOCKLIST });
+    const blocklistConfig = config.siteBlocklistConfig || DEFAULT_BLOCKLIST;
+    const entries = blocklistConfig.entries || [];
+    const blocked = shouldBypass(url, entries);
+
+    if (blocked) {
+      chrome.action.setBadgeText({ text: "×", tabId });
+      chrome.action.setBadgeBackgroundColor({ color: "#6b7280", tabId });
+    } else {
+      chrome.action.setBadgeText({ text: "", tabId });
+    }
+  } catch (error) {
+    // Ignore errors
+  }
+}
+
 chrome.tabs.onActivated.addListener(() => {
   invalidateTabCache();
+  updateBadgeForCurrentTab();
 });
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
   if (changeInfo.status === "complete" || changeInfo.url) {
     invalidateTabCache();
+    updateBadgeForTab(tabId);
   }
 });
 
@@ -93,6 +144,7 @@ storageCache
     });
 
     await updateHeaderModificationRules(headerModificationEnabled);
+    await updateBadgeForCurrentTab();
   })
   .catch((error) => {
     console.error(getMessage("storageInitError"), error);
@@ -102,6 +154,9 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
   if (areaName === "sync" && changes.headerModificationEnabled) {
     const newValue = changes.headerModificationEnabled.newValue;
     updateHeaderModificationRules(newValue);
+  }
+  if (areaName === "sync" && changes.siteBlocklistConfig) {
+    updateBadgeForCurrentTab();
   }
 });
 
@@ -397,6 +452,181 @@ chrome.runtime.onMessage.addListener((request = {}, sender, sendResponse) => {
     } catch (error) {
       sendResponse({ status: "error", message: error.message });
     }
+    return true;
+  }
+
+  if (request.action === "getSiteBlocklistConfig") {
+    storageCache
+      .get({ siteBlocklistConfig: DEFAULT_BLOCKLIST })
+      .then((data) => {
+        sendResponse({ success: true, config: data.siteBlocklistConfig || DEFAULT_BLOCKLIST });
+      })
+      .catch((error) => {
+        sendResponse({ success: false, error: error.message });
+      });
+    return true;
+  }
+
+  if (request.action === "setSiteBlocklistConfig") {
+    const { config } = request;
+    if (blocklistLock) {
+      sendResponse({ success: false, error: "Operation in progress" });
+      return true;
+    }
+
+    if (!config || !Array.isArray(config.entries)) {
+      sendResponse({ success: false, error: "Invalid config" });
+      return true;
+    }
+
+    if (config.entries.length > 200) {
+      sendResponse({ success: false, error: "Too many entries (max 200)" });
+      return true;
+    }
+
+    blocklistLock = true;
+    storageCache
+      .set({ siteBlocklistConfig: config })
+      .then(() => {
+        sendResponse({ success: true });
+        updateBadgeForCurrentTab();
+      })
+      .catch((error) => {
+        sendResponse({ success: false, error: error.message });
+      })
+      .finally(() => {
+        blocklistLock = false;
+      });
+    return true;
+  }
+
+  if (request.action === "addSiteToBlocklist") {
+    const { domain } = request;
+    if (!domain) {
+      sendResponse({ success: false, error: "Missing domain" });
+      return true;
+    }
+
+    if (blocklistLock) {
+      sendResponse({ success: false, error: "Operation in progress" });
+      return true;
+    }
+    blocklistLock = true;
+
+    storageCache
+      .get({ siteBlocklistConfig: DEFAULT_BLOCKLIST })
+      .then((data) => {
+        const config = data.siteBlocklistConfig || DEFAULT_BLOCKLIST;
+        const entries = config.entries || [];
+        const newEntry = createEntry(domain);
+        if (!newEntry) {
+          sendResponse({ success: false, error: "Invalid domain" });
+          return;
+        }
+
+        if (entries.some((entry) => getEntryKey(entry) === newEntry.key)) {
+          sendResponse({ success: false, error: "Already in blocklist" });
+          return;
+        }
+
+        const newConfig = {
+          ...config,
+          entries: [...entries, newEntry],
+        };
+
+        storageCache.set({ siteBlocklistConfig: newConfig })
+          .then(() => {
+            sendResponse({ success: true });
+            updateBadgeForCurrentTab();
+          })
+          .catch((error) => {
+            sendResponse({ success: false, error: error.message });
+          });
+      })
+      .catch((error) => {
+        sendResponse({ success: false, error: error.message });
+      })
+      .finally(() => {
+        blocklistLock = false;
+      });
+    return true;
+  }
+
+  if (request.action === "isTabBlocked") {
+    const { url } = request;
+    if (!url) {
+      sendResponse({ success: false, blocked: false });
+      return true;
+    }
+
+    storageCache
+      .get({ siteBlocklistConfig: DEFAULT_BLOCKLIST })
+      .then((data) => {
+        const config = data.siteBlocklistConfig || DEFAULT_BLOCKLIST;
+        const entries = config.entries || [];
+        const blocked = shouldBypass(url, entries);
+        sendResponse({ success: true, blocked });
+      })
+      .catch(() => {
+        sendResponse({ success: false, blocked: false });
+      });
+    return true;
+  }
+
+  if (request.action === "removeSiteFromBlocklist") {
+    const { domain } = request;
+    if (!domain) {
+      sendResponse({ success: false, error: "Missing domain" });
+      return true;
+    }
+
+    if (blocklistLock) {
+      sendResponse({ success: false, error: "Operation in progress" });
+      return true;
+    }
+    blocklistLock = true;
+
+    storageCache
+      .get({ siteBlocklistConfig: DEFAULT_BLOCKLIST })
+      .then((data) => {
+        const config = data.siteBlocklistConfig || DEFAULT_BLOCKLIST;
+        const entries = config.entries || [];
+        const targetEntry = createEntry(domain);
+        if (!targetEntry) {
+          sendResponse({ success: false, error: "Invalid domain" });
+          return;
+        }
+
+        const targetKey = targetEntry.key;
+        const filteredEntries = entries.filter(
+          (e) => getEntryKey(e) !== targetKey
+        );
+
+        if (filteredEntries.length === entries.length) {
+          sendResponse({ success: false, error: "Domain not in blocklist" });
+          return;
+        }
+
+        const newConfig = {
+          ...config,
+          entries: filteredEntries,
+        };
+
+        storageCache.set({ siteBlocklistConfig: newConfig })
+          .then(() => {
+            sendResponse({ success: true });
+            updateBadgeForCurrentTab();
+          })
+          .catch((error) => {
+            sendResponse({ success: false, error: error.message });
+          });
+      })
+      .catch((error) => {
+        sendResponse({ success: false, error: error.message });
+      })
+      .finally(() => {
+        blocklistLock = false;
+      });
     return true;
   }
 });

@@ -79,6 +79,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     muteTabButton: document.getElementById("muteTabButton"),
     muteAllAudioButton: document.getElementById("muteAllAudioButton"),
     openOptionsButton: document.getElementById("openOptionsButton"),
+    disableOnCurrentSiteButton: document.getElementById("disableOnCurrentSiteButton"),
   };
 
   await updateMuteButtonText(buttons.muteTabButton);
@@ -86,6 +87,35 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const shortcuts = await getCommandShortcuts();
   await updateButtonsWithShortcuts(buttons, shortcuts);
+
+  // Check if current site is blocked
+  try {
+    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (tabs.length > 0 && tabs[0].url) {
+      const url = tabs[0].url;
+      if (url.startsWith("http://") || url.startsWith("https://")) {
+        chrome.runtime.sendMessage(
+          { action: "isTabBlocked", url },
+          (response) => {
+            if (response && response.success) {
+              if (response.blocked) {
+                if (buttons.disableOnCurrentSiteButton) {
+                  buttons.disableOnCurrentSiteButton.textContent =
+                    getMessage("popupEnableOnSite") || "Enable on this site";
+                  buttons.disableOnCurrentSiteButton.dataset.action = "enable";
+                }
+              }
+              if (buttons.disableOnCurrentSiteButton) {
+                buttons.disableOnCurrentSiteButton.style.display = "block";
+              }
+            }
+          }
+        );
+      }
+    }
+  } catch (error) {
+    console.error("Failed to check blocklist status:", error);
+  }
 
   buttons.duplicateTabButton.addEventListener("click", (event) => {
     event.preventDefault();
@@ -126,4 +156,51 @@ document.addEventListener("DOMContentLoaded", async () => {
     chrome.runtime.sendMessage({ action: "openOptionsPage" });
     window.close();
   });
+
+  if (buttons.disableOnCurrentSiteButton) {
+    buttons.disableOnCurrentSiteButton.addEventListener("click", async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      try {
+        const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+        if (tabs.length === 0 || !tabs[0].url) return;
+
+        const url = tabs[0].url;
+        if (!url.startsWith("http://") && !url.startsWith("https://")) return;
+
+        const urlObj = new URL(url);
+        const domain = urlObj.hostname;
+
+        if (buttons.disableOnCurrentSiteButton.dataset.action === "enable") {
+          chrome.runtime.sendMessage(
+            { action: "removeSiteFromBlocklist", domain },
+            (response) => {
+              if (response && response.success) {
+                chrome.runtime.sendMessage({
+                  action: "showNotification",
+                  message: getMessage("popupSiteRemovedFromBlocklist") || "Site removed from blocklist. Reload page to apply.",
+                });
+              }
+            }
+          );
+        } else {
+          chrome.runtime.sendMessage(
+            { action: "addSiteToBlocklist", domain },
+            (response) => {
+              if (response && response.success) {
+                chrome.runtime.sendMessage({
+                  action: "showNotification",
+                  message: getMessage("popupSiteAddedToBlocklist") || "Site added to blocklist. Reload page to apply.",
+                });
+              }
+            }
+          );
+        }
+        window.close();
+      } catch (error) {
+        console.error("Failed to toggle site blocklist:", error);
+      }
+    });
+  }
 });

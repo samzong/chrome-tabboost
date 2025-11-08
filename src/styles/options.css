@@ -408,3 +408,37 @@ code {
   line-height: 1.5;
   color: #333;
 }
+
+@media (prefers-color-scheme: dark) {
+  .warning-text {
+    color: #f9fafb;
+  }
+}
+
+/* Blocklist styles */
+.blocklist-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  background-color: var(--muted);
+  border-radius: var(--radius);
+  transition: background-color 0.2s ease;
+}
+
+.blocklist-entry:hover {
+  background-color: var(--border);
+}
+
+.blocklist-entry-pattern {
+  flex: 1;
+  font-family: monospace;
+  font-size: 14px;
+  color: var(--foreground);
+}
+
+.blocklist-delete-btn {
+  padding: 4px 12px;
+  font-size: 12px;
+}

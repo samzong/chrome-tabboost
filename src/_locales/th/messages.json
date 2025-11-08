@@ -478,5 +478,65 @@
   "retryLoading": {
     "message": "ลองโหลดอีกครั้ง",
     "description": "Button text to retry iframe loading."
+  },
+  "advancedSettings": {
+    "message": "ขั้นสูง",
+    "description": "Advanced settings tab title"
+  },
+  "blocklistSectionTitle": {
+    "message": "รายการบล็อกเว็บไซต์",
+    "description": "Title for website blocklist section"
+  },
+  "blocklistSectionDescription": {
+    "message": "ปิดการใช้งานฟีเจอร์ TabBoost บนเว็บไซต์เฉพาะ",
+    "description": "Description for website blocklist section"
+  },
+  "blocklistAddPlaceholder": {
+    "message": "ป้อนโดเมน (เช่น: example.com, *.example.com)",
+    "description": "Placeholder for blocklist add input"
+  },
+  "blocklistAddButton": {
+    "message": "เพิ่ม",
+    "description": "Button to add domain to blocklist"
+  },
+  "blocklistDeleteButton": {
+    "message": "ลบ",
+    "description": "Button to delete domain from blocklist"
+  },
+  "blocklistHelper": {
+    "message": "รองรับโดเมนที่แน่นอน ตัวแทน (*.example.com) และโดเมนย่อย",
+    "description": "Helper text for blocklist input"
+  },
+  "blocklistDuplicateError": {
+    "message": "โดเมนนี้อยู่ในรายการบล็อกแล้ว",
+    "description": "Error message when domain already exists in blocklist"
+  },
+  "blocklistInvalidPattern": {
+    "message": "รูปแบบโดเมนไม่ถูกต้อง",
+    "description": "Error message for invalid domain pattern"
+  },
+  "blocklistSaved": {
+    "message": "อัปเดตรายการบล็อกแล้ว",
+    "description": "Success message when blocklist is saved"
+  },
+  "blocklistEmpty": {
+    "message": "ไม่มีเว็บไซต์ที่ถูกบล็อก เพิ่มโดเมนด้านบนเพื่อปิดการใช้งาน TabBoost บนเว็บไซต์เฉพาะ",
+    "description": "Message shown when blocklist is empty"
+  },
+  "popupDisableOnSite": {
+    "message": "ปิดการใช้งานบนไซต์นี้",
+    "description": "Button to disable TabBoost on current site"
+  },
+  "popupEnableOnSite": {
+    "message": "เปิดการใช้งานบนไซต์นี้",
+    "description": "Button to enable TabBoost on current site"
+  },
+  "popupSiteAddedToBlocklist": {
+    "message": "เพิ่มไซต์ลงในรายการบล็อกแล้ว โหลดหน้าใหม่เพื่อใช้",
+    "description": "Notification when site is added to blocklist from popup"
+  },
+  "popupSiteRemovedFromBlocklist": {
+    "message": "ลบไซต์ออกจากรายการบล็อกแล้ว โหลดหน้าใหม่เพื่อใช้",
+    "description": "Notification when site is removed from blocklist from popup"
   }
 }

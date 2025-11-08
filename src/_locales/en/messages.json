@@ -136,7 +136,7 @@
     "description": "Preview description"
   },
   "iframeCompatibility": {
-    "message": "Iframe Compatibility Settings",
+    "message": "Iframe Compatibility",
     "description": "Title for iframe compatibility settings tab"
   },
   "closeSplitView": {
@@ -164,7 +164,7 @@
     "description": "Notification when split view fails to load"
   },
   "generalSettings": {
-    "message": "General Settings",
+    "message": "General",
     "description": "General settings section title"
   },
   "browsingMode": {
@@ -196,7 +196,7 @@
     "description": "Description for the general settings section"
   },
   "viewModeSettings": {
-    "message": "View Mode Settings",
+    "message": "View Mode",
     "description": "Title for view mode settings tab"
   },
   "splitViewDescription": {
@@ -580,5 +580,65 @@
   "retryLoading": {
     "message": "Retry loading",
     "description": "Button text to retry iframe loading."
+  },
+  "advancedSettings": {
+    "message": "Advanced",
+    "description": "Advanced settings tab title"
+  },
+  "blocklistSectionTitle": {
+    "message": "Website Blocklist",
+    "description": "Title for website blocklist section"
+  },
+  "blocklistSectionDescription": {
+    "message": "Disable TabBoost features on specific websites",
+    "description": "Description for website blocklist section"
+  },
+  "blocklistAddPlaceholder": {
+    "message": "Enter domain (e.g., example.com, *.example.com)",
+    "description": "Placeholder for blocklist add input"
+  },
+  "blocklistAddButton": {
+    "message": "Add",
+    "description": "Button to add domain to blocklist"
+  },
+  "blocklistDeleteButton": {
+    "message": "Delete",
+    "description": "Button to delete domain from blocklist"
+  },
+  "blocklistHelper": {
+    "message": "Supports exact domains, wildcards (*.example.com), and subdomains",
+    "description": "Helper text for blocklist input"
+  },
+  "blocklistDuplicateError": {
+    "message": "This domain is already in the blocklist",
+    "description": "Error message when domain already exists in blocklist"
+  },
+  "blocklistInvalidPattern": {
+    "message": "Invalid domain pattern",
+    "description": "Error message for invalid domain pattern"
+  },
+  "blocklistSaved": {
+    "message": "Blocklist updated",
+    "description": "Success message when blocklist is saved"
+  },
+  "blocklistEmpty": {
+    "message": "No blocked sites. Add domains above to disable TabBoost on specific websites.",
+    "description": "Message shown when blocklist is empty"
+  },
+  "popupDisableOnSite": {
+    "message": "Disable on this site",
+    "description": "Button to disable TabBoost on current site"
+  },
+  "popupEnableOnSite": {
+    "message": "Enable on this site",
+    "description": "Button to enable TabBoost on current site"
+  },
+  "popupSiteAddedToBlocklist": {
+    "message": "Site added to blocklist. Reload page to apply.",
+    "description": "Notification when site is added to blocklist from popup"
+  },
+  "popupSiteRemovedFromBlocklist": {
+    "message": "Site removed from blocklist. Reload page to apply.",
+    "description": "Notification when site is removed from blocklist from popup"
   }
 }

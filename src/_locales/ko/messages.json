@@ -478,5 +478,65 @@
   "retryLoading": {
     "message": "다시 로드",
     "description": "Button text to retry iframe loading."
+  },
+  "advancedSettings": {
+    "message": "고급 설정",
+    "description": "Advanced settings tab title"
+  },
+  "blocklistSectionTitle": {
+    "message": "웹사이트 차단 목록",
+    "description": "Title for website blocklist section"
+  },
+  "blocklistSectionDescription": {
+    "message": "특정 웹사이트에서 TabBoost 기능 비활성화",
+    "description": "Description for website blocklist section"
+  },
+  "blocklistAddPlaceholder": {
+    "message": "도메인 입력 (예: example.com, *.example.com)",
+    "description": "Placeholder for blocklist add input"
+  },
+  "blocklistAddButton": {
+    "message": "추가",
+    "description": "Button to add domain to blocklist"
+  },
+  "blocklistDeleteButton": {
+    "message": "삭제",
+    "description": "Button to delete domain from blocklist"
+  },
+  "blocklistHelper": {
+    "message": "정확한 도메인, 와일드카드(*.example.com), 하위 도메인 지원",
+    "description": "Helper text for blocklist input"
+  },
+  "blocklistDuplicateError": {
+    "message": "이 도메인은 이미 차단 목록에 있습니다",
+    "description": "Error message when domain already exists in blocklist"
+  },
+  "blocklistInvalidPattern": {
+    "message": "잘못된 도메인 패턴",
+    "description": "Error message for invalid domain pattern"
+  },
+  "blocklistSaved": {
+    "message": "차단 목록이 업데이트되었습니다",
+    "description": "Success message when blocklist is saved"
+  },
+  "blocklistEmpty": {
+    "message": "차단된 사이트가 없습니다. 위에 도메인을 추가하여 특정 웹사이트에서 TabBoost를 비활성화할 수 있습니다.",
+    "description": "Message shown when blocklist is empty"
+  },
+  "popupDisableOnSite": {
+    "message": "이 사이트에서 비활성화",
+    "description": "Button to disable TabBoost on current site"
+  },
+  "popupEnableOnSite": {
+    "message": "이 사이트에서 활성화",
+    "description": "Button to enable TabBoost on current site"
+  },
+  "popupSiteAddedToBlocklist": {
+    "message": "사이트가 차단 목록에 추가되었습니다. 페이지를 새로고침하여 적용하세요.",
+    "description": "Notification when site is added to blocklist from popup"
+  },
+  "popupSiteRemovedFromBlocklist": {
+    "message": "사이트가 차단 목록에서 제거되었습니다. 페이지를 새로고침하여 적용하세요.",
+    "description": "Notification when site is removed from blocklist from popup"
   }
 }

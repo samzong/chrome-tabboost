@@ -1,5 +1,11 @@
 import storageCache from "../utils/storage-cache.js";
 import { localizePage, getMessage } from "../utils/i18n.js";
+import {
+  DEFAULT_BLOCKLIST,
+  createEntry,
+  validatePattern,
+  getEntryKey,
+} from "../utils/siteBlocklist.js";
 
 function showPageNotification(message, type = "success") {
   let notification = document.getElementById("page-notification");
@@ -56,6 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initTabs();
   loadSettings();
   setupEventListeners();
+  initBlocklist();
 });
 
 function updateDynamicLabels() {
@@ -313,4 +320,136 @@ function updateUrlWithActiveTab(tabId) {
   const url = new URL(window.location.href);
   url.searchParams.set("tab", tabId);
   window.history.replaceState({}, "", url);
+}
+
+let blocklistConfig = DEFAULT_BLOCKLIST;
+
+function initBlocklist() {
+  const addInput = document.getElementById("blocklistAddInput");
+  const addButton = document.getElementById("blocklistAddButton");
+  const entriesList = document.getElementById("blocklistEntries");
+  const emptyMsg = document.getElementById("blocklistEmpty");
+
+  loadBlocklist();
+
+  if (addButton) {
+    addButton.addEventListener("click", () => {
+      const pattern = addInput?.value.trim();
+      if (!pattern) return;
+
+      const validation = validatePattern(pattern);
+      if (!validation.valid) {
+        showPageNotification(
+          getMessage("blocklistInvalidPattern") || validation.error,
+          "error"
+        );
+        return;
+      }
+
+      const newEntry = createEntry(pattern);
+      if (!newEntry) {
+        showPageNotification(
+          getMessage("blocklistInvalidPattern") || "Invalid pattern",
+          "error"
+        );
+        return;
+      }
+
+      if ((blocklistConfig.entries || []).some((entry) => getEntryKey(entry) === newEntry.key)) {
+        showPageNotification(
+          getMessage("blocklistDuplicateError") || "Already in blocklist",
+          "error"
+        );
+        return;
+      }
+
+      blocklistConfig = {
+        ...blocklistConfig,
+        entries: [...blocklistConfig.entries, newEntry],
+      };
+
+      saveBlocklist();
+      if (addInput) addInput.value = "";
+    });
+  }
+
+  if (addInput) {
+    addInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        addButton?.click();
+      }
+    });
+  }
+}
+
+function loadBlocklist() {
+  chrome.runtime.sendMessage(
+    { action: "getSiteBlocklistConfig" },
+    (response) => {
+      if (response && response.success) {
+        blocklistConfig = response.config || DEFAULT_BLOCKLIST;
+        renderBlocklist();
+      }
+    }
+  );
+}
+
+function renderBlocklist() {
+  const entriesList = document.getElementById("blocklistEntries");
+  const emptyMsg = document.getElementById("blocklistEmpty");
+
+  if (!entriesList) return;
+
+  entriesList.innerHTML = "";
+
+  const entries = blocklistConfig.entries || [];
+  if (entries.length === 0) {
+    if (emptyMsg) emptyMsg.style.display = "block";
+    return;
+  }
+
+  if (emptyMsg) emptyMsg.style.display = "none";
+
+  entries.forEach((entry) => {
+    const li = document.createElement("li");
+    li.className = "blocklist-entry";
+
+    const span = document.createElement("span");
+    span.textContent = entry.pattern;
+    span.className = "blocklist-entry-pattern";
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = getMessage("blocklistDeleteButton") || "Delete";
+    deleteBtn.className = "button blocklist-delete-btn";
+    deleteBtn.addEventListener("click", () => {
+      blocklistConfig = {
+        ...blocklistConfig,
+        entries: blocklistConfig.entries.filter((e) => e.id !== entry.id),
+      };
+      saveBlocklist();
+    });
+
+    li.appendChild(span);
+    li.appendChild(deleteBtn);
+    entriesList.appendChild(li);
+  });
+}
+
+function saveBlocklist() {
+  chrome.runtime.sendMessage(
+    { action: "setSiteBlocklistConfig", config: blocklistConfig },
+    (response) => {
+      if (response && response.success) {
+        showPageNotification(
+          getMessage("blocklistSaved") || "Blocklist updated"
+        );
+        renderBlocklist();
+      } else {
+        showPageNotification(
+          response?.error || "Failed to save blocklist",
+          "error"
+        );
+      }
+    }
+  );
 }
