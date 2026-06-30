@@ -9,6 +9,7 @@ import {
   createCloseButton,
 } from "./splitViewDOMUtils.js";
 import { safeQuerySelector } from "./splitViewUtils.js";
+import { buildPreviewFrameUrl } from "../../utils/preview-frame.js";
 import * as i18n from "../../utils/i18n.js";
 import {
   createSettingsButton,
@@ -344,7 +345,7 @@ export function updateRightViewDOM(url) {
       setupIframeEvents(rightIframe, errorContainer, url);
       rightView.appendChild(rightIframe);
     } else {
-      rightIframe.src = url;
+      rightIframe.src = buildPreviewFrameUrl(url) || "about:blank";
       if (errorContainer) {
         updateErrorButtons(errorContainer, url);
       }

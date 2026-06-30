@@ -7,6 +7,7 @@ import {
   LOAD_EXTENSION_SCRIPT_ACTION,
 } from "../utils/messageChannels.js";
 import { shouldBypass, DEFAULT_BLOCKLIST } from "../utils/siteBlocklist.js";
+import { buildPreviewFrameUrl } from "../utils/preview-frame.js";
 
 /* global __webpack_public_path__ */
 
@@ -850,12 +851,17 @@ async function createPopupDOM(url) {
       resetBeforeLoad();
 
       try {
+        const previewUrl = buildPreviewFrameUrl(url);
+        if (!previewUrl) {
+          throw new Error(getMessage("cannotLoadInPopup") || "Invalid preview URL");
+        }
+
         const loadPromise = loadWithTimeout(
           iframe,
-          url,
+          previewUrl,
           POPUP_IFRAME_TIMEOUT_MS
         );
-        iframe.src = url;
+        iframe.src = previewUrl;
         const loadResult = await loadPromise;
 
         if (hasHandledFailure) {
