@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TabBoost Preview</title>
+    <style>
+      html,
+      body,
+      #preview-frame {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+      }
+
+      body {
+        overflow: hidden;
+        background: #fff;
+      }
+
+      #preview-frame {
+        display: block;
+        border: 0;
+      }
+
+      #preview-error {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 12px;
+        font: 14px system-ui, -apple-system, sans-serif;
+        color: #374151;
+        background: #fff;
+      }
+
+      #preview-error[hidden],
+      #preview-frame[hidden] {
+        display: none;
+      }
+
+      #preview-open-tab {
+        border: 0;
+        border-radius: 6px;
+        padding: 8px 12px;
+        background: #2563eb;
+        color: #fff;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="preview-error" hidden>
+      <p id="preview-error-message">Cannot load this website in preview.</p>
+      <button id="preview-open-tab" type="button">Open in new tab</button>
+    </div>
+    <iframe id="preview-frame" title="TabBoost preview"></iframe>
+  </body>
+</html>

@@ -46,7 +46,7 @@
     }
   ],
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google.com; default-src 'self'; connect-src 'self' https://*.google.com; frame-src 'self'; font-src 'self'; form-action 'none'; base-uri 'none'; upgrade-insecure-requests;",
+    "extension_pages": "script-src 'self'; object-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google.com; default-src 'self'; connect-src 'self' https://*.google.com; frame-src 'self' http: https:; font-src 'self'; form-action 'none'; base-uri 'none'; upgrade-insecure-requests;",
     "sandbox": "sandbox allow-scripts allow-forms allow-popups allow-modals; script-src 'self'; object-src 'none'"
   },
   "action": {
@@ -104,7 +104,8 @@
       ],
       "matches": [
         "<all_urls>"
-      ]
+      ],
+      "use_dynamic_url": true
     }
   ]
 }

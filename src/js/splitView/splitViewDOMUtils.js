@@ -1,5 +1,6 @@
 import { UI_CONFIG } from "./splitViewConfig";
 import { safeQuerySelector } from "./splitViewUtils";
+import { buildPreviewFrameUrl } from "../../utils/preview-frame.js";
 
 /**
  * Create a DOM element with optional configuration
@@ -63,12 +64,16 @@ export function addSafeEventListener(element, event, handler) {
  * @returns {HTMLIFrameElement} - Configured iframe
  */
 export function createIframe(id, url = "about:blank") {
+  const frameUrl =
+    url === "about:blank"
+      ? url
+      : buildPreviewFrameUrl(url);
   const config = {
     ...UI_CONFIG.iframe,
     id,
     attributes: {
       ...UI_CONFIG.iframe.attributes,
-      src: url,
+      src: frameUrl || "about:blank",
     },
   };
 

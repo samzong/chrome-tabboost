@@ -18,6 +18,7 @@ module.exports = {
     options: "./src/options/options.js",
     background: "./src/js/background.js",
     contentScript: "./src/js/contentScript.js",
+    preview: "./src/preview/preview.js",
   },
   output: {
     path: path.resolve(__dirname, "build"),
@@ -71,6 +72,11 @@ module.exports = {
         cssPath: "./assets/styles/options.css",
       },
     }),
+    new HtmlWebpackPlugin({
+      template: "./src/preview/preview.html",
+      filename: "preview.html",
+      chunks: ["preview"],
+    }),
     new CopyWebpackPlugin({
       patterns: [
         {
@@ -114,6 +120,8 @@ module.exports = {
               const requiredResources = new Set([
                 "assets/styles/splitViewStyles.css",
                 "split-view-controller.js",
+                "preview.html",
+                "preview.js",
               ]);
 
               manifest.web_accessible_resources[0].resources = Array.from(
