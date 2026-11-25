@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Releases chrome-tabboost</title>
+    <meta name="description" content="TabBoost uses the L1 release tier. package.json is the version source.Tags use vX.Y.Z or vX.Y.Z-(alpha|beta|rc).N, witho">
+    <meta name="keywords" content="Chrome,Extension,Arc,TabBoost,Chrome Extension,Arc Browser,Chrome TabBoost">
+    <link rel="stylesheet" type="text/css" href="css/main.css?v=1.34.5">
+    <link rel="stylesheet" type="text/css" href="css/tocbot.css?v=1.34.5">
+    <link rel="stylesheet" type="text/css" href="css/media.css?v=1.34.5">
+    <link rel="stylesheet" type="text/css" href="css/sidebar.css?v=1.34.5">
+    <link rel="stylesheet" type="text/css" href="css/copy.css?v=1.34.5">
+    <link rel="stylesheet" type="text/css" href="css/demo-preview.css?v=1.34.5">
+    <script src="js/copy.js?v=1.34.5"></script>
+    <script src="js/dark-mode.js?v=1.34.5"></script>
+    <script src="js/markdown-style.js?v=1.34.5"></script>
+  </head>
+  <body id="idoctotop"><a href="#idoctotop" class="gototop">top</a>
+    <header class="header">
+      <article class="inner warpper" style="max-width:720px;"><a class="logo" href="index.html"><span class="title">chrome-tabboost</span></a>
+        <div class="content">
+          <ul class="menu">
+            <li><a href="index.html" target="" class="">Home</a></li>
+            <li><a href="https://github.com/samzong" target="__blank" class="">About</a></li>
+          </ul><a href="https://github.com/samzong/chrome-tabboost" target="_blank" rel="noopener noreferrer" title="Github" name="Github" class="github"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+            </svg></a>
+          <dark-mode permanent=""></dark-mode>
+        </div>
+      </article>
+    </header>
+    <div style="max-width:720px;" class="warpper-content warpper notocs">
+      <markdown-style theme-auto-switch-disabled="">
+        <h1 id="releases"><a aria-hidden="true" tabindex="-1" href="#releases" class="anchor"><span class="icon icon-link"></span></a>Releases</h1>
+        <p>
+          TabBoost uses the L1 release tier. <code>package.json</code> is the version source.
+          Tags use <code>vX.Y.Z</code> or <code>vX.Y.Z-(alpha|beta|rc).N</code>, without leading zeros.
+          <code>manifest.json</code> stores the exact SemVer string in <code>version_name</code>.
+        </p>
+        <p>
+          Chrome compares up to four integers, with missing integers equal to zero.
+          Each integer must be between 0 and 65535. See the <a href="https://developer.chrome.com/docs/extensions/reference/manifest/version">Chrome version rules</a>.
+          TabBoost always writes four integers as <code>X.Y.Z.BUILD</code>:
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Release stage</th>
+              <th>BUILD</th>
+              <th>Sequence bounds</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>alpha.N</td>
+              <td>N</td>
+              <td>1 through 20000</td>
+            </tr>
+            <tr>
+              <td>beta.N</td>
+              <td>20000 + N</td>
+              <td>1 through 20000</td>
+            </tr>
+            <tr>
+              <td>rc.N</td>
+              <td>40000 + N</td>
+              <td>1 through 20000</td>
+            </tr>
+            <tr>
+              <td>Final</td>
+              <td>65535</td>
+              <td>No sequence</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          The first three integers also have a maximum of 65535.
+          The scripts reject overflow before writing files.
+          If a stage needs more than 20000 candidates, choose a new target version before preparing another candidate.
+          The final version sorts above every candidate for the same target version.
+          Historical tags retain their original files and versions.
+        </p>
+        <h2 id="prepare-a-release"><a aria-hidden="true" tabindex="-1" href="#prepare-a-release" class="anchor"><span class="icon icon-link"></span></a>Prepare a release</h2>
+        <ol>
+          <li>Run <code>npm ci</code>.</li>
+          <li>Choose one preparation path:
+            <ul>
+              <li>Final: run <code>npm run version:patch</code>, <code>version:minor</code>, or <code>version:major</code>.</li>
+              <li>Candidate: run <code>node scripts/version-bump.js prepatch rc</code>, or use <code>preminor</code>, <code>premajor</code>, or <code>prerelease</code> with a stage.</li>
+            </ul>
+          </li>
+          <li>Run <code>npm run version:check</code>, <code>npm test</code>, and <code>npm run validate</code>.</li>
+          <li>Run <code>npm run zip</code>. With a signing key in <code>key.pem</code>, run <code>npm run package</code>.</li>
+          <li>Review the version files and the new <code>CHANGELOG.md</code> entry. Run <code>npm run release:notes</code> to read the release body.</li>
+          <li>Commit the release files through the delivery workflow.</li>
+          <li>After separate publication authorization, create and push the matching release tag.</li>
+        </ol>
+        <p>
+          The version script prepares files. It does not commit, create tags, or push.
+          It updates <code>package-lock.json</code> and both manifest version fields from <code>package.json</code>.
+          It uses the pinned <code>git-cliff</code> dependency and <code>cliff.toml</code> to prepend the new changelog entry.
+          Each entry includes changes since the previous final release, so unchanged candidates can advance through stages and promote to final.
+          Release notes use that tracked entry and fail if the entry is absent or empty.
+          Do not use <code>npm version</code>, which does not update the Chrome mapping.
+        </p>
+        <p>
+          The release workflow accepts a pushed tag or an existing tag through its manual input.
+          Its first gate compares the tag, package version, manifest version name, and mapped Chrome version before dependencies, tests, or builds.
+          The workflow also requires the checkout to match the tag commit.
+          It attaches the CRX and ZIP from <code>builds/</code> to the GitHub Release.
+          Candidates use <code>--prerelease --latest=false</code>.
+          A retry does not replace an existing release.
+        </p>
+        <p>
+          Chrome Web Store publication is separate from GitHub Release publication.
+          For a candidate, <code>npm run publish:test</code> requires the trusted-testers target and skips the public publication prompt.
+          No publication command belongs to the alignment verification procedure.
+        </p>
+      </markdown-style>
+    </div>
+    <script src="js/demo-preview.js?v=1.34.5"></script>
+    <div class="footer warpper" style="max-width:720px;">Copyright © 2026 <a href="https://github.com/samzong" target="_blank">samzong</a><br></div>
+    <script src="js/tocbot.js?v=1.34.5"></script>
+  </body>
+</html>
