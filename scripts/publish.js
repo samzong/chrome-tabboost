@@ -3,7 +3,7 @@ const path = require('path');
 const { exec } = require('child_process');
 const util = require('util');
 const execAsync = util.promisify(exec);
-const semver = require('semver');
+const { assertVersionParity, compareChromeVersions } = require('./versioning');
 const chalk = require('chalk');
 require('dotenv').config();
 
@@ -33,13 +33,10 @@ const {
 
 async function checkVersions() {
   const pkg = require(PACKAGE_JSON_PATH);
-  if (!fs.existsSync(MANIFEST_JSON_PATH)) {
-    console.warn(chalk.yellow('⚠️ manifest.json not found in root. Skipping version check against manifest.'));
-  } else {
-    const manifest = require(MANIFEST_JSON_PATH);
-    if (pkg.version !== manifest.version) {
-      throw new Error(`Version mismatch: package.json (${pkg.version}) != manifest.json (${manifest.version})`);
-    }
+  const manifest = require(MANIFEST_JSON_PATH);
+  const parsed = assertVersionParity(pkg, manifest);
+  if (parsed.stage && process.env.PUBLISH_TARGET !== 'trusted-testers') {
+    throw new Error('Prereleases require PUBLISH_TARGET=trusted-testers');
   }
 
   try {
@@ -49,7 +46,7 @@ async function checkVersions() {
     const match = data.match(/\"version\":\s*\"([^\"]+)\"/);
     if (match) {
       const storeVersion = match[1];
-      if (!semver.gt(pkg.version, storeVersion)) {
+      if (compareChromeVersions(manifest.version, storeVersion) <= 0) {
         throw new Error(`New version (${pkg.version}) must be greater than current store version (${storeVersion})`);
       }
       console.log(chalk.green(`✅ Version check passed: ${storeVersion} -> ${pkg.version}`));
@@ -86,6 +83,8 @@ async function publish() {
     const webstorePublishTestersCmd = `webstore publish --extension-id ${EXTENSION_ID} --client-id ${CLIENT_ID} --client-secret ${CLIENT_SECRET} --refresh-token ${REFRESH_TOKEN} --trusted-testers`;
     console.log(chalk.cyan(`   Executing: ${webstorePublishTestersCmd.replace(CLIENT_SECRET, '***').replace(REFRESH_TOKEN, '***')}`));
     await execAsync(webstorePublishTestersCmd);
+
+    if (assertVersionParity(pkg, require(MANIFEST_JSON_PATH)).stage) return;
 
     const readline = require('readline').createInterface({
       input: process.stdin,

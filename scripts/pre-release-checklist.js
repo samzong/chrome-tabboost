@@ -7,6 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 const chalk = require('chalk');
+const { assertVersionParity } = require('./versioning');
 
 const ROOT_DIR = path.join(__dirname, '..');
 
@@ -25,14 +26,9 @@ const checks = [
     name: 'Version Consistency',
     fn: () => {
       const pkg = require(path.join(ROOT_DIR, 'package.json'));
-      // Ensure manifest path is correct, assuming it's in the root
-      const manifestPath = path.join(ROOT_DIR, 'manifest.json');
-      if (!fs.existsSync(manifestPath)) {
-          console.warn(chalk.yellow('\n    ⚠️ manifest.json not found in root, skipping version check.'));
-          return true; // Or false if manifest is mandatory
-      }
-      const manifest = require(manifestPath);
-      return pkg.version === manifest.version;
+      const manifest = require(path.join(ROOT_DIR, 'manifest.json'));
+      assertVersionParity(pkg, manifest);
+      return true;
     },
     description: 'Checks if the version in package.json matches the version in manifest.json.',
     failureMessage: 'package.json and manifest.json versions are inconsistent. Please align them.'
