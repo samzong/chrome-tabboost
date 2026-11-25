@@ -24,13 +24,14 @@ Historical tags retain their original files and versions.
 ## Prepare a release
 
 1. Run `npm ci`.
-2. Run `npm run version:patch` for a fix, or use `version:minor` or `version:major` for the corresponding change.
-3. For a candidate, run `node scripts/version-bump.js prepatch rc`, or choose `preminor`, `premajor`, or `prerelease` and a stage.
-4. Run `npm run version:check`, `npm test`, and `npm run validate`.
-5. Run `npm run zip`. With a signing key in `key.pem`, run `npm run package`.
-6. Review the version files and the new `CHANGELOG.md` entry. Run `npm run release:notes` to read the release body.
-7. Commit the release files through the delivery workflow.
-8. After separate publication authorization, create and push the matching release tag.
+2. Choose one preparation path:
+   - Final: run `npm run version:patch`, `version:minor`, or `version:major`.
+   - Candidate: run `node scripts/version-bump.js prepatch rc`, or use `preminor`, `premajor`, or `prerelease` with a stage.
+3. Run `npm run version:check`, `npm test`, and `npm run validate`.
+4. Run `npm run zip`. With a signing key in `key.pem`, run `npm run package`.
+5. Review the version files and the new `CHANGELOG.md` entry. Run `npm run release:notes` to read the release body.
+6. Commit the release files through the delivery workflow.
+7. After separate publication authorization, create and push the matching release tag.
 
 The version script prepares files. It does not commit, create tags, or push.
 It updates `package-lock.json` and both manifest version fields from `package.json`.
