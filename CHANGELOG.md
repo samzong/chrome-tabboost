@@ -1,3 +1,11 @@
+## [2.6.1] (2026-11-25)
+
+
+### Fixes
+
+* **preview:** respect same-origin link embeds
+* **release:** enforce semver and chrome version parity (#72)
+
 ## 2.6.0 (2025-11-08)
 
 * feat(site-blocklist): add site-specific blocklist with UI and sync storage support ([2d3cf85](https://github.com/samzong/chrome-tabboost/commit/2d3cf85))
