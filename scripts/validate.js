@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { assertVersionParity } = require('./versioning');
 const buildDir = path.join(__dirname, '../build');
 const manifestPath = path.join(buildDir, 'manifest.json');
 const WEB_EXT_IGNORED_ERROR_CODES = new Set([
@@ -36,9 +37,8 @@ async function validateExtension() {
     const manifest = require(manifestPath);
     const pkg = require('../package.json');
 
-    if (manifest.version !== pkg.version) {
-      throw new Error(`Version mismatch: manifest.json (${manifest.version}) != package.json (${pkg.version})`);
-    }
+    assertVersionParity(pkg, require('../manifest.json'));
+    assertVersionParity(pkg, manifest);
 
     const requiredFields = ['name', 'version', 'manifest_version'];
     for (const field of requiredFields) {
